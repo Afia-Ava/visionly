@@ -1,0 +1,108 @@
+:root 
+{
+    --background: #F8F4EC;
+    --primary: #A8C3BC;
+    --secondary: #EEDDE0;
+    --accent: #FFB085;
+    --text: #3F3F3F;
+    --card-bg: #FAF7F2;
+}
+  
+body 
+{
+    background-color: #f8f4ec;
+    border-radius: 16px;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header, section, .card {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+    margin: 20px auto;
+    max-width: 800px;
+  }
+  
+button {
+    background-color: var(--accent);
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+  
+button:hover {
+    background-color: #ff9966;
+}
+  
+h1, h2, h3 
+{
+    color: var(--primary);
+}
+
+.hero 
+{
+    background: linear-gradient(135deg, #EEDDE0, #A8C3BC);
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text);
+    border-radius: 20px;
+}
+
+main 
+{
+    padding: 2rem;
+    text-align: center;
+}
+
+nav 
+{
+    background-color: #3a0ca3;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#vision-board 
+{
+    min-height: 400px;
+    padding: 20px;
+    background-color: white;
+    margin: 20px;
+    border: 2px dashed #ccc;
+}
+  
+#image-search 
+{
+    padding: 20px;
+    background-color: #fff;
+    margin: 20px;
+}
+  
+#ai-suggestions 
+{
+    padding: 20px;
+    background-color: #f0f0ff;
+    margin: 20px;
+    border-left: 5px solid #7209b7;
+}
+
+footer 
+{
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
