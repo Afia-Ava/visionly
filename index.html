@@ -1,43 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vision Board App</title>
-    <link rel="stylesheet" href="styles.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visionly - Vision Board App</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header>
-        <h1>Welcome to Visionly</h1>
-    </header>
-    <nav>
-        <h1>Visionly</h1>
-        <button id=""createBoardBtn">+New Board</button>
+  <header class="hero">
+    <nav class="navbar">
+      <div class="logo">visionly</div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#create">Create</a></li>
+        <li><a href="#boards">Boards</a></li>
+        <li><a href="#journal">Journal</a></li>
+        <li><a href="#" class="btn login">Login</a></li>
+      </ul>
+      <div class="menu-toggle" id="menu-toggle">☰</div>
     </nav>
-    <section id'"vision-board">
-    <!--Drag and drop area for the pictures-->
-    </section>
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Make Vision Boards And<br>Track Progress</h1>
+        <a href="#create" class="btn primary">Create</a>
+      </div>
+      <div class="hero-images">
+        <img src="assets/board1.png" alt="vision board sample 1" />
+        <img src="assets/board2.png" alt="vision board sample 2" />
+      </div>
+    </div>
+  </header>
 
-    <section id=""image-search">
-        <input type="text" id="searchInput" placeholder="Search images (e.g. dream home)">
-        <button id="searchBtn">Search</button>
-        <div id="imageResults"></div>
-    </section>
+  <section class="features" id="features">
+    <h2>Features</h2>
+    <div class="feature-cards">
+      <div class="card">
+        <img src="assets/goal.png" alt="Set Goals">
+        <h3>Set Goals</h3>
+        <p>Visualize your dream life with digital vision boards.</p>
+      </div>
+      <div class="card">
+        <img src="assets/focus.png" alt="Stay Focused">
+        <h3>Stay Focused</h3>
+        <p>Built-in notes, mood boards, & to-do lists keep you grounded.</p>
+      </div>
+      <div class="card">
+        <img src="assets/progress.png" alt="Track Progress">
+        <h3>Track Progress</h3>
+        <p>Celebrate small wins & crush big ones with progress tools.</p>
+      </div>
+    </div>
+  </section>
 
-    <section id="ai-suggestions">
-        <h2>Today's Quotes</h2>
-        <p id=""questoText">Motivational quote</p>
-    </section>
+  <section class="gallery" id="boards">
+    <h2>Inspiration Gallery</h2>
+    <div class="gallery-images">
+      <img src="assets/gallery.jpg" alt="Vision board inspiration" />
+    </div>
+  </section>
 
-    <script src="script.js"></script>
+  <section class="cta">
+    <p>start designing your dream life.</p>
+  </section>
 
-    <main>
-        <p>Your vision, our mission.</p>
-        <button onclick="alert('Thank you for visiting Visionly!')">Click Me</button>
-    </main>
-    <footer>
-        <p>&copy; 2023 Visionly. All rights reserved.</p>
-    </footer>
+  <footer>
+    <div class="footer-content">
+      <div>
+        <h4>Contact us at:</h4>
+        <p>visionly.support@gmail.com</p>
+      </div>
+      <div>
+        <h4>Join our newsletter</h4>
+        <form id="newsletter-form">
+          <input type="email" placeholder="example@gmail.com" required />
+          <button type="submit">submit</button>
+        </form>
+      </div>
+    </div>
+    <p class="copyright">Visionly® 2025. All Rights Reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
