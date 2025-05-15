@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Vision Boards - Visionly</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="boards.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">visionly</div>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="create-board.html">Create</a></li>
+      <li><a href="#boards">Boards</a></li>
+      <li><a href="#journal">Journal</a></li>
+      <li><a href="#" class="btn login">Login</a></li>
+    </ul>
+    <div class="menu-toggle" id="menu-toggle">☰</div>
+  </nav>
+
+  <main class="boards-container">
+    <header class="boards-header">
+      <div class="header-content">
+        <div class="header-text">
+          <h1>your vision boards ✨</h1>
+          <p>keep dreaming, keep building</p>
+        </div>
+        <div class="header-actions">
+          <div class="search-bar">
+            <input type="text" placeholder="Search boards..." id="board-search">
+            <button class="search-btn">🔍</button>
+          </div>
+          <div class="sort-dropdown">
+            <select id="sort-boards">
+              <option value="date-desc">Sort by: Latest</option>
+              <option value="date-asc">Sort by: Oldest</option>
+              <option value="name-asc">Sort by: A-Z</option>
+              <option value="name-desc">Sort by: Z-A</option>
+            </select>
+          </div>
+          <a href="create-board.html" class="new-board-btn">+ new board</a>
+        </div>
+      </div>
+      <div class="filter-tags">
+        <button class="tag-btn active">All</button>
+        <button class="tag-btn">Career</button>
+        <button class="tag-btn">Health</button>
+        <button class="tag-btn">Travel</button>
+        <button class="tag-btn">Finance</button>
+        <button class="tag-btn">Personal</button>
+      </div>
+    </header>
+
+    <section class="boards-grid">
+      <!-- Example Board Cards -->
+      <article class="board-card">
+        <div class="board-preview">
+          <img src="assets/summergoals.jpg" alt="Summer Goals Preview">
+        </div>
+        <div class="board-info">
+          <h3>Summer Goals</h3>
+          <p class="board-date">Created: Apr 14, 2025</p>
+          <div class="board-actions">
+            <button class="action-btn edit">✏️ Edit</button>
+            <button class="action-btn view">🔍 View</button>
+            <button class="action-btn share">📤 Share</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="board-card">
+        <div class="board-preview">
+          <img src="assets/careergoals.jpg" alt="Career Vision Preview">
+        </div>
+        <div class="board-info">
+          <h3>Career Vision</h3>
+          <p class="board-date">Created: Apr 12, 2025</p>
+          <div class="board-actions">
+            <button class="action-btn edit">✏️ Edit</button>
+            <button class="action-btn view">🔍 View</button>
+            <button class="action-btn share">📤 Share</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="board-card">
+        <div class="board-preview">
+          <img src="assets/healthgoals.jpg" alt="Health Goals Preview">
+        </div>
+        <div class="board-info">
+          <h3>Health Goals</h3>
+          <p class="board-date">Created: Apr 10, 2025</p>
+          <div class="board-actions">
+            <button class="action-btn edit">✏️ Edit</button>
+            <button class="action-btn view">🔍 View</button>
+            <button class="action-btn share">📤 Share</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="board-card">
+        <div class="board-preview">
+          <img src="assets/travelgoals.jpg" alt="Travel Dreams Preview">
+        </div>
+        <div class="board-info">
+          <h3>Travel Dreams</h3>
+          <p class="board-date">Created: Apr 8, 2025</p>
+          <div class="board-actions">
+            <button class="action-btn edit">✏️ Edit</button>
+            <button class="action-btn view">🔍 View</button>
+            <button class="action-btn share">📤 Share</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="board-card">
+        <div class="board-preview">
+          <img src="assets/personalgrowth.jpg" alt="Personal Growth Preview">
+        </div>
+        <div class="board-info">
+          <h3>Personal Growth</h3>
+          <p class="board-date">Created: Apr 5, 2025</p>
+          <div class="board-actions">
+            <button class="action-btn edit">✏️ Edit</button>
+            <button class="action-btn view">🔍 View</button>
+            <button class="action-btn share">📤 Share</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Add Board Card -->
+      <a href="create-board.html" class="board-card add-board">
+        <div class="add-board-content">
+          <span class="add-icon">+</span>
+          <p>Create New Board</p>
+        </div>
+      </a>
+    </section>
+  </main>
+
+  <script src="boards.js"></script>
+</body>
+</html> 

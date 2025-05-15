@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Vision Board - Visionly</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="create-board.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">visionly</div>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#boards">Boards</a></li>
+      <li><a href="#journal">Journal</a></li>
+      <li><a href="#" class="btn login">Login</a></li>
+    </ul>
+    <div class="menu-toggle" id="menu-toggle">☰</div>
+  </nav>
+
+  <main class="create-board-container">
+    <header class="create-board-header">
+      <h1>Create Your Vision Board ✨</h1>
+      <p>Upload images, add your goals, and bring your vision to life.</p>
+    </header>
+
+    <div class="board-creation-layout">
+      <!-- Left Column - Controls -->
+      <section class="board-controls">
+        <div class="control-group">
+          <input type="text" id="board-title" placeholder="Enter Board Title" class="board-title-input">
+        </div>
+
+        <div class="control-group">
+          <select id="goal-type" class="goal-type-select">
+            <option value="">Select Goal Type</option>
+            <option value="health">Health & Wellness</option>
+            <option value="career">Career & Business</option>
+            <option value="learning">Learning & Growth</option>
+            <option value="travel">Travel & Adventure</option>
+            <option value="finance">Finance & Wealth</option>
+            <option value="relationships">Relationships</option>
+            <option value="personal">Personal Growth</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="upload-container">
+            <button id="upload-btn" class="upload-btn">
+              <span>📷 Upload Images</span>
+              <input type="file" id="file-upload" multiple accept="image/*">
+            </button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="search-container">
+            <input type="text" id="image-search" placeholder="Search for images..." class="image-search-input">
+            <button id="search-btn" class="search-btn">🔍</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <textarea id="board-notes" placeholder="Add notes or affirmations..." class="board-notes-input"></textarea>
+        </div>
+
+        <button id="save-board" class="save-board-btn">✨ Save My Board</button>
+      </section>
+
+      <!-- Right Column - Preview -->
+      <section class="board-preview">
+        <div class="preview-header">
+          <h2>Board Preview</h2>
+          <p class="drag-hint">Drag items to arrange them</p>
+        </div>
+        <div id="board-grid" class="board-grid">
+          <!-- Images and notes will be added here dynamically -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="create-board.js"></script>
+</body>
+</html> 
