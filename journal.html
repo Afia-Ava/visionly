@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visionly - Journal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="journal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">visionly</div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="create-board.html">Create</a></li>
+            <li><a href="boards.html">Boards</a></li>
+            <li><a href="journal.html" class="active">Journal</a></li>
+            <li><a href="#" class="btn login">Login</a></li>
+        </ul>
+        <div class="menu-toggle" id="menu-toggle">☰</div>
+    </nav>
+
+    <main class="journal-container">
+        <div class="journal-sidebar">
+            <div class="calendar-section">
+                <h2>Calendar</h2>
+                <div id="journal-calendar"></div>
+            </div>
+            <div class="entries-list">
+                <h2>Previous Entries</h2>
+                <div id="entries-container"></div>
+            </div>
+        </div>
+
+        <div class="journal-main">
+            <div class="journal-header">
+                <div class="date-display">
+                    <h2 id="current-date"></h2>
+                </div>
+                <div class="entry-actions">
+                    <button id="new-entry-btn" class="primary-btn">
+                        <i class="fas fa-plus"></i> New Entry
+                    </button>
+                    <button id="prompt-btn" class="secondary-btn">
+                        <i class="fas fa-lightbulb"></i> Get Prompt
+                    </button>
+                </div>
+            </div>
+
+            <div class="prompt-container" style="display: none;">
+                <p id="current-prompt"></p>
+                <button id="close-prompt" class="icon-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="editor-container">
+                <div class="editor-toolbar">
+                    <input type="text" id="entry-title" placeholder="Entry Title">
+                    <div class="entry-mood">
+                        <label for="mood-selector">Mood:</label>
+                        <select id="mood-selector">
+                            <option value="😊">😊 Happy</option>
+                            <option value="😌">😌 Peaceful</option>
+                            <option value="🤔">🤔 Thoughtful</option>
+                            <option value="😔">😔 Sad</option>
+                            <option value="😤">😤 Frustrated</option>
+                        </select>
+                    </div>
+                </div>
+                <textarea id="entry-content" placeholder="Start writing your thoughts..."></textarea>
+                <div class="editor-footer">
+                    <span id="save-status">All changes saved</span>
+                    <div class="entry-controls">
+                        <button id="delete-entry" class="danger-btn" style="display: none;">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                        <label class="share-toggle">
+                            <input type="checkbox" id="share-entry">
+                            <span class="toggle-label">Share Entry</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="journal.js"></script>
+</body>
+</html> 

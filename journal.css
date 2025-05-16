@@ -1,0 +1,356 @@
+/* Base reset */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Main layout */
+.journal-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+    padding: 100px 5% 40px;
+    min-height: 100vh;
+    background-color: #1a122b;
+}
+
+/* Sidebar */
+.journal-sidebar {
+    background: #2c2046;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+    overflow: hidden;
+}
+
+/* Calendar compact design */
+.calendar-section {
+    padding: 20px;
+    border-bottom: 1px solid #3d2d5e;
+}
+
+.calendar-section h2 {
+    font-size: 1.1rem;
+    color: #fff;
+    margin: 0 0 15px 0;
+    font-weight: 500;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.calendar-day-label {
+    text-align: center;
+    color: #d0a9f5;
+    padding: 4px;
+    font-weight: 400;
+    font-size: 0.8rem;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #fff;
+    transition: all 0.2s ease;
+}
+
+.calendar-day:hover {
+    background: #3d2d5e;
+}
+
+.calendar-day.has-entry {
+    background: #8854d0;
+    color: #fff;
+}
+
+.calendar-day.has-entry:hover {
+    background: #a46cf0;
+}
+
+/* Entries list */
+.entries-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.entries-list h2 {
+    font-size: 1.1rem;
+    color: #fff;
+    margin: 0 0 15px 0;
+    font-weight: 500;
+}
+
+.entry-card {
+    padding: 15px;
+    background: #1a122b;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid #3d2d5e;
+}
+
+.entry-card:hover {
+    transform: translateY(-2px);
+    border-color: #8854d0;
+}
+
+/* Main content */
+.journal-main {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    height: calc(100vh - 140px);
+    overflow: hidden;
+}
+
+/* Header */
+.journal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #2c2046;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.date-display h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #fff;
+    margin: 0;
+}
+
+.entry-actions {
+    display: flex;
+    gap: 15px;
+}
+
+/* Editor */
+.editor-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #2c2046;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border-bottom: 1px solid #3d2d5e;
+    background: #1a122b;
+}
+
+#entry-title {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1.1rem;
+    padding: 10px;
+    background: transparent;
+    color: #fff;
+}
+
+#entry-title::placeholder {
+    color: #d0a9f5;
+}
+
+.entry-mood {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.entry-mood label {
+    font-size: 0.9rem;
+    color: #d0a9f5;
+}
+
+#mood-selector {
+    padding: 8px 12px;
+    border: 2px solid #8854d0;
+    border-radius: 8px;
+    background: #1a122b;
+    color: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+#entry-content {
+    flex: 1;
+    padding: 20px;
+    border: none;
+    outline: none;
+    resize: none;
+    font-size: 1rem;
+    line-height: 1.6;
+    background: #1a122b;
+    color: #fff;
+    overflow-y: auto;
+}
+
+#entry-content::placeholder {
+    color: #d0a9f5;
+}
+
+.editor-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #3d2d5e;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1a122b;
+}
+
+#save-status {
+    font-size: 0.9rem;
+    color: #d0a9f5;
+}
+
+/* Buttons */
+.primary-btn,
+.secondary-btn,
+.danger-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.primary-btn {
+    background: #8854d0;
+    color: #fff;
+}
+
+.primary-btn:hover {
+    background: #a46cf0;
+    transform: translateY(-2px);
+}
+
+.secondary-btn {
+    background: #3d2d5e;
+    color: #fff;
+}
+
+.secondary-btn:hover {
+    background: #4d3a70;
+    transform: translateY(-2px);
+}
+
+.danger-btn {
+    background: #ff4444;
+    color: #fff;
+}
+
+.danger-btn:hover {
+    background: #ff6666;
+    transform: translateY(-2px);
+}
+
+/* Custom scrollbar */
+.entries-list::-webkit-scrollbar,
+#entry-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.entries-list::-webkit-scrollbar-track,
+#entry-content::-webkit-scrollbar-track {
+    background: #1a122b;
+    border-radius: 3px;
+}
+
+.entries-list::-webkit-scrollbar-thumb,
+#entry-content::-webkit-scrollbar-thumb {
+    background: #8854d0;
+    border-radius: 3px;
+}
+
+.entries-list::-webkit-scrollbar-thumb:hover,
+#entry-content::-webkit-scrollbar-thumb:hover {
+    background: #a46cf0;
+}
+
+/* Mobile responsive */
+@media (max-width: 1024px) {
+    .journal-container {
+        grid-template-columns: 1fr;
+        padding: 80px 20px 40px;
+    }
+
+    .journal-sidebar {
+        position: static;
+        height: auto;
+        max-height: 400px;
+    }
+
+    .journal-main {
+        height: auto;
+        min-height: 600px;
+    }
+
+    .editor-container {
+        min-height: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    .journal-container {
+        padding: 60px 15px 30px;
+        gap: 20px;
+    }
+
+    .journal-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .entry-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .editor-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .entry-mood {
+        width: 100%;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+        width: 100%;
+        justify-content: center;
+    }
+} 
