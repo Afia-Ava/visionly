@@ -113,23 +113,6 @@ function setupMobileMenu() {
     }
 }
 
-// Function to show login prompt
-function showLoginPrompt() {
-    const promptOverlay = document.createElement('div');
-    promptOverlay.className = 'login-prompt-overlay';
-    promptOverlay.innerHTML = `
-        <div class="login-prompt">
-            <h2>Please Log In</h2>
-            <p>You need to be logged in to access this feature.</p>
-            <div class="prompt-buttons">
-                <button onclick="window.location.href='auth.html'" class="btn primary">Log In / Sign Up</button>
-                <button onclick="document.body.removeChild(document.querySelector('.login-prompt-overlay'))" class="btn secondary">Cancel</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(promptOverlay);
-}
-
 // Listen for auth state changes
 auth.onAuthStateChanged((user) => {
     updateNavigation(user);
@@ -139,16 +122,13 @@ auth.onAuthStateChanged((user) => {
     const protectedPages = ['create-board.html', 'boards.html', 'journal.html'];
     const publicPages = ['index.html', 'auth.html', ''];
     
-    if (!user && protectedPages.some(page => currentPath.includes(page))) {
-        // Show login prompt before redirecting
+    if (!user && protectedPages.some(page => currentPath.endsWith(page))) {
+        // Show login prompt and redirect to auth page
         showLoginPrompt();
-        // Prevent access to protected page
-        if (currentPath !== '/index.html' && currentPath !== '/') {
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 300);
-        }
-    } else if (user && currentPath.includes('auth.html')) {
+        setTimeout(() => {
+            window.location.href = 'auth.html';
+        }, 2000); // Give users 2 seconds to see the prompt before redirect
+    } else if (user && currentPath.endsWith('auth.html')) {
         // Logged in and on auth page
         window.location.href = 'index.html';
     }
@@ -165,8 +145,31 @@ document.addEventListener('click', (e) => {
     if (isProtectedPage && !auth.currentUser) {
         e.preventDefault();
         showLoginPrompt();
+        setTimeout(() => {
+            window.location.href = 'auth.html';
+        }, 2000); // Give users 2 seconds to see the prompt before redirect
     }
 });
+
+// Function to show login prompt
+function showLoginPrompt() {
+    // Remove any existing prompt
+    const existingPrompt = document.querySelector('.login-prompt-overlay');
+    if (existingPrompt) {
+        document.body.removeChild(existingPrompt);
+    }
+
+    const promptOverlay = document.createElement('div');
+    promptOverlay.className = 'login-prompt-overlay';
+    promptOverlay.innerHTML = `
+        <div class="login-prompt">
+            <h2>Please Log In</h2>
+            <p>You need to be logged in to access this feature.</p>
+            <p style="font-size: 14px; margin-top: 10px;">Redirecting to login page...</p>
+        </div>
+    `;
+    document.body.appendChild(promptOverlay);
+}
 
 // Setup mobile menu when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
