@@ -30,102 +30,191 @@
 
 /* Left Column Styles */
 .board-controls {
-  background: #2c2046;
-  padding: 30px;
+  background: rgba(26, 18, 43, 0.95);
+  padding: 25px;
   border-radius: 16px;
   height: fit-content;
   position: sticky;
   top: 100px;
+  border: 1px solid rgba(136, 84, 208, 0.2);
 }
 
 .control-group {
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .board-title-input,
-.goal-type-select,
-.image-search-input,
-.board-notes-input {
+.board-category-select,
+.image-search-input {
   width: 100%;
   padding: 12px;
-  border: 2px solid #8854d0;
+  border: 2px solid rgba(136, 84, 208, 0.3);
   border-radius: 8px;
-  background: #1a122b;
+  background: rgba(26, 18, 43, 0.95);
   color: #fff;
   font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
-.board-notes-input {
-  min-height: 100px;
-  resize: vertical;
+.board-title-input:focus,
+.board-category-select:focus,
+.image-search-input:focus {
+  border-color: #8854d0;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(136, 84, 208, 0.1);
+}
+
+/* Search and Upload Section */
+.image-search-container {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.search-box {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  width: 100%;
+  align-items: center;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 2px solid rgba(136, 84, 208, 0.3);
+  border-radius: 8px;
+  background: rgba(26, 18, 43, 0.95);
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  min-width: 0; /* Prevents input from expanding beyond container */
+}
+
+.search-btn {
+  padding: 8px 14px;
+  background: #8854d0;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+  min-width: 70px;
+}
+
+.search-btn:hover {
+  background: #9b6ddc;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: calc(50% - 20px);
+  height: 1px;
+  background: rgba(136, 84, 208, 0.3);
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.divider span {
+  background: rgba(26, 18, 43, 0.95);
+  padding: 0 10px;
+  color: rgba(208, 169, 245, 0.6);
+  font-size: 0.9rem;
 }
 
 .upload-btn {
   width: 100%;
   padding: 15px;
-  background: #8854d0;
+  background: linear-gradient(135deg, #8854d0 0%, #a46cf0 100%);
   border: none;
   border-radius: 8px;
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.upload-btn:hover {
-  background: #a46cf0;
+.upload-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #9b6ddc 0%, #b481ff 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .upload-btn:disabled {
-  background: #666;
+  background: linear-gradient(135deg, #666 0%, #888 100%);
   cursor: not-allowed;
 }
 
-.upload-btn input[type="file"] {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.search-container {
+/* Board action buttons */
+.board-actions {
   display: flex;
   gap: 10px;
+  margin-top: 20px;
 }
 
-.search-btn {
+.btn {
   padding: 12px 20px;
-  background: #8854d0;
-  border: none;
   border-radius: 8px;
-  color: #fff;
   font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-}
-
-.search-btn:hover {
-  background: #a46cf0;
-}
-
-.save-board-btn {
-  width: 100%;
-  padding: 15px;
-  background: #d0a9f5;
+  transition: all 0.3s ease;
   border: none;
-  border-radius: 8px;
-  color: #1a122b;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.2s;
+  flex: 1;
 }
 
-.save-board-btn:hover {
-  transform: translateY(-2px);
-  background: #e2c5ff;
+.btn.primary {
+  background: #8854d0;
+  color: #fff;
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: #9b6ddc;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn.secondary {
+  background: rgba(136, 84, 208, 0.1);
+  color: #d0a9f5;
+  border: 2px solid rgba(136, 84, 208, 0.3);
+}
+
+.btn.secondary:hover:not(:disabled) {
+  background: rgba(136, 84, 208, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 /* Right Column Styles */
@@ -242,4 +331,397 @@
   .board-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
-} 
+}
+
+/* Milestone Styles */
+.milestone-container {
+    background: rgba(18, 12, 28, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(136, 84, 208, 0.1);
+}
+
+.milestone-container h3 {
+    color: #8854d0;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+}
+
+.milestone-hint {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+}
+
+.milestone-input-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: center;
+    background: rgba(18, 12, 28, 0.95);
+    border: 1px solid rgba(136, 84, 208, 0.15);
+    border-radius: 30px;
+    padding: 4px 4px 4px 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.milestone-input {
+    flex: 1;
+    padding: 8px 0;
+    border: none;
+    background: transparent;
+    color: rgba(208, 169, 245, 0.9);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.milestone-input:focus {
+    outline: none;
+    color: #fff;
+}
+
+.milestone-input::placeholder {
+    color: rgba(208, 169, 245, 0.4);
+}
+
+#add-milestone {
+    background: #8854d0;
+    border: none;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#add-milestone:hover {
+    background: #9b6ddc;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+#add-milestone:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.milestones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 8px;
+    margin-top: 16px;
+    counter-reset: milestone-counter;
+}
+
+.milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(136, 84, 208, 0.1);
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(136, 84, 208, 0.15);
+    transition: all 0.2s ease;
+    position: relative;
+    padding-left: 45px;
+}
+
+.milestone-item::before {
+    counter-increment: milestone-counter;
+    content: counter(milestone-counter);
+    position: absolute;
+    left: 16px;
+    color: rgba(208, 169, 245, 0.6);
+    font-size: 0.9rem;
+    font-weight: 500;
+    min-width: 20px;
+    text-align: center;
+}
+
+.milestone-item:hover {
+    background: rgba(136, 84, 208, 0.15);
+    border-color: rgba(136, 84, 208, 0.3);
+    transform: translateX(4px);
+}
+
+.milestone-item .milestone-text {
+    flex: 1;
+    color: rgba(208, 169, 245, 0.9);
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.milestone-item:hover .milestone-text {
+    color: #fff;
+}
+
+.milestone-item .delete-milestone {
+  background: rgba(119, 22, 128, 0.2);
+  color: rgb(214, 175, 214);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+  opacity: 0;
+}
+
+.milestone-item:hover .delete-milestone {
+    opacity: 1;
+}
+
+.milestone-item .delete-milestone:hover {
+    background: rgba(255, 68, 68, 0.2);
+    color: #ff4444;
+    transform: scale(1.1);
+}
+
+/* Scrollbar styling for milestone list */
+.milestones-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.milestones-list::-webkit-scrollbar-track {
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 3px;
+}
+
+.milestones-list::-webkit-scrollbar-thumb {
+    background: rgba(136, 84, 208, 0.3);
+    border-radius: 3px;
+}
+
+.milestones-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(136, 84, 208, 0.5);
+}
+
+.milestone-item.dragging {
+    opacity: 0.5;
+    background: rgba(136, 84, 208, 0.2);
+}
+
+/* Style for the Add Milestone container */
+.add-milestone-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: center;
+    background: rgba(18, 12, 28, 0.95);
+    border: 1px solid rgba(136, 84, 208, 0.15);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for the Add Milestone input */
+#add-milestone-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid rgba(136, 84, 208, 0.3);
+    border-radius: 8px;
+    background: rgba(26, 18, 43, 0.95);
+    color: #d0a9f5;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#add-milestone-input::placeholder {
+    color: rgba(208, 169, 245, 0.4);
+    font-style: italic;
+}
+
+#add-milestone-input:focus {
+    outline: none;
+    border-color: #a46cf0;
+    box-shadow: 0 0 0 3px rgba(164, 108, 240, 0.2);
+    background: rgba(26, 18, 43, 0.98);
+}
+
+/* Style for the Add button (similar to Search button) */
+#add-milestone-button {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #8854d0 0%, #a46cf0 100%);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+#add-milestone-button:hover {
+    background: linear-gradient(135deg, #9b6ddc 0%, #b481ff 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#add-milestone-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Existing styles for the milestone list */
+.milestones-container {
+    margin-top: 10px;
+}
+
+.milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(136, 84, 208, 0.1);
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(136, 84, 208, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+    padding-left: 45px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.milestone-item::before {
+    counter-increment: milestone-counter;
+    content: counter(milestone-counter);
+    position: absolute;
+    left: 16px;
+    color: rgba(208, 169, 245, 0.8);
+    font-size: 0.9rem;
+    font-weight: 600;
+    min-width: 20px;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.milestone-item:hover {
+    background: rgba(136, 84, 208, 0.15);
+    border-color: rgba(136, 84, 208, 0.3);
+    transform: translateX(4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.milestone-item .milestone-identifier {
+    flex: 1;
+    color: #d0a9f5;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.milestone-item:hover .milestone-identifier {
+    color: #fff;
+}
+
+.delete-milestone-button {
+    opacity: 0;
+    background: rgba(255, 68, 68, 0.1);
+    border: none;
+    color: rgba(255, 68, 68, 0.8);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+
+.milestone-item:hover .delete-milestone-button {
+    opacity: 1;
+}
+
+.delete-milestone-button:hover {
+    background: rgba(255, 68, 68, 0.2);
+    color: #ff4444;
+    transform: scale(1.1);
+    box-shadow: 0 2px 4px rgba(255, 68, 68, 0.2);
+}
+
+/* Keep the existing milestone hint styles */
+.milestone-hint {
+    color: rgba(208, 169, 245, 0.6);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    font-style: italic;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+    color: #8854d0;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+}
+
+/* Create Thumbnail and Save Board Buttons */
+.board-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    flex: 1;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn.primary {
+    background: #8854d0;
+    color: #fff;
+}
+
+.btn.primary:hover:not(:disabled) {
+    background: #9b6ddc;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn.primary:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(136, 84, 208, 0.3);
+}
+
+.btn.secondary {
+    background: rgba(136, 84, 208, 0.1);
+    border: 2px solid #8854d0;
+    color: #d0a9f5;
+}
+
+.btn.secondary:hover:not(:disabled) {
+    background: rgba(136, 84, 208, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(136, 84, 208, 0.2);
+}
+
+.btn.secondary:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+}

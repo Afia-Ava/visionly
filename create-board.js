@@ -1,3 +1,6 @@
+import UnsplashAuth from './unsplash-auth.js';
+import UNSPLASH_CONFIG from './unsplash-config.js';
+
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDs9_aRBzltPKNU3i8uZxoyaGiBZSoPb5s",
@@ -29,8 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const boardTitle = document.getElementById('board-title');
     const goalType = document.getElementById('goal-type');
     const fileUpload = document.getElementById('file-upload');
-    const imageSearch = document.getElementById('image-search');
-    const searchBtn = document.getElementById('search-btn');
     const boardNotes = document.getElementById('board-notes');
     const saveBoard = document.getElementById('save-board');
     const boardGrid = document.getElementById('board-grid');
@@ -224,12 +225,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             boardGrid.appendChild(draggable);
         }
-    });
-
-    // Save board
+    });    // Save board
+   
     saveBoard.addEventListener('click', async () => {
         const user = auth.currentUser;
-        
+        const submitButton = saveBoard; // Reference to save button
+
         if (!user) {
             alert('Please sign in to save your board');
             return;
@@ -239,23 +240,39 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please enter a board title');
             return;
         }
+
+        // Disable button and show loading state
+        submitButton.disabled = true;
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Saving...';
         
         try {
             // Update positions based on current DOM order
             const items = document.querySelectorAll('.board-item');
+            const updatedBoardItems = [];
+            
             items.forEach((item, index) => {
-                boardItems[index].position = index;
+                const itemData = {
+                    type: item.querySelector('.note') ? 'text' : 'image',
+                    content: item.querySelector('.note') ? 
+                            item.querySelector('.note').textContent : 
+                            item.querySelector('img').src,
+                    position: index
+                };
+                updatedBoardItems.push(itemData);
             });
             
-            // Create board document
+            // Create board document with all data
             const boardData = {
                 title: boardTitle.value.trim(),
                 goalType: goalType.value,
                 notes: boardNotes.value.trim(),
-                items: boardItems,
+                items: updatedBoardItems,
+                milestones: milestones,
                 userId: user.uid,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                thumbnail: boardThumbnail || null
             };
             
             // Save to Firestore
@@ -267,16 +284,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error saving board:', error);
             alert('Error saving board. Please try again.');
-        }
-    });
-
-    // Image Search (Placeholder - You'll need to implement API integration)
-    searchBtn.addEventListener('click', () => {
-        const query = imageSearch.value.trim();
-        if (query) {
-            // Here you would typically make an API call to Unsplash/Pexels
-            // For now, we'll just show a message
-            alert('Image search will be implemented with API integration');
+            // Reset button state on error
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
         }
     });
 
@@ -294,13 +304,87 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
+
+    // Milestone Management
+    let milestones = [];
+
+    function setupMilestoneHandlers() {
+        const addMilestoneButton = document.getElementById('add-milestone-button');
+        const milestoneInput = document.getElementById('add-milestone-input');
+        const milestonesList = document.getElementById('milestones-list');
+
+        addMilestoneButton.addEventListener('click', () => addMilestone());
+        milestoneInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addMilestone();
+            }
+        });
+    }
+
+    function addMilestone() {
+        const milestoneInput = document.getElementById('add-milestone-input');
+        const text = milestoneInput.value.trim();
+        
+        if (text) {
+            const milestone = {
+                id: Date.now().toString(),
+                text: text,
+                completed: false,
+                order: milestones.length
+            };
+            
+            milestones.push(milestone);
+            renderMilestones();
+            milestoneInput.value = '';
+        }
+    }
+
+    function renderMilestones() {
+        const milestonesList = document.getElementById('milestones-list');
+        milestonesList.innerHTML = '';
+
+        milestones.sort((a, b) => a.order - b.order).forEach((milestone) => {
+            const milestoneElement = document.createElement('div');
+            milestoneElement.className = 'milestone-item';
+            milestoneElement.dataset.id = milestone.id;
+            
+            milestoneElement.innerHTML = `
+                <span class="milestone-identifier">${milestone.text}</span>
+                <button class="delete-milestone-button" onclick="deleteMilestone('${milestone.id}')" title="Delete milestone">×</button>
+            `;
+
+            milestonesList.appendChild(milestoneElement);
+        });
+    }
+
+    // Make deleteMilestone function globally accessible
+    window.deleteMilestone = function(id) {
+        milestones = milestones.filter(m => m.id !== id);
+        renderMilestones();
+    };
+
+    // Add to your initialization code
+    setupMilestoneHandlers();
+
+    // Alternative approach using event delegation
+    const milestonesList = document.getElementById('milestones-list');
+    
+    // Add event delegation for delete buttons
+    milestonesList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-milestone-button')) {
+            const milestoneItem = e.target.closest('.milestone-item');
+            if (milestoneItem) {
+                const id = milestoneItem.dataset.id;
+                deleteMilestone(id);
+            }
+        }
+    });
 });
 
 // Check authentication state
 auth.onAuthStateChanged((user) => {
-    if (!user) {
-        window.location.href = '/index.html';
-    }
+    console.log('Auth state changed:', user ? 'User is logged in' : 'User is not logged in');
 });
 
 // Add Note to Board
@@ -362,7 +446,7 @@ function preventDefaults(e) {
 });
 
 ['dragleave', 'drop'].forEach(eventName => {
-  uploadBox.addEventListener(eventName, unhighlight, false);
+  uploadBox.addEventListener('dragleave', unhighlight, false);
 });
 
 function highlight(e) {
@@ -475,71 +559,150 @@ createBoardForm.addEventListener('submit', async (e) => {
   }
 });
 
+// Initialize global variable for storing thumbnail
+let boardThumbnail = null;
+
 // Handle thumbnail creation
 document.getElementById('create-thumbnail').addEventListener('click', async () => {
-  const boardGrid = document.getElementById('board-grid');
-  const images = boardGrid.querySelectorAll('img');
-  
-  if (images.length === 0) {
-    alert('Please add some images to create a thumbnail');
-    return;
-  }
+    const thumbnailButton = document.getElementById('create-thumbnail');
+    const boardGrid = document.getElementById('board-grid');
+    const images = boardGrid.querySelectorAll('img');
+    
+    if (images.length === 0) {
+        alert('Please add some images to create a thumbnail');
+        return;
+    }
 
-  // Select top 4 images for thumbnail
-  const topImages = Array.from(images).slice(0, 4);
-  
-  try {
-    // Create a canvas for the thumbnail
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = 400;
-    canvas.height = 400;
+    // Disable button and show loading state
+    thumbnailButton.disabled = true;
+    const originalText = thumbnailButton.textContent;
+    thumbnailButton.textContent = 'Creating...';
+
+    // Select top 4 images for thumbnail
+    const topImages = Array.from(images).slice(0, 4);
     
-    // Draw background
-    ctx.fillStyle = '#120c1c';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Calculate grid layout
-    const imageSize = 190;
-    const gap = 10;
-    const startX = (canvas.width - (2 * imageSize + gap)) / 2;
-    const startY = (canvas.height - (2 * imageSize + gap)) / 2;
-    
-    // Draw images in a 2x2 grid
-    const positions = [
-      [startX, startY],
-      [startX + imageSize + gap, startY],
-      [startX, startY + imageSize + gap],
-      [startX + imageSize + gap, startY + imageSize + gap]
-    ];
-    
-    // Load and draw images
-    await Promise.all(topImages.map(async (img, index) => {
-      const [x, y] = positions[index];
-      ctx.drawImage(img, x, y, imageSize, imageSize);
-      
-      // Add a subtle border
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(x, y, imageSize, imageSize);
-    }));
-    
-    // Convert canvas to blob
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
-    const thumbnailFile = new File([blob], 'board-thumbnail.jpg', { type: 'image/jpeg' });
-    
-    // Save thumbnail URL for later use
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      boardThumbnail = reader.result;
-    };
-    reader.readAsDataURL(thumbnailFile);
-    
-    alert('Thumbnail created successfully!');
-  } catch (error) {
-    console.error('Error creating thumbnail:', error);
-    alert('Error creating thumbnail. Please try again.');
-  }
+    try {
+        // Create a canvas for the thumbnail
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = 400;
+        canvas.height = 400;
+        
+        // Draw gradient background
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#1a122b');
+        gradient.addColorStop(1, '#2c2046');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Calculate grid layout
+        const imageSize = 180; // Slightly smaller for better spacing
+        const gap = 20; // Increased gap for better spacing
+        const startX = (canvas.width - (2 * imageSize + gap)) / 2;
+        const startY = (canvas.height - (2 * imageSize + gap)) / 2;
+        
+        // Draw images in a 2x2 grid
+        const positions = [
+            [startX, startY],
+            [startX + imageSize + gap, startY],
+            [startX, startY + imageSize + gap],
+            [startX + imageSize + gap, startY + imageSize + gap]
+        ];
+        
+        // Load and draw images with rounded corners and shadows
+        await Promise.all(topImages.map(async (img, index) => {
+            const [x, y] = positions[index];
+            
+            // Add shadow
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 4;
+            
+            // Create rounded rectangle clip
+            ctx.save();
+            ctx.beginPath();
+            const radius = 10;
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + imageSize - radius, y);
+            ctx.quadraticCurveTo(x + imageSize, y, x + imageSize, y + radius);
+            ctx.lineTo(x + imageSize, y + imageSize - radius);
+            ctx.quadraticCurveTo(x + imageSize, y + imageSize, x + imageSize - radius, y + imageSize);
+            ctx.lineTo(x + radius, y + imageSize);
+            ctx.quadraticCurveTo(x, y + imageSize, x, y + imageSize - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            ctx.clip();
+            
+            // Draw image
+            ctx.drawImage(img, x, y, imageSize, imageSize);
+            
+            // Add subtle border
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, imageSize, imageSize);
+            
+            ctx.restore();
+            ctx.shadowColor = 'transparent';
+        }));
+        
+        // Convert canvas to blob
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+        const thumbnailFile = new File([blob], 'board-thumbnail.jpg', { type: 'image/jpeg' });
+        
+        // Save thumbnail URL for later use
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            boardThumbnail = reader.result;
+            // Show preview
+            const previewContainer = document.createElement('div');
+            previewContainer.style.position = 'fixed';
+            previewContainer.style.top = '50%';
+            previewContainer.style.left = '50%';
+            previewContainer.style.transform = 'translate(-50%, -50%)';
+            previewContainer.style.backgroundColor = 'rgba(26, 18, 43, 0.95)';
+            previewContainer.style.padding = '20px';
+            previewContainer.style.borderRadius = '12px';
+            previewContainer.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+            previewContainer.style.zIndex = '1000';
+            
+            const previewImage = new Image();
+            previewImage.src = reader.result;
+            previewImage.style.maxWidth = '300px';
+            previewImage.style.borderRadius = '8px';
+            
+            const closeButton = document.createElement('button');
+            closeButton.textContent = '✕';
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '10px';
+            closeButton.style.right = '10px';
+            closeButton.style.background = 'none';
+            closeButton.style.border = 'none';
+            closeButton.style.color = '#fff';
+            closeButton.style.fontSize = '20px';
+            closeButton.style.cursor = 'pointer';
+            
+            closeButton.onclick = () => {
+                document.body.removeChild(previewContainer);
+            };
+            
+            previewContainer.appendChild(previewImage);
+            previewContainer.appendChild(closeButton);
+            document.body.appendChild(previewContainer);
+        };
+        reader.readAsDataURL(thumbnailFile);
+        
+        alert('Thumbnail created successfully!');
+    } catch (error) {
+        console.error('Error creating thumbnail:', error);
+        alert('Error creating thumbnail. Please try again.');
+    } finally {
+        // Reset button state
+        thumbnailButton.disabled = false;
+        thumbnailButton.textContent = originalText;
+    }
 });
 
 // Handle drag and drop between image collection and board grid
@@ -642,4 +805,4 @@ function setupDragAndDrop() {
 }
 
 // Initialize drag and drop
-setupDragAndDrop(); 
+setupDragAndDrop();
