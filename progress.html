@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tracking - Visionly</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="progress.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body>    <nav class="navbar">
+        <a href="index.html" class="logo">visionly</a>
+        <ul class="nav-links" id="nav-links">
+            <!-- Navigation will be populated by nav-auth.js -->
+        </ul>
+        <div class="menu-toggle" id="menu-toggle">☰</div>
+    </nav>
+
+    <main class="progress-container">
+        <header class="progress-header">
+            <h1>Vision Progress</h1>
+            <p>Track your journey towards your goals</p>
+        </header>
+
+        <section class="progress-overview">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Active Goals</h3>
+                    <div class="stat-value" id="active-goals">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Current Streak</h3>
+                    <div class="stat-value" id="current-streak">0 days</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Tasks Completed</h3>
+                    <div class="stat-value" id="tasks-completed">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Journal Entries</h3>
+                    <div class="stat-value" id="journal-entries">0</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="motivation-corner">
+            <div class="quote-container">
+                <h2>Today's Inspiration</h2>
+                <blockquote id="daily-quote">
+                    "The future belongs to those who believe in the beauty of their dreams."
+                </blockquote>
+                <p id="quote-author">- Eleanor Roosevelt</p>
+            </div>
+            <div class="ai-encouragement" id="ai-encouragement">
+                <!-- AI encouragement will be populated here -->
+            </div>
+        </section>
+
+        <section class="vision-boards-progress">
+            <div class="boards-grid" id="boards-progress-grid">
+                <!-- Vision boards with progress will be populated here -->
+            </div>
+        </section>
+
+        <section class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div class="activity-timeline" id="activity-timeline">
+                <!-- Recent activities will be populated here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Load Firebase first -->
+    <script src="firebase-config.js"></script>
+    <script src="nav-auth.js"></script>
+    <script src="progress.js"></script>
+</body>
+</html> 

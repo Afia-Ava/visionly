@@ -339,4 +339,4 @@ console.log('Image search initialized with config:', {
         searchButton: !!searchButton,
         searchResults: !!searchResults
     }
-});
+}); 

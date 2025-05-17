@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings - Visionly</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="profile-settings.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    <!-- Load Firebase configuration first -->
+    <script src="firebase-config.js"></script>
+    <!-- Then load navigation -->
+    <script src="nav-auth.js"></script>
+</head>
+<body>    <nav class="navbar">
+        <a href="index.html" class="logo">visionly</a>
+        <ul class="nav-links" id="nav-links"></ul>
+        <div class="menu-toggle" id="menu-toggle">☰</div>
+    </nav>
+
+    <main class="settings-container">
+        <header class="settings-header">
+            <h1>Profile Settings</h1>
+            <p>Customize your Visionly experience</p>
+        </header>
+
+        <div class="settings-layout">
+            <!-- Navigation Sidebar -->
+            <nav class="settings-nav">
+                <button class="nav-item active" data-section="profile">
+                    <span class="icon">👤</span>
+                    Profile
+                </button>
+                <button class="nav-item" data-section="appearance">
+                    <span class="icon">🎨</span>
+                    Appearance
+                </button>
+                <button class="nav-item" data-section="preferences">
+                    <span class="icon">📈</span>
+                    Progress Preferences
+                </button>
+                <button class="nav-item" data-section="security">
+                    <span class="icon">🛡️</span>
+                    Security
+                </button>
+                <button class="nav-item" data-section="stats">
+                    <span class="icon">🚀</span>
+                    Your Stats
+                </button>
+            </nav>
+
+            <!-- Settings Content -->
+            <div class="settings-content">
+                <!-- Profile Section -->
+                <section id="profile" class="settings-section active">
+                    <h2>Profile Information</h2>
+                    <div class="profile-photo-section">
+                        <div class="profile-photo-container">
+                            <img id="profile-photo" src="assets/default-avatar.jpg" alt="Profile photo">
+                        </div>
+                        <div class="avatar-options">
+                            <input type="file" id="photo-input" accept="image/*" style="display: none;">
+                            <button class="avatar-option" id="upload-photo-btn">Upload Photo</button>
+                            <button class="avatar-option" id="use-initials-btn">Use Initials</button>
+                            <button class="avatar-option" id="pick-emoji-btn">Pick Emoji</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" name="full-name" placeholder="Your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="display-name">Display Name</label>
+                        <input type="text" id="display-name" name="display-name" placeholder="How others will see you">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="mantra">My Vision Mantra</label>
+                        <textarea id="mantra" name="mantra" placeholder="What drives your vision..."></textarea>
+                    </div>
+                </section>
+
+                <!-- Appearance Section -->
+                <section id="appearance" class="settings-section">
+                    <h2>Appearance</h2>
+                    <div class="form-group">
+                        <label>Theme Mode</label>
+                        <div class="theme-selector">
+                            <button class="theme-option" data-theme="light">Light</button>
+                            <button class="theme-option active" data-theme="dark">Dark</button>
+                            <button class="theme-option" data-theme="auto">Auto</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Daily Motivation</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="daily-motivation" checked>
+                            <label for="daily-motivation">Send me daily quotes and reminders</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Board Visibility</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="public-boards">
+                            <label for="public-boards">Make my boards public by default</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="board-sort">Default Board Sorting</label>
+                        <select id="board-sort" name="board-sort">
+                            <option value="newest">Newest First</option>
+                            <option value="active">Most Active</option>
+                            <option value="completed">Completion Rate</option>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- Progress Preferences Section -->
+                <section id="preferences" class="settings-section">
+                    <h2>Progress Preferences</h2>
+                    <div class="form-group">
+                        <label for="default-board-type">Default Board Type</label>
+                        <select id="default-board-type" name="default-board-type">
+                            <option value="career">Career & Business</option>
+                            <option value="personal">Personal Growth</option>
+                            <option value="health">Health & Wellness</option>
+                            <option value="travel">Travel & Adventure</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="progress-unit">Progress Tracking Unit</label>
+                        <select id="progress-unit" name="progress-unit">
+                            <option value="percentage">Percentage (%)</option>
+                            <option value="checkbox">Checkboxes</option>
+                            <option value="time">Time-based</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Reminders & Nudges</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="enable-reminders" checked>
+                            <label for="enable-reminders">Enable progress reminders</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reminder-frequency">Reminder Frequency</label>
+                        <select id="reminder-frequency" name="reminder-frequency">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- Security Section -->
+                <section id="security" class="settings-section">
+                    <h2>Account & Security</h2>
+                    <div class="form-group">
+                        <label for="current-password">Current Password</label>
+                        <input type="password" id="current-password" name="current-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" id="new-password" name="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm New Password</label>
+                        <input type="password" id="confirm-password" name="confirm-password">
+                    </div>
+                    <button id="change-password" class="btn primary">Change Password</button>
+                    
+                    <div class="danger-zone">
+                        <h3>Danger Zone</h3>
+                        <button id="delete-account" class="btn danger">Delete Account</button>
+                        <button id="logout" class="btn secondary">Logout</button>
+                    </div>
+                </section>
+
+                <!-- Stats Section -->
+                <section id="stats" class="settings-section">
+                    <h2>Your Progress Stats</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Boards</h3>
+                            <div class="stat-value" id="total-boards">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Goals Completed</h3>
+                            <div class="stat-value" id="goals-completed">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Current Streak</h3>
+                            <div class="stat-value" id="current-streak">0 days</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Time Active</h3>
+                            <div class="stat-value" id="time-active">0h</div>
+                        </div>
+                    </div>
+                    
+                    <div class="export-section">
+                        <h3>Export Your Data</h3>
+                        <div class="export-buttons">
+                            <button id="export-csv" class="btn secondary">Export as CSV</button>
+                            <button id="export-json" class="btn secondary">Export as JSON</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm Action</h3>
+            <p id="modal-message"></p>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="btn secondary">Cancel</button>
+                <button id="modal-confirm" class="btn danger">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Then load other scripts -->
+    <script src="profile-settings.js"></script>
+</body>
+</html> 

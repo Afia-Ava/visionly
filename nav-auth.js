@@ -22,6 +22,7 @@ const navItems = [
     { href: "index.html", text: "Home" },
     { href: "create-board.html", text: "Create" },
     { href: "boards.html", text: "Boards" },
+    { href: "progress.html", text: "Progress" },
     { href: "journal.html", text: "Journal" }
 ];
 
@@ -48,11 +49,27 @@ function updateNavigation(user) {
         const a = document.createElement('a');
         a.href = item.href;
         a.textContent = item.text;
+        a.style.color = '#fff';  // Ensure text is visible
+        a.style.textDecoration = 'none';  // Remove underline
+        a.style.padding = '8px 15px';  // Add some padding
         
         // Add active class if current page
         if (window.location.pathname.endsWith(item.href)) {
             a.classList.add('active');
+            a.style.color = '#d0a9f5';  // Highlight active page
         }
+        
+        // Add hover effect
+        a.addEventListener('mouseenter', () => {
+            if (!a.classList.contains('active')) {
+                a.style.color = '#d0a9f5';
+            }
+        });
+        a.addEventListener('mouseleave', () => {
+            if (!a.classList.contains('active')) {
+                a.style.color = '#fff';
+            }
+        });
         
         li.appendChild(a);
         navLinks.appendChild(li);
@@ -60,16 +77,17 @@ function updateNavigation(user) {
 
     // Add user profile or login button
     const authLi = document.createElement('li');
-    authLi.style.position = 'relative'; // For dropdown positioning
+    authLi.style.position = 'relative';
+    authLi.style.marginLeft = '20px';  // Add some space between nav items and profile
     
     if (user) {
-        // User is signed in - show only profile picture
+        // User is signed in - show profile picture
         const profileContainer = document.createElement('div');
         profileContainer.className = 'profile-container';
         profileContainer.innerHTML = `
             <img src="${user.photoURL || 'assets/default-avatar.jpg'}" alt="Profile" class="profile-pic" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; cursor: pointer;">
-            <div class="profile-dropdown" style="display: none; position: absolute; right: 0; top: 100%; background: #2c2046; border-radius: 8px; padding: 8px; min-width: 150px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
-                <a href="profile.html" class="dropdown-item" style="display: block; padding: 8px; color: white; text-decoration: none;">Profile Settings</a>
+            <div class="profile-dropdown" style="display: none; position: absolute; right: 0; top: 100%; background: #2c2046; border-radius: 8px; padding: 8px; min-width: 150px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); z-index: 1000;">
+                <a href="profile-settings.html" class="dropdown-item" style="display: block; padding: 8px; color: white; text-decoration: none;">Profile Settings</a>
                 <button onclick="handleLogout()" class="dropdown-item" style="display: block; width: 100%; padding: 8px; color: white; background: none; border: none; text-align: left; cursor: pointer;">Logout</button>
             </div>
         `;
@@ -100,6 +118,33 @@ function updateNavigation(user) {
     
     navLinks.appendChild(authLi);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the navigation links container
+    const navLinks = document.getElementById('nav-links');
+    
+    // Define the navigation items
+    const navigationItems = `
+        <li><a href="home.html">Home</a></li>
+        <li><a href="create.html">Create</a></li>
+        <li><a href="boards.html">Boards</a></li>
+        <li><a href="progress.html">Progress</a></li>
+        <li><a href="journal.html">Journal</a></li>
+    `;
+    
+    // Insert the navigation items
+    navLinks.innerHTML = navigationItems;
+    
+    // Highlight current page
+    const currentPage = window.location.pathname.split('/').pop();
+    const links = navLinks.getElementsByTagName('a');
+    
+    for (let link of links) {
+        if (link.getAttribute('href') === currentPage) {
+            link.classList.add('active');
+        }
+    }
+});
 
 // Handle mobile menu toggle
 function setupMobileMenu() {
@@ -177,4 +222,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initial navigation update
     updateNavigation(auth.currentUser);
+    
+    // Listen for auth state changes
+    auth.onAuthStateChanged(user => {
+        updateNavigation(user);
+    });
 }); 
