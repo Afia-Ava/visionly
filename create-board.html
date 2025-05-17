@@ -88,11 +88,14 @@
     </div>
   </main>
 
+  <!-- Load Firebase first -->
   <script src="firebase-config.js"></script>
   <script src="nav-auth.js"></script>
+  
+  <!-- Load modules in correct order -->
   <script type="module" src="unsplash-config.js"></script>
   <script type="module" src="unsplash-auth.js"></script>
   <script type="module" src="image-search.js"></script>
-  <script src="create-board.js"></script>
+  <script type="module" src="create-board.js"></script>
 </body>
 </html> 
