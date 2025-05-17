@@ -113,9 +113,59 @@ function setupMobileMenu() {
     }
 }
 
+// Function to show login prompt
+function showLoginPrompt() {
+    const promptOverlay = document.createElement('div');
+    promptOverlay.className = 'login-prompt-overlay';
+    promptOverlay.innerHTML = `
+        <div class="login-prompt">
+            <h2>Please Log In</h2>
+            <p>You need to be logged in to access this feature.</p>
+            <div class="prompt-buttons">
+                <button onclick="window.location.href='auth.html'" class="btn primary">Log In / Sign Up</button>
+                <button onclick="document.body.removeChild(document.querySelector('.login-prompt-overlay'))" class="btn secondary">Cancel</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(promptOverlay);
+}
+
 // Listen for auth state changes
 auth.onAuthStateChanged((user) => {
     updateNavigation(user);
+    
+    // Check if we're on a protected page
+    const currentPath = window.location.pathname;
+    const protectedPages = ['create-board.html', 'boards.html', 'journal.html'];
+    const publicPages = ['index.html', 'auth.html', ''];
+    
+    if (!user && protectedPages.some(page => currentPath.includes(page))) {
+        // Show login prompt before redirecting
+        showLoginPrompt();
+        // Prevent access to protected page
+        if (currentPath !== '/index.html' && currentPath !== '/') {
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 300);
+        }
+    } else if (user && currentPath.includes('auth.html')) {
+        // Logged in and on auth page
+        window.location.href = 'index.html';
+    }
+});
+
+// Add click handlers for protected links
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
+
+    const protectedPages = ['create-board.html', 'boards.html', 'journal.html'];
+    const isProtectedPage = protectedPages.some(page => link.href.includes(page));
+    
+    if (isProtectedPage && !auth.currentUser) {
+        e.preventDefault();
+        showLoginPrompt();
+    }
 });
 
 // Setup mobile menu when DOM is loaded
