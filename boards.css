@@ -116,21 +116,24 @@
 }
 
 .board-card {
-  background: #2c2046;
+  background: transparent;
   border-radius: 16px;
   overflow: hidden;
   transition: transform 0.2s;
+  border: 2px solid #8854d0;
+  padding: 15px;
 }
 
 .board-card:hover {
   transform: translateY(-5px);
+  border-color: #d0a9f5;
 }
 
 .board-preview {
   width: 100%;
   height: 200px;
   overflow: hidden;
-  background: #1a122b;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -141,6 +144,7 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+  border-radius: 12px;
 }
 
 .board-card:hover .board-preview img {
@@ -148,7 +152,7 @@
 }
 
 .board-info {
-  padding: 20px;
+  padding: 20px 5px 5px 5px;
 }
 
 .board-info h3 {
