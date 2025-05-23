@@ -9,16 +9,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-  <!-- Load Firebase configuration first -->
+  <!-- Load Firebase configuration and navigation -->
   <script src="firebase-config.js"></script>
+  <script src="nav-auth.js"></script>
 </head>
 <body>  <nav class="navbar">
     <a href="index.html" class="logo">visionly</a>
     <ul class="nav-links" id="nav-links">
-      <!-- Navigation will be populated by nav-auth.js -->
+      <li><a href="index.html">Home</a></li>
+      <li><a href="create-board.html">Create</a></li>
+      <li><a href="boards.html">Boards</a></li>
+      <li><a href="progress.html">Progress</a></li>
+      <li><a href="journal.html">Journal</a></li>
+      <li><a href="#" id="logout-button">Logout</a></li>
     </ul>
     <div class="menu-toggle" id="menu-toggle">☰</div>
   </nav>
@@ -100,11 +105,7 @@
         <div id="board-grid" class="board-grid">
           <!-- Images will be arranged here -->
         </div>
-      </section>
-    </div>  </main>
-
-  <!-- Load navigation script first -->
-  <script src="nav-auth.js"></script>
+      </section>    </div>  </main>
 
   <!-- Load modules in correct order -->
   <script type="module" src="unsplash-config.js"></script>
@@ -112,4 +113,4 @@
   <script type="module" src="image-search.js"></script>
   <script type="module" src="create-board.js"></script>
 </body>
-</html> 
+</html>

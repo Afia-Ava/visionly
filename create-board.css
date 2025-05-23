@@ -31,22 +31,39 @@
 /* Left Column Styles */
 .board-controls {
   background: rgba(26, 18, 43, 0.95);
-  padding: 25px;
+  padding: 16px;
   border-radius: 16px;
   height: fit-content;
   position: sticky;
   top: 100px;
   border: 1px solid rgba(136, 84, 208, 0.2);
-}
-
-.control-group {
-  margin-bottom: 20px;
-}
-
-.board-title-input,
-.board-category-select,
-.image-search-input {
   width: 100%;
+}
+
+/* Ensuring consistent margins and spacing */
+.control-group {
+  margin-bottom: 16px;
+  padding: 0;
+  width: 100%;
+}
+
+.image-search-container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.search-box {
+  display: flex;
+  width: 100%;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+#image-search {
+  flex: 1;
+  height: 45px;
   padding: 12px;
   border: 2px solid rgba(136, 84, 208, 0.3);
   border-radius: 8px;
@@ -54,61 +71,52 @@
   color: #fff;
   font-size: 1rem;
   transition: all 0.3s ease;
+  margin: 0;
 }
 
-.board-title-input:focus,
+#search-button {
+  height: 45px;
+  min-width: 80px;
+  padding: 0 16px;
+  margin: 0;
+  border: none;
+  border-radius: 8px;
+  background: #8854d0;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#search-button:hover {
+  background: #9b6ddc;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.search-box input:focus,
 .board-category-select:focus,
-.image-search-input:focus {
+.board-title-input:focus,
+.board-notes-input:focus {
   border-color: #8854d0;
   outline: none;
   box-shadow: 0 0 0 3px rgba(136, 84, 208, 0.1);
 }
 
-/* Search and Upload Section */
-.image-search-container {
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.search-box {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+.board-title-input,
+.board-category-select,
+.board-notes-input {
   width: 100%;
-  align-items: center;
-}
-
-.search-box input {
-  flex: 1;
-  padding: 10px 12px;
+  height: 45px;
+  padding: 12px;
   border: 2px solid rgba(136, 84, 208, 0.3);
   border-radius: 8px;
   background: rgba(26, 18, 43, 0.95);
   color: #fff;
   font-size: 1rem;
   transition: all 0.3s ease;
-  min-width: 0; /* Prevents input from expanding beyond container */
-}
-
-.search-btn {
-  padding: 8px 14px;
-  background: #8854d0;
-  border: none;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-  white-space: nowrap;
-  min-width: 70px;
-}
-
-.search-btn:hover {
-  background: #9b6ddc;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .divider {
@@ -142,9 +150,14 @@
   font-size: 0.9rem;
 }
 
+.upload-container {
+  width: 100%;
+}
+
 .upload-btn {
   width: 100%;
-  padding: 15px;
+  height: 45px;
+  padding: 0 20px;
   background: linear-gradient(135deg, #8854d0 0%, #a46cf0 100%);
   border: none;
   border-radius: 8px;
@@ -510,6 +523,57 @@
 .milestone-item.dragging {
     opacity: 0.5;
     background: rgba(136, 84, 208, 0.2);
+}
+
+/* Updated Milestone section styles */
+.add-milestone-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  width: 100%;
+  align-items: center;
+  background: rgba(26, 18, 43, 0.95);
+  border: 1px solid rgba(136, 84, 208, 0.2);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+#add-milestone-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid rgba(136, 84, 208, 0.3);
+  border-radius: 6px;
+  background: rgba(26, 18, 43, 0.95);
+  color: #fff;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  min-width: 0;
+}
+
+#add-milestone-input:focus {
+  border-color: #8854d0;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(136, 84, 208, 0.1);
+}
+
+#add-milestone-button {
+  padding: 8px 20px;
+  background: #8854d0;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+#add-milestone-button:hover {
+  background: #9b6ddc;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Style for the Add Milestone container */
