@@ -22,6 +22,136 @@ const encouragementMessages = [
     "Your dedication is inspiring. Keep up the amazing work!"
 ];
 
+// Camera functionality
+let stream = null;
+let selectedOverlay = null;
+
+// Initialize camera
+async function initCamera() {
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                facingMode: 'user',
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            }, 
+            audio: false 
+        });
+        const videoElement = document.getElementById('camera-preview');
+        videoElement.srcObject = stream;
+    } catch (err) {
+        console.error('Error accessing camera:', err);
+        alert('Unable to access camera. Please make sure you have granted camera permissions.');
+    }
+}
+
+// Handle capture button
+document.getElementById('capture-btn').addEventListener('click', () => {
+    const video = document.getElementById('camera-preview');
+    const canvas = document.getElementById('photo-canvas');
+    const preview = document.getElementById('photo-preview');
+    
+    // Set canvas size to match video dimensions
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    // Draw the video frame to the canvas
+    const ctx = canvas.getContext('2d');
+    ctx.save();
+    ctx.scale(-1, 1); // Mirror the image
+    ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+    ctx.restore();
+    
+    // Add overlay text if selected
+    if (selectedOverlay) {
+        ctx.font = '28px Arial';
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 4;
+        
+        // Position text at the bottom
+        const text = selectedOverlay;
+        const x = canvas.width / 2;
+        const y = canvas.height - 40;
+        
+        // Add text stroke
+        ctx.strokeText(text, x, y);
+        // Add text fill
+        ctx.fillText(text, x, y);
+    }
+    
+    // Show the captured photo
+    preview.src = canvas.toDataURL('image/jpeg');
+    document.querySelector('.overlay-controls').style.display = 'block';
+});
+
+// Handle overlay buttons
+document.querySelectorAll('.overlay-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Remove active class from all buttons
+        document.querySelectorAll('.overlay-btn').forEach(b => b.classList.remove('active'));
+        // Add active class to clicked button
+        btn.classList.add('active');
+        // Update selected overlay
+        selectedOverlay = btn.dataset.text;
+        // Retake photo with new overlay
+        document.getElementById('capture-btn').click();
+    });
+});
+
+// Handle retake button
+document.getElementById('retake-btn').addEventListener('click', () => {
+    document.querySelector('.overlay-controls').style.display = 'none';
+    selectedOverlay = null;
+    document.querySelectorAll('.overlay-btn').forEach(btn => btn.classList.remove('active'));
+});
+
+// Handle save button
+document.getElementById('save-btn').addEventListener('click', async () => {
+    const canvas = document.getElementById('photo-canvas');
+    const imageData = canvas.toDataURL('image/jpeg');
+    
+    // Add the image to the user's board (you'll need to implement this based on your board structure)
+    try {
+        // Example: Save to Firebase Storage and update the user's board
+        const fileName = `dream-snap-${Date.now()}.jpg`;
+        const imageBlob = await (await fetch(imageData)).blob();
+        const storageRef = firebase.storage().ref().child(`dream-snaps/${fileName}`);
+        
+        await storageRef.put(imageBlob);
+        const imageUrl = await storageRef.getDownloadURL();
+        
+        // Add to user's board
+        const userId = firebase.auth().currentUser.uid;
+        await firebase.firestore().collection('boards').add({
+            userId,
+            imageUrl,
+            type: 'dream-snap',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            overlay: selectedOverlay
+        });
+        
+        alert('Dream snap added to your board! 🎉');
+        
+        // Reset the camera view
+        document.getElementById('retake-btn').click();
+    } catch (err) {
+        console.error('Error saving dream snap:', err);
+        alert('Failed to save your dream snap. Please try again.');
+    }
+});
+
+// Initialize camera when page loads
+window.addEventListener('load', initCamera);
+
+// Cleanup camera stream when leaving page
+window.addEventListener('beforeunload', () => {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+    }
+});
+
 // Initialize the progress page
 async function initializePage() {
     updateDailyQuote();
@@ -222,4 +352,4 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'auth.html';
         }
     });
-}); 
+});

@@ -15,37 +15,41 @@
 <body>    <nav class="navbar">
         <a href="index.html" class="logo">visionly</a>
         <ul class="nav-links" id="nav-links">
-            <!-- Navigation will be populated by nav-auth.js -->
+            <li><a href="index.html">Home</a></li>
+            <li><a href="create-board.html">Create</a></li>
+            <li><a href="boards.html">Boards</a></li>
+            <li><a href="progress.html">Progress</a></li>
+            <li><a href="journal.html">Journal</a></li>
+            <li><a href="#" id="logout-button">Logout</a></li>
         </ul>
         <div class="menu-toggle" id="menu-toggle">☰</div>
-    </nav>
+    </nav><main class="progress-container">
+        <div class="progress-main-content">
+            <header class="progress-header">
+                <h1>Vision Progress</h1>
+                <p>Track your journey towards your goals</p>
+            </header>
 
-    <main class="progress-container">
-        <header class="progress-header">
-            <h1>Vision Progress</h1>
-            <p>Track your journey towards your goals</p>
-        </header>
-
-        <section class="progress-overview">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Active Goals</h3>
-                    <div class="stat-value" id="active-goals">0</div>
+            <section class="progress-overview">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Active Goals</h3>
+                        <div class="stat-value" id="active-goals">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Current Streak</h3>
+                        <div class="stat-value" id="current-streak">0 days</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Tasks Completed</h3>
+                        <div class="stat-value" id="tasks-completed">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Journal Entries</h3>
+                        <div class="stat-value" id="journal-entries">0</div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <h3>Current Streak</h3>
-                    <div class="stat-value" id="current-streak">0 days</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Tasks Completed</h3>
-                    <div class="stat-value" id="tasks-completed">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Journal Entries</h3>
-                    <div class="stat-value" id="journal-entries">0</div>
-                </div>
-            </div>
-        </section>
+            </section>
 
         <section class="motivation-corner">
             <div class="quote-container">
@@ -69,9 +73,46 @@
         <section class="recent-activity">
             <h2>Recent Activity</h2>
             <div class="activity-timeline" id="activity-timeline">
-                <!-- Recent activities will be populated here -->
-            </div>
+                <!-- Recent activities will be populated here -->            </div>
         </section>
+        </div>
+
+        <div class="dream-snap-container">
+            <div class="camera-section">
+                <h2>📸 Snap Your Dream</h2>
+                <div class="camera-container">
+                    <video id="camera-preview" autoplay playsinline></video>
+                    <canvas id="photo-canvas" style="display: none;"></canvas>
+                    <div class="camera-controls">
+                        <button id="capture-btn" class="snap-btn">
+                            <span class="camera-icon">📸</span>
+                            Capture
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overlay-controls" style="display: none;">
+                <div class="overlay-options">
+                    <button class="overlay-btn" data-text="Dream in Progress">
+                        Dream in Progress
+                    </button>
+                    <button class="overlay-btn" data-text="This will be mine">
+                        This will be mine
+                    </button>
+                    <button class="overlay-btn" data-text="Manifesting ✨">
+                        Manifesting ✨
+                    </button>
+                </div>
+                <div class="preview-container">
+                    <img id="photo-preview" alt="Captured photo">
+                    <div class="action-buttons">
+                        <button id="retake-btn" class="secondary-btn">Retake</button>
+                        <button id="save-btn" class="primary-btn">Add to Board</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Load Firebase first -->
@@ -79,4 +120,4 @@
     <script src="nav-auth.js"></script>
     <script src="progress.js"></script>
 </body>
-</html> 
+</html>
