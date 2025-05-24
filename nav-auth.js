@@ -1,3 +1,19 @@
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyDs9_aRBzltPKNU3i8uZxoyaGiBZSoPb5s",
+    authDomain: "visionly-webapp.firebaseapp.com",
+    projectId: "visionly-webapp",
+    storageBucket: "visionly-webapp.appspot.com",
+    messagingSenderId: "708324469283",
+    appId: "1:708324469283:web:5495341a010f8f04c51f96",
+    measurementId: "G-JB5T2YBVEC"
+};
+
+// Initialize Firebase if not already initialized
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
 // Get auth instance
 const auth = firebase.auth();
 
@@ -19,20 +35,10 @@ function handleLogout() {
     });
 }
 
-// Initialize navigation when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    // Set up auth state observer
-    auth.onAuthStateChanged(updateNavigation);
-});
-
 // Function to update navigation based on auth state
 function updateNavigation(user) {
-    console.log('Updating navigation for user:', user ? 'logged in' : 'not logged in');
     const navLinks = document.getElementById('nav-links');
-    if (!navLinks) {
-        console.error('Navigation container not found');
-        return;
-    }
+    if (!navLinks) return;
 
     // Clear existing navigation
     navLinks.innerHTML = '';
@@ -221,17 +227,4 @@ document.addEventListener('DOMContentLoaded', () => {
     auth.onAuthStateChanged(user => {
         updateNavigation(user);
     });
-});
-
-// Initialize menu toggle
-document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.getElementById('menu-toggle');
-    const navLinks = document.getElementById('nav-links');
-
-    if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            menuToggle.classList.toggle('active');
-        });
-    }
-});
+}); 
