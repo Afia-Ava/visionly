@@ -12,7 +12,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
-<body>    <nav class="navbar">
+<body>
+    <nav class="navbar">
         <a href="index.html" class="logo">visionly</a>
         <ul class="nav-links" id="nav-links">
             <li><a href="index.html">Home</a></li>
@@ -23,7 +24,8 @@
             <li><a href="#" id="logout-button">Logout</a></li>
         </ul>
         <div class="menu-toggle" id="menu-toggle">☰</div>
-    </nav><main class="progress-container">
+    </nav>
+    <main class="progress-container">
         <div class="progress-main-content">
             <header class="progress-header">
                 <h1>Vision Progress</h1>
@@ -31,87 +33,104 @@
             </header>
 
             <section class="progress-overview">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>Active Goals</h3>
-                        <div class="stat-value" id="active-goals">0</div>
+                <div class="overview-flex">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Snap Streak</h3>
+                            <div class="stat-value" id="snap-streak">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Journal Streak</h3>
+                            <div class="stat-value" id="journal-streak">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Active Goals</h3>
+                            <div class="stat-value" id="active-goals">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Tasks Completed</h3>
+                            <div class="stat-value" id="tasks-completed">0</div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <h3>Current Streak</h3>
-                        <div class="stat-value" id="current-streak">0 days</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Tasks Completed</h3>
-                        <div class="stat-value" id="tasks-completed">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Journal Entries</h3>
-                        <div class="stat-value" id="journal-entries">0</div>
+                    <div class="film-camera-area">
+                        <div class="filmstrip-frame">
+                            <div class="filmstrip-photo">
+                                <img src="assets/sample-photo.jpg" alt="Captured photo">
+                            </div>
+                            <div class="filmstrip-buttons">
+                                <button class="btn-primary">Snap</button>
+                                <button class="btn-primary">Upload</button>
+                            </div>
+                        </div>
+                        <div class="comment-section">
+                            <label for="add-comment">Add Comment</label>
+                            <textarea id="add-comment" placeholder="Write a note..."></textarea>
+                        </div>
                     </div>
                 </div>
             </section>
 
-        <section class="motivation-corner">
-            <div class="quote-container">
-                <h2>Today's Inspiration</h2>
-                <blockquote id="daily-quote">
-                    "The future belongs to those who believe in the beauty of their dreams."
-                </blockquote>
-                <p id="quote-author">- Eleanor Roosevelt</p>
-            </div>
-            <div class="ai-encouragement" id="ai-encouragement">
-                <!-- AI encouragement will be populated here -->
-            </div>
-        </section>
-
-        <section class="vision-boards-progress">
-            <div class="boards-grid" id="boards-progress-grid">
-                <!-- Vision boards with progress will be populated here -->
-            </div>
-        </section>
-
-        <section class="recent-activity">
-            <h2>Recent Activity</h2>
-            <div class="activity-timeline" id="activity-timeline">
-                <!-- Recent activities will be populated here -->            </div>
-        </section>
-        </div>
-
-        <div class="dream-snap-container">
-            <div class="camera-section">
-                <h2>📸 Snap Your Dream</h2>
-                <div class="camera-container">
-                    <video id="camera-preview" autoplay playsinline></video>
-                    <canvas id="photo-canvas" style="display: none;"></canvas>
-                    <div class="camera-controls">
-                        <button id="capture-btn" class="snap-btn">
-                            <span class="camera-icon">📸</span>
-                            Capture
-                        </button>
+            <!-- Timeline Thread Section -->
+            <section class="timeline-thread">
+                <h2>Timeline thread ~</h2>
+                <div class="timeline-frames">
+                    <!-- Empty placeholders for 6-8 photos per page -->
+                    <div class="timeline-frame">
+                        <div class="filmstrip-frame">
+                            <img src="assets/placeholder.jpg" alt="Placeholder">
+                        </div>
+                    </div>
+                    <div class="timeline-frame">
+                        <div class="filmstrip-frame">
+                            <img src="assets/placeholder.jpg" alt="Placeholder">
+                        </div>
+                    </div>
+                    <div class="timeline-frame">
+                        <div class="filmstrip-frame">
+                            <img src="assets/placeholder.jpg" alt="Placeholder">
+                        </div>
+                    </div>
+                    <div class="timeline-frame">
+                        <div class="filmstrip-frame">
+                            <img src="assets/placeholder.jpg" alt="Placeholder">
+                        </div>
+                    </div>
+                    <div class="timeline-frame">
+                        <div class="filmstrip-frame">
+                            <img src="assets/placeholder.jpg" alt="Placeholder">
+                        </div>
+                    </div>
+                    <div class="timeline-frame">
+                        <div class="filmstrip-frame">
+                            <img src="assets/placeholder.jpg" alt="Placeholder">
+                        </div>
+                    </div>
+                    <div class="timeline-frame">
+                        <div class="filmstrip-frame">
+                            <img src="assets/placeholder.jpg" alt="Placeholder">
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="next-page-indicator">→</div>
+            </section>
 
-            <div class="overlay-controls" style="display: none;">
-                <div class="overlay-options">
-                    <button class="overlay-btn" data-text="Dream in Progress">
-                        Dream in Progress
-                    </button>
-                    <button class="overlay-btn" data-text="This will be mine">
-                        This will be mine
-                    </button>
-                    <button class="overlay-btn" data-text="Manifesting ✨">
-                        Manifesting ✨
-                    </button>
+            <section class="vision-boards-progress">
+                <div class="boards-grid" id="boards-progress-grid">
+                    <!-- Vision boards with progress will be populated here -->
                 </div>
-                <div class="preview-container">
-                    <img id="photo-preview" alt="Captured photo">
-                    <div class="action-buttons">
-                        <button id="retake-btn" class="secondary-btn">Retake</button>
-                        <button id="save-btn" class="primary-btn">Add to Board</button>
-                    </div>
+            </section>
+
+            <!-- Gallery Section -->
+            <section class="gallery">
+                <h2>Gallery</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item">Image 1</div>
+                    <div class="gallery-item">Image 2</div>
+                    <div class="gallery-item">Image 3</div>
+                    <div class="gallery-item">Image 4</div>
                 </div>
-            </div>
+            </section>
+
         </div>
     </main>
 
