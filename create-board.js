@@ -1,6 +1,9 @@
 import UnsplashAuth from './unsplash-auth.js';
 import UNSPLASH_CONFIG from './unsplash-config.js';
 
+let milestones = [];
+let boardThumbnail = null;
+
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDs9_aRBzltPKNU3i8uZxoyaGiBZSoPb5s",
@@ -222,22 +225,30 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (afterElement) {
             boardGrid.insertBefore(draggable, afterElement);
-        } else {
+        } 
+        else {
             boardGrid.appendChild(draggable);
         }
     });    // Save board
    
+    
+
     saveBoard.addEventListener('click', async () => {
         const user = auth.currentUser;
-        const submitButton = saveBoard; // Reference to save button
+        const submitButton = saveBoard;
 
         if (!user) {
             alert('Please sign in to save your board');
             return;
         }
-        
         if (!boardTitle.value.trim()) {
-            alert('Please enter a board title');
+            alert('Please enter a title for your vision board');
+            return;
+        }
+        // Validate board has at least one item
+        const boardItems = document.querySelectorAll('.board-item');
+        if (boardItems.length === 0) {
+            alert('Please add at least one image or note to your vision board');
             return;
         }
 
@@ -265,25 +276,98 @@ document.addEventListener('DOMContentLoaded', () => {
             // Create board document with all data
             const boardData = {
                 title: boardTitle.value.trim(),
-                goalType: goalType.value,
+                goalType: goalType.value || 'personal',
                 notes: boardNotes.value.trim(),
                 items: updatedBoardItems,
-                milestones: milestones,
+                milestones: milestones.map(m => ({
+                    id: m.id,
+                    text: m.text,
+                    completed: m.completed || false,
+                    order: m.order
+                })),
                 userId: user.uid,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                thumbnail: boardThumbnail || null
+                thumbnail: boardThumbnail || null,
+                category: goalType.value || 'personal',
+                isPublic: false,
+                totalItems: updatedBoardItems.length
             };
             
             // Save to Firestore
-            await db.collection('boards').add(boardData);
+            console.log('Saving board:', boardData);
+            const docRef = await db.collection('boards').add(boardData);
+            console.log('Board saved successfully with ID:', docRef.id);
             
-            alert('Board saved successfully!');
-            window.location.href = 'boards.html';
+            // Show success message and redirect
+            // Add animation style if it doesn't exist
+            if (!document.querySelector('#notification-animation')) {
+                const style = document.createElement('style');
+                style.id = 'notification-animation';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes fadeOut {
+                        from { opacity: 1; }
+                        to { opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            const notification = document.createElement('div');
+            notification.className = 'visionly-notification'; 
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.backgroundColor = 'rgba(46, 125, 50, 0.9)';
+            notification.style.color = 'white';
+            notification.style.padding = '15px 25px';
+            notification.style.borderRadius = '8px';
+            notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            notification.style.zIndex = '9999'; 
+            notification.innerHTML = '✨ Vision board saved successfully!';
+            document.body.appendChild(notification);
+            console.log('Notification appended:', notification);
+
+            // Force reflow to ensure animation triggers
+            void notification.offsetWidth;
+            notification.style.animation = 'slideIn 0.5s ease-out';
+
+            // Show notification for 3 seconds, then fade out and remove
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.5s ease-out';
+                setTimeout(() => {
+                    try {
+                        if (notification && notification.parentNode) {
+                            document.body.removeChild(notification);
+                        }
+                    } catch (e) {
+                        console.error('Error removing notification:', e);
+                    }
+
+                    // Reset the form
+                    boardTitle.value = '';
+                    boardNotes.value = '';
+                    boardGrid.innerHTML = '';
+                    boardItems = [];
+                    milestones = [];
+                    boardThumbnail = null;
+                    renderMilestones();
+                    if (goalType) goalType.value = 'personal';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                }, 500);
+            }, 3000);
             
+
         } catch (error) {
             console.error('Error saving board:', error);
-            alert('Error saving board. Please try again.');
+            alert('There was an error saving your vision board. Please try again.');
+            
             // Reset button state on error
             submitButton.disabled = false;
             submitButton.textContent = originalText;
@@ -313,14 +397,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const milestoneInput = document.getElementById('add-milestone-input');
         const milestonesList = document.getElementById('milestones-list');
 
-        addMilestoneButton.addEventListener('click', () => addMilestone());
-        milestoneInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addMilestone();
-            }
-        });
+        if (addMilestoneButton && milestoneInput) {
+            addMilestoneButton.addEventListener('click', () => addMilestone());
+            milestoneInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addMilestone();
+                }
+            });
+        }
     }
+    
 
     function addMilestone() {
         const milestoneInput = document.getElementById('add-milestone-input');
@@ -342,6 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderMilestones() {
         const milestonesList = document.getElementById('milestones-list');
+        if (!milestonesList) return;
         milestonesList.innerHTML = '';
 
         milestones.sort((a, b) => a.order - b.order).forEach((milestone) => {
@@ -521,43 +609,6 @@ function createImagePreview(src, file) {
   return div;
 }
 
-// Handle form submission
-const createBoardForm = document.getElementById('create-board-form');
-
-createBoardForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  if (!uploadedImages.length) {
-    alert('Please add at least one image to your vision board');
-    return;
-  }
-
-  const submitButton = e.target.querySelector('button[type="submit"]');
-  submitButton.disabled = true;
-  submitButton.textContent = 'Saving...';
-
-  try {
-    const boardData = {
-      title: document.getElementById('board-title').value,
-      description: document.getElementById('board-description').value,
-      tags: document.getElementById('board-tags').value
-        .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag),
-      images: uploadedImages
-    };
-
-    const boardId = await boardOperations.saveBoard(boardData);
-    alert('Board saved successfully!');
-    window.location.href = `/view-board.html?id=${boardId}`;
-  } catch (error) {
-    console.error('Error saving board:', error);
-    alert('Error saving board. Please try again.');
-  } finally {
-    submitButton.disabled = false;
-    submitButton.textContent = 'Save Board';
-  }
-});
 
 // Initialize global variable for storing thumbnail
 let boardThumbnail = null;
