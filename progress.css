@@ -575,7 +575,7 @@ body {
     bottom: 20px;
     right: 20px;
     z-index: 1000;
-    background-color: #a46cf0;
+    background-color: transparent;
     border: none;
     padding: 0;
     cursor: pointer;

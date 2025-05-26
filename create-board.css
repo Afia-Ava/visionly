@@ -42,14 +42,14 @@
 
 /* Ensuring consistent margins and spacing */
 .control-group {
-  margin-bottom: 16px;
+  margin-bottom: 0;
   padding: 0;
   width: 100%;
 }
 
 .image-search-container {
   width: 100%;
-  margin: 0;
+  margin: -4px 0 -4px -18px;
   padding: 0;
 }
 
@@ -57,7 +57,7 @@
   display: flex;
   width: 100%;
   gap: 8px;
-  margin: 0;
+  margin: 0 0 0 -18px;
   padding: 0;
 }
 
@@ -256,9 +256,14 @@
 
 .board-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: start;
+  justify-items: stretch;
+  grid-auto-rows: min-content;
+  gap: 10px;
+  column-gap: 10px;
+  row-gap: 4px;;
+  padding: 4px;
   min-height: 500px;
   background: transparent;
   border-radius: 8px;
@@ -363,13 +368,13 @@
 .milestone-hint {
     color: rgba(255, 255, 255, 0.6);
     font-size: 0.9rem;
-    margin-bottom: 16px;
+    margin-bottom: 4px;
 }
 
 .milestone-input-group {
     display: flex;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 4px;
     align-items: center;
     background: rgba(18, 12, 28, 0.95);
     border: 1px solid rgba(136, 84, 208, 0.15);
