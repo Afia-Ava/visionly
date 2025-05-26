@@ -1137,13 +1137,18 @@
     bottom: 20px;
     right: 20px;
     z-index: 1000;
+    width: 50px;
+    height: 50px;
     background-color: #a46cf0;
-    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 3px solid #a46cf0;
+    border-radius: 25%;
     padding: 0;
     cursor: pointer;
   }
 
-  #toggle-sound img {
+  #toggle-sound img
+  {
     width: 40px;
     height: 40px;
     transition: transform 0.3s;
