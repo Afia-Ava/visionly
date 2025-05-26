@@ -26,6 +26,8 @@ body {
     align-items: center;
     width: 100%;
     padding: 0;
+    margin-left: 40px; /* Added margin to the left */
+    margin-right: 40px; /* Added margin to the right */
 }
 
 .progress-main-content {
@@ -370,17 +372,13 @@ body {
 /* FILM FRAME - AESTHETIC & REALISTIC */
 .filmstrip-frame {
     position: relative;
-    width: 100%;
-    max-width: 200px;
-    height: auto;
+    width: 300px;
+    height: 200px;
     background: black;
-    border: 5px solid #333;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
+    border: 10px solid black;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
 }
 .filmstrip-photo {
     position: absolute;
@@ -514,13 +512,16 @@ body {
 
 /* Gallery Section */
 .gallery-section {
-    margin-top: 40px;
+    margin: -10px; /* Removes all margins */
+    padding: 0; /* Removes all padding */
+    background-position: left; /* Aligns background to the left */
 }
 
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 20px;
+    margin-left: 0 !important; /* Removes any left margin from the grid */
 }
 
 .gallery-item {
@@ -566,6 +567,28 @@ body {
     color: var(--girly-text);
     font-size: 1rem;
     margin-bottom: 5px;
+}
+
+/* Update toggle sound button to use only the speaker icon */
+#toggle-sound {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: #a46cf0;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+#toggle-sound img {
+    width: 40px;
+    height: 40px;
+    transition: transform 0.3s;
+}
+
+#toggle-sound:hover img {
+    transform: scale(1.1);
 }
 
 /* Responsive Design */
@@ -688,13 +711,48 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: var(--girly-background);
-    border: 2px solid var(--girly-secondary);
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(255, 182, 193, 0.2);
-    max-width: 300px;
-    margin: 20px;
+    margin-top: 20px;
+    margin-left: -2in; /* Shifted the camera area 2 inches to the left */
+    transform: translateX(-2in); /* Shifted the camera area 2 inches to the left using transform */
+}
+
+.filmstrip-frame {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    background: black;
+    border: 10px solid black;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.filmstrip-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.filmstrip-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.filmstrip-buttons .btn-primary {
+    background-color: var(--girly-primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.filmstrip-buttons .btn-primary:hover {
+    background-color: var(--girly-accent);
 }
 
 .stats-grid {

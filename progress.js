@@ -26,7 +26,7 @@ const encouragementMessages = [
 let stream = null;
 let selectedOverlay = null;
 
-// Initialize camera
+// Enhanced camera initialization with better permission handling
 async function initCamera() {
     try {
         stream = await navigator.mediaDevices.getUserMedia({ 
@@ -41,7 +41,15 @@ async function initCamera() {
         videoElement.srcObject = stream;
     } catch (err) {
         console.error('Error accessing camera:', err);
-        alert('Unable to access camera. Please make sure you have granted camera permissions.');
+        const errorMessage = document.getElementById('camera-error-message');
+        if (err.name === 'NotAllowedError') {
+            errorMessage.textContent = 'Camera access denied. Please enable camera permissions in your browser settings.';
+        } else if (err.name === 'NotFoundError') {
+            errorMessage.textContent = 'No camera found. Please connect a camera and try again.';
+        } else {
+            errorMessage.textContent = 'Unable to access camera. Please try again later.';
+        }
+        errorMessage.style.display = 'block';
     }
 }
 
@@ -342,6 +350,34 @@ function formatTimestamp(timestamp) {
 function setupEventListeners() {
     // Add any necessary event listeners here
 }
+
+// Toggle background sound functionality
+const backgroundSound = document.getElementById('background-sound');
+const toggleSoundButton = document.getElementById('toggle-sound');
+
+// Debugging logs for audio playback
+document.addEventListener('DOMContentLoaded', () => {
+    const backgroundSound = document.getElementById('background-sound');
+    const toggleSoundButton = document.getElementById('toggle-sound');
+
+    // Ensure volume is set and not muted
+    backgroundSound.volume = 1.0;
+    backgroundSound.muted = false;
+
+    // Wait for user interaction to play sound
+    toggleSoundButton.addEventListener('click', () => {
+        if (backgroundSound.paused) {
+            backgroundSound.play().then(() => {
+                console.log('Sound is playing.');
+            }).catch(err => console.error('Error playing sound:', err));
+            toggleSoundButton.textContent = 'Turn Off Sound';
+        } else {
+            backgroundSound.pause();
+            console.log('Sound is paused.');
+            toggleSoundButton.textContent = 'Turn On Sound';
+        }
+    });
+});
 
 // Initialize the page when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
