@@ -54,17 +54,11 @@
                     </div>
                     <div class="film-camera-area">
                         <div class="filmstrip-frame">
-                            <div class="filmstrip-photo">
-                                <img src="assets/sample-photo.jpg" alt="Captured photo">
-                            </div>
-                            <div class="filmstrip-buttons">
-                                <button class="btn-primary">Snap</button>
-                                <button class="btn-primary">Upload</button>
-                            </div>
+                            <img src="assets/sample-photo.jpg" alt="Captured photo">
                         </div>
-                        <div class="comment-section">
-                            <label for="add-comment">Add Comment</label>
-                            <textarea id="add-comment" placeholder="Write a note..."></textarea>
+                        <div class="filmstrip-buttons">
+                            <button class="btn-primary">Snap</button>
+                            <button class="btn-primary">Upload</button>
                         </div>
                     </div>
                 </div>
@@ -131,6 +125,18 @@
                 </div>
             </section>
 
+            <!-- Added an error message element for camera permission issues -->
+            <div id="camera-error-message" style="display: none; color: red; text-align: center; margin-top: 10px;"></div>
+
+            <!-- Background Sound -->
+            <audio id="background-sound" loop>
+                <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+
+            <!-- Toggle Sound Button -->
+            <button id="toggle-sound"><img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon"></button>
+            
         </div>
     </main>
 
@@ -138,5 +144,7 @@
     <script src="firebase-config.js"></script>
     <script src="nav-auth.js"></script>
     <script src="progress.js"></script>
+    <!-- Include Global Sound Script -->
+    <script src="global-sound.js"></script>
 </body>
 </html>

@@ -107,10 +107,22 @@
         </div>
       </section>    </div>  </main>
 
+  <!-- Background Sound -->
+  <audio id="background-sound" loop>
+      <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+  </audio>
+
+  <!-- Toggle Sound Button -->
+  <button id="toggle-sound">
+      <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon">
+  </button>
+
   <!-- Load modules in correct order -->
   <script type="module" src="unsplash-config.js"></script>
   <script type="module" src="unsplash-auth.js"></script>
   <script type="module" src="image-search.js"></script>
   <script type="module" src="create-board.js"></script>
+  <script src="global-sound.js"></script>
 </body>
 </html>
