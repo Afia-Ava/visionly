@@ -354,7 +354,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     boardGrid.innerHTML = '';
                     boardItems = [];
                     milestones = [];
-                    boardThumbnail = null;
                     renderMilestones();
                     if (goalType) goalType.value = 'personal';
                     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -608,10 +607,6 @@ function createImagePreview(src, file) {
   div.appendChild(removeBtn);
   return div;
 }
-
-
-// Initialize global variable for storing thumbnail
-let boardThumbnail = null;
 
 // Handle thumbnail creation
 document.getElementById('create-thumbnail').addEventListener('click', async () => {
