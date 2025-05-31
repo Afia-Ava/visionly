@@ -527,7 +527,7 @@ body {
 .gallery-item {
     background: #d0a9f5;
     height: 150px;
-    display: flex;
+    display: flex;2
     align-items: center;
     justify-content: center;
     border-radius: 8px;
@@ -813,3 +813,67 @@ body {
     font-size: 1rem;
     resize: none;
 }
+
+
+/* Camera Feed Styles */
+#camera-feed {
+    width: 300px;
+    height: 200px;
+    background: #000;
+    border: 10px solid black;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+}
+
+#camera-feed:not([src]) {
+    background: linear-gradient(45deg, #333 25%, transparent 25%), 
+                linear-gradient(-45deg, #333 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #333 75%), 
+                linear-gradient(-45deg, transparent 75%, #333 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    position: relative;
+}
+
+#camera-feed:not([src])::before {
+    content: "Camera Off";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #8854d0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Snapshot Container */
+#snapshot-container {
+    margin-top: 15px;
+    text-align: center;
+}
+
+#snapshot-container img {
+    max-width: 300px;
+    height: auto;
+    border: 3px solid #8854d0;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(136, 84, 208, 0.3);
+}
+
+/* Error Message */
+.error-message {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-align: center;
+    display: none; /* Hidden by default */
+}
+
+.error-message.show {
+    display: block; /* Shown when the 'show' class is added */
+}
+

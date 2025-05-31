@@ -1,6 +1,6 @@
-// Firebase configuration and initialization should be already done in firebase-config.js
+// // Firebase configuration and initialization should be already done in firebase-config.js
 
-// Get Firebase services
+// Firebase services are expected to be globally available from firebase-config.js
 const auth = firebase.auth();
 const db = firebase.firestore();
 
@@ -24,208 +24,275 @@ const encouragementMessages = [
 
 // Camera functionality
 let stream = null;
-let selectedOverlay = null;
+let isCameraOn = false;
+let lastSnapshot = null;
 
-navigator.mediaDevices.enumerateDevices().then(devices => {
-    console.log('Available devices:', devices);
-}).catch(error => {
-    console.error('Error enumerating devices:', error);
-});
+// DOM Elements for Camera
+const cameraFeed = document.getElementById('camera-feed');
+const toggleCameraButton = document.getElementById('toggle-camera');
+const takeSnapshotButton = document.getElementById('take-snapshot');
+const retakePhotoButton = document.getElementById('retake-photo');
+const snapshotContainer = document.getElementById('snapshot-container');
+const cameraErrorMessage = document.getElementById('camera-error-message');
 
-async function initCamera() {
-    try {
-        stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: 'user',
-                width: { ideal: 640 }, // Using same resolution as startCamera for consistency
-                height: { ideal: 480 }
-            },
-            audio: false
-        });
-        const videoElement = document.getElementById('camera-feed');
-        videoElement.srcObject = stream;
-
-        // Update button states to reflect camera is ON
-        const toggleButton = document.getElementById('toggle-camera');
-        const takeSnapshotButton = document.getElementById('take-snapshot');
-
-        toggleButton.textContent = 'Stop Camera'; // Reflects camera is active
-        takeSnapshotButton.disabled = false; // Enable take snapshot
-        isCameraOn = true; // Set the state variable
-
-        const errorMessage = document.getElementById('camera-error-message');
-        errorMessage.style.display = 'none'; // Hide error if successful
-
-        console.log('Camera initialized successfully!');
-    } catch (err) {
-        // ... (your existing error handling) ...
-        console.error('Error accessing camera during initialization:', err);
-        const errorMessage = document.getElementById('camera-error-message');
-        if (err.name === 'NotAllowedError') {
-            errorMessage.textContent = 'Camera access denied. Please enable camera permissions in your browser settings.';
-        } else if (err.name === 'NotFoundError') {
-            errorMessage.textContent = 'No camera found. Please connect a camera and try again.';
-        } else {
-            errorMessage.textContent = 'Unable to access camera. Please try again later.';
-        }
-        errorMessage.style.display = 'block';
-        // Ensure buttons are in correct state if camera fails to start
-        document.getElementById('toggle-camera').textContent = 'Start Camera';
-        document.getElementById('take-snapshot').disabled = true;
-        isCameraOn = false;
+// Function to initialize the camera UI to a default "off" state
+function initializeCameraUI() {
+    console.log('[Debug] Initializing Camera UI...');
+    if (toggleCameraButton) toggleCameraButton.textContent = 'Start Camera';
+    if (takeSnapshotButton) takeSnapshotButton.disabled = true;
+    if (retakePhotoButton) retakePhotoButton.style.display = 'none';
+    if (snapshotContainer) snapshotContainer.innerHTML = '';
+    if (cameraErrorMessage) {
+        cameraErrorMessage.textContent = ''; // Clear any previous error messages
+        cameraErrorMessage.style.display = 'none';
     }
+    if (cameraFeed) {
+        cameraFeed.srcObject = null; // Ensures placeholder is shown via CSS
+        cameraFeed.pause(); // Explicitly pause if it was somehow playing
+        console.log('[Debug] Camera feed srcObject set to null and paused.');
+    } else {
+        console.warn('[Debug] cameraFeed element not found during UI init.');
+    }
+    isCameraOn = false;
+    console.log('[Debug] Camera UI initialized to off state. isCameraOn:', isCameraOn);
 }
 
 // Start the camera
 async function startCamera() {
+    console.log('[Debug] Attempting to start camera...');
+    if (cameraErrorMessage) { // Clear previous errors at the start
+        cameraErrorMessage.textContent = '';
+        cameraErrorMessage.style.display = 'none';
+    }
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.error('[Debug] getUserMedia is not supported in this browser.');
+        if (cameraErrorMessage) {
+            cameraErrorMessage.textContent = 'Camera functionality (getUserMedia) is not supported in your browser.';
+            cameraErrorMessage.style.display = 'block';
+        }
+        return;
+    }
+    console.log('[Debug] navigator.mediaDevices.getUserMedia is available.');
+
     try {
         if (stream) {
-            stream.getTracks().forEach(track => track.stop());
+            console.log('[Debug] Existing stream found. Stopping all tracks.');
+            stream.getTracks().forEach(track => {
+                console.log(`[Debug] Stopping track: ${track.label}, kind: ${track.kind}, state: ${track.readyState}`);
+                track.stop();
+            });
+            console.log('[Debug] All tracks from existing stream stopped.');
+            stream = null; // Ensure stream is reset
+        } else {
+            console.log('[Debug] No existing stream found.');
         }
-        
-        stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { 
+
+        console.log('[Debug] Requesting camera access with constraints:', { video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false });
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: {
                 facingMode: 'user',
                 width: { ideal: 640 },
                 height: { ideal: 480 }
-            } 
+            },
+            audio: false
         });
-        
-        const videoElement = document.getElementById('camera-feed');
-        videoElement.srcObject = stream;
-        
-        // Update button states
-        const toggleButton = document.getElementById('toggle-camera');
-        const takeSnapshotButton = document.getElementById('take-snapshot');
-        
-        toggleButton.textContent = 'Stop Camera';
-        takeSnapshotButton.disabled = false;
-        isCameraOn = true;
-        
-        // Hide error messages
-        const errorMessage = document.getElementById('camera-error-message');
-        errorMessage.style.display = 'none';
-        
-        console.log('Camera started successfully');
-    } catch (error) {
-        console.error('Error accessing camera:', error);
-        const errorMessage = document.getElementById('camera-error-message');
-        if (error.name === 'NotAllowedError') {
-            errorMessage.textContent = 'Camera access denied. Please enable camera permissions.';
-        } else if (error.name === 'NotFoundError') {
-            errorMessage.textContent = 'No camera found. Please connect a camera.';
+
+        console.log('[Debug] Camera access granted. Stream object:', stream);
+        if (stream.getVideoTracks().length > 0) {
+            console.log('[Debug] Video tracks found:', stream.getVideoTracks());
         } else {
-            errorMessage.textContent = 'Unable to access camera. Please check permissions.';
+            console.warn('[Debug] No video tracks found in the stream, though access was granted.');
         }
-        errorMessage.style.display = 'block';
+
+
+        if (cameraFeed) {
+            console.log('[Debug] cameraFeed element found. Setting srcObject.');
+            cameraFeed.srcObject = stream;
+            if (cameraErrorMessage) cameraErrorMessage.style.display = 'none';
+            
+            cameraFeed.onloadedmetadata = () => {
+                console.log('[Debug] onloadedmetadata event triggered for cameraFeed.');
+                cameraFeed.play().then(() => {
+                    console.log('[Debug] Camera feed playing successfully.');
+                    if (toggleCameraButton) toggleCameraButton.textContent = 'Stop Camera';
+                    if (takeSnapshotButton) takeSnapshotButton.disabled = false;
+                    isCameraOn = true;
+                    console.log('[Debug] Camera started successfully and UI updated. isCameraOn:', isCameraOn);
+                }).catch(e => {
+                    console.error('[Debug] Error playing video feed:', e);
+                    if (cameraErrorMessage) {
+                        cameraErrorMessage.textContent = `Error playing camera feed: ${e.message}. Ensure another app isn\\\'t using the camera or try a different browser.`;
+                        cameraErrorMessage.style.display = 'block';
+                    }
+                    stopCamera(); // Ensure cleanup if play fails
+                });
+            };
+            cameraFeed.onerror = (e) => {
+                console.error('[Debug] Error on cameraFeed element itself:', e);
+                if (cameraErrorMessage) {
+                    cameraErrorMessage.textContent = 'An error occurred with the camera feed element. It might be corrupted or unsupported.';
+                    cameraErrorMessage.style.display = 'block';
+                }
+                stopCamera(); // Ensure cleanup
+            };
+        } else {
+             console.error('[Debug] Camera feed element (camera-feed) NOT found in DOM after getting stream.');
+             if (cameraErrorMessage) {
+                cameraErrorMessage.textContent = 'Camera display area not found on page. Please check HTML or refresh.';
+                cameraErrorMessage.style.display = 'block';
+            }
+            // If cameraFeed is missing, we should stop the tracks we just acquired.
+            if(stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+                console.log('[Debug] Stream tracks stopped because cameraFeed element was missing.');
+            }
+            return; // Important to return if cameraFeed is not there
+        }
+    } catch (error) {
+        console.error('[Debug] Error accessing camera (in catch block):', error.name, error.message, error);
+        if (cameraErrorMessage) {
+            let specificMessage = `Unable to access camera: ${error.message}.`;
+            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                specificMessage = 'Camera access denied. Please enable camera permissions in your browser settings and refresh the page.';
+            } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+                specificMessage = 'No camera found. Please ensure a camera is connected and enabled.';
+            } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+                specificMessage = 'Camera is already in use or cannot be accessed. Try closing other applications using the camera, or restart your browser/computer.';
+            } else if (error.name === 'OverconstrainedError' || error.name === 'ConstraintNotSatisfiedError') {
+                specificMessage = 'The camera does not support the requested settings (e.g., resolution).';
+            } else if (error.name === 'AbortError') {
+                specificMessage = 'Camera access was aborted. This can happen if the page is reloaded or another request interrupts it.';
+            } else if (error.name === 'TypeError') {
+                specificMessage = 'A type error occurred, possibly related to how the camera is being accessed. Check browser compatibility.';
+            }
+            cameraErrorMessage.textContent = specificMessage;
+            cameraErrorMessage.style.display = 'block';
+            console.log(`[Debug] Displayed error message: ${specificMessage}`);
+        }
+        // Call stopCamera to ensure UI is reset and any acquired stream (if error happened late) is cleaned up.
+        // However, stream might be null if getUserMedia itself failed.
+        stopCamera(); // stopCamera also logs, so we'll see its state.
     }
 }
-
 
 // Stop the camera
 function stopCamera() {
+    console.log('[Debug] Attempting to stop camera...');
     if (stream) {
-        const tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
+        console.log('[Debug] Stream exists, stopping tracks.');
+        stream.getTracks().forEach(track => {
+            console.log(`[Debug] Stopping track: ${track.label}, kind: ${track.kind}, state: ${track.readyState}`);
+            track.stop();
+        });
         stream = null;
-        
-        const videoElement = document.getElementById('camera-feed');
-        videoElement.srcObject = null;
-        
-        // Update button states
-        const toggleButton = document.getElementById('toggle-camera');
-        const takeSnapshotButton = document.getElementById('take-snapshot');
-        
-        toggleButton.textContent = 'Start Camera';
-        takeSnapshotButton.disabled = true;
-        isCameraOn = false;
-        
-        console.log('Camera stopped');
+        console.log('[Debug] Camera stream tracks stopped and stream set to null.');
+    } else {
+        console.log('[Debug] No active stream to stop.');
     }
+
+    if (cameraFeed) {
+        cameraFeed.srcObject = null;
+        cameraFeed.pause();
+        console.log('[Debug] Camera feed srcObject set to null and paused in stopCamera.');
+    } else {
+        console.warn('[Debug] cameraFeed element not found during stopCamera.');
+    }
+
+    if (toggleCameraButton) toggleCameraButton.textContent = 'Start Camera';
+    if (takeSnapshotButton) takeSnapshotButton.disabled = true;
+    if (retakePhotoButton) retakePhotoButton.style.display = 'none';
+    if (snapshotContainer) snapshotContainer.innerHTML = '';
+    lastSnapshot = null;
+    isCameraOn = false;
+    console.log('[Debug] Camera stopped and UI updated to off state. isCameraOn:', isCameraOn);
+    // Optionally, clear error message when camera is explicitly stopped by user or code
+    // if (cameraErrorMessage) {
+    //     cameraErrorMessage.textContent = '';
+    //     cameraErrorMessage.style.display = 'none';
+    // }
 }
 
-// Camera state
-let isCameraOn = false;
-let lastSnapshot = null;
-
-// Toggle camera on/off
-document.getElementById('toggle-camera').addEventListener('click', () => {
-    if (isCameraOn) {
-        stopCamera();
-    } else {
-        startCamera();
+// Event Listeners Setup for Camera
+function setupCameraEventListeners() {
+    if (toggleCameraButton) {
+        toggleCameraButton.addEventListener('click', () => {
+            if (isCameraOn) {
+                stopCamera();
+            } else {
+                startCamera();
+            }
+        });
     }
-});
 
-// Take snapshot
-document.getElementById('take-snapshot').addEventListener('click', () => {
-    const videoElement = document.getElementById('camera-feed');
-    
-    if (!videoElement.srcObject) {
-        alert('Please start the camera first!');
-        return;
+    if (takeSnapshotButton) {
+        takeSnapshotButton.addEventListener('click', () => {
+            if (!isCameraOn || !cameraFeed || !cameraFeed.srcObject || cameraFeed.paused || cameraFeed.ended || cameraFeed.readyState < 3) {
+                console.warn('Camera not ready for snapshot or not active.');
+                if (cameraErrorMessage) {
+                    cameraErrorMessage.textContent = 'Please start the camera and wait for the feed to appear before taking a snapshot.';
+                    cameraErrorMessage.style.display = 'block';
+                }
+                return;
+            }
+            if (cameraErrorMessage) cameraErrorMessage.style.display = 'none';
+
+            const canvas = document.createElement('canvas');
+            canvas.width = cameraFeed.videoWidth;
+            canvas.height = cameraFeed.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
+
+            if (snapshotContainer) {
+                snapshotContainer.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = canvas.toDataURL('image/png');
+                img.alt = 'Snapshot';
+                snapshotContainer.appendChild(img);
+                lastSnapshot = img.src;
+            }
+
+            if (retakePhotoButton) retakePhotoButton.style.display = 'inline-block';
+
+            if (cameraFeed) {
+                cameraFeed.style.transition = 'filter 0.1s ease-out';
+                cameraFeed.style.filter = 'brightness(1.3) contrast(1.1)';
+                setTimeout(() => {
+                    if (cameraFeed) cameraFeed.style.filter = 'none';
+                }, 150);
+            }
+            console.log('Snapshot taken.');
+        });
     }
-    
-    // Create canvas to capture the frame
-    const canvas = document.createElement('canvas');
-    canvas.width = videoElement.videoWidth;
-    canvas.height = videoElement.videoHeight;
-    const context = canvas.getContext('2d');
-    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-    // Clear previous snapshots and add new one
-    const snapshotContainer = document.getElementById('snapshot-container');
-    snapshotContainer.innerHTML = '';
-    
-    const img = document.createElement('img');
-    img.src = canvas.toDataURL('image/png');
-    img.alt = 'Snapshot';
-    img.style.width = '200px';
-    img.style.height = 'auto';
-    img.style.margin = '10px';
-    img.style.border = '2px solid #fff';
-    img.style.borderRadius = '8px';
-    
-    snapshotContainer.appendChild(img);
-    lastSnapshot = img.src;
-
-    // Show retake button
-    document.getElementById('retake-photo').style.display = 'inline-block';
-
-    // Add visual feedback
-    videoElement.style.filter = 'brightness(1.5)';
-    setTimeout(() => {
-        videoElement.style.filter = 'none';
-    }, 200);
-    
-    console.log('Snapshot captured successfully!');
-});
-
-// Retake photo
-document.getElementById('retake-photo').addEventListener('click', () => {
-    const snapshotContainer = document.getElementById('snapshot-container');
-    snapshotContainer.innerHTML = '';
-    lastSnapshot = null;
-    document.getElementById('retake-photo').style.display = 'none';
-    console.log('Photo cleared, ready for new snapshot');
-});
-
-// Initialize camera when page loads
-window.addEventListener('load', initCamera);
+    if (retakePhotoButton) {
+        retakePhotoButton.addEventListener('click', () => {
+            if (snapshotContainer) snapshotContainer.innerHTML = '';
+            lastSnapshot = null;
+            if (retakePhotoButton) retakePhotoButton.style.display = 'none';
+            console.log('Snapshot cleared.');
+            if (takeSnapshotButton && isCameraOn) {
+                takeSnapshotButton.disabled = false;
+            }
+        });
+    }
+}
 
 // Cleanup camera stream when leaving page
 window.addEventListener('beforeunload', () => {
     if (stream) {
         stream.getTracks().forEach(track => track.stop());
+        console.log('Camera stream stopped on page unload.');
     }
 });
 
-// Initialize the progress page
+// Initialize the progress page (non-camera related parts)
 async function initializePage() {
     updateDailyQuote();
     updateAIEncouragement();
     await loadUserProgress();
-    setupEventListeners();
+    setupEventListeners(); // General event listeners for other parts of the page
 }
 
 // Update the daily quote
@@ -233,63 +300,61 @@ function updateDailyQuote() {
     const today = new Date().getDate();
     const quoteIndex = today % quotes.length;
     const quote = quotes[quoteIndex];
-    
-    document.getElementById('daily-quote').textContent = quote.text;
-    document.getElementById('quote-author').textContent = `- ${quote.author}`;
+    const dailyQuoteEl = document.getElementById('daily-quote');
+    const quoteAuthorEl = document.getElementById('quote-author');
+    if (dailyQuoteEl) dailyQuoteEl.textContent = quote.text;
+    if (quoteAuthorEl) quoteAuthorEl.textContent = `- ${quote.author}`;
 }
 
 // Update AI encouragement
 function updateAIEncouragement() {
     const encouragementIndex = Math.floor(Math.random() * encouragementMessages.length);
     const aiContainer = document.getElementById('ai-encouragement');
-    aiContainer.innerHTML = `
-        <p style="color: #fff; font-size: 1.1rem;">
-            <span style="color: #8854d0;">🤖 AI Assistant:</span> 
-            ${encouragementMessages[encouragementIndex]}
-        </p>
-    `;
+    if (aiContainer) {
+        aiContainer.innerHTML = `
+            <p style="color: #fff; font-size: 1.1rem;">
+                <span style="color: #8854d0;">🤖 AI Assistant:</span> 
+                ${encouragementMessages[encouragementIndex]}
+            </p>
+        `;
+    }
 }
 
 // Load user's progress data
 async function loadUserProgress() {
     const user = auth.currentUser;
-    if (!user) return;
-
+    if (!user) {
+        console.log('User not logged in, cannot load progress.');
+        return;
+    }
     try {
-        // Load boards and their progress
         const boardsSnapshot = await db.collection('boards').where('userId', '==', user.uid).get();
         const boards = [];
-        let totalTasks = 0;
         let completedTasks = 0;
-
         boardsSnapshot.forEach(doc => {
             const board = doc.data();
             boards.push({ id: doc.id, ...board });
             if (board.milestones) {
-                totalTasks += board.milestones.length;
                 completedTasks += board.milestones.filter(m => m.completed).length;
             }
         });
 
-        // Update stats
-        document.getElementById('active-goals').textContent = boards.length;
-        document.getElementById('tasks-completed').textContent = completedTasks;
+        const activeGoalsEl = document.getElementById('active-goals');
+        const tasksCompletedEl = document.getElementById('tasks-completed');
+        if (activeGoalsEl) activeGoalsEl.textContent = boards.length;
+        if (tasksCompletedEl) tasksCompletedEl.textContent = completedTasks;
 
-        // Load streak data
         const streakDoc = await db.collection('streaks').doc(user.uid).get();
         const streakData = streakDoc.exists ? streakDoc.data() : { currentStreak: 0 };
-        document.getElementById('current-streak').textContent = `${streakData.currentStreak} days`;
+        const currentStreakEl = document.getElementById('current-streak');
+        if (currentStreakEl) currentStreakEl.textContent = `${streakData.currentStreak} days`;
 
-        // Load journal entries count
         const journalSnapshot = await db.collection('journal').where('userId', '==', user.uid).get();
-        document.getElementById('journal-entries').textContent = journalSnapshot.size;
+        const journalEntriesEl = document.getElementById('journal-entries');
+        if (journalEntriesEl) journalEntriesEl.textContent = journalSnapshot.size;
 
-        // Render boards progress
         renderBoardsProgress(boards);
-        
-        // Load recent activity
         await loadRecentActivity(user.uid);
-
     } catch (error) {
         console.error('Error loading progress:', error);
     }
@@ -298,13 +363,16 @@ async function loadUserProgress() {
 // Render boards progress
 function renderBoardsProgress(boards) {
     const boardsGrid = document.getElementById('boards-progress-grid');
+    if (!boardsGrid) return;
     boardsGrid.innerHTML = '';
-
+    if (boards.length === 0) {
+        boardsGrid.innerHTML = '<p>No vision boards yet. Create one to track your progress!</p>';
+        return;
+    }
     boards.forEach(board => {
         const completedMilestones = board.milestones ? board.milestones.filter(m => m.completed).length : 0;
         const totalMilestones = board.milestones ? board.milestones.length : 0;
         const progressPercentage = totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
-
         const boardCard = document.createElement('div');
         boardCard.className = 'board-progress-card';
         boardCard.innerHTML = `
@@ -316,21 +384,28 @@ function renderBoardsProgress(boards) {
                 <div class="progress-bar" style="width: ${progressPercentage}%"></div>
             </div>
             <div class="milestone-list">
-                ${renderMilestones(board.milestones || [])}
+                ${renderMilestones(board.milestones || [], board.id)}
             </div>
         `;
-
+        boardCard.addEventListener('click', () => {
+            console.log(`Navigate to board: ${board.id}`); // Placeholder for navigation
+            // window.location.href = `/boards.html?boardId=${board.id}`; // Example navigation
+        });
         boardsGrid.appendChild(boardCard);
     });
 }
 
 // Render milestones
-function renderMilestones(milestones) {
+function renderMilestones(milestones, boardId) {
+    if (!milestones || milestones.length === 0) {
+        return '<p class="no-milestones">No milestones for this board.</p>';
+    }
     return milestones.map(milestone => `
         <div class="milestone-item">
             <div class="milestone-checkbox ${milestone.completed ? 'checked' : ''}" 
                  data-milestone-id="${milestone.id}" 
-                 onclick="toggleMilestone('${milestone.id}')">
+                 data-board-id="${boardId}" 
+                 onclick="event.stopPropagation(); toggleMilestone('${boardId}', '${milestone.id}', this)">
             </div>
             <span class="milestone-text">${milestone.text}</span>
         </div>
@@ -338,113 +413,154 @@ function renderMilestones(milestones) {
 }
 
 // Toggle milestone completion
-async function toggleMilestone(milestoneId) {
+async function toggleMilestone(boardId, milestoneId, checkboxElement) {
     const user = auth.currentUser;
     if (!user) return;
-
     try {
-        const checkbox = document.querySelector(`[data-milestone-id="${milestoneId}"]`);
-        const isCompleted = checkbox.classList.contains('checked');
-        
-        // Update in Firestore
-        // Note: You'll need to implement the actual Firestore update logic
-        
-        // Toggle checkbox
-        checkbox.classList.toggle('checked');
-        
-        // Update progress bar and stats
-        await loadUserProgress();
-        
+        const boardRef = db.collection('boards').doc(boardId);
+        const boardDoc = await boardRef.get();
+        if (!boardDoc.exists) {
+            console.error('Board not found for toggling milestone');
+            return;
+        }
+        const boardData = boardDoc.data();
+        const milestoneIndex = boardData.milestones.findIndex(m => m.id === milestoneId);
+        if (milestoneIndex === -1) {
+            console.error('Milestone not found in board');
+            return;
+        }
+        const newCompletedState = !boardData.milestones[milestoneIndex].completed;
+        boardData.milestones[milestoneIndex].completed = newCompletedState;
+        await boardRef.update({ milestones: boardData.milestones });
+        checkboxElement.classList.toggle('checked', newCompletedState);
+        await loadUserProgress(); // Reload all progress to update stats and visuals
+        logActivity(user.uid, `Milestone "${boardData.milestones[milestoneIndex].text}" on board "${boardData.title}" marked as ${newCompletedState ? 'complete' : 'incomplete'}.`);
     } catch (error) {
         console.error('Error toggling milestone:', error);
     }
 }
 
+// Helper to log activity
+async function logActivity(userId, description) {
+    try {
+        await db.collection('activity').add({
+            userId: userId,
+            description: description,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    } catch (error) {
+        console.error('Error logging activity:', error);
+    }
+}
+
 // Load recent activity
 async function loadRecentActivity(userId) {
+    const timeline = document.getElementById('activity-timeline');
+    if (!timeline) return;
+    timeline.innerHTML = '';
     try {
         const activitySnapshot = await db.collection('activity')
             .where('userId', '==', userId)
             .orderBy('timestamp', 'desc')
             .limit(5)
             .get();
-
-        const timeline = document.getElementById('activity-timeline');
-        timeline.innerHTML = '';
-
+        if (activitySnapshot.empty) {
+            timeline.innerHTML = '<p>No recent activity.</p>';
+            return;
+        }
         activitySnapshot.forEach(doc => {
             const activity = doc.data();
             const activityItem = document.createElement('div');
             activityItem.className = 'activity-item';
+            const date = activity.timestamp && activity.timestamp.toDate ? activity.timestamp.toDate().toLocaleDateString() : 'N/A';
+            const time = activity.timestamp && activity.timestamp.toDate ? activity.timestamp.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
             activityItem.innerHTML = `
+                <div class="activity-icon"></div> <!-- Placeholder for an icon -->
                 <div class="activity-content">
-                    <div class="activity-title">${activity.title}</div>
-                    <div class="activity-time">${formatTimestamp(activity.timestamp)}</div>
-                </div>
-            `;
+                    <p class="activity-description">${activity.description}</p>
+                    <p class="activity-timestamp">${date} ${time}</p>
+                </div>`;
             timeline.appendChild(activityItem);
         });
-
     } catch (error) {
-        console.error('Error loading activity:', error);
+        console.error('Error loading recent activity:', error);
+        timeline.innerHTML = '<p>Could not load activity.</p>';
     }
 }
 
-// Format timestamp
+// Format timestamp (if needed elsewhere, currently loadRecentActivity formats directly)
 function formatTimestamp(timestamp) {
+    if (!timestamp || !timestamp.toDate) return 'Invalid date';
     const date = timestamp.toDate();
     const now = new Date();
     const diffTime = Math.abs(now - date);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) {
-        return 'Today';
-    } else if (diffDays === 1) {
-        return 'Yesterday';
-    } else {
-        return `${diffDays} days ago`;
-    }
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    return `${diffDays} days ago`;
 }
 
-// Setup event listeners
+// General setup event listeners (if any are needed beyond specific component setups)
 function setupEventListeners() {
-    // Add any necessary event listeners here
+    // Add any other general event listeners here
+    console.log("General event listeners setup (if any).");
 }
 
-// Toggle background sound functionality
-const backgroundSound = document.getElementById('background-sound');
-const toggleSoundButton = document.getElementById('toggle-sound');
-
-// Debugging logs for audio playback
+// Single DOMContentLoaded listener to orchestrate all initializations
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded and parsed for progress.js');
+
+    // Initialize Camera UI to default "off" state first
+    initializeCameraUI();
+    
+    // Then setup camera specific event listeners
+    setupCameraEventListeners();
+
+    // Setup background sound toggle
     const backgroundSound = document.getElementById('background-sound');
     const toggleSoundButton = document.getElementById('toggle-sound');
 
-    // Ensure volume is set and not muted
-    backgroundSound.volume = 1.0;
-    backgroundSound.muted = false;
+    if (backgroundSound && toggleSoundButton) {
+        // Ensure volume is set and not muted initially for the audio element itself
+        // User interaction is still required to play it.
+        backgroundSound.volume = 1.0; 
+        backgroundSound.muted = false;
 
-    // Wait for user interaction to play sound
-    toggleSoundButton.addEventListener('click', () => {
-        if (backgroundSound.paused) {
-            backgroundSound.play().then(() => {
-                console.log('Sound is playing.');
-            }).catch(err => console.error('Error playing sound:', err));
-            toggleSoundButton.textContent = 'Turn Off Sound';
-        } else {
-            backgroundSound.pause();
-            console.log('Sound is paused.');
-            toggleSoundButton.textContent = 'Turn On Sound';
-        }
-    });
-});
+        toggleSoundButton.addEventListener('click', () => {
+            if (backgroundSound.paused) {
+                backgroundSound.play().then(() => {
+                    console.log('Background sound is playing.');
+                    toggleSoundButton.textContent = 'Turn Off Sound';
+                }).catch(err => {
+                    console.error('Error playing background sound:', err);
+                    // Display a user-friendly message if playout is blocked
+                    if (cameraErrorMessage && (err.name === 'NotAllowedError' || err.name === 'NotSupportedError')) {
+                        cameraErrorMessage.textContent = 'Audio playback was blocked by the browser. Please interact with the page first or check browser settings.';
+                        cameraErrorMessage.style.display = 'block';
+                         setTimeout(() => { if (cameraErrorMessage) cameraErrorMessage.style.display = 'none'; }, 5000);
+                    }
+                });
+            } else {
+                backgroundSound.pause();
+                console.log('Background sound is paused.');
+                toggleSoundButton.textContent = 'Turn On Sound';
+            }
+        });
+    } else {
+        console.warn('Background sound elements not found.');
+    }
 
-// Initialize the page when the DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+    // Auth check and main page initialization
     auth.onAuthStateChanged(user => {
         if (user) {
-            initializePage();
+            console.log('User is authenticated. Initializing page content.');
+            initializePage().then(() => {
+                console.log('Standard page content initialized.');
+            }).catch(error => {
+                console.error('Error during standard page initialization:', error);
+            });
         } else {
+            console.log('User not authenticated. Redirecting to auth.html.');
             window.location.href = 'auth.html';
         }
     });
