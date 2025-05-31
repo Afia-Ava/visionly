@@ -1,25 +1,20 @@
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDs9_aRBzltPKNU3i8uZxoyaGiBZSoPb5s",
-    authDomain: "visionly-webapp.firebaseapp.com",
-    projectId: "visionly-webapp",
-    storageBucket: "visionly-webapp.appspot.com",
-    messagingSenderId: "708324469283",
-    appId: "1:708324469283:web:5495341a010f8f04c51f96",
-    measurementId: "G-JB5T2YBVEC"
+    apiKey: "AIzaSyDxqP0_VQOEh44VPQJQk2GdZfzPcNXxL94",
+    authDomain: "visionly-f73eb.firebaseapp.com",
+    projectId: "visionly-f73eb",
+    storageBucket: "visionly-f73eb.appspot.com",
+    messagingSenderId: "1036618014242",
+    appId: "1:1036618014242:web:8b04f54f99a1b8f6e2a234",
+    measurementId: "G-VHXT0H2QXD"
 };
 
-// Initialize Firebase if not already initialized
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
-// Export Firebase services
+// Initialize Firebase services
 const auth = firebase.auth();
 const db = firebase.firestore();
-const storage = firebase.storage();
+const storage = firebase.storage(); // Add this line for Storage
 
-// Export for use in other files
-window.auth = auth;
-window.db = db;
-window.storage = storage; 
+console.log('Firebase initialized successfully');

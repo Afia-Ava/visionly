@@ -1,20 +1,4 @@
-// Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyDs9_aRBzltPKNU3i8uZxoyaGiBZSoPb5s",
-    authDomain: "visionly-webapp.firebaseapp.com",
-    projectId: "visionly-webapp",
-    storageBucket: "visionly-webapp.appspot.com",
-    messagingSenderId: "708324469283",
-    appId: "1:708324469283:web:5495341a010f8f04c51f96",
-    measurementId: "G-JB5T2YBVEC"
-};
-
-// Initialize Firebase if not already initialized
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-
-// Get auth instance
+// Get auth instance (assuming firebase.initializeApp has been called in firebase-config.js)
 const auth = firebase.auth();
 
 // Navigation items configuration
@@ -119,33 +103,6 @@ function updateNavigation(user) {
     navLinks.appendChild(authLi);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Get the navigation links container
-    const navLinks = document.getElementById('nav-links');
-    
-    // Define the navigation items
-    const navigationItems = `
-        <li><a href="home.html">Home</a></li>
-        <li><a href="create.html">Create</a></li>
-        <li><a href="boards.html">Boards</a></li>
-        <li><a href="progress.html">Progress</a></li>
-        <li><a href="journal.html">Journal</a></li>
-    `;
-    
-    // Insert the navigation items
-    navLinks.innerHTML = navigationItems;
-    
-    // Highlight current page
-    const currentPage = window.location.pathname.split('/').pop();
-    const links = navLinks.getElementsByTagName('a');
-    
-    for (let link of links) {
-        if (link.getAttribute('href') === currentPage) {
-            link.classList.add('active');
-        }
-    }
-});
-
 // Handle mobile menu toggle
 function setupMobileMenu() {
     const menuToggle = document.getElementById('menu-toggle');
@@ -216,15 +173,10 @@ function showLoginPrompt() {
     document.body.appendChild(promptOverlay);
 }
 
-// Setup mobile menu when DOM is loaded
+// Setup mobile menu and initial navigation render when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     setupMobileMenu();
     
-    // Initial navigation update
+    // Initial navigation update based on current user state
     updateNavigation(auth.currentUser);
-    
-    // Listen for auth state changes
-    auth.onAuthStateChanged(user => {
-        updateNavigation(user);
-    });
-}); 
+});
