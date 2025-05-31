@@ -26,21 +26,40 @@ const encouragementMessages = [
 let stream = null;
 let selectedOverlay = null;
 
-// Enhanced camera initialization with better permission handling
+navigator.mediaDevices.enumerateDevices().then(devices => {
+    console.log('Available devices:', devices);
+}).catch(error => {
+    console.error('Error enumerating devices:', error);
+});
+
 async function initCamera() {
     try {
-        stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { 
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: {
                 facingMode: 'user',
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
-            }, 
-            audio: false 
+                width: { ideal: 640 }, // Using same resolution as startCamera for consistency
+                height: { ideal: 480 }
+            },
+            audio: false
         });
-        const videoElement = document.getElementById('camera-preview');
+        const videoElement = document.getElementById('camera-feed');
         videoElement.srcObject = stream;
+
+        // Update button states to reflect camera is ON
+        const toggleButton = document.getElementById('toggle-camera');
+        const takeSnapshotButton = document.getElementById('take-snapshot');
+
+        toggleButton.textContent = 'Stop Camera'; // Reflects camera is active
+        takeSnapshotButton.disabled = false; // Enable take snapshot
+        isCameraOn = true; // Set the state variable
+
+        const errorMessage = document.getElementById('camera-error-message');
+        errorMessage.style.display = 'none'; // Hide error if successful
+
+        console.log('Camera initialized successfully!');
     } catch (err) {
-        console.error('Error accessing camera:', err);
+        // ... (your existing error handling) ...
+        console.error('Error accessing camera during initialization:', err);
         const errorMessage = document.getElementById('camera-error-message');
         if (err.name === 'NotAllowedError') {
             errorMessage.textContent = 'Camera access denied. Please enable camera permissions in your browser settings.';
@@ -50,104 +69,145 @@ async function initCamera() {
             errorMessage.textContent = 'Unable to access camera. Please try again later.';
         }
         errorMessage.style.display = 'block';
+        // Ensure buttons are in correct state if camera fails to start
+        document.getElementById('toggle-camera').textContent = 'Start Camera';
+        document.getElementById('take-snapshot').disabled = true;
+        isCameraOn = false;
     }
 }
 
-// Handle capture button
-document.getElementById('capture-btn').addEventListener('click', () => {
-    const video = document.getElementById('camera-preview');
-    const canvas = document.getElementById('photo-canvas');
-    const preview = document.getElementById('photo-preview');
-    
-    // Set canvas size to match video dimensions
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    
-    // Draw the video frame to the canvas
-    const ctx = canvas.getContext('2d');
-    ctx.save();
-    ctx.scale(-1, 1); // Mirror the image
-    ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
-    ctx.restore();
-    
-    // Add overlay text if selected
-    if (selectedOverlay) {
-        ctx.font = '28px Arial';
-        ctx.fillStyle = 'white';
-        ctx.textAlign = 'center';
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 4;
-        
-        // Position text at the bottom
-        const text = selectedOverlay;
-        const x = canvas.width / 2;
-        const y = canvas.height - 40;
-        
-        // Add text stroke
-        ctx.strokeText(text, x, y);
-        // Add text fill
-        ctx.fillText(text, x, y);
-    }
-    
-    // Show the captured photo
-    preview.src = canvas.toDataURL('image/jpeg');
-    document.querySelector('.overlay-controls').style.display = 'block';
-});
-
-// Handle overlay buttons
-document.querySelectorAll('.overlay-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Remove active class from all buttons
-        document.querySelectorAll('.overlay-btn').forEach(b => b.classList.remove('active'));
-        // Add active class to clicked button
-        btn.classList.add('active');
-        // Update selected overlay
-        selectedOverlay = btn.dataset.text;
-        // Retake photo with new overlay
-        document.getElementById('capture-btn').click();
-    });
-});
-
-// Handle retake button
-document.getElementById('retake-btn').addEventListener('click', () => {
-    document.querySelector('.overlay-controls').style.display = 'none';
-    selectedOverlay = null;
-    document.querySelectorAll('.overlay-btn').forEach(btn => btn.classList.remove('active'));
-});
-
-// Handle save button
-document.getElementById('save-btn').addEventListener('click', async () => {
-    const canvas = document.getElementById('photo-canvas');
-    const imageData = canvas.toDataURL('image/jpeg');
-    
-    // Add the image to the user's board (you'll need to implement this based on your board structure)
+// Start the camera
+async function startCamera() {
     try {
-        // Example: Save to Firebase Storage and update the user's board
-        const fileName = `dream-snap-${Date.now()}.jpg`;
-        const imageBlob = await (await fetch(imageData)).blob();
-        const storageRef = firebase.storage().ref().child(`dream-snaps/${fileName}`);
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
         
-        await storageRef.put(imageBlob);
-        const imageUrl = await storageRef.getDownloadURL();
-        
-        // Add to user's board
-        const userId = firebase.auth().currentUser.uid;
-        await firebase.firestore().collection('boards').add({
-            userId,
-            imageUrl,
-            type: 'dream-snap',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            overlay: selectedOverlay
+        stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                facingMode: 'user',
+                width: { ideal: 640 },
+                height: { ideal: 480 }
+            } 
         });
         
-        alert('Dream snap added to your board! 🎉');
+        const videoElement = document.getElementById('camera-feed');
+        videoElement.srcObject = stream;
         
-        // Reset the camera view
-        document.getElementById('retake-btn').click();
-    } catch (err) {
-        console.error('Error saving dream snap:', err);
-        alert('Failed to save your dream snap. Please try again.');
+        // Update button states
+        const toggleButton = document.getElementById('toggle-camera');
+        const takeSnapshotButton = document.getElementById('take-snapshot');
+        
+        toggleButton.textContent = 'Stop Camera';
+        takeSnapshotButton.disabled = false;
+        isCameraOn = true;
+        
+        // Hide error messages
+        const errorMessage = document.getElementById('camera-error-message');
+        errorMessage.style.display = 'none';
+        
+        console.log('Camera started successfully');
+    } catch (error) {
+        console.error('Error accessing camera:', error);
+        const errorMessage = document.getElementById('camera-error-message');
+        if (error.name === 'NotAllowedError') {
+            errorMessage.textContent = 'Camera access denied. Please enable camera permissions.';
+        } else if (error.name === 'NotFoundError') {
+            errorMessage.textContent = 'No camera found. Please connect a camera.';
+        } else {
+            errorMessage.textContent = 'Unable to access camera. Please check permissions.';
+        }
+        errorMessage.style.display = 'block';
     }
+}
+
+
+// Stop the camera
+function stopCamera() {
+    if (stream) {
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+        stream = null;
+        
+        const videoElement = document.getElementById('camera-feed');
+        videoElement.srcObject = null;
+        
+        // Update button states
+        const toggleButton = document.getElementById('toggle-camera');
+        const takeSnapshotButton = document.getElementById('take-snapshot');
+        
+        toggleButton.textContent = 'Start Camera';
+        takeSnapshotButton.disabled = true;
+        isCameraOn = false;
+        
+        console.log('Camera stopped');
+    }
+}
+
+// Camera state
+let isCameraOn = false;
+let lastSnapshot = null;
+
+// Toggle camera on/off
+document.getElementById('toggle-camera').addEventListener('click', () => {
+    if (isCameraOn) {
+        stopCamera();
+    } else {
+        startCamera();
+    }
+});
+
+// Take snapshot
+document.getElementById('take-snapshot').addEventListener('click', () => {
+    const videoElement = document.getElementById('camera-feed');
+    
+    if (!videoElement.srcObject) {
+        alert('Please start the camera first!');
+        return;
+    }
+    
+    // Create canvas to capture the frame
+    const canvas = document.createElement('canvas');
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+    const context = canvas.getContext('2d');
+    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+    // Clear previous snapshots and add new one
+    const snapshotContainer = document.getElementById('snapshot-container');
+    snapshotContainer.innerHTML = '';
+    
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL('image/png');
+    img.alt = 'Snapshot';
+    img.style.width = '200px';
+    img.style.height = 'auto';
+    img.style.margin = '10px';
+    img.style.border = '2px solid #fff';
+    img.style.borderRadius = '8px';
+    
+    snapshotContainer.appendChild(img);
+    lastSnapshot = img.src;
+
+    // Show retake button
+    document.getElementById('retake-photo').style.display = 'inline-block';
+
+    // Add visual feedback
+    videoElement.style.filter = 'brightness(1.5)';
+    setTimeout(() => {
+        videoElement.style.filter = 'none';
+    }, 200);
+    
+    console.log('Snapshot captured successfully!');
+});
+
+// Retake photo
+document.getElementById('retake-photo').addEventListener('click', () => {
+    const snapshotContainer = document.getElementById('snapshot-container');
+    snapshotContainer.innerHTML = '';
+    lastSnapshot = null;
+    document.getElementById('retake-photo').style.display = 'none';
+    console.log('Photo cleared, ready for new snapshot');
 });
 
 // Initialize camera when page loads

@@ -53,13 +53,14 @@
                         </div>
                     </div>
                     <div class="film-camera-area">
-                        <div class="filmstrip-frame">
-                            <img src="assets/sample-photo.jpg" alt="Captured photo">
-                        </div>
+                        <video id="camera-feed" autoplay></video>
                         <div class="filmstrip-buttons">
-                            <button class="btn-primary">Snap</button>
-                            <button class="btn-primary">Upload</button>
+                            <button class="btn-primary" id="toggle-camera">Start Camera</button>
+                            <button class="btn-primary" id="take-snapshot" disabled>Take Snap</button>
+                            <button class="btn-primary" id="retake-photo" style="display: none;">Retake</button>
                         </div>
+                        <div id="snapshot-container"></div>
+                        <p id="camera-error-message" class="error-message"></p>
                     </div>
                 </div>
             </section>
@@ -125,9 +126,7 @@
                 </div>
             </section>
 
-            <!-- Added an error message element for camera permission issues -->
-            <div id="camera-error-message" style="display: none; color: red; text-align: center; margin-top: 10px;"></div>
-
+        
             <!-- Background Sound -->
             <audio id="background-sound" loop>
                 <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
