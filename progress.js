@@ -287,6 +287,252 @@ window.addEventListener('beforeunload', () => {
     }
 });
 
+// ... existing code ...
+
+// Cleanup camera stream when leaving page
+window.addEventListener('beforeunload', () => {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        console.log('Camera stream stopped on page unload.');
+    }
+});
+
+// --- Pomodoro Timer, Streaks, and Productivity Logic ---
+
+// Pomodoro Configuration
+const POMODORO_WORK_DURATION = 25 * 60; // 25 minutes in seconds
+const POMODORO_SHORT_BREAK_DURATION = 5 * 60; // 5 minutes
+const POMODORO_LONG_BREAK_DURATION = 15 * 60; // 15 minutes
+const POMODORO_CYCLES_BEFORE_LONG_BREAK = 4;
+const DAILY_PRODUCTIVITY_TARGET_MINUTES = 4 * 60; // 4 hours target
+
+// Pomodoro State
+let pomodoroTimeLeft = POMODORO_WORK_DURATION;
+let pomodoroIsRunning = false;
+let pomodoroCurrentMode = 'work'; // 'work', 'shortBreak', 'longBreak'
+let pomodoroInterval = null;
+let pomodoroCyclesCompletedThisSession = 0; // Counts cycles for long break logic
+
+// Streak and Productivity State
+let pomodoroStreakCount = 0;
+let productiveMinutesToday = 0;
+// let lastPomodoroDate = new Date().toDateString(); // Not strictly needed if using lastProductiveDate
+
+// DOM Elements for Productivity Tools
+let pomodoroDisplayEl, pomodoroStartPauseBtn, pomodoroResetBtn, pomodoroSkipBtn, pomodoroModeEl, pomodoroCyclesEl;
+let pomodoroStreakCountEl;
+let productiveTimeTodayEl, dailyProductivityPercentageEl, dailyProductivityTargetHoursEl;
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
+function updatePomodoroDisplay() {
+    if (pomodoroDisplayEl) pomodoroDisplayEl.textContent = formatTime(pomodoroTimeLeft);
+    if (pomodoroModeEl) pomodoroModeEl.textContent = `Mode: ${pomodoroCurrentMode === 'work' ? 'Work' : (pomodoroCurrentMode === 'shortBreak' ? 'Short Break' : 'Long Break')}`;
+    if (pomodoroCyclesEl) pomodoroCyclesEl.textContent = `Cycles Completed: ${pomodoroCyclesCompletedThisSession}`;
+    if (pomodoroStartPauseBtn) pomodoroStartPauseBtn.textContent = pomodoroIsRunning ? 'Pause' : 'Start';
+}
+
+function pomodoroCountdown() {
+    pomodoroTimeLeft--;
+    updatePomodoroDisplay();
+
+    if (pomodoroTimeLeft < 0) {
+        clearInterval(pomodoroInterval);
+        pomodoroIsRunning = false;
+
+        if (pomodoroCurrentMode === 'work') {
+            addProductiveTime(POMODORO_WORK_DURATION / 60);
+            incrementPomodoroStreak();
+            pomodoroCyclesCompletedThisSession++;
+        }
+        switchPomodoroMode();
+        playNotificationSound();
+    }
+}
+
+function startPausePomodoro() {
+    if (pomodoroIsRunning) {
+        clearInterval(pomodoroInterval);
+        pomodoroIsRunning = false;
+    } else {
+        pomodoroIsRunning = true;
+        // Ensure the timer starts from the correct duration if it was reset or switched
+        if (pomodoroTimeLeft <= 0) { // If timer ended, switchMode would have set new timeLeft
+             // If mode switched and timer is 0, it means it's ready for new duration
+        } else if (pomodoroCurrentMode === 'work' && pomodoroTimeLeft === POMODORO_WORK_DURATION) {
+            // Fresh start or reset
+        } else if (pomodoroCurrentMode === 'shortBreak' && pomodoroTimeLeft === POMODORO_SHORT_BREAK_DURATION) {
+            // Fresh start or reset
+        } else if (pomodoroCurrentMode === 'longBreak' && pomodoroTimeLeft === POMODORO_LONG_BREAK_DURATION) {
+            // Fresh start or reset
+        }
+        // If none of the above, it's resuming, so pomodoroTimeLeft is already correct.
+        pomodoroInterval = setInterval(pomodoroCountdown, 1000);
+    }
+    updatePomodoroDisplay();
+}
+
+function resetPomodoro() {
+    clearInterval(pomodoroInterval);
+    pomodoroIsRunning = false;
+    // Reset time based on current mode, but don't switch mode
+    if (pomodoroCurrentMode === 'work') {
+        pomodoroTimeLeft = POMODORO_WORK_DURATION;
+    } else if (pomodoroCurrentMode === 'shortBreak') {
+        pomodoroTimeLeft = POMODORO_SHORT_BREAK_DURATION;
+    } else { // longBreak
+        pomodoroTimeLeft = POMODORO_LONG_BREAK_DURATION;
+    }
+    updatePomodoroDisplay();
+}
+
+function skipPomodoroSession() {
+    clearInterval(pomodoroInterval);
+    pomodoroIsRunning = false;
+    if (pomodoroCurrentMode === 'work') {
+        pomodoroCyclesCompletedThisSession++;
+    }
+    switchPomodoroMode(); // This will set the new timeLeft and update display
+    // updatePomodoroDisplay(); // switchPomodoroMode calls this
+}
+
+
+function switchPomodoroMode() {
+    if (pomodoroCurrentMode === 'work') {
+        if (pomodoroCyclesCompletedThisSession > 0 && pomodoroCyclesCompletedThisSession % POMODORO_CYCLES_BEFORE_LONG_BREAK === 0) {
+            pomodoroCurrentMode = 'longBreak';
+            pomodoroTimeLeft = POMODORO_LONG_BREAK_DURATION;
+        } else {
+            pomodoroCurrentMode = 'shortBreak';
+            pomodoroTimeLeft = POMODORO_SHORT_BREAK_DURATION;
+        }
+    } else { // currentMode was 'shortBreak' or 'longBreak'
+        pomodoroCurrentMode = 'work';
+        pomodoroTimeLeft = POMODORO_WORK_DURATION;
+    }
+    updatePomodoroDisplay();
+}
+
+function playNotificationSound() {
+    console.log("Pomodoro session ended - play sound!");
+    // Example: const alertSound = document.getElementById('alert-sound'); if(alertSound) alertSound.play();
+}
+
+// Streak Logic
+function loadPomodoroData() {
+    const today = new Date().toDateString();
+    const storedStreak = localStorage.getItem('pomodoroStreakCount');
+    const storedLastStreakDate = localStorage.getItem('pomodoroLastStreakDate');
+    const storedProductiveMinutes = localStorage.getItem('productiveMinutesToday');
+    const storedLastProductiveDate = localStorage.getItem('lastProductiveDate');
+
+    if (storedStreak && storedLastStreakDate === today) {
+        pomodoroStreakCount = parseInt(storedStreak, 10);
+    } else if (storedStreak) { // Had a streak, but not today
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (storedLastStreakDate === yesterday.toDateString()) {
+             pomodoroStreakCount = parseInt(storedStreak, 10); // Keep streak if it was yesterday
+        } else {
+            pomodoroStreakCount = 0; // Reset if missed more than a day
+        }
+    } else {
+        pomodoroStreakCount = 0;
+    }
+
+    if (storedProductiveMinutes && storedLastProductiveDate === today) {
+        productiveMinutesToday = parseInt(storedProductiveMinutes, 10);
+    } else {
+        productiveMinutesToday = 0; // Reset for new day
+    }
+    // Always update lastProductiveDate to today when loading, to handle daily reset correctly
+    localStorage.setItem('lastProductiveDate', today);
+}
+
+function savePomodoroData() {
+    localStorage.setItem('pomodoroStreakCount', pomodoroStreakCount.toString());
+    localStorage.setItem('pomodoroLastStreakDate', new Date().toDateString());
+    localStorage.setItem('productiveMinutesToday', productiveMinutesToday.toString());
+    // lastProductiveDate is set during load or when adding productive time
+}
+
+function updatePomodoroStreakDisplay() {
+    if (pomodoroStreakCountEl) pomodoroStreakCountEl.textContent = pomodoroStreakCount;
+}
+
+function incrementPomodoroStreak() {
+    const today = new Date().toDateString();
+    const lastStreakDate = localStorage.getItem('pomodoroLastStreakDate');
+
+    if (lastStreakDate !== today) { // Only increment if it's the first pomodoro of a new day or continuing a streak
+        pomodoroStreakCount++;
+    } else if (pomodoroStreakCount === 0 && lastStreakDate === today) { // First pomodoro ever on this day
+        pomodoroStreakCount = 1;
+    }
+    // If lastStreakDate IS today and streak > 0, it means they already did one today, so streak count doesn't change for subsequent pomodoros on the same day.
+    // The streak is about "days with at least one pomodoro".
+    
+    updatePomodoroStreakDisplay();
+    savePomodoroData(); // This will save the current date as pomodoroLastStreakDate
+}
+
+// Productivity Logic
+function addProductiveTime(minutes) {
+    const today = new Date().toDateString();
+    // Ensure productiveMinutesToday is for the current day
+    if (localStorage.getItem('lastProductiveDate') !== today) {
+        productiveMinutesToday = 0; // Reset if it's a new day and loadPomodoroData hasn't run yet for today
+        localStorage.setItem('lastProductiveDate', today);
+    }
+    productiveMinutesToday += Math.round(minutes);
+    updateDailyProductivityDisplay();
+    savePomodoroData(); 
+}
+
+function updateDailyProductivityDisplay() {
+    if (productiveTimeTodayEl) productiveTimeTodayEl.textContent = productiveMinutesToday;
+    if (dailyProductivityPercentageEl) {
+        const percentage = DAILY_PRODUCTIVITY_TARGET_MINUTES > 0 ?
+            Math.min(100, Math.round((productiveMinutesToday / DAILY_PRODUCTIVITY_TARGET_MINUTES) * 100)) : 0;
+        dailyProductivityPercentageEl.textContent = percentage;
+    }
+    if(dailyProductivityTargetHoursEl) dailyProductivityTargetHoursEl.textContent = (DAILY_PRODUCTIVITY_TARGET_MINUTES / 60).toFixed(1);
+}
+
+function setupProductivityTools() {
+    pomodoroDisplayEl = document.getElementById('pomodoro-display');
+    pomodoroStartPauseBtn = document.getElementById('pomodoro-start-pause');
+    pomodoroResetBtn = document.getElementById('pomodoro-reset');
+    pomodoroSkipBtn = document.getElementById('pomodoro-skip');
+    pomodoroModeEl = document.getElementById('pomodoro-mode');
+    pomodoroCyclesEl = document.getElementById('pomodoro-cycles');
+
+    pomodoroStreakCountEl = document.getElementById('pomodoro-streak-count');
+    productiveTimeTodayEl = document.getElementById('productive-time-today');
+    dailyProductivityPercentageEl = document.getElementById('daily-productivity-percentage');
+    dailyProductivityTargetHoursEl = document.getElementById('daily-productivity-target-hours');
+
+    if (!pomodoroDisplayEl) { // Basic check
+        console.warn("Pomodoro DOM elements not found. Productivity tools may not work.");
+        return;
+    }
+
+    if (pomodoroStartPauseBtn) pomodoroStartPauseBtn.addEventListener('click', startPausePomodoro);
+    if (pomodoroResetBtn) pomodoroResetBtn.addEventListener('click', resetPomodoro);
+    if (pomodoroSkipBtn) pomodoroSkipBtn.addEventListener('click', skipPomodoroSession);
+
+    loadPomodoroData(); // Load data from localStorage
+    updatePomodoroDisplay(); // Set initial display based on loaded/default state
+    updatePomodoroStreakDisplay();
+    updateDailyProductivityDisplay();
+    console.log('[Debug] Productivity tools initialized.');
+}
+
+
 // Initialize the progress page (non-camera related parts)
 async function initializePage() {
     updateDailyQuote();
@@ -554,14 +800,14 @@ document.addEventListener('DOMContentLoaded', () => {
     auth.onAuthStateChanged(user => {
         if (user) {
             console.log('User is authenticated. Initializing page content.');
-            initializePage().then(() => {
+            initializePage().then(() => { // Ensure initializePage is defined and handles non-productivity UI
                 console.log('Standard page content initialized.');
             }).catch(error => {
                 console.error('Error during standard page initialization:', error);
             });
         } else {
             console.log('User not authenticated. Redirecting to auth.html.');
-            window.location.href = 'auth.html';
+            // window.location.href = 'auth.html'; // Make sure this is intended behavior
         }
     });
 });
