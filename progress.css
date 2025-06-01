@@ -31,8 +31,11 @@ body {
 }
 
 .progress-main-content {
-    flex: 1;
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
     max-width: 100%;
+    width: 100%;
 }
 
 .progress-header {
@@ -61,6 +64,553 @@ body {
     margin-top: 0;
     margin-bottom: 0;
     max-width: 420px;
+    min-width: 320px;
+}
+
+.stat-card {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    min-height: 120px;
+}
+
+.stat-card h3 {
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    font-weight: normal;
+}
+
+.stat-value {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* Statistics Card Styling */
+.statistics-card {
+    background: var(--girly-background);
+    border: 2px solid var(--girly-secondary);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 4px 15px rgba(255, 182, 193, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.statistics-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--girly-primary);
+}
+
+.statistics-card h3 {
+    color: var(--girly-text);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.statistics-card p {
+    color: var(--girly-primary);
+    font-family: var(--handwriting-font);
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+/* Motivation Corner */
+.motivation-corner {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 40px;
+}
+
+.quote-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.quote-container h2 {
+    color: #8854d0;
+    margin-bottom: 15px;
+}
+
+#daily-quote {
+    color: #fff;
+    font-size: 1.2rem;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+#quote-author {
+    color: #d0a9f5;
+}
+
+.ai-encouragement {
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* Vision Boards Progress */
+.vision-boards-progress {
+    margin-bottom: 40px;
+}
+
+.vision-boards-progress h2 {
+    color: #8854d0;
+    margin-bottom: 20px;
+}
+
+.board-progress-card {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.board-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.board-progress-title {
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.progress-bar-container {
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 10px;
+    height: 10px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #8854d0, #a46cf0);
+    transition: width 0.3s ease;
+}
+
+.milestone-list {
+    margin-top: 15px;
+}
+
+.milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.milestone-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #8854d0;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.milestone-checkbox.checked {
+    background: #8854d0;
+}
+
+.milestone-checkbox.checked::after {
+    content: '✓';
+    color: white;
+}
+
+.milestone-text {
+    color: #fff;
+    flex: 1;
+}
+
+/* Recent Activity */
+.activity-timeline {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.activity-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    border-left: 2px solid #8854d0;
+    margin-left: 20px;
+    position: relative;
+}
+
+.activity-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    width: 10px;
+    height: 10px;
+    background: #8854d0;
+    border-radius: 50%;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.activity-time {
+    color: #d0a9f5;
+    font-size: 0.9rem;
+}
+
+/* Timeline Styling */
+.timeline {
+    border-left: 3px dashed var(--girly-secondary);
+    padding-left: 20px;
+    margin-left: 20px;
+}
+
+.timeline-item {
+    background: var(--girly-background);
+    border: 1px solid var(--girly-secondary);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    width: 15px;
+    height: 15px;
+    background: var(--girly-primary);
+    border-radius: 50%;
+    position: absolute;
+    left: -29px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.timeline-item .date {
+    font-family: var(--handwriting-font);
+    color: var(--girly-text);
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+/* Timeline Thread */
+.timeline-thread {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+}
+
+.timeline-frames {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.timeline-frames::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.timeline-frame {
+    flex: 0 0 auto;
+    margin: 0 10px;
+}
+
+.filmstrip-frame img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.next-page-indicator {
+    margin-top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Timeline Connection */
+.timeline-connection {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-50%);
+}
+
+.timeline-frames {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    position: relative;
+    overflow-x: auto;
+    padding: 20px 0;
+}
+
+/* FILM FRAME - AESTHETIC & REALISTIC */
+.filmstrip-frame {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    background: black;
+    border: 10px solid black;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+.filmstrip-photo {
+    position: absolute;
+    top: 32px;
+    left: 20px;
+    right: 20px;
+    bottom: 32px;
+    background: #e9f9ff;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+    overflow: hidden;
+    z-index: 2;
+}
+.filmstrip-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.filmstrip-sprockets {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    z-index: 3;
+}
+.filmstrip-sprockets.top {
+    top: 0;
+    height: 32px;
+    align-items: flex-start;
+}
+.filmstrip-sprockets.bottom {
+    bottom: 0;
+    height: 32px;
+    align-items: flex-end;
+}
+.filmstrip-sprocket {
+    width: 22px;
+    height: 18px;
+    background: #fff;
+    border-radius: 2px;
+    margin: 0 2px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.10);
+}
+.filmstrip-numbers {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 4px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    color: #e6c94d;
+    opacity: 0.85;
+    letter-spacing: 1px;
+    z-index: 4;
+    pointer-events: none;
+}
+.filmstrip-numbers.bottom {
+    top: unset;
+    bottom: 4px;
+}
+.filmstrip-vignette {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    box-shadow: 0 0 32px 16px rgba(0,0,0,0.35) inset;
+    z-index: 5;
+}
+
+/* --- Layout for Top Section: Camera Top Right --- */
+.top-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.top-left {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+}
+
+.camera-section {
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    min-width: 320px;
+    max-width: 420px;
+    align-self: flex-start;
+}
+
+/* --- Timeline Section --- */
+.timeline-section {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+/* --- Productivity Two-Column Layout (Below Timeline) --- */
+.productivity-main {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    width: 100%;
+    align-items: flex-start;
+    margin-top: 0;
+}
+
+.productivity-left {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.productivity-right {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1100px) {
+    .top-section, .productivity-main {
+        flex-direction: column;
+        gap: 0;
+    }
+    .camera-section, .top-left, .productivity-left, .productivity-right {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+    .productivity-flex {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .productivity-left, .productivity-right {
+        margin: 0;
+    }
+    .progress-main-content {
+        flex-direction: column;
+        gap: 0;
+    }
+    .camera-section, .stats-grid {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+/* Font override for all productivity section except main heading */
+.productivity-tools, .productivity-tools *:not(h2) {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+/* Remove cursive from all except .productivity-tools h2 */
+.productivity-tools h2 {
+    font-family: var(--accent-handwriting), cursive !important;
+}
+
+/* --- End Productivity Tools Styling --- */
+
+
+/* --- Existing Styles Below --- */
+
+/* Progress Page Styles */
+.progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    margin-left: 40px; /* Added margin to the left */
+    margin-right: 40px; /* Added margin to the right */
+}
+
+.progress-main-content {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    max-width: 100%;
+    width: 100%;
+}
+
+.progress-header {
+    text-align: left;
+    margin-bottom: 18px;
+    margin-top: 80px; /* Doubled the top margin again to create even more space */
+}
+
+.progress-header h1 {
+    color: #8854d0;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.progress-header p {
+    color: #d0a9f5;
+    font-size: 1.1rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    flex: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+    max-width: 420px;
+    min-width: 320px;
 }
 
 .stat-card {
@@ -460,6 +1010,7 @@ body {
     box-shadow: none;
     padding: 0;
     margin-top: 0;
+    margin-left: 20px; /* Move camera section 20px to the right */
 }
 
 /* Button Styling */
@@ -591,131 +1142,559 @@ body {
     transform: scale(1.1);
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-    .progress-container {
-        flex-direction: column;
-    }
-    
-    .progress-main-content {
-        max-width: 100%;
-    }
-    
-    .dream-snap-container {
-        width: 100%;
-        position: static;
-        margin-top: 30px;
-    }
-}
-
-@media (max-width: 1100px) {
-    .progress-container {
-        grid-template-columns: 1fr;
-        gap: 32px;
-        padding: 0 10px;
-    }
-    .document-journey {
-        flex-direction: column;
-        align-items: center;
-        gap: 18px;
-    }
-    .comment-section {
-        margin: 14px 0 0 0;
-        max-width: 100%;
-    }
-    .filmstrip-frame {
-        margin: 0 auto;
-    }
-}
-
-@media (max-width: 900px) {
-    .progress-container {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
-    .document-journey {
-        align-items: stretch;
-    }
-    .comment-section {
-        max-width: 100%;
-    }
-}
-
-@media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .board-progress-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .timeline-frames {
-        gap: 15px;
-    }
-    
-    .timeline-frame {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .progress-header h1 {
-        font-size: 2rem;
-    }
-}
-
-.document-journey {
+/* --- Productivity Tools Two-Column Layout --- */
+.productivity-flex {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
-    margin-top: 40px;
-}
-
-.progress-overview {
-    display: flex;
+    gap: 40px;
+    width: 100%;
     justify-content: space-between;
     align-items: flex-start;
-    width: 100%;
-    padding: 0 20px;
+    margin-top: 20px;
 }
 
-.snap-and-comment {
+.productivity-left, .productivity-right {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.productivity-left {
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.productivity-right {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Pomodoro Setup Section */
+.pomodoro-setup {
+    background: rgba(26, 18, 43, 0.92);
+    border: 1px solid var(--girly-accent);
+    border-radius: 12px;
+    padding: 28px 24px 20px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 10px rgba(136, 84, 208, 0.10);
+    color: var(--girly-text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.pomodoro-setup label {
+    display: block;
+    color: var(--girly-secondary);
+    font-size: 1.1em;
+    margin-bottom: 6px;
+    font-family: inherit;
+}
+.pomodoro-setup input[type="number"] {
+    width: 70px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--girly-secondary);
+    background: rgba(255,255,255,0.07);
+    color: var(--girly-text);
+    font-size: 1em;
+    margin-bottom: 16px;
+    font-family: inherit;
+}
+.pomodoro-setup .setup-row {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    margin-bottom: 14px;
+}
+.pomodoro-setup .btn-primary {
+    margin-top: 10px;
+    width: 100%;
+    font-size: 1.1em;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Pomodoro Timer Section */
+.pomodoro-timer {
+    background: rgba(26, 18, 43, 0.92);
+    border: 1px solid var(--girly-accent);
+    border-radius: 12px;
+    padding: 32px 24px 24px 24px;
+    margin-bottom: 0;
+    box-shadow: 0 2px 10px rgba(136, 84, 208, 0.10);
+    color: var(--girly-text);
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.pomodoro-timer h3 {
+    color: var(--girly-secondary);
+    font-size: 1.5em;
+    margin-bottom: 18px;
+    font-family: inherit;
+}
+.pomodoro-timer .timer-display {
+    font-size: 2.8em;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 18px;
+    letter-spacing: 2px;
+    font-family: inherit;
+}
+.pomodoro-timer .timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 10px;
+}
+.pomodoro-timer button {
+    background: var(--girly-primary);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 22px;
+    font-size: 1em;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+.pomodoro-timer button:hover {
+    background: var(--girly-accent);
+    transform: translateY(-2px);
+}
+
+/* Streak & Productivity Section */
+.streak-productivity {
+    background: rgba(26, 18, 43, 0.92);
+    border: 1px solid var(--girly-accent);
+    border-radius: 12px;
+    padding: 28px 24px 20px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 10px rgba(136, 84, 208, 0.10);
+    color: var(--girly-text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.streak-productivity h3 {
+    color: var(--girly-secondary);
+    font-size: 1.3em;
+    margin-bottom: 12px;
+    font-family: inherit;
+}
+.streak-productivity .streak-count {
+    font-size: 2.2em;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-family: inherit;
+}
+.streak-productivity .daily-goal {
+    color: var(--girly-primary);
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    font-family: inherit;
+}
+.streak-productivity .productivity-bar {
+    background: rgba(136, 84, 208, 0.13);
+    border-radius: 8px;
+    height: 12px;
+    margin: 10px 0 18px 0;
+    overflow: hidden;
+}
+.streak-productivity .productivity-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, #8854d0, #a46cf0);
+    transition: width 0.3s;
+}
+
+/* Responsive for Productivity Section */
+@media (max-width: 900px) {
+    .productivity-flex {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .productivity-left, .productivity-right {
+        margin: 0;
+    }
+    .progress-main-content {
+        flex-direction: column;
+        gap: 0;
+    }
+    .camera-section, .stats-grid {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+/* Font override for all productivity section except main heading */
+.productivity-tools, .productivity-tools *:not(h2) {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+/* Remove cursive from all except .productivity-tools h2 */
+.productivity-tools h2 {
+    font-family: var(--accent-handwriting), cursive !important;
+}
+
+/* --- End Productivity Tools Styling --- */
+
+
+/* --- Existing Styles Below --- */
+
+/* Progress Page Styles */
+.progress-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 0 0 300px;
+    width: 100%;
+    padding: 0;
+    margin-left: 40px; /* Added margin to the left */
+    margin-right: 40px; /* Added margin to the right */
+}
+
+.progress-main-content {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    max-width: 100%;
+    width: 100%;
+}
+
+.progress-header {
+    text-align: left;
+    margin-bottom: 18px;
+    margin-top: 80px; /* Doubled the top margin again to create even more space */
+}
+
+.progress-header h1 {
+    color: #8854d0;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.progress-header p {
+    color: #d0a9f5;
+    font-size: 1.1rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    flex: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+    max-width: 420px;
+    min-width: 320px;
+}
+
+.stat-card {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    min-height: 120px;
+}
+
+.stat-card h3 {
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    font-weight: normal;
+}
+
+.stat-value {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* Statistics Card Styling */
+.statistics-card {
+    background: var(--girly-background);
+    border: 2px solid var(--girly-secondary);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 4px 15px rgba(255, 182, 193, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.statistics-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--girly-primary);
+}
+
+.statistics-card h3 {
+    color: var(--girly-text);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.statistics-card p {
+    color: var(--girly-primary);
+    font-family: var(--handwriting-font);
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+/* Motivation Corner */
+.motivation-corner {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 40px;
+}
+
+.quote-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.quote-container h2 {
+    color: #8854d0;
+    margin-bottom: 15px;
+}
+
+#daily-quote {
+    color: #fff;
+    font-size: 1.2rem;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+#quote-author {
+    color: #d0a9f5;
+}
+
+.ai-encouragement {
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* Vision Boards Progress */
+.vision-boards-progress {
+    margin-bottom: 40px;
+}
+
+.vision-boards-progress h2 {
+    color: #8854d0;
+    margin-bottom: 20px;
+}
+
+.board-progress-card {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.board-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.board-progress-title {
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.progress-bar-container {
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 10px;
+    height: 10px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #8854d0, #a46cf0);
+    transition: width 0.3s ease;
+}
+
+.milestone-list {
+    margin-top: 15px;
+}
+
+.milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.milestone-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #8854d0;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.milestone-checkbox.checked {
+    background: #8854d0;
+}
+
+.milestone-checkbox.checked::after {
+    content: '✓';
+    color: white;
+}
+
+.milestone-text {
+    color: #fff;
+    flex: 1;
+}
+
+/* Recent Activity */
+.activity-timeline {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.activity-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    border-left: 2px solid #8854d0;
+    margin-left: 20px;
+    position: relative;
+}
+
+.activity-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    width: 10px;
+    height: 10px;
+    background: #8854d0;
+    border-radius: 50%;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.activity-time {
+    color: #d0a9f5;
+    font-size: 0.9rem;
+}
+
+/* Timeline Styling */
+.timeline {
+    border-left: 3px dashed var(--girly-secondary);
+    padding-left: 20px;
     margin-left: 20px;
 }
 
-.overview-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
+.timeline-item {
+    background: var(--girly-background);
+    border: 1px solid var(--girly-secondary);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    position: relative;
 }
 
-.film-camera-area {
+.timeline-item::before {
+    content: '';
+    width: 15px;
+    height: 15px;
+    background: var(--girly-primary);
+    border-radius: 50%;
+    position: absolute;
+    left: -29px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.timeline-item .date {
+    font-family: var(--handwriting-font);
+    color: var(--girly-text);
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+/* Timeline Thread */
+.timeline-thread {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin-top: 20px;
-    margin-left: -2in; /* Shifted the camera area 2 inches to the left */
-    transform: translateX(-2in); /* Shifted the camera area 2 inches to the left using transform */
+    width: 100%;
+    overflow: hidden;
 }
 
+.timeline-frames {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.timeline-frames::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.timeline-frame {
+    flex: 0 0 auto;
+    margin: 0 10px;
+}
+
+.filmstrip-frame img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.next-page-indicator {
+    margin-top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Timeline Connection */
+.timeline-connection {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-50%);
+}
+
+.timeline-frames {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    position: relative;
+    overflow-x: auto;
+    padding: 20px 0;
+}
+
+/* FILM FRAME - AESTHETIC & REALISTIC */
 .filmstrip-frame {
     position: relative;
     width: 300px;
@@ -726,154 +1705,1272 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     overflow: hidden;
 }
-
-.filmstrip-frame img {
+.filmstrip-photo {
+    position: absolute;
+    top: 32px;
+    left: 20px;
+    right: 20px;
+    bottom: 32px;
+    background: #e9f9ff;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+    overflow: hidden;
+    z-index: 2;
+}
+.filmstrip-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.filmstrip-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.filmstrip-buttons .btn-primary {
-    background-color: var(--girly-primary);
-    color: white;
-    border: none;
     border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
+}
+.filmstrip-sprockets {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    z-index: 3;
+}
+.filmstrip-sprockets.top {
+    top: 0;
+    height: 32px;
+    align-items: flex-start;
+}
+.filmstrip-sprockets.bottom {
+    bottom: 0;
+    height: 32px;
+    align-items: flex-end;
+}
+.filmstrip-sprocket {
+    width: 22px;
+    height: 18px;
+    background: #fff;
+    border-radius: 2px;
+    margin: 0 2px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.10);
+}
+.filmstrip-numbers {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 4px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    color: #e6c94d;
+    opacity: 0.85;
+    letter-spacing: 1px;
+    z-index: 4;
+    pointer-events: none;
+}
+.filmstrip-numbers.bottom {
+    top: unset;
+    bottom: 4px;
+}
+.filmstrip-vignette {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    box-shadow: 0 0 32px 16px rgba(0,0,0,0.35) inset;
+    z-index: 5;
 }
 
-.filmstrip-buttons .btn-primary:hover {
-    background-color: var(--girly-accent);
+/* --- Layout for Top Section: Camera Top Right --- */
+.top-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 40px;
+    margin-bottom: 40px;
 }
 
+.top-left {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+}
+
+.camera-section {
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    min-width: 320px;
+    max-width: 420px;
+    align-self: flex-start;
+}
+
+/* --- Timeline Section --- */
+.timeline-section {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+/* --- Productivity Two-Column Layout (Below Timeline) --- */
+.productivity-main {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    width: 100%;
+    align-items: flex-start;
+    margin-top: 0;
+}
+
+.productivity-left {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.productivity-right {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1100px) {
+    .top-section, .productivity-main {
+        flex-direction: column;
+        gap: 0;
+    }
+    .camera-section, .top-left, .productivity-left, .productivity-right {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+    .productivity-flex {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .productivity-left, .productivity-right {
+        margin: 0;
+    }
+    .progress-main-content {
+        flex-direction: column;
+        gap: 0;
+    }
+    .camera-section, .stats-grid {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+/* Font override for all productivity section except main heading */
+.productivity-tools, .productivity-tools *:not(h2) {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+/* Remove cursive from all except .productivity-tools h2 */
+.productivity-tools h2 {
+    font-family: var(--accent-handwriting), cursive !important;
+}
+
+/* --- End Productivity Tools Styling --- */
+
+
+/* --- Existing Styles Below --- */
+
+/* Progress Page Styles */
+.progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    margin-left: 40px; /* Added margin to the left */
+    margin-right: 40px; /* Added margin to the right */
+}
+
+.progress-main-content {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    max-width: 100%;
+    width: 100%;
+}
+
+.progress-header {
+    text-align: left;
+    margin-bottom: 18px;
+    margin-top: 80px; /* Doubled the top margin again to create even more space */
+}
+
+.progress-header h1 {
+    color: #8854d0;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.progress-header p {
+    color: #d0a9f5;
+    font-size: 1.1rem;
+}
+
+/* Stats Grid */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     flex: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+    max-width: 420px;
+    min-width: 320px;
 }
 
-.film-and-comment {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    min-width: 240px;
-    margin-left: 40px;
+.stat-card {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    min-height: 120px;
 }
 
-.filmstrip-frame {
+.stat-card h3 {
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    font-weight: normal;
+}
+
+.stat-value {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* Statistics Card Styling */
+.statistics-card {
+    background: var(--girly-background);
+    border: 2px solid var(--girly-secondary);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 4px 15px rgba(255, 182, 193, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.statistics-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--girly-primary);
+}
+
+.statistics-card h3 {
+    color: var(--girly-text);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.statistics-card p {
+    color: var(--girly-primary);
+    font-family: var(--handwriting-font);
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+/* Motivation Corner */
+.motivation-corner {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 40px;
+}
+
+.quote-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.quote-container h2 {
+    color: #8854d0;
+    margin-bottom: 15px;
+}
+
+#daily-quote {
+    color: #fff;
+    font-size: 1.2rem;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+#quote-author {
+    color: #d0a9f5;
+}
+
+.ai-encouragement {
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* Vision Boards Progress */
+.vision-boards-progress {
+    margin-bottom: 40px;
+}
+
+.vision-boards-progress h2 {
+    color: #8854d0;
+    margin-bottom: 20px;
+}
+
+.board-progress-card {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.board-progress-header {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
 }
 
-.filmstrip-photo img {
-    width: 100%;
-    height: auto;
+.board-progress-title {
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.progress-bar-container {
+    background: rgba(136, 84, 208, 0.1);
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    height: 10px;
+    margin: 15px 0;
+    overflow: hidden;
 }
 
-.filmstrip-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #8854d0, #a46cf0);
+    transition: width 0.3s ease;
 }
 
-.comment-section {
-    width: 100%;
+.milestone-list {
     margin-top: 15px;
 }
 
-.comment-section label {
-    display: block;
-    color: var(--girly-text);
-    font-size: 1rem;
-    margin-bottom: 5px;
-}
-
-.comment-section textarea {
-    width: 100%;
-    height: 80px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
+.milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.milestone-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #8854d0;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.milestone-checkbox.checked {
+    background: #8854d0;
+}
+
+.milestone-checkbox.checked::after {
+    content: '✓';
     color: white;
-    font-size: 1rem;
-    resize: none;
 }
 
-
-/* Camera Feed Styles */
-#camera-feed {
-    width: 300px;
-    height: 200px;
-    background: #000;
-    border: 10px solid black;
-    border-radius: 5px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    object-fit: cover;
-    display: block;
-    margin: 0 auto;
+.milestone-text {
+    color: #fff;
+    flex: 1;
 }
 
-#camera-feed:not([src]) {
-    background: linear-gradient(45deg, #333 25%, transparent 25%), 
-                linear-gradient(-45deg, #333 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #333 75%), 
-                linear-gradient(-45deg, transparent 75%, #333 75%);
-    background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+/* Recent Activity */
+.activity-timeline {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.activity-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    border-left: 2px solid #8854d0;
+    margin-left: 20px;
     position: relative;
 }
 
-#camera-feed:not([src])::before {
-    content: "Camera Off";
+.activity-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    width: 10px;
+    height: 10px;
+    background: #8854d0;
+    border-radius: 50%;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.activity-time {
+    color: #d0a9f5;
+    font-size: 0.9rem;
+}
+
+/* Timeline Styling */
+.timeline {
+    border-left: 3px dashed var(--girly-secondary);
+    padding-left: 20px;
+    margin-left: 20px;
+}
+
+.timeline-item {
+    background: var(--girly-background);
+    border: 1px solid var(--girly-secondary);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    width: 15px;
+    height: 15px;
+    background: var(--girly-primary);
+    border-radius: 50%;
+    position: absolute;
+    left: -29px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.timeline-item .date {
+    font-family: var(--handwriting-font);
+    color: var(--girly-text);
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+/* Timeline Thread */
+.timeline-thread {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+}
+
+.timeline-frames {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.timeline-frames::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.timeline-frame {
+    flex: 0 0 auto;
+    margin: 0 10px;
+}
+
+.filmstrip-frame img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.next-page-indicator {
+    margin-top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Timeline Connection */
+.timeline-connection {
     position: absolute;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #8854d0;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-align: center;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-50%);
 }
 
-/* Snapshot Container */
-#snapshot-container {
-    margin-top: 15px;
-    text-align: center;
+.timeline-frames {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    position: relative;
+    overflow-x: auto;
+    padding: 20px 0;
 }
 
-#snapshot-container img {
-    max-width: 300px;
-    height: auto;
-    border: 3px solid #8854d0;
+/* FILM FRAME - AESTHETIC & REALISTIC */
+.filmstrip-frame {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    background: black;
+    border: 10px solid black;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+.filmstrip-photo {
+    position: absolute;
+    top: 32px;
+    left: 20px;
+    right: 20px;
+    bottom: 32px;
+    background: #e9f9ff;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+    overflow: hidden;
+    z-index: 2;
+}
+.filmstrip-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.filmstrip-sprockets {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    z-index: 3;
+}
+.filmstrip-sprockets.top {
+    top: 0;
+    height: 32px;
+    align-items: flex-start;
+}
+.filmstrip-sprockets.bottom {
+    bottom: 0;
+    height: 32px;
+    align-items: flex-end;
+}
+.filmstrip-sprocket {
+    width: 22px;
+    height: 18px;
+    background: #fff;
+    border-radius: 2px;
+    margin: 0 2px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.10);
+}
+.filmstrip-numbers {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 4px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    color: #e6c94d;
+    opacity: 0.85;
+    letter-spacing: 1px;
+    z-index: 4;
+    pointer-events: none;
+}
+.filmstrip-numbers.bottom {
+    top: unset;
+    bottom: 4px;
+}
+.filmstrip-vignette {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(136, 84, 208, 0.3);
+    box-shadow: 0 0 32px 16px rgba(0,0,0,0.35) inset;
+    z-index: 5;
 }
 
-/* Error Message */
-.error-message {
-    color: #ff6b6b;
-    font-size: 0.9rem;
-    margin-top: 10px;
+/* --- Layout for Top Section: Camera Top Right --- */
+.top-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.top-left {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+}
+
+.camera-section {
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    min-width: 320px;
+    max-width: 420px;
+    align-self: flex-start;
+}
+
+/* --- Timeline Section --- */
+.timeline-section {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+/* --- Productivity Two-Column Layout (Below Timeline) --- */
+.productivity-main {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    width: 100%;
+    align-items: flex-start;
+    margin-top: 0;
+}
+
+.productivity-left {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.productivity-right {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1100px) {
+    .top-section, .productivity-main {
+        flex-direction: column;
+        gap: 0;
+    }
+    .camera-section, .top-left, .productivity-left, .productivity-right {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+    .productivity-flex {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .productivity-left, .productivity-right {
+        margin: 0;
+    }
+    .progress-main-content {
+        flex-direction: column;
+        gap: 0;
+    }
+    .camera-section, .stats-grid {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+/* Font override for all productivity section except main heading */
+.productivity-tools, .productivity-tools *:not(h2) {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+/* Remove cursive from all except .productivity-tools h2 */
+.productivity-tools h2 {
+    font-family: var(--accent-handwriting), cursive !important;
+}
+
+/* --- End Productivity Tools Styling --- */
+
+
+/* --- Existing Styles Below --- */
+
+/* Progress Page Styles */
+.progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    margin-left: 40px; /* Added margin to the left */
+    margin-right: 40px; /* Added margin to the right */
+}
+
+.progress-main-content {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    max-width: 100%;
+    width: 100%;
+}
+
+.progress-header {
+    text-align: left;
+    margin-bottom: 18px;
+    margin-top: 80px; /* Doubled the top margin again to create even more space */
+}
+
+.progress-header h1 {
+    color: #8854d0;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.progress-header p {
+    color: #d0a9f5;
+    font-size: 1.1rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    flex: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+    max-width: 420px;
+    min-width: 320px;
+}
+
+.stat-card {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px;
     text-align: center;
-    display: none; /* Hidden by default */
+    min-height: 120px;
 }
 
-.error-message.show {
-    display: block; /* Shown when the 'show' class is added */
+.stat-card h3 {
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    font-weight: normal;
 }
 
+.stat-value {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* Statistics Card Styling */
+.statistics-card {
+    background: var(--girly-background);
+    border: 2px solid var(--girly-secondary);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 4px 15px rgba(255, 182, 193, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.statistics-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--girly-primary);
+}
+
+.statistics-card h3 {
+    color: var(--girly-text);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.statistics-card p {
+    color: var(--girly-primary);
+    font-family: var(--handwriting-font);
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+/* Motivation Corner */
+.motivation-corner {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 40px;
+}
+
+.quote-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.quote-container h2 {
+    color: #8854d0;
+    margin-bottom: 15px;
+}
+
+#daily-quote {
+    color: #fff;
+    font-size: 1.2rem;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+#quote-author {
+    color: #d0a9f5;
+}
+
+.ai-encouragement {
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* Vision Boards Progress */
+.vision-boards-progress {
+    margin-bottom: 40px;
+}
+
+.vision-boards-progress h2 {
+    color: #8854d0;
+    margin-bottom: 20px;
+}
+
+.board-progress-card {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.board-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.board-progress-title {
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.progress-bar-container {
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 10px;
+    height: 10px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #8854d0, #a46cf0);
+    transition: width 0.3s ease;
+}
+
+.milestone-list {
+    margin-top: 15px;
+}
+
+.milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(136, 84, 208, 0.1);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.milestone-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #8854d0;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.milestone-checkbox.checked {
+    background: #8854d0;
+}
+
+.milestone-checkbox.checked::after {
+    content: '✓';
+    color: white;
+}
+
+.milestone-text {
+    color: #fff;
+    flex: 1;
+}
+
+/* Recent Activity */
+.activity-timeline {
+    background: rgba(26, 18, 43, 0.8);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.activity-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    border-left: 2px solid #8854d0;
+    margin-left: 20px;
+    position: relative;
+}
+
+.activity-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    width: 10px;
+    height: 10px;
+    background: #8854d0;
+    border-radius: 50%;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.activity-time {
+    color: #d0a9f5;
+    font-size: 0.9rem;
+}
+
+/* Timeline Styling */
+.timeline {
+    border-left: 3px dashed var(--girly-secondary);
+    padding-left: 20px;
+    margin-left: 20px;
+}
+
+.timeline-item {
+    background: var(--girly-background);
+    border: 1px solid var(--girly-secondary);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    width: 15px;
+    height: 15px;
+    background: var(--girly-primary);
+    border-radius: 50%;
+    position: absolute;
+    left: -29px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.timeline-item .date {
+    font-family: var(--handwriting-font);
+    color: var(--girly-text);
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+/* Timeline Thread */
+.timeline-thread {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+}
+
+.timeline-frames {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.timeline-frames::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.timeline-frame {
+    flex: 0 0 auto;
+    margin: 0 10px;
+}
+
+.filmstrip-frame img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.next-page-indicator {
+    margin-top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Timeline Connection */
+.timeline-connection {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-50%);
+}
+
+.timeline-frames {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    position: relative;
+    overflow-x: auto;
+    padding: 20px 0;
+}
+
+/* FILM FRAME - AESTHETIC & REALISTIC */
+.filmstrip-frame {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    background: black;
+    border: 10px solid black;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+.filmstrip-photo {
+    position: absolute;
+    top: 32px;
+    left: 20px;
+    right: 20px;
+    bottom: 32px;
+    background: #e9f9ff;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+    overflow: hidden;
+    z-index: 2;
+}
+.filmstrip-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.filmstrip-sprockets {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    z-index: 3;
+}
+.filmstrip-sprockets.top {
+    top: 0;
+    height: 32px;
+    align-items: flex-start;
+}
+.filmstrip-sprockets.bottom {
+    bottom: 0;
+    height: 32px;
+    align-items: flex-end;
+}
+.filmstrip-sprocket {
+    width: 22px;
+    height: 18px;
+    background: #fff;
+    border-radius: 2px;
+    margin: 0 2px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.10);
+}
+.filmstrip-numbers {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 4px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    color: #e6c94d;
+    opacity: 0.85;
+    letter-spacing: 1px;
+    z-index: 4;
+    pointer-events: none;
+}
+.filmstrip-numbers.bottom {
+    top: unset;
+    bottom: 4px;
+}
+.filmstrip-vignette {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    box-shadow: 0 0 32px 16px rgba(0,0,0,0.35) inset;
+    z-index: 5;
+}
+
+/* --- Layout for Top Section: Camera Top Right --- */
+.top-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.top-left {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+}
+
+.camera-section {
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    min-width: 320px;
+    max-width: 420px;
+    align-self: flex-start;
+}
+
+/* --- Timeline Section --- */
+.timeline-section {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+/* --- Productivity Two-Column Layout (Below Timeline) --- */
+.productivity-main {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    width: 100%;
+    align-items: flex-start;
+    margin-top: 0;
+}
+
+.productivity-left {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.productivity-right {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1100px) {
+    .top-section, .productivity-main {
+        flex-direction: column;
+        gap: 0;
+    }
+    .camera-section, .top-left, .productivity-left, .productivity-right {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+    .productivity-flex {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .productivity-left, .productivity-right {
+        margin: 0;
+    }
+    .progress-main-content {
+        flex-direction: column;
+        gap: 0;
+    }
+    .camera-section, .stats-grid {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+/* Font override for all productivity section except main heading */
+.productivity-tools, .productivity-tools *:not(h2) {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+/* Remove cursive from all except .productivity-tools h2 */
+.productivity-tools h2 {
+    font-family: var(--accent-handwriting), cursive !important;
+}
+
+/* --- End Productivity Tools Styling --- */
