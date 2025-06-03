@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -15,110 +17,277 @@
   <style>
     body {
         font-family: 'Inter', sans-serif;
-        background-color: #f9f9f9; /* Light gray background similar to create-board.html */
+        background-color: #f9f9f9;
+        background-image: 
+          repeating-radial-gradient(
+            circle at 0% 50%,
+            rgba(180, 160, 230, 0.08),
+            rgba(180, 160, 230, 0.08) 10px,
+            transparent 10px,
+            transparent 20px
+          );
         color: #333;
         margin: 0;
         padding: 0;
     }
-</style>
+  </style>
 </head>
 <body style="font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #333; margin: 0; padding: 0;">
     <div id="navbar-container"></div>
     
-    <!-- Two-column hero layout -->
-    <main style="width: 100%; max-width: 1200px; margin: 80px auto 20px; padding: 20px; display: flex; gap: 40px; align-items: center;">
-        <!-- Left column: Title and CTA -->
-        <div style="flex: 1;">
-            <h1 style="font-size: 2.5rem; font-weight: bold; color: #333; margin-bottom: 15px;">Make Vision Boards And Track Progress</h1>
-            <p style="color: #666; font-size: 1.1rem; margin-bottom: 25px;">Visualize your goals and turn them into reality</p>
-            <a href="create-board.html" style="display: inline-block; padding: 12px 30px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold; text-decoration: none;">Create</a>
+    <!-- Move content a little lower -->
+    <!-- Main section with polaroids -->
+<main style="width: 100%; max-width: 1200px; margin: 120px auto 20px; padding: 20px; display: flex; gap: 40px; align-items: flex-start; min-height: 60vh;">
+    <!-- Left column: Title and CTA with adjusted padding -->
+    <div style="flex: 1; padding-top: 50px;">
+        <h1 style="font-size: 2.5rem; font-weight: bold; color: #333; margin-bottom: 15px;">Make Vision Boards And Track Progress</h1>
+        <p style="color: #666; font-size: 1.1rem; margin-bottom: 25px;">Visualize your goals and turn them into reality</p>
+        <a href="create-board.html" style="display: inline-block; padding: 12px 30px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold; text-decoration: none;">Create</a>
+    </div>
+    
+    <div style="flex: 1; display: flex; justify-content: center, gap: 20px; margin-top: 35px;">
+        <div class="polaroid" style="background: white; padding: 15px 15px 40px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transform: rotate(-3deg); width: 260px;">
+            <img src="assets/polaroid1.png" alt="Vision Board Example 1" style="width: 100%; display: block;">
         </div>
         
-        <!-- Right column: Polaroids -->
-        <div style="flex: 1; display: flex; justify-content: center; gap: 20px;">
-            <div class="polaroid" style="background: white; padding: 15px 15px 40px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transform: rotate(-3deg); width: 220px;">
-                <img src="assets/travel-goals.jpg" alt="Travel Goals" style="width: 100%; display: block;">
-                <p style="text-align: center; margin-top: 10px; font-weight: 500;">Travel Goals</p>
-            </div>
-            
-            <div class="polaroid" style="background: white; padding: 15px 15px 40px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transform: rotate(2deg); width: 220px;">
-                <img src="assets/career-goals.jpg" alt="Career Goals" style="width: 100%; display: block;">
-                <p style="text-align: center; margin-top: 10px; font-weight: 500;">Career Goals</p>
-            </div>
+        <div class="polaroid" style="background: white; padding: 15px 15px 40px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transform: rotate(2deg); width: 260px;">
+            <img src="assets/polaroid2.png" alt="Vision Board Example 2" style="width: 100%; display: block;">
         </div>
-    </main>
+    </div>
+</main>
     
-    <section class="features" id="features">
-        <h2>Features</h2>
-        <div class="feature-cards">
-          <div class="card">
-            <h3>Set Goals</h3>
-            <img src="assets/feature1.png" alt="Set Goals">
-            <p>Visualize your dream life with digital vision boards.</p>
-          </div>
-          <div class="card">
-            <h3>Stay Focused</h3>
-            <img src="assets/feature2.png" alt="Stay Focused">
-            <p>Built-in notes, mood boards, & to-do lists keep you grounded.</p>
-          </div>
-          <div class="card">
-            <h3>Track Progress</h3>
-            <img src="assets/feature3.png" alt="Track Progress">
-            <p>Celebrate small wins & crush big ones with progress tools.</p>
-          </div>
-        </div>
-      </section>
+<section class="features" id="features" style="background-color: #e8e2f5; padding: 40px 20px;">
+    <h2 style="color: #3a165f;">Features</h2>
+    <div class="feature-cards">
+      <div class="card">
+        <h3>Set Goals</h3>
+        <img src="assets/feature1.png" alt="Set Goals">
+        <p>Visualize your dream life with digital vision boards.</p>
+      </div>
+      <div class="card">
+        <h3>Stay Focused</h3>
+        <img src="assets/feature2.png" alt="Stay Focused">
+        <p>Built-in notes, mood boards, & to-do lists keep you grounded.</p>
+      </div>
+      <div class="card">
+        <h3>Track Progress</h3>
+        <img src="assets/feature3.png" alt="Track Progress">
+        <p>Celebrate small wins & crush big ones with progress tools.</p>
+      </div>
+    </div>
+</section>
   
-      <section class="gallery" id="boards">
-        <h2>Inspiration Gallery</h2>
-        <div class="gallery-container">
-          <button class="gallery-nav prev" id="prevBtn">❮</button>
-          <div class="gallery-images">
-            <img src="assets/inspiration1.png" alt="Vision board inspiration 1" class="gallery-img active" />
-            <img src="assets/inspiration2.png" alt="Vision board inspiration 2" class="gallery-img" />
-            <img src="assets/inspiration3.png" alt="Vision board inspiration 3" class="gallery-img" />
-          </div>
-          <button class="gallery-nav next" id="nextBtn">❯</button>
-          <div class="gallery-dots" id="galleryDots">
-            <span class="dot active"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-          </div>
-        </div>
-      </section>
+<section class="gallery" id="boards">
+    <h2>Inspiration Gallery</h2>
+    <div class="gallery-container">
+      <button class="gallery-nav prev" id="prevBtn">❮</button>
+      <div class="gallery-images">
+        <img src="assets/inspiration1.png" alt="Vision board inspiration 1" class="gallery-img active" />
+        <img src="assets/inspiration2.png" alt="Vision board inspiration 2" class="gallery-img" />
+        <img src="assets/inspiration3.png" alt="Vision board inspiration 3" class="gallery-img" />
+      </div>
+      <button class="gallery-nav next" id="nextBtn">❯</button>
+      <div class="gallery-dots" id="galleryDots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+</section>
   
-      <section class="cta">
-        <p>start designing your dream life.</p>
-      </section>
+<section class="cta" style="background-color: rgba(180, 160, 230, 0.15); padding: 60px 20px; text-align: center; margin: 40px 0;">
+    <p style="font-family: 'Caveat', cursive; font-size: 3rem; font-weight: 700; color: #3a165f; margin-bottom: 30px;">start designing your dream life.</p>
+    
+    <div id="quote-container" style="max-width: 800px; margin: 0 auto; min-height: 120px; display: flex; flex-direction: column; align-items: center;">
+        <p id="rotating-quote" style="font-family: 'Merriweather', serif; color: #333; font-size: 1.7rem; line-height: 1.5; font-weight: 400; font-style: italic; margin: 0; text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <span class="quote-text">The future belongs to those who believe in the beauty of their dreams.</span>
+        </p>
+        <p id="quote-author" style="font-family: 'Merriweather', serif; color: #666; font-size: 0.9rem; margin-top: 15px; font-weight: 700;">― Eleanor Roosevelt</p>
+    </div>
+</section>
   
-      <footer>
-        <div class="footer-content">
-          <div>
-            <h4>Contact us at:</h4>
-            <p>visionly.support@gmail.com</p>
-          </div>
-          <div>
-            <h4>Join our newsletter</h4>
-            <form id="newsletter-form">
-              <input type="email" placeholder="example@gmail.com" required />
-              <button type="submit">submit</button>
-            </form>
-          </div>
-        </div>
-        <p class="copyright">Visionly® 2025. All Rights Reserved.</p>
-      </footer>
+<footer>
+    <div class="footer-content">
+      <div>
+        <h4>Contact us at:</h4>
+        <p>visionly.support@gmail.com</p>
+      </div>
+      <div>
+        <h4>Join our newsletter</h4>
+        <form id="newsletter-form">
+          <input type="email" placeholder="example@gmail.com" required />
+          <button type="submit">submit</button>
+        </form>
+      </div>
+    </div>
+    <p class="copyright">Visionly® 2025. All Rights Reserved.</p>
+  </footer>
   
-      <!-- Global Background Sound -->
-  <audio id="background-sound" loop>
-      <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
-  </audio>
+  <!-- Global Background Sound -->
+<audio id="background-sound" loop>
+    <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
   
-  <!-- Toggle Sound Button -->
-  <button id="toggle-sound">
-      <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon">
-  </button>
+<!-- Toggle Sound Button -->
+<button id="toggle-sound">
+    <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon">
+</button>
   
     <script src="shared-scripts.js"></script>
+    <script>
+  // Gallery carousel functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('.gallery-img');
+    const dots = document.querySelectorAll('.dot');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    let currentIndex = 0;
+    
+    function showImage(index) {
+      // Hide all images
+      images.forEach(img => img.classList.remove('active'));
+      dots.forEach(dot => dot.classList.remove('active'));
+      
+      // Show selected image
+      images[index].classList.add('active');
+      dots[index].classList.add('active');
+      currentIndex = index;
+    }
+    
+    // Event listeners for navigation
+    prevBtn.addEventListener('click', function() {
+      let newIndex = currentIndex - 1;
+      if (newIndex < 0) newIndex = images.length - 1;
+      showImage(newIndex);
+    });
+    
+    nextBtn.addEventListener('click', function() {
+      let newIndex = currentIndex + 1;
+      if (newIndex >= images.length) newIndex = 0;
+      showImage(newIndex);
+    });
+    
+    // Add click event to dots
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', function() {
+        showImage(index);
+      });
+    });
+    
+    // Auto-advance every 5 seconds
+    setInterval(function() {
+      let newIndex = currentIndex + 1;
+      if (newIndex >= images.length) newIndex = 0;
+      showImage(newIndex);
+    }, 5000);
+  });
+  
+// Rotating quotes functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const quotes = [
+        {quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt"},
+        {quote: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar"},
+        {quote: "It's not about perfect. It's about effort. And when you bring that effort every single day, that's where transformation happens.", author: "Jillian Michaels"},
+        {quote: "Vision without action is merely a dream. Action without vision just passes the time. Vision with action can change the world.", author: "Joel A. Barker"},
+        {quote: "The only limit to the height of your achievements is the reach of your dreams and your willingness to work for them.", author: "Michelle Obama"}
+    ];
+    
+    const quoteElement = document.getElementById('rotating-quote');
+    const authorElement = document.getElementById('quote-author');
+    let currentQuoteIndex = 0;
+    
+    function showQuote(index) {
+        // Fade out
+        quoteElement.style.opacity = 0;
+        authorElement.style.opacity = 0;
+        
+        setTimeout(() => {
+            // Get the quote text
+            const quoteText = quotes[index].quote;
+            
+            // Clear previous content
+            quoteElement.innerHTML = '';
+            
+            // Check if quote is long (more than ~60 characters)
+            if (quoteText.length > 60) {
+                // Find a good breaking point near the middle
+                const midpoint = Math.floor(quoteText.length / 2);
+                let breakPoint = quoteText.indexOf(' ', midpoint);
+                
+                if (breakPoint === -1 || breakPoint > midpoint + 15) {
+                    breakPoint = quoteText.lastIndexOf(' ', midpoint);
+                }
+                
+                if (breakPoint !== -1) {
+                    // Split the quote into two parts
+                    const firstHalf = quoteText.substring(0, breakPoint);
+                    const secondHalf = quoteText.substring(breakPoint + 1);
+                    
+                    // Create two span elements
+                    const span1 = document.createElement('span');
+                    span1.textContent = firstHalf;
+                    span1.className = 'quote-line';
+                    
+                    const span2 = document.createElement('span');
+                    span2.textContent = secondHalf;
+                    span2.className = 'quote-line';
+                    
+                    // Append them to the quote element
+                    quoteElement.appendChild(span1);
+                    quoteElement.appendChild(span2);
+                } else {
+                    // Fallback if no good breaking point
+                    const span = document.createElement('span');
+                    span.textContent = quoteText;
+                    span.className = 'quote-text';
+                    quoteElement.appendChild(span);
+                }
+            } else {
+                // Short quote - just add it directly
+                const span = document.createElement('span');
+                span.textContent = quoteText;
+                span.className = 'quote-text';
+                quoteElement.appendChild(span);
+            }
+            
+            // Update author
+            authorElement.textContent = "― " + quotes[index].author;
+            
+            // Fade in
+            quoteElement.style.opacity = 1;
+            authorElement.style.opacity = 1;
+            
+            // Update index
+            currentQuoteIndex = index;
+        }, 500);
+    }
+    
+    // Add CSS for quote lines
+    const style = document.createElement('style');
+    style.textContent = `
+        .quote-line {
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+        .quote-text {
+            display: inline-block;
+            text-align: center;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Add CSS transitions for the fade effect
+    quoteElement.style.transition = "opacity 0.5s ease";
+    authorElement.style.transition = "opacity 0.5s ease";
+    
+    // Change rotation interval to 30 secondss
+    setInterval(() => {
+        let nextIndex = (currentQuoteIndex + 1) % quotes.length;
+        showQuote(nextIndex);
+    }, 30000);;
+});
+</script>
   </body>
 </html>
