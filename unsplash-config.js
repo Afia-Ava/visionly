@@ -7,4 +7,4 @@ const UNSPLASH_CONFIG = {
     SCOPES: ['public', 'write_likes', 'read_photos', 'write_photos'] // Add or remove scopes as needed
 };
 
-export default UNSPLASH_CONFIG; 
+export default UNSPLASH_CONFIG;

@@ -5,117 +5,104 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Visionly - Vision Board App</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 </head>
-<body>  <nav class="navbar">
-    <a href="index.html" class="logo">visionly</a>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="create-board.html">Create</a></li>
-      <li><a href="boards.html">Boards</a></li>
-      <li><a href="progress.html">Progress</a></li>
-      <li><a href="journal.html">Journal</a></li>
-      <li><a href="#" id="logout-button">Logout</a></li>
-    </ul>
-    <div class="menu-toggle" id="menu-toggle">☰</div>
-  </nav>
+<body style="font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #333; margin: 0; padding: 0;">
+    <div id="navbar-container"></div>
 
-  <header class="hero">
-    <div class="hero-content">
-      <div class="hero-text">
-        <h1>Make Vision Boards And<br>Track Progress</h1>
-        <a href="create-board.html" class="btn primary">Create</a>
-      </div>
-      <div class="hero-images">
-        <div class="polaroid">
-          <img src="assets/polaroid1.png" alt="vision board polaroid 1" />
+    <header class="hero">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>Make Vision Boards And<br>Track Progress</h1>
+            <a href="create-board.html" class="btn primary">Create</a>
+          </div>
+          <div class="hero-images">
+            <div class="polaroid">
+              <img src="assets/polaroid1.png" alt="vision board polaroid 1" />
+            </div>
+            <div class="polaroid">
+              <img src="assets/polaroid2.png" alt="vision board polaroid 2" />
+            </div>
+          </div>
         </div>
-        <div class="polaroid">
-          <img src="assets/polaroid2.png" alt="vision board polaroid 2" />
+      </header>
+  
+      <section class="features" id="features">
+        <h2>Features</h2>
+        <div class="feature-cards">
+          <div class="card">
+            <h3>Set Goals</h3>
+            <img src="assets/feature1.png" alt="Set Goals">
+            <p>Visualize your dream life with digital vision boards.</p>
+          </div>
+          <div class="card">
+            <h3>Stay Focused</h3>
+            <img src="assets/feature2.png" alt="Stay Focused">
+            <p>Built-in notes, mood boards, & to-do lists keep you grounded.</p>
+          </div>
+          <div class="card">
+            <h3>Track Progress</h3>
+            <img src="assets/feature3.png" alt="Track Progress">
+            <p>Celebrate small wins & crush big ones with progress tools.</p>
+          </div>
         </div>
-      </div>
-    </div>
-  </header>
-
-  <section class="features" id="features">
-    <h2>Features</h2>
-    <div class="feature-cards">
-      <div class="card">
-        <h3>Set Goals</h3>
-        <img src="assets/feature1.png" alt="Set Goals">
-        <p>Visualize your dream life with digital vision boards.</p>
-      </div>
-      <div class="card">
-        <h3>Stay Focused</h3>
-        <img src="assets/feature2.png" alt="Stay Focused">
-        <p>Built-in notes, mood boards, & to-do lists keep you grounded.</p>
-      </div>
-      <div class="card">
-        <h3>Track Progress</h3>
-        <img src="assets/feature3.png" alt="Track Progress">
-        <p>Celebrate small wins & crush big ones with progress tools.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="gallery" id="boards">
-    <h2>Inspiration Gallery</h2>
-    <div class="gallery-container">
-      <button class="gallery-nav prev" id="prevBtn">❮</button>
-      <div class="gallery-images">
-        <img src="assets/inspiration1.png" alt="Vision board inspiration 1" class="gallery-img active" />
-        <img src="assets/inspiration2.png" alt="Vision board inspiration 2" class="gallery-img" />
-        <img src="assets/inspiration3.png" alt="Vision board inspiration 3" class="gallery-img" />
-      </div>
-      <button class="gallery-nav next" id="nextBtn">❯</button>
-      <div class="gallery-dots" id="galleryDots">
-        <span class="dot active"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-      </div>
-    </div>
-  </section>
-
-  <section class="cta">
-    <p>start designing your dream life.</p>
-  </section>
-
-  <footer>
-    <div class="footer-content">
-      <div>
-        <h4>Contact us at:</h4>
-        <p>visionly.support@gmail.com</p>
-      </div>
-      <div>
-        <h4>Join our newsletter</h4>
-        <form id="newsletter-form">
-          <input type="email" placeholder="example@gmail.com" required />
-          <button type="submit">submit</button>
-        </form>
-      </div>
-    </div>
-    <p class="copyright">Visionly® 2025. All Rights Reserved.</p>
-  </footer>
-
-  <!-- Global Background Sound -->
-<audio id="background-sound" loop>
-    <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-</audio>
-
-<!-- Toggle Sound Button -->
-<button id="toggle-sound">
-    <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon">
-</button>
-
-  <script src="nav-auth.js"></script>
-  <script src="script.js"></script>
-  <!-- Include Global Sound Script -->
-<script src="global-sound.js"></script>
-</body>
+      </section>
+  
+      <section class="gallery" id="boards">
+        <h2>Inspiration Gallery</h2>
+        <div class="gallery-container">
+          <button class="gallery-nav prev" id="prevBtn">❮</button>
+          <div class="gallery-images">
+            <img src="assets/inspiration1.png" alt="Vision board inspiration 1" class="gallery-img active" />
+            <img src="assets/inspiration2.png" alt="Vision board inspiration 2" class="gallery-img" />
+            <img src="assets/inspiration3.png" alt="Vision board inspiration 3" class="gallery-img" />
+          </div>
+          <button class="gallery-nav next" id="nextBtn">❯</button>
+          <div class="gallery-dots" id="galleryDots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </section>
+  
+      <section class="cta">
+        <p>start designing your dream life.</p>
+      </section>
+  
+      <footer>
+        <div class="footer-content">
+          <div>
+            <h4>Contact us at:</h4>
+            <p>visionly.support@gmail.com</p>
+          </div>
+          <div>
+            <h4>Join our newsletter</h4>
+            <form id="newsletter-form">
+              <input type="email" placeholder="example@gmail.com" required />
+              <button type="submit">submit</button>
+            </form>
+          </div>
+        </div>
+        <p class="copyright">Visionly® 2025. All Rights Reserved.</p>
+      </footer>
+  
+      <!-- Global Background Sound -->
+  <audio id="background-sound" loop>
+      <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+  </audio>
+  
+  <!-- Toggle Sound Button -->
+  <button id="toggle-sound">
+      <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon">
+  </button>
+  
+    <script src="shared-scripts.js"></script>
+  </body>
 </html>
