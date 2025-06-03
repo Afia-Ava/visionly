@@ -5,34 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Visionly - Vision Board App</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  <style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f9f9f9; /* Light gray background similar to create-board.html */
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+</style>
 </head>
 <body style="font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #333; margin: 0; padding: 0;">
     <div id="navbar-container"></div>
-
-    <header class="hero">
-        <div class="hero-content">
-          <div class="hero-text">
-            <h1>Make Vision Boards And<br>Track Progress</h1>
-            <a href="create-board.html" class="btn primary">Create</a>
-          </div>
-          <div class="hero-images">
-            <div class="polaroid">
-              <img src="assets/polaroid1.png" alt="vision board polaroid 1" />
-            </div>
-            <div class="polaroid">
-              <img src="assets/polaroid2.png" alt="vision board polaroid 2" />
-            </div>
-          </div>
+    
+    <!-- Two-column hero layout -->
+    <main style="width: 100%; max-width: 1200px; margin: 80px auto 20px; padding: 20px; display: flex; gap: 40px; align-items: center;">
+        <!-- Left column: Title and CTA -->
+        <div style="flex: 1;">
+            <h1 style="font-size: 2.5rem; font-weight: bold; color: #333; margin-bottom: 15px;">Make Vision Boards And Track Progress</h1>
+            <p style="color: #666; font-size: 1.1rem; margin-bottom: 25px;">Visualize your goals and turn them into reality</p>
+            <a href="create-board.html" style="display: inline-block; padding: 12px 30px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold; text-decoration: none;">Create</a>
         </div>
-      </header>
-  
-      <section class="features" id="features">
+        
+        <!-- Right column: Polaroids -->
+        <div style="flex: 1; display: flex; justify-content: center; gap: 20px;">
+            <div class="polaroid" style="background: white; padding: 15px 15px 40px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transform: rotate(-3deg); width: 220px;">
+                <img src="assets/travel-goals.jpg" alt="Travel Goals" style="width: 100%; display: block;">
+                <p style="text-align: center; margin-top: 10px; font-weight: 500;">Travel Goals</p>
+            </div>
+            
+            <div class="polaroid" style="background: white; padding: 15px 15px 40px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transform: rotate(2deg); width: 220px;">
+                <img src="assets/career-goals.jpg" alt="Career Goals" style="width: 100%; display: block;">
+                <p style="text-align: center; margin-top: 10px; font-weight: 500;">Career Goals</p>
+            </div>
+        </div>
+    </main>
+    
+    <section class="features" id="features">
         <h2>Features</h2>
         <div class="feature-cards">
           <div class="card">
