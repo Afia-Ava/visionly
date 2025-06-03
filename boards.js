@@ -1,3 +1,10 @@
+import { getAuth } from "firebase/auth";
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+
+// Initialize Firebase services
+const auth = getAuth();
+const db = getFirestore();
+
 document.addEventListener('DOMContentLoaded', () => {
   // DOM Elements
   const boardSearch = document.getElementById('board-search');
@@ -92,4 +99,51 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-}); 
+
+  async function loadBoards() {
+    const user = auth.currentUser;
+    if (!user) {
+        alert("You must be logged in to view your boards.");
+        return;
+    }
+
+    try {
+        console.log("Fetching boards for user:", user.uid);
+        const boardsQuery = query(collection(db, "boards"), where("uid", "==", user.uid));
+        const querySnapshot = await getDocs(boardsQuery);
+
+        const boardsContainer = document.getElementById("boards-container");
+        boardsContainer.innerHTML = ""; // Clear existing boards
+
+        if (querySnapshot.empty) {
+            console.log("No boards found for user:", user.uid);
+            boardsContainer.innerHTML = "<p>No boards found.</p>";
+            return;
+        }
+
+        querySnapshot.forEach((doc) => {
+            const board = doc.data();
+            console.log("Board retrieved:", board);
+            const boardElement = document.createElement("div");
+            boardElement.className = "board";
+            boardElement.innerHTML = `
+                <h3>${board.title}</h3>
+                <p>${board.description}</p>
+                <small>Created at: ${new Date(board.createdAt).toLocaleString()}</small>
+            `;
+            boardsContainer.appendChild(boardElement);
+        });
+    } catch (error) {
+        console.error("Error loading boards:", error);
+        alert("Failed to load boards. Please try again.");
+    }
+}
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+        loadBoards();
+    } else {
+        document.getElementById("boards-container").innerHTML = "<p>Please log in to view your boards.</p>";
+    }
+  });
+});

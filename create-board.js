@@ -1,5 +1,7 @@
 import UnsplashAuth from './unsplash-auth.js';
 import UNSPLASH_CONFIG from './unsplash-config.js';
+import { getAuth } from "firebase/auth";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 
 let milestones = [];
 let boardThumbnail = null;
@@ -20,9 +22,11 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
+// Initialize Firebase services
+const auth = getAuth();
+const db = getFirestore();
+
 // Get Firebase services
-const auth = firebase.auth();
-const db = firebase.firestore();
 const storage = firebase.storage();
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -852,3 +856,33 @@ function setupDragAndDrop() {
 
 // Initialize drag and drop
 setupDragAndDrop();
+
+document.getElementById("create-board-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const title = document.getElementById("board-title").value;
+    const description = document.getElementById("board-description").value;
+
+    const user = auth.currentUser;
+    if (!user) {
+        alert("You must be logged in to create a board.");
+        return;
+    }
+
+    try {
+        console.log("Saving board:", { uid: user.uid, title, description });
+        // Save board to Firestore
+        const docRef = await addDoc(collection(db, "boards"), {
+            uid: user.uid,
+            title: title,
+            description: description,
+            createdAt: new Date().toISOString(),
+        });
+        console.log("Board saved with ID:", docRef.id);
+        alert("Board created successfully!");
+        document.getElementById("create-board-form").reset();
+    } catch (error) {
+        console.error("Error creating board:", error);
+        alert("Failed to create board. Please try again.");
+    }
+});
