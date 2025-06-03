@@ -6,6 +6,8 @@ const searchInput = document.getElementById('image-search');
 const searchButton = document.getElementById('search-button');
 const searchResults = document.getElementById('search-results');
 const boardGrid = document.getElementById('board-grid');
+const unsplashSearch = document.getElementById('unsplash-search');
+const unsplashResults = document.getElementById('unsplash-results');
 
 // Initialize elements check
 if (!searchInput || !searchButton || !searchResults || !boardGrid) {
@@ -205,6 +207,42 @@ function handleDrop(e) {
     }
 }
 
+// Unsplash API integration for direct search
+unsplashSearch.addEventListener('input', async (event) => {
+    const query = event.target.value.trim();
+    unsplashResults.innerHTML = ''; // Clear previous results
+    if (!query) return;
+
+    const accessKey = UNSPLASH_CONFIG.ACCESS_KEY; // Use configured access key
+    const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&client_id=${accessKey}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+        const data = await response.json();
+        if (data.results.length === 0) {
+            unsplashResults.innerHTML = '<p style="color: #666;">No images found. Try a different search term.</p>';
+            return;
+        }
+        data.results.forEach(image => {
+            const imgElement = document.createElement('img');
+            imgElement.src = image.urls.small;
+            imgElement.alt = image.alt_description || 'Unsplash Image';
+            imgElement.style.width = '150px';
+            imgElement.style.height = '150px';
+            imgElement.style.borderRadius = '8px';
+            imgElement.style.cursor = 'pointer';
+            imgElement.style.objectFit = 'cover';
+            unsplashResults.appendChild(imgElement);
+        });
+    } catch (error) {
+        console.error('Error fetching images from Unsplash:', error);
+        unsplashResults.innerHTML = '<p style="color: #666;">An error occurred while fetching images. Please try again later.</p>';
+    }
+});
+
 const style = document.createElement('style');
 style.textContent = `
     .search-results {
@@ -339,4 +377,4 @@ console.log('Image search initialized with config:', {
         searchButton: !!searchButton,
         searchResults: !!searchResults
     }
-}); 
+});

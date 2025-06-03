@@ -6,7 +6,7 @@
   <title>Create Vision Board - Visionly</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="create-board.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -15,102 +15,39 @@
   <script src="firebase-config.js"></script>
   <script src="nav-auth.js"></script>
 </head>
-<body>  <nav class="navbar">
-    <a href="index.html" class="logo">visionly</a>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="create-board.html">Create</a></li>
-      <li><a href="boards.html">Boards</a></li>
-      <li><a href="progress.html">Progress</a></li>
-      <li><a href="journal.html">Journal</a></li>
-      <li><a href="#" id="logout-button">Logout</a></li>
-    </ul>
-    <div class="menu-toggle" id="menu-toggle">☰</div>
-  </nav>
-
-  <main class="create-board-container">
-    <header class="create-board-header">
-      <h1>Create Your Vision Board</h1>
-      <p>Upload images, arrange them, and bring your vision to life.</p>
+<body style="font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #333; margin: 0; padding: 0;">
+    <div id="navbar-container"></div>
+    
+    <header class="page-header" style="margin-top: 80px; text-align: center; padding: 20px;">
+        <h1 style="font-size: 2rem; font-weight: bold; color: #333;">Create Your Vision Board</h1>
+        <p style="color: #666;">Design and organize your goals visually.</p>
     </header>
+    <main style="width: 100%; max-width: 1200px; margin: 20px auto; padding: 20px; display: flex; gap: 40px;">
+        <!-- Left Section -->
+        <section style="flex: 1; background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <form id="create-board-form" style="display: flex; flex-direction: column; gap: 20px;">
+                <label for="board-title" style="font-weight: 600; color: #333;">Board Title</label>
+                <input type="text" id="board-title" name="board-title" placeholder="Enter board title" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; color: #333;">
+                <label for="board-description" style="font-weight: 600; color: #333;">Description</label>
+                <textarea id="board-description" name="board-description" placeholder="Enter board description" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; color: #333;"></textarea>
+                <button type="submit" style="padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold;">Create Board</button>
+            </form>
+        </section>
 
-    <div class="board-creation-layout">
-      <!-- Left Column - Controls -->
-      <section class="board-controls">
-        <div class="control-group">
-          <input type="text" id="board-title" placeholder="Enter Board Title" class="board-title-input" required>
-        </div>
-
-        <div class="control-group">
-          <select id="board-category" class="board-category-select">
-            <option value="">Select Category</option>
-            <option value="personal">Personal Growth</option>
-            <option value="career">Career & Business</option>
-            <option value="health">Health & Wellness</option>
-            <option value="relationships">Relationships</option>
-            <option value="self-improvement">Academics</option>
-            <option value="travel">Travel & Adventure</option>
-            <option value="finance">Finance & Wealth</option>
-            <option value="creativity">Creativity & Hobbies</option>
-            <option value="spirituality">Spirituality & Mindfulness</option>
-            <option value="lifestyle">Lifestyle & Home</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div class="control-group">
-          <div class="image-search-container">
-            <div class="search-box">
-              <input type="text" id="image-search" placeholder="Search for images..." />
-              <button type="button" id="search-button" class="btn primary">Search</button>
+        <!-- Right Section -->
+        <div class="image-upload-section" style="flex: 2; background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <h3 style="font-weight: 600; color: #333;">Upload or Search Images</h3>
+            <div style="margin-top: 20px; border: 2px dashed #ddd; border-radius: 8px; padding: 40px; text-align: center;">
+                <p style="color: #666;">Drag and drop images here or click to upload</p>
+                <button style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Upload Images</button>
             </div>
-            <div class="search-results" id="search-results"></div>
-          </div>
-          
-          <div class="divider"><span>or</span></div>
-          
-          <div class="upload-container">
-            <input type="file" id="file-upload" multiple accept="image/*" style="display: none;">
-            <button type="button" id="upload-btn" class="upload-btn" onclick="document.getElementById('file-upload').click()">
-              <span>📷 Upload Images</span>
-            </button>
-          </div>
+            <div style="margin-top: 20px;">
+                <label for="unsplash-search" style="font-weight: 600; color: #333;">Search Images from Unsplash</label>
+                <input type="text" id="unsplash-search" placeholder="Search for images" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 10px;">
+                <button style="margin-top: 10px; padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Search</button>
+            </div>
         </div>
-
-        <div class="control-group">
-          <textarea id="board-notes" placeholder="Add notes or affirmations..." class="board-notes-input"></textarea>
-        </div>
-
-        <div class="control-group">
-          <h3>Milestones</h3>
-          <p class="milestone-hint">Break down your vision into achievable steps</p>
-          
-          <div class="add-milestone-container">
-            <input type="text" id="add-milestone-input" placeholder="Add a milestone...">
-            <button id="add-milestone-button">Add</button>
-          </div>
-
-          <div class="milestones-container" id="milestones-list">
-            <!-- Milestones will be added here -->
-          </div>
-        </div>
-
-        <div class="board-actions">
-          <button id="create-thumbnail" class="btn secondary">Create Thumbnail</button>
-          <button id="save-board" class="btn primary">Save Board</button>
-        </div>
-      </section>
-
-      <!-- Right Column - Preview -->
-      <section class="board-preview">
-        <div class="preview-header">
-          <h2>Board Preview</h2>
-          <p class="drag-hint">Drag images to arrange them</p>
-        </div>
-        <div id="board-grid" class="board-grid">
-          <!-- Images will be arranged here -->
-        </div>
-      </section>    </div>  </main>
+    </main>
 
   <!-- Background Sound -->
   <audio id="background-sound" loop>
@@ -129,5 +66,6 @@
   <script type="module" src="image-search.js"></script>
   <script type="module" src="create-board.js"></script>
   <script src="global-sound.js"></script>
+  <script src="shared-scripts.js"></script>
 </body>
 </html>
