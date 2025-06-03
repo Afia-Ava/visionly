@@ -4,56 +4,298 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Session - Visionly</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="focus-session.css">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .focus-container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .album-art {
+            width: 200px;
+            height: 200px;
+            border-radius: 8px;
+            margin: 0 auto 20px;
+            display: block;
+            background-color: #fef0e4; /* Light peach background */
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .album-art img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .track-info {
+            margin-bottom: 20px;
+        }
+        
+        .track-info h2 {
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .track-info p {
+            color: #666;
+            margin: 5px 0 0;
+            font-size: 1rem;
+        }
+        
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .control-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #333;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .play-button {
+            width: 50px;
+            height: 50px;
+            background-color: #007bff;
+            border-radius: 50%;
+            color: white;
+            font-size: 28px;
+        }
+        
+        .timer-display {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        .timer-unit {
+            flex: 1;
+            background-color: #f0f2f5;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 0 5px;
+        }
+        
+        .time-value {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .time-label {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0 0;
+        }
+        
+        .exit-button {
+            padding: 10px 20px;
+            background-color: #f0f2f5;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .exit-button:hover {
+            background-color: #e4e6e9;
+        }
+        
+        .logo-container {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+        }
+        
+        .logo {
+            font-family: 'Dancing Script', cursive;
+            font-weight: bold;
+            font-size: 2rem;
+            color: #333;
+            text-decoration: none;
+            background: transparent;
+        }
+        
+        /* Remove the navbar-container from this page */
+        #navbar-container {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div class="focus-container">
-        <!-- Add cross sign button -->
-        <button id="back-to-progress" class="back-button">✖</button>
-        <div class="camera-view">
-            <!-- Placeholder for camera -->
-            <video id="camera-feed" autoplay></video>
-        </div>
-        <div class="side-by-side">
-            <div class="pomodoro-focus">
-                <div class="timer-display">
-                    <svg class="progress-ring" width="200" height="200">
-                        <circle class="progress-ring__circle-bg" stroke="#333" stroke-width="10" fill="transparent" r="90" cx="100" cy="100"/>
-                        <circle class="progress-ring__circle" stroke="var(--girly-primary)" stroke-width="10" fill="transparent" r="90" cx="100" cy="100"/>
-                    </svg>
-                    <div id="time-left" class="time-left">25:00</div>
-                </div>
-                <div id="session-phase" class="session-phase">Focus</div>
-                <div class="controls">
-                    <button id="pause-resume-button" class="control-button">Pause</button>
-                    <button id="end-session-button" class="control-button">End Session</button>
-                </div>
-            </div>
-            <div class="setup-section">
-                <h2>Setup</h2>
-                <form id="setup-form">
-                    <label for="focus-duration">Focus Duration:</label>
-                    <input type="number" id="focus-duration" name="focus-duration" min="1" max="60" value="25">
-                    <label for="break-duration">Break Duration:</label>
-                    <input type="number" id="break-duration" name="break-duration" min="1" max="15" value="5">
-                    <button type="submit" class="control-button">Save</button>
-                </form>
-            </div>
-        </div>
-        <div id="motivational-message" class="motivational-message">Stay focused, dream big.</div>
+    <!-- Remove navbar-container -->
+    
+    <!-- Add logo container -->
+    <div class="logo-container">
+        <a href="index.html" class="logo">Visionly</a>
     </div>
-    <audio id="bell-sound" src="assets/bell.mp3"></audio> <!-- Placeholder for bell sound -->
-    <script src="firebase-config.js"></script>
-    <script src="focus-session.js"></script>
+    
+    <div class="focus-container">
+        <div class="album-art">
+            <img src="assets/leaf-illustration.png" alt="Ambient music illustration">
+        </div>
+        
+        <div class="track-info">
+            <h2 id="track-name">Serene Beats</h2>
+            <p id="track-artist">Ambient Flow</p>
+        </div>
+        
+        <div class="player-controls">
+            <button class="control-button">
+                <span>⏮</span>
+            </button>
+            <button class="control-button">
+                <span>⏪</span>
+            </button>
+            <button class="control-button play-button">
+                <span>▶</span>
+            </button>
+            <button class="control-button">
+                <span>⏩</span>
+            </button>
+            <button class="control-button">
+                <span>⏭</span>
+            </button>
+        </div>
+        
+        <div class="timer-display">
+            <div class="timer-unit">
+                <p class="time-value">00</p>
+                <p class="time-label">Hours</p>
+            </div>
+            <div class="timer-unit">
+                <p class="time-value">25</p>
+                <p class="time-label">Minutes</p>
+            </div>
+            <div class="timer-unit">
+                <p class="time-value">00</p>
+                <p class="time-label">Seconds</p>
+            </div>
+        </div>
+        
+        <button class="exit-button" onclick="window.location.href='progress.html'">Exit Session</button>
+    </div>
+    
+    <!-- Hidden audio element -->
+    <audio id="focus-audio" loop style="display:none;">
+        <source id="audio-source" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <script src="shared-scripts.js"></script>
     <script>
-        // Add event listener for navigation
-        document.getElementById('back-to-progress').addEventListener('click', () => {
-            window.location.href = 'progress.html'; // Navigate to progress page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the selected music from sessionStorage
+            const selectedMusic = sessionStorage.getItem('selectedMusic') || 'Serene Beats';
+            const selectedArtist = sessionStorage.getItem('selectedArtist') || 'Ambient Flow';
+            const selectedMusicSrc = sessionStorage.getItem('selectedMusicSrc') || 'assets/music/ambient.mp3';
+            
+            // Update track info
+            document.getElementById('track-name').textContent = selectedMusic;
+            document.getElementById('track-artist').textContent = selectedArtist;
+            
+            // Create audio element if it doesn't exist
+            let audioPlayer = document.getElementById('focus-audio');
+            if (!audioPlayer) {
+                audioPlayer = new Audio(selectedMusicSrc);
+                audioPlayer.id = 'focus-audio';
+                audioPlayer.loop = true;
+                document.body.appendChild(audioPlayer);
+            } else {
+                audioPlayer.src = selectedMusicSrc;
+            }
+            
+            // Play button functionality
+            let isPlaying = false;
+            const playButton = document.querySelector('.play-button');
+            
+            playButton.addEventListener('click', function() {
+                isPlaying = !isPlaying;
+                if (isPlaying) {
+                    playButton.innerHTML = '<span>⏸</span>';
+                    audioPlayer.play();
+                } else {
+                    playButton.innerHTML = '<span>▶</span>';
+                    audioPlayer.pause();
+                }
+            });
+            
+            // Get the focus duration from session storage
+            const storedFocusDuration = sessionStorage.getItem('focusDuration');
+            const storedBreakDuration = sessionStorage.getItem('breakDuration');
+            
+            // Set initial minutes to the stored focus duration or default to 25
+            let minutes = storedFocusDuration ? parseInt(storedFocusDuration) : 25;
+            let seconds = 0;
+            
+            // Update the display initially
+            document.querySelector('.timer-unit:nth-child(2) .time-value').textContent = 
+                minutes.toString().padStart(2, '0');
+            
+            // Timer functionality
+            function startCountdown() {
+                const timerInterval = setInterval(() => {
+                    if (seconds === 0) {
+                        if (minutes === 0) {
+                            clearInterval(timerInterval);
+                            // Session complete logic
+                            document.querySelector('.play-button').innerHTML = '<span>▶</span>';
+                            document.querySelector('.play-button').classList.remove('playing');
+                            return;
+                        }
+                        minutes--;
+                        seconds = 59;
+                    } else {
+                        seconds--;
+                    }
+                    
+                    // Update timer display
+                    document.querySelector('.timer-unit:nth-child(2) .time-value').textContent = 
+                        minutes.toString().padStart(2, '0');
+                    document.querySelector('.timer-unit:nth-child(3) .time-value').textContent = 
+                        seconds.toString().padStart(2, '0');
+                }, 1000);
+                
+                return timerInterval;
+            }
+            
+            // When play is clicked, start the countdown
+            document.querySelector('.play-button').addEventListener('click', function() {
+                if (this.classList.contains('playing')) {
+                    startCountdown();
+                }
+            });
         });
     </script>
 </body>

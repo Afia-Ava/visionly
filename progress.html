@@ -11,9 +11,9 @@
     <div id="navbar-container"></div>
     
     <main class="progress-container" style="width: 100%; max-width: 1200px; margin: 80px auto 20px; padding: 20px;">
-        <header class="progress-header" style="margin-bottom: 10px;">
-            <h1 style="font-size: 2rem; font-weight: bold; color: #333;">Focus Tracker</h1>
-            <p style="color: #666;">Enhance your productivity with the Pomodoro Technique.</p>
+        <header class="progress-header" style="margin-bottom: 60px; text-align: center;">
+            <h1 style="font-size: 2rem; font-weight: bold; color: #333; margin-bottom: 5px;">Focus Tracker</h1>
+            <p style="color: #666; margin-top: 0; margin-bottom: 0;">Enhance your productivity with the Pomodoro Technique.</p>
         </header>
 
         <div class="focus-setup" style="display: flex; gap: 40px; align-items: flex-start;">
@@ -23,7 +23,7 @@
                     <input type="number" id="focus-duration" name="focus-duration" min="1" max="60" value="25" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
                     <label for="break-duration" style="font-weight: 600; color: #333;">Rest Time (minutes)</label>
                     <input type="number" id="break-duration" name="break-duration" min="1" max="15" value="5" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
-                    <button type="submit" class="btn-primary" style="padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold;">Start Session</button>
+                    <button type="button" id="start-session-btn" class="btn-primary" style="padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold;">Start Session</button>
                 </form>
 
                 <div class="daily-progress" style="margin-top: 40px;">
@@ -44,14 +44,43 @@
             <div class="focus-right" style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
                 <div class="background-music" style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <h3 style="font-weight: 600; color: #333;">Background Music</h3>
-                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
-                        <img src="assets/music-placeholder.png" alt="Music" style="width: 50px; height: 50px; border-radius: 8px;">
-                        <div>
-                            <p style="margin: 0; font-weight: bold; color: #333;">Chillhop Beats</p>
-                            <p style="margin: 0; color: #666;">Various Artists</p>
+                    
+                    <!-- Music options grid -->
+                    <div class="music-options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
+                        <div class="music-option" data-src="assets/music/chillhop.mp3" style="background-color: #f8f9fa; border-radius: 8px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+                            <img src="assets/chillhop-icon.png" alt="Chillhop" style="width: 100%; height: 80px; object-fit: cover; border-radius: 4px;">
+                            <p style="margin: 8px 0 0 0; font-weight: 600; font-size: 0.9rem;">Chillhop Beats</p>
                         </div>
-                        <button style="margin-left: auto; background-color: #007bff; color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">▶</button>
+                        
+                        <div class="music-option" data-src="assets/music/lofi.mp3" style="background-color: #f8f9fa; border-radius: 8px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+                            <img src="assets/lofi-icon.png" alt="Lo-Fi" style="width: 100%; height: 80px; object-fit: cover; border-radius: 4px;">
+                            <p style="margin: 8px 0 0 0; font-weight: 600; font-size: 0.9rem;">Lo-Fi Study</p>
+                        </div>
+                        
+                        <div class="music-option" data-src="assets/music/nature.mp3" style="background-color: #f8f9fa; border-radius: 8px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+                            <img src="assets/nature-icon.png" alt="Nature" style="width: 100%; height: 80px; object-fit: cover; border-radius: 4px;">
+                            <p style="margin: 8px 0 0 0; font-weight: 600; font-size: 0.9rem;">Nature Sounds</p>
+                        </div>
+                        
+                        <div class="music-option" data-src="assets/music/piano.mp3" style="background-color: #f8f9fa; border-radius: 8px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+                            <img src="assets/piano-icon.png" alt="Piano" style="width: 100%; height: 80px; object-fit: cover; border-radius: 4px;">
+                            <p style="margin: 8px 0 0 0; font-weight: 600; font-size: 0.9rem;">Piano Focus</p>
+                        </div>
                     </div>
+                    
+                    <!-- Music player controls -->
+                    <div class="music-player" style="display: flex; align-items: center; gap: 10px; margin-top: 15px; padding: 10px; background-color: #f0f2f5; border-radius: 8px;">
+                        <button id="play-button" style="background-color: #007bff; color: white; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer;">▶</button>
+                        <div>
+                            <p id="track-name" style="margin: 0; font-weight: bold;">Select a track</p>
+                            <div style="height: 3px; width: 100%; background-color: #ddd; margin-top: 5px; border-radius: 3px;">
+                                <div id="progress-bar" style="height: 100%; width: 0%; background-color: #007bff; border-radius: 3px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden audio element -->
+                    <audio id="audio-player" style="display: none;"></audio>
                 </div>
 
                 <div class="tips-for-focus" style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
@@ -63,5 +92,87 @@
     </main>
 
     <script src="shared-scripts.js"></script>
+    <script>
+        // Start session button functionality
+        document.getElementById('start-session-btn').addEventListener('click', function() {
+            // Get the focus duration value
+            const focusDuration = document.getElementById('focus-duration').value;
+            const breakDuration = document.getElementById('break-duration').value;
+            
+            // Store the values in session storage to use in the focus session page
+            sessionStorage.setItem('focusDuration', focusDuration);
+            sessionStorage.setItem('breakDuration', breakDuration);
+            
+            // Navigate to the focus session page
+            window.location.href = 'focus-session.html';
+        });
+        
+        // Music player functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const musicOptions = document.querySelectorAll('.music-option');
+            const playButton = document.getElementById('play-button');
+            const audioPlayer = document.getElementById('audio-player');
+            const trackName = document.getElementById('track-name');
+            const progressBar = document.getElementById('progress-bar');
+            
+            let isPlaying = false;
+            let currentTrack = '';
+            
+            // Add click event listeners to music options
+            musicOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Visual indication of selection
+                    musicOptions.forEach(opt => opt.style.backgroundColor = '#f8f9fa');
+                    this.style.backgroundColor = '#e6f2ff';
+                    
+                    // Set track information
+                    currentTrack = this.getAttribute('data-src');
+                    trackName.textContent = this.querySelector('p').textContent;
+                    
+                    // Setup audio
+                    audioPlayer.src = currentTrack;
+                    audioPlayer.load();
+                    
+                    // Auto-play when selecting
+                    audioPlayer.play();
+                    playButton.textContent = '⏸';
+                    isPlaying = true;
+                });
+            });
+            
+            // Play/pause button functionality
+            playButton.addEventListener('click', function() {
+                if (currentTrack === '') {
+                    // If no track selected, select first one
+                    if (musicOptions.length > 0) {
+                        const firstOption = musicOptions[0];
+                        firstOption.click();
+                        return;
+                    }
+                }
+                
+                if (isPlaying) {
+                    audioPlayer.pause();
+                    playButton.textContent = '▶';
+                } else {
+                    audioPlayer.play();
+                    playButton.textContent = '⏸';
+                }
+                isPlaying = !isPlaying;
+            });
+            
+            // Update progress bar
+            audioPlayer.addEventListener('timeupdate', function() {
+                const percentage = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                progressBar.style.width = percentage + '%';
+            });
+            
+            // When audio ends, reset
+            audioPlayer.addEventListener('ended', function() {
+                audioPlayer.currentTime = 0;
+                audioPlayer.play(); // Loop the track
+            });
+        });
+    </script>
 </body>
 </html>
