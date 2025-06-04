@@ -5,49 +5,252 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create Vision Board - Visionly</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="create-board.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Add back Dancing Script for navbar logo consistency -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
   <!-- Load Firebase configuration and navigation -->
   <script src="firebase-config.js"></script>
   <script src="nav-auth.js"></script>
-</head>
-<body style="font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #333; margin: 0; padding: 0;">
-    <div id="navbar-container"></div>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
     
-    <header class="page-header" style="margin-top: 80px; text-align: center; padding: 20px;">
-        <h1 style="font-size: 2rem; font-weight: bold; color: #333;">Create Your Vision Board</h1>
-        <p style="color: #666;">Design and organize your goals visually.</p>
-    </header>
-    <main style="width: 100%; max-width: 1200px; margin: 20px auto; padding: 20px; display: flex; gap: 40px;">
-        <!-- Left Section -->
-        <section style="flex: 1; background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <form id="create-board-form" style="display: flex; flex-direction: column; gap: 20px;">
-                <label for="board-title" style="font-weight: 600; color: #333;">Board Title</label>
-                <input type="text" id="board-title" name="board-title" placeholder="Enter board title" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; color: #333;">
-                <label for="board-description" style="font-weight: 600; color: #333;">Description</label>
-                <textarea id="board-description" name="board-description" placeholder="Enter board description" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; color: #333;"></textarea>
-                <button type="submit" style="padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold;">Create Board</button>
-            </form>
-        </section>
-
-        <!-- Right Section -->
-        <div class="image-upload-section" style="flex: 2; background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <h3 style="font-weight: 600; color: #333;">Upload or Search Images</h3>
-            <div style="margin-top: 20px; border: 2px dashed #ddd; border-radius: 8px; padding: 40px; text-align: center;">
-                <p style="color: #666;">Drag and drop images here or click to upload</p>
-                <button style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Upload Images</button>
-            </div>
-            <div style="margin-top: 20px;">
-                <label for="unsplash-search" style="font-weight: 600; color: #333;">Search Images from Unsplash</label>
-                <input type="text" id="unsplash-search" placeholder="Search for images" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 10px;">
-                <button style="margin-top: 10px; padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Search</button>
-            </div>
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .main-layout {
+      display: flex;
+      margin-top: 40px;
+      gap: 30px;
+    }
+    
+    .left-column {
+      flex: 3;
+    }
+    
+    .right-column {
+      flex: 2;
+    }
+    
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 15px;
+    }
+    
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .board-preview {
+      margin-top: 0; /* Remove top margin completely */
+    }
+    
+    .board-preview h2 {
+      font-weight: 500;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    
+    .preview-item {
+      aspect-ratio: 1/1;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .search-section {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .search-section h2 {
+      font-weight: 500;
+      font-size: 16px;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    
+    .upload-area {
+      border: 1px dashed #ddd;
+      border-radius: 8px;
+      padding: 30px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .upload-button {
+      background-color: #f0f0f0;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    
+    .search-container h3 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    
+    .search-input {
+      position: relative;
+    }
+    
+    .search-input input {
+      width: 100%;
+      padding: 10px;
+      padding-left: 30px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    .search-input svg {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+    }
+    
+    .search-results {
+      margin-top: 15px;
+      display: none; /* Hide search results section initially */
+    }
+    
+    .search-results.show {
+      display: block; /* Show when search is performed */
+    }
+    
+    .search-results h3 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    
+    .search-result-item {
+      aspect-ratio: 1/1;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    
+    .search-result-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  
+  <div class="container">
+    <!-- Updated heading with centered text and added subheading -->
+    <div style="text-align: center; margin-top: 80px; margin-bottom: 40px;">
+      <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 10px;">Create Your Vision Board</h1>
+      <p style="color: #666; font-size: 16px; margin: 0;">Design and organize your visual goals</p>
+    </div>
+    
+    <div class="main-layout">
+      <div class="left-column">
+        <div>
+          <input type="text" id="board-title" placeholder="Board Title">
+          <textarea id="board-description" placeholder="Description"></textarea>
         </div>
-    </main>
+        
+        <!-- Further reduced margins and adjusted spacing -->
+        <h2 style="font-weight: 600; font-size: 18px; margin-top: 15px; margin-bottom: 3px;">Board Preview</h2>
+        
+        <!-- Remove top margin from board-preview div itself -->
+        <div class="board-preview" style="margin-top: 0;">
+          <div class="preview-grid" id="preview-grid">
+            <!-- Empty state - this will be replaced with actual images when selected -->
+            <div style="grid-column: span 3; text-align: center; padding: 60px 20px; color: #999; background-color: #f5f5f5; border-radius: 8px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" style="margin-bottom: 15px; opacity: 0.5;">
+                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+              </svg>
+              <p style="margin: 0;">Select images from search results or upload your own to add them to your board</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="right-column">
+        <div class="search-section">
+          <h2>Upload or Search Images</h2>
+          
+          <div class="upload-area">
+            <p>Drag and drop images here or<br>click to upload</p>
+            <button class="upload-button">Upload Images</button>
+          </div>
+          
+          <div class="search-container">
+            <h3>Search Images from Unsplash</h3>
+            <div class="search-input">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+              </svg>
+              <input type="text" id="unsplash-search" placeholder="Search">
+            </div>
+            
+            <!-- Search Results section (hidden initially) -->
+            <div class="search-results" id="search-results-container">
+              <h3>Search Results</h3>
+              <div class="results-grid" id="search-results">
+                <!-- No empty state message initially -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Background Sound -->
   <audio id="background-sound" loop>
@@ -67,5 +270,114 @@
   <script type="module" src="create-board.js"></script>
   <script src="global-sound.js"></script>
   <script src="shared-scripts.js"></script>
+
+  <!-- Add a small script to handle search display -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('unsplash-search');
+      const searchResultsContainer = document.getElementById('search-results-container');
+      const searchResults = document.getElementById('search-results');
+      const previewGrid = document.getElementById('preview-grid');
+      
+      // Array to store selected images
+      const selectedImages = [];
+      
+      // Function to show search results with empty state
+      function showSearchResults() {
+        // Show the results container
+        searchResultsContainer.classList.add('show');
+        
+        // Add empty state message if not already searching
+        if (!searchResults.innerHTML.trim()) {
+          searchResults.innerHTML = `
+            <div style="grid-column: span 2; text-align: center; padding: 40px 0; color: #999;">
+              Search for images to see results here
+            </div>
+          `;
+        }
+      }
+      
+      // Function to update the preview grid with selected images
+      function updatePreviewGrid() {
+        if (selectedImages.length === 0) {
+          // Show empty state
+          previewGrid.innerHTML = `
+            <div style="grid-column: span 3; text-align: center; padding: 60px 20px; color: #999; background-color: #f5f5f5; border-radius: 8px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" style="margin-bottom: 15px; opacity: 0.5;">
+                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+              </svg>
+              <p style="margin: 0;">Select images from search results or upload your own to add them to your board</p>
+            </div>
+          `;
+        } else {
+          // Clear the grid
+          previewGrid.innerHTML = '';
+          
+          // Add each image to the grid
+          selectedImages.forEach((image, index) => {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.style.position = 'relative';
+            
+            previewItem.innerHTML = `
+              <img src="${image.url}" alt="${image.alt || 'Vision board image'}" style="width: 100%; height: 100%; object-fit: cover;">
+              <div style="position: absolute; top: 5px; right: 5px;">
+                <button class="remove-btn" data-index="${index}" style="background: rgba(255,255,255,0.7); border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>
+              </div>
+            `;
+            
+            // Add event listener to remove button
+            previewItem.querySelector('.remove-btn').addEventListener('click', function() {
+              const idx = parseInt(this.getAttribute('data-index'));
+              selectedImages.splice(idx, 1);
+              updatePreviewGrid();
+            });
+            
+            previewGrid.appendChild(previewItem);
+          });
+        }
+      }
+      
+      // Function to add image to the preview grid
+      function addImageToPreview(imageUrl, altText) {
+        selectedImages.push({
+          url: imageUrl,
+          alt: altText
+        });
+        updatePreviewGrid();
+      }
+      
+      // Add click event to search results
+      searchResults.addEventListener('click', function(e) {
+        const item = e.target.closest('.search-result-item');
+        if (item) {
+          const img = item.querySelector('img');
+          if (img) {
+            addImageToPreview(img.src, img.alt);
+          }
+        }
+      });
+      
+      // Listen for search input focus
+      searchInput.addEventListener('focus', showSearchResults);
+      
+      // Also show results when user clicks on search icon or presses Enter
+      searchInput.parentNode.querySelector('svg').addEventListener('click', function() {
+        searchInput.focus();
+        showSearchResults();
+      });
+      
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          showSearchResults();
+        }
+      });
+      
+      // Initialize empty preview grid
+      updatePreviewGrid();
+    });
+  </script>
 </body>
 </html>
