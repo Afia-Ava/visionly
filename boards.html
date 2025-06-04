@@ -5,151 +5,349 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your Vision Boards - Visionly</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="boards.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      margin-top: 80px;
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .subtitle {
+      color: #666;
+      font-size: 14px;
+      margin-top: 0;
+    }
+    
+    .search-container {
+      position: relative;
+      margin: 25px 0;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 30px;
+      border: none;
+      background-color: #eee;
+      font-size: 14px;
+    }
+    
+    .sort-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .new-board-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .filter-tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 25px;
+      overflow-x: auto;
+      padding-bottom: 1px;
+    }
+    
+    .tab {
+      padding: 8px 16px;
+      margin-right: 10px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    
+    .tab.active {
+      border-bottom: 2px solid #000;
+      font-weight: 500;
+    }
+    
+    .boards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    
+    .board-card {
+      border-radius: 10px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .board-image {
+      height: 150px;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .board-meta {
+      padding: 12px;
+    }
+    
+    .board-title {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    
+    .board-date {
+      color: #666;
+      font-size: 12px;
+      margin: 0;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 20px 0 60px; /* Reduced top padding to move content up */
+      color: #666;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Inter', sans-serif; /* Ensure consistent font */
+    }
+    
+    .empty-state svg {
+      margin-bottom: 15px;
+    }
+    
+    .empty-state p {
+      margin-top: 5px;
+      margin-bottom: 30px; /* Add more space between text and button */
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+    }
+  </style>
 </head>
-<body style="font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #333; margin: 0; padding: 0;">
+<body>
   <div id="navbar-container"></div>
-  <main class="boards-container">
-    <header class="boards-header">
-      <div class="header-content">
-        <div class="header-text">
-          <h1>your vision boards ✨</h1>
-          <p>keep dreaming, keep building</p>
+  
+  <div class="container">
+    <!-- Adjust margin to match progress page spacing -->
+    <div style="text-align: center; margin-top: 100px; margin-bottom: 40px;">
+      <h1 style="font-size: 2rem; font-weight: bold; color: #333; margin-bottom: 5px;">Your Vision Boards</h1>
+      <p style="color: #666; margin-top: 0; margin-bottom: 0;">Keep dreaming, keep building</p>
+    </div>
+    
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search">
+    </div>
+    
+    <div class="sort-container">
+      <span>Sort by: Latest</span>
+      <!-- Removed "+ New Board" button from here -->
+    </div>
+    
+    <div class="filter-tabs">
+      <div class="tab active">All</div>
+      <div class="tab">Career</div>
+      <div class="tab">Health</div>
+      <div class="tab">Travel</div>
+      <div class="tab">Finance</div>
+      <div class="tab">Personal</div>
+      <!-- Removed "+ Create New Board" tab from here -->
+    </div>
+    
+    <main>
+      <!-- Example boards that will be displayed once created -->
+      <div id="boards-container" class="boards-grid" style="display: none;">
+        <div class="board-card">
+          <div class="board-image" style="background-color: #2d4b4e; display: flex; align-items: center; justify-content: center; color: white;">
+            <div style="text-align: center;">
+              <div style="font-weight: 600;">CAREER</div>
+              <div style="font-size: 12px;">GOALS 2024</div>
+            </div>
+          </div>
+          <div class="board-meta">
+            <h3 class="board-title">Career Goals 2024</h3>
+            <p class="board-date">Created: 2023-04-16</p>
+          </div>
         </div>
-        <div class="header-actions">
-          <div class="search-bar">
-            <input type="text" placeholder="Search boards..." id="board-search">
-            <button class="search-btn">🔍</button>
+        
+        <div class="board-card">
+          <div class="board-image" style="background-image: url('assets/health-wellness.jpg');"></div>
+          <div class="board-meta">
+            <h3 class="board-title">Health & Wellness</h3>
+            <p class="board-date">Created: 2023-11-20</p>
           </div>
-          <div class="sort-dropdown">
-            <select id="sort-boards">
-              <option value="date-desc">Sort by: Latest</option>
-              <option value="date-asc">Sort by: Oldest</option>
-              <option value="name-asc">Sort by: A-Z</option>
-              <option value="name-desc">Sort by: Z-A</option>
-            </select>
+        </div>
+        
+        <div class="board-card">
+          <div class="board-image" style="background-image: url('assets/travel-bucket.jpg');"></div>
+          <div class="board-meta">
+            <h3 class="board-title">Travel Bucket List</h3>
+            <p class="board-date">Created: 2023-10-05</p>
           </div>
-          <a href="create-board.html" class="new-board-btn">+ new board</a>
+        </div>
+        
+        <div class="board-card">
+          <div class="board-image" style="background-image: url('assets/financial-freedom.jpg');"></div>
+          <div class="board-meta">
+            <h3 class="board-title">Financial Freedom</h3>
+            <p class="board-date">Created: 2023-09-10</p>
+          </div>
+        </div>
+        
+        <div class="board-card">
+          <div class="board-image" style="background-color: #2d4b4e; display: flex; align-items: center; justify-content: center; color: white;">
+            <div style="text-align: center;">
+              <div style="font-weight: 600;">PERSONAL</div>
+              <div style="font-size: 12px;">DEVELOPMENT</div>
+            </div>
+          </div>
+          <div class="board-meta">
+            <h3 class="board-title">Personal Growth</h3>
+            <p class="board-date">Created: 2023-08-25</p>
+          </div>
         </div>
       </div>
-      <div class="filter-tags">
-        <button class="tag-btn active">All</button>
-        <button class="tag-btn">Career</button>
-        <button class="tag-btn">Health</button>
-        <button class="tag-btn">Travel</button>
-        <button class="tag-btn">Finance</button>
-        <button class="tag-btn">Personal</button>
+
+      <!-- Empty state (initially shown) -->
+      <div id="empty-state" class="empty-state">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="12" y1="8" x2="12" y2="16"></line>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>You haven't created any vision boards yet.<br>Start by creating your first board!</p>
+        <a href="create-board.html" class="new-board-btn">Create Your First Board</a>
       </div>
-    </header>
-
-    <section class="boards-grid">
-      <!-- Example Board Cards -->
-      <article class="board-card">
-        <div class="board-preview">
-          <img src="assets/summergoals.jpg" alt="Summer Goals Preview">
-        </div>
-        <div class="board-info">
-          <h3>Summer Goals</h3>
-          <p class="board-date">Created: Apr 14, 2025</p>
-          <div class="board-actions">
-            <button class="action-btn edit">✏️ Edit</button>
-            <button class="action-btn view">🔍 View</button>
-            <button class="action-btn share">📤 Share</button>
-          </div>
-        </div>
-      </article>
-
-      <article class="board-card">
-        <div class="board-preview">
-          <img src="assets/careergoals.jpg" alt="Career Vision Preview">
-        </div>
-        <div class="board-info">
-          <h3>Career Vision</h3>
-          <p class="board-date">Created: Apr 12, 2025</p>
-          <div class="board-actions">
-            <button class="action-btn edit">✏️ Edit</button>
-            <button class="action-btn view">🔍 View</button>
-            <button class="action-btn share">📤 Share</button>
-          </div>
-        </div>
-      </article>
-
-      <article class="board-card">
-        <div class="board-preview">
-          <img src="assets/healthgoals.jpg" alt="Health Goals Preview">
-        </div>
-        <div class="board-info">
-          <h3>Health Goals</h3>
-          <p class="board-date">Created: Apr 10, 2025</p>
-          <div class="board-actions">
-            <button class="action-btn edit">✏️ Edit</button>
-            <button class="action-btn view">🔍 View</button>
-            <button class="action-btn share">📤 Share</button>
-          </div>
-        </div>
-      </article>
-
-      <article class="board-card">
-        <div class="board-preview">
-          <img src="assets/travelgoals.jpg" alt="Travel Dreams Preview">
-        </div>
-        <div class="board-info">
-          <h3>Travel Dreams</h3>
-          <p class="board-date">Created: Apr 8, 2025</p>
-          <div class="board-actions">
-            <button class="action-btn edit">✏️ Edit</button>
-            <button class="action-btn view">🔍 View</button>
-            <button class="action-btn share">📤 Share</button>
-          </div>
-        </div>
-      </article>
-
-      <article class="board-card">
-        <div class="board-preview">
-          <img src="assets/personalgrowth.jpg" alt="Personal Growth Preview">
-        </div>
-        <div class="board-info">
-          <h3>Personal Growth</h3>
-          <p class="board-date">Created: Apr 5, 2025</p>
-          <div class="board-actions">
-            <button class="action-btn edit">✏️ Edit</button>
-            <button class="action-btn view">🔍 View</button>
-            <button class="action-btn share">📤 Share</button>
-          </div>
-        </div>
-      </article>
-
-      <!-- Add Board Card -->
-      <a href="create-board.html" class="board-card add-board">
-        <div class="add-board-content">
-          <span class="add-icon">+</span>
-          <p>Create New Board</p>
-        </div>
-      </a>
-    </section>
-  </main>
+    </main>
+  </div>
 
   <!-- Background Sound -->
-<audio id="background-sound" loop>
-    <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-</audio>
+  <audio id="background-sound" loop>
+      <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+  </audio>
 
-<!-- Toggle Sound Button -->
-<button id="toggle-sound">
-    <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon">
-</button>
+  <!-- Toggle Sound Button -->
+  <button id="toggle-sound">
+      <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon">
+  </button>
 
+  <script src="firebase-config.js"></script>
   <script src="nav-auth.js"></script>
-  <script src="boards.js"></script>
-  <!-- Include Global Sound Script -->
   <script src="global-sound.js"></script>
   <script src="shared-scripts.js"></script>
+  
+  <!-- Script to handle board display logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const boardsContainer = document.getElementById('boards-container');
+      const emptyState = document.getElementById('empty-state');
+      
+      // Function to check if the user has any boards
+      function checkForBoards() {
+        // This would normally query Firebase for the user's boards
+        // For now, we'll set hasBoards to false by default
+        const hasBoards = false; // Default to empty state
+        
+        if (!hasBoards) {
+          boardsContainer.style.display = 'none';
+          emptyState.style.display = 'block';
+        } else {
+          boardsContainer.style.display = 'grid';
+          emptyState.style.display = 'none';
+        }
+      }
+      
+      // Initialize the board display
+      checkForBoards();
+      
+      // In a complete implementation, this function would be called after creating a board
+      function addNewBoard(boardData) {
+        // Create a new board card element
+        const boardCard = document.createElement('div');
+        boardCard.className = 'board-card';
+        
+        // Set background based on if there's an image or if it's a color background
+        let backgroundStyle = '';
+        if (boardData.imageUrl) {
+          backgroundStyle = `background-image: url('${boardData.imageUrl}');`;
+        } else {
+          backgroundStyle = `background-color: #2d4b4e; display: flex; align-items: center; justify-content: center; color: white;`;
+        }
+        
+        // Build the board HTML
+        if (boardData.imageUrl) {
+          boardCard.innerHTML = `
+            <div class="board-image" style="${backgroundStyle}"></div>
+            <div class="board-meta">
+              <h3 class="board-title">${boardData.title}</h3>
+              <p class="board-date">Created: ${boardData.createdAt}</p>
+            </div>
+          `;
+        } else {
+          boardCard.innerHTML = `
+            <div class="board-image" style="${backgroundStyle}">
+              <div style="text-align: center;">
+                <div style="font-weight: 600;">${boardData.category.toUpperCase()}</div>
+                <div style="font-size: 12px;">${boardData.subtitle.toUpperCase()}</div>
+              </div>
+            </div>
+            <div class="board-meta">
+              <h3 class="board-title">${boardData.title}</h3>
+              <p class="board-date">Created: ${boardData.createdAt}</p>
+            </div>
+          `;
+        }
+        
+        // Add to the board container
+        boardsContainer.appendChild(boardCard);
+        
+        // Show the boards container and hide empty state
+        boardsContainer.style.display = 'grid';
+        emptyState.style.display = 'none';
+      }
+      
+      // Handle tab clicks
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          tabs.forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    });
+  </script>
 </body>
 </html>
