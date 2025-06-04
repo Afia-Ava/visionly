@@ -29,7 +29,7 @@
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 10px; /* Reduced side padding from 20px to 10px */
     }
     
     .main-layout {
@@ -39,11 +39,13 @@
     }
     
     .left-column {
-      flex: 3;
+      flex: 2;
+      padding-right: 10px; /* Added padding-right to push content left */
+      padding-left: 0; /* Remove left padding to push content more to the left */
     }
     
     .right-column {
-      flex: 2;
+      flex: 3; /* Increased from 2 to 3 to make it wider */
     }
     
     input[type="text"], textarea {
@@ -74,7 +76,7 @@
     .preview-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      gap: 15px; /* Increased gap from 10px to 15px */
     }
     
     .preview-item {
@@ -107,9 +109,9 @@
     .upload-area {
       border: 1px dashed #ddd;
       border-radius: 8px;
-      padding: 30px 20px;
+      padding: 20px; /* Reduced padding from 30px to 20px */
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px; /* Reduced from 20px to 15px */
     }
     
     .upload-button {
@@ -190,65 +192,79 @@
   <div id="navbar-container"></div>
   
   <div class="container">
-    <!-- Updated heading with centered text and added subheading -->
-    <div style="text-align: center; margin-top: 80px; margin-bottom: 40px;">
-      <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 10px;">Create Your Vision Board</h1>
+    <div style="text-align: center; margin-top: 100px; margin-bottom: 40px;">
+      <h1 style="font-size: 28px; font-weight: 600; margin-bottom: 5px;">Create Your Vision Board</h1>
       <p style="color: #666; font-size: 16px; margin: 0;">Design and organize your visual goals</p>
     </div>
     
     <div class="main-layout">
       <div class="left-column">
-        <div>
+        <!-- Input fields and image search section moved to left column - compressed spacing -->
+        <div style="margin-bottom: 15px;">
           <input type="text" id="board-title" placeholder="Board Title">
-          <textarea id="board-description" placeholder="Description"></textarea>
+          
+          <!-- Adjusted dropdown to keep native button with better positioning -->
+          <select id="board-category" style="width: 100%; padding: 12px; padding-right: 30px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 15px; background-color: white; color: #333; appearance: menulist; -webkit-appearance: menulist;">
+            <option value="" disabled selected>Select Category</option>
+            <option value="career">Career</option>
+            <option value="health">Health</option>
+            <option value="travel">Travel</option>
+            <option value="finance">Finance</option>
+            <option value="personal">Personal</option>
+            <option value="other">Other</option>
+          </select>
+          
+          <textarea id="board-description" placeholder="Description" style="min-height: 100px;"></textarea>
         </div>
         
-        <!-- Further reduced margins and adjusted spacing -->
-        <h2 style="font-weight: 600; font-size: 18px; margin-top: 15px; margin-bottom: 3px;">Board Preview</h2>
+        <h2 style="font-weight: 500; font-size: 16px; margin-top: 0; margin-bottom: 10px;">Upload or Search Images</h2>
         
-        <!-- Remove top margin from board-preview div itself -->
-        <div class="board-preview" style="margin-top: 0;">
-          <div class="preview-grid" id="preview-grid">
-            <!-- Empty state - this will be replaced with actual images when selected -->
-            <div style="grid-column: span 3; text-align: center; padding: 60px 20px; color: #999; background-color: #f5f5f5; border-radius: 8px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" style="margin-bottom: 15px; opacity: 0.5;">
-                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
-              </svg>
-              <p style="margin: 0;">Select images from search results or upload your own to add them to your board</p>
+        <div class="upload-area">
+          <p>Drag and drop images here or<br>click to upload</p>
+          <button class="upload-button">Upload Images</button>
+        </div>
+        
+        <div class="search-container">
+          <h3>Search Images from Unsplash</h3>
+          <div class="search-input">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
+            <input type="text" id="unsplash-search" placeholder="Search">
+          </div>
+          
+          <!-- Search Results section (hidden initially) -->
+          <div class="search-results" id="search-results-container">
+            <h3>Search Results</h3>
+            <div class="results-grid" id="search-results">
+              <!-- No empty state message initially -->
             </div>
           </div>
         </div>
       </div>
       
       <div class="right-column">
-        <div class="search-section">
-          <h2>Upload or Search Images</h2>
+        <!-- Board Preview - enlarged -->
+        <div style="padding: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h2 style="font-weight: 600; font-size: 18px; margin: 0;">Board Preview</h2>
           
-          <div class="upload-area">
-            <p>Drag and drop images here or<br>click to upload</p>
-            <button class="upload-button">Upload Images</button>
-          </div>
+          <!-- Updated Save Board button with purple color -->
+          <button id="save-board-btn" style="background-color: #2d1a45; color: white; border: none; border-radius: 4px; padding: 8px 16px; font-size: 14px; cursor: pointer; font-weight: 500; font-family: 'Inter', sans-serif;">Save Board</button>
+        </div>
           
-          <div class="search-container">
-            <h3>Search Images from Unsplash</h3>
-            <div class="search-input">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+        <div class="board-preview" style="margin-top: 0; margin-bottom: 20px;">
+          <div class="preview-grid" id="preview-grid" style="height: 500px;">
+            <div style="grid-column: span 3; text-align: center; padding: 60px 20px; color: #999; background-color: #f5f5f5; border-radius: 8px; height: 100%;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" style="margin-bottom: 15px; opacity: 0.5;">
+                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
               </svg>
-              <input type="text" id="unsplash-search" placeholder="Search">
-            </div>
-            
-            <!-- Search Results section (hidden initially) -->
-            <div class="search-results" id="search-results-container">
-              <h3>Search Results</h3>
-              <div class="results-grid" id="search-results">
-                <!-- No empty state message initially -->
-              </div>
+              <p style="margin: 0;">Select images from search results or<br>upload your own to add them to your board</p>
             </div>
           </div>
         </div>
       </div>
+      
     </div>
   </div>
 
@@ -307,7 +323,7 @@
                 <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                 <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
               </svg>
-              <p style="margin: 0;">Select images from search results or upload your own to add them to your board</p>
+              <p style="margin: 0;">Select images from search results or<br>upload your own to add them to your board</p>
             </div>
           `;
         } else {
