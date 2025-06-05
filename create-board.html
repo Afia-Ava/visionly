@@ -199,11 +199,9 @@
     
     <div class="main-layout">
       <div class="left-column">
-        <!-- Input fields and image search section moved to left column - compressed spacing -->
         <div style="margin-bottom: 15px;">
           <input type="text" id="board-title" placeholder="Board Title">
           
-          <!-- Adjusted dropdown to keep native button with better positioning -->
           <select id="board-category" style="width: 100%; padding: 12px; padding-right: 30px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 15px; background-color: white; color: #333; appearance: menulist; -webkit-appearance: menulist;">
             <option value="" disabled selected>Select Category</option>
             <option value="career">Career</option>
@@ -233,11 +231,9 @@
             <input type="text" id="unsplash-search" placeholder="Search">
           </div>
           
-          <!-- Search Results section (hidden initially) -->
           <div class="search-results" id="search-results-container">
             <h3>Search Results</h3>
             <div class="results-grid" id="search-results">
-              <!-- No empty state message initially -->
             </div>
           </div>
         </div>
@@ -248,7 +244,6 @@
         <div style="padding: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <h2 style="font-weight: 600; font-size: 18px; margin: 0;">Board Preview</h2>
           
-          <!-- Updated Save Board button with purple color -->
           <button id="save-board-btn" style="background-color: #2d1a45; color: white; border: none; border-radius: 4px; padding: 8px 16px; font-size: 14px; cursor: pointer; font-weight: 500; font-family: 'Inter', sans-serif;">Save Board</button>
         </div>
           
@@ -313,7 +308,6 @@
         }
       }
       
-      // Function to update the preview grid with selected images
       function updatePreviewGrid() {
         if (selectedImages.length === 0) {
           // Show empty state
