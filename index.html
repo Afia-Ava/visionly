@@ -46,11 +46,12 @@
 <body style="font-family: 'Inter', sans-serif; background-color: #fff; color: #333; margin: 0; padding: 0;">
     <div id="navbar-container"></div>
 
-    <!-- Hero Section as a centered card with purple abstract background -->
+    <!-- Hero Section as a centered card with background image and dark purple overlay -->
     <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 110px; margin-bottom: 32px;">
-      <div style="width: 90vw; max-width: 900px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(80,40,120,0.07); background: linear-gradient(120deg, #7e57c2 0%, #6b46c1 60%, #4a2483 100%); position: relative;">
-        <!-- Abstract shapes (SVG or CSS) can be added here for more detail if desired -->
-        <div style="padding: 64px 24px 56px 24px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 2;">
+      <div style="width: 98vw; max-width: 1100px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(80,40,120,0.07); position: relative; min-height: 280px;">
+        <div style="position: absolute; inset: 0; z-index: 1; background: url('assets/inspiration3.png') center center / cover no-repeat;"></div>
+        <div style="position: absolute; inset: 0; z-index: 2; background: linear-gradient(120deg, rgba(76, 36, 131, 0.72) 0%, rgba(60, 30, 100, 0.82) 100%);"></div>
+        <div style="padding: 80px 24px 72px 24px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 3;">
           <h1 style="color: #fff; font-size: 2.3rem; font-weight: 700; margin-bottom: 12px; text-align: center; letter-spacing: -1px;">Vision Boards And Track Progress</h1>
           <p style="color: #f3eaff; font-size: 1.08rem; margin-bottom: 32px; text-align: center;">Visualize your goals and turn them into reality</p>
           <a href="create-board.html" style="background: #3578e5; color: #fff; font-weight: 600; border-radius: 6px; padding: 12px 32px; font-size: 1rem; text-decoration: none; box-shadow: 0 2px 8px rgba(80,40,120,0.08); transition: background 0.2s;">Create</a>
@@ -122,67 +123,100 @@
       </div>
     </section>
     
+    <!-- Add more space before Inspiration Gallery -->
+    <div style="height: 48px;"></div>
+
     <!-- Inspiration Gallery Section (new design) -->
     <section class="gallery" id="boards" style="background: #fff; padding: 0 0 56px 0;">
       <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
-        <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 28px; color: #181818;">Inspiration Gallery</h2>
+        <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 28px; color: #181818;">Inspiration Gallery</h2>
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
           <!-- Card 1 -->
           <div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 1px solid #f2f2f2; overflow: hidden; display: flex; flex-direction: column;">
-            <img src="assets/inspiration2.png" alt="Productive Workspace" style="width: 100%; height: 140px; object-fit: cover;">
+            <img src="assets/card1.jpg" alt="Productive Workspace" style="width: 100%; height: 140px; object-fit: cover;">
             <div style="padding: 20px 18px 16px 18px; flex: 1;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px;">Productive Workspace</div>
-              <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px;">Design a workspace that fosters creativity and efficiency.</div>
-              <a href="#" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View More</a>
+              <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Design a workspace that fosters creativity and efficiency.</div>
+              <a href="#" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View</a>
             </div>
           </div>
           <!-- Card 2 -->
           <div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 1px solid #f2f2f2; overflow: hidden; display: flex; flex-direction: column;">
-            <img src="assets/inspiration3.png" alt="Healthy Habits" style="width: 100%; height: 140px; object-fit: cover;">
+            <img src="assets/card2.jpeg" alt="Healthy Habits" style="width: 100%; height: 140px; object-fit: cover;">
             <div style="padding: 20px 18px 16px 18px; flex: 1;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px;">Healthy Habits</div>
-              <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px;">Inspire your wellness journey with visuals that motivate daily healthy choices.</div>
-              <a href="#" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View More</a>
+              <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Inspire your wellness journey with visuals that motivate daily healthy choices.</div>
+              <a href="#" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View</a>
             </div>
           </div>
           <!-- Card 3 -->
           <div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 1px solid #f2f2f2; overflow: hidden; display: flex; flex-direction: column;">
-            <img src="assets/inspiration4.png" alt="Travel Dreams" style="width: 100%; height: 140px; object-fit: cover;">
+            <img src="assets/card3.jpeg" alt="Travel Dreams" style="width: 100%; height: 140px; object-fit: cover;">
             <div style="padding: 20px 18px 16px 18px; flex: 1;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px;">Travel Dreams</div>
-              <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px;">Visualize your next adventure and keep your travel goals top of mind.</div>
-              <a href="#" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View More</a>
+              <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Visualize your next adventure and keep your travel goals top of mind.</div>
+              <a href="#" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View</a>
             </div>
           </div>
           <!-- Card 4 -->
           <div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 1px solid #f2f2f2; overflow: hidden; display: flex; flex-direction: column;">
-            <img src="assets/inspiration5.png" alt="Creative Pursuits" style="width: 100%; height: 140px; object-fit: cover;">
+            <img src="assets/card4.jpg" alt="Creative Pursuits" style="width: 100%; height: 140px; object-fit: cover;">
             <div style="padding: 20px 18px 16px 18px; flex: 1;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px;">Creative Pursuits</div>
-              <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px;">Fuel your artistic side with boards dedicated to your creative passions.</div>
-              <a href="#" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View More</a>
+              <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Fuel your artistic side with boards dedicated to your creative passions.</div>
+              <a href="#" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View</a>
             </div>
           </div>
         </div>
       </div>
     </section>
     
-    <footer>
-        <div class="footer-content">
-          <div>
-            <h4 style="font-family: 'Inter', sans-serif; font-weight: 600;">Contact us at:</h4>
-            <p style="font-family: 'Inter', sans-serif; font-weight: 400;">visionly.support@gmail.com</p>
+    <!-- Add more space before Quote Card -->
+    <div style="height: 36px;"></div>
+
+    <!-- Quote Card Section (before footer) -->
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin-bottom: 36px;">
+      <div style="width: 98vw; max-width: 1100px; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 24px rgba(80,40,120,0.07); background: #f5f3ef; position: relative; min-height: 180px; display: flex; align-items: flex-end;">
+        <!-- Wavy SVG background -->
+        <svg viewBox="0 0 1100 180" width="100%" height="180" style="position: absolute; top: 0; left: 0; z-index: 1;">
+          <defs>
+            <linearGradient id="beigeWaves" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#f5f3ef"/>
+              <stop offset="100%" stop-color="#e5e1da"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,60 Q275,120 550,60 T1100,60 V180 H0 Z"
+                fill="url(#beigeWaves)" opacity="0.85"/>
+          <path d="M0,120 Q400,180 1100,120 V180 H0 Z"
+                fill="url(#beigeWaves)" opacity="0.6"/>
+          <path d="M0,150 Q550,100 1100,150 V180 H0 Z"
+                fill="url(#beigeWaves)" opacity="0.4"/>
+        </svg>
+        <div style="position: relative; z-index: 2; padding: 32px 36px 24px 36px; color: #1a1333; width: 100%;">
+          <div style="font-size: 1.18rem; font-weight: 600; color: #1a1333; text-shadow: none; font-family: 'Inter', sans-serif;">
+            "The only limit to our realization of tomorrow will be our doubts of today."
           </div>
-          <div>
-            <h4 style="font-family: 'Inter', sans-serif; font-weight: 600;">Join our newsletter</h4>
-            <form id="newsletter-form">
-              <input type="email" placeholder="example@gmail.com" required />
-              <button type="submit" style="font-family: 'Inter', sans-serif;">submit</button>
-            </form>
+          <div style="font-size: 0.98rem; color: #3a2259; margin-top: 10px; font-family: 'Inter', sans-serif;">
+            – Franklin D. Roosevelt
           </div>
         </div>
-        <p class="copyright" style="font-family: 'Inter', sans-serif; font-size: 0.9rem;">Visionly® 2025. All Rights Reserved.</p>
-      </footer>
+      </div>
+    </div>
+
+    <!-- Footer similar to the screenshot, no social media -->
+    <footer style="background: #fff; padding: 24px 0 12px 0; border-top: 1px solid #f2f2f2;">
+      <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+        <div style="display: flex; justify-content: center; gap: 28px; margin-bottom: 10px; flex-wrap: wrap;">
+          <a href="about.html" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">About</a>
+          <a href="terms.html" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">Terms</a>
+          <a href="privacy.html" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">Privacy</a>
+          <a href="mailto:visionly.support@gmail.com" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">Contact</a>
+        </div>
+        <div style="color: #8a94a6; font-size: 0.95rem; font-family: 'Inter', sans-serif;">
+          © 2025 Visionly. All rights reserved.
+        </div>
+      </div>
+    </footer>
     
     <!-- Global Background Sound -->
     <audio id="background-sound" loop>
