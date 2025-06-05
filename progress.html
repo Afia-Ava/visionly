@@ -6,6 +6,10 @@
     <title>Progress Tracking - Visionly</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body style="font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #333; margin: 0; padding: 0;">
     <div id="navbar-container"></div>
@@ -20,26 +24,50 @@
 
         <div class="focus-setup" style="display: flex; gap: 40px; align-items: flex-start;">
             <div class="focus-left" style="flex: 2; background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                <form id="setup-form" style="display: flex; flex-direction: column; gap: 20px;">
-                    <label for="focus-duration" style="font-weight: 600; color: #333;">Focus Time (minutes)</label>
-                    <input type="number" id="focus-duration" name="focus-duration" min="1" max="60" value="25" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
-                    <label for="break-duration" style="font-weight: 600; color: #333;">Rest Time (minutes)</label>
-                    <input type="number" id="break-duration" name="break-duration" min="1" max="15" value="5" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
-                    <button type="button" id="start-session-btn" class="btn-primary" style="padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold;">Start Session</button>
-                </form>
-
-                <div class="daily-progress" style="margin-top: 40px;">
-                    <h3 style="font-weight: 600; color: #333;">Daily Progress</h3>
-                    <div class="progress-bar-container" style="margin-top: 10px; background-color: #eee; border-radius: 8px; height: 10px; overflow: hidden;">
-                        <div class="progress-bar" style="width: 60%; height: 100%; background-color: #007bff;"></div>
+                <!-- Focus Timer Section -->
+                <div class="focus-timer" style="margin-bottom: 30px;">
+                    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                        <div style="flex: 1;">
+                            <label for="focus-duration" style="display: block; font-weight: 600; color: #333; margin-bottom: 5px;">Focus Time (minutes)</label>
+                            <input type="number" id="focus-duration" name="focus-duration" min="1" max="60" value="25" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="break-duration" style="display: block; font-weight: 600; color: #333; margin-bottom: 5px;">Rest Time (minutes)</label>
+                            <input type="number" id="break-duration" name="break-duration" min="1" max="15" value="5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+                        </div>
                     </div>
-                    <p style="margin-top: 20px; color: #666;">3/5 tasks completed</p>
+                    <button type="button" id="start-session-btn" style="width: 100%; padding: 12px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Start Session</button>
                 </div>
 
-                <div class="streak" style="margin-top: 20px; background-color: #f8f9fa; border-radius: 8px; padding: 20px;">
-                    <h3 style="font-weight: 600; color: #333;">Streak</h3>
-                    <p style="font-size: 1.5rem; font-weight: bold; color: #007bff;">7 days</p>
-                    <p style="color: #28a745;">+10%</p>
+                <!-- Daily Goals Section -->
+                <div class="daily-goals" style="margin-bottom: 30px;">
+                    <div style="display: flex; gap: 20px; margin-bottom: 15px; align-items: flex-start;">
+                        <div style="flex: 1;">
+                            <h3 style="font-weight: 600; color: #333; margin: 0 0 15px 0;">Daily Goals</h3>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <input type="text" id="new-goal" placeholder="Add a new goal" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px;">
+                                <button id="add-goal-btn" style="width: 32px; height: 32px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #666;">+</button>
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3 style="font-weight: 600; color: #333; margin: 0 0 15px 0;">Daily Progress</h3>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                    <span style="color: #666; font-size: 14px;">Daily Goal Met</span>
+                                    <span id="progress-percentage" style="font-weight: 600; color: #333; font-size: 14px;">0%</span>
+                                </div>
+                                <div style="background-color: #f0f0f0; border-radius: 10px; height: 8px; overflow: hidden;">
+                                    <div id="progress-bar-fill" style="width: 0%; height: 100%; background-color: #007bff; border-radius: 10px; transition: width 0.3s ease;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <span style="color: #666; font-size: 14px;">% Goals Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goals-list" style="display: flex; flex-direction: column; gap: 10px; min-height: 150px; padding: 10px 0;">
+                        <!-- Goals will be added dynamically by users -->
+                    </div>
                 </div>
             </div>
 
@@ -107,6 +135,93 @@
             
             // Navigate to the focus session page
             window.location.href = 'focus-session.html';
+        });
+        
+        // Goal management and progress tracking
+        document.addEventListener('DOMContentLoaded', function() {
+            const newGoalInput = document.getElementById('new-goal');
+            const goalsList = document.querySelector('.goals-list');
+            const progressPercentage = document.getElementById('progress-percentage');
+            const progressBarFill = document.getElementById('progress-bar-fill');
+            let goalCounter = 1; // Start from 1 since we have no default goals
+            
+            // Function to calculate and update progress
+            function updateProgress() {
+                const allGoals = goalsList.querySelectorAll('.goal-item input[type="checkbox"]');
+                const completedGoals = goalsList.querySelectorAll('.goal-item input[type="checkbox"]:checked');
+                
+                if (allGoals.length === 0) {
+                    progressPercentage.textContent = '0%';
+                    progressBarFill.style.width = '0%';
+                    return;
+                }
+                
+                const percentage = Math.round((completedGoals.length / allGoals.length) * 100);
+                progressPercentage.textContent = percentage + '%';
+                progressBarFill.style.width = percentage + '%';
+            }
+            
+            // Add event listeners to checkboxes (using event delegation)
+            goalsList.addEventListener('change', function(e) {
+                if (e.target.type === 'checkbox') {
+                    const label = e.target.nextElementSibling;
+                    if (e.target.checked) {
+                        label.style.textDecoration = 'line-through';
+                        label.style.opacity = '0.7';
+                    } else {
+                        label.style.textDecoration = 'none';
+                        label.style.opacity = '1';
+                    }
+                    updateProgress();
+                }
+            });
+            
+            // Add new goal functionality
+            newGoalInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim()) {
+                    addNewGoal();
+                }
+            });
+            
+            // Function to add new goal
+            function addNewGoal() {
+                const goalText = newGoalInput.value.trim();
+                if (!goalText) return;
+                
+                const goalId = 'goal' + goalCounter++;
+                
+                const goalItem = document.createElement('div');
+                goalItem.className = 'goal-item';
+                goalItem.style.cssText = 'display: flex; align-items: center; gap: 10px;';
+                goalItem.innerHTML = `
+                    <input type="checkbox" id="${goalId}" style="width: 16px; height: 16px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label for="${goalId}" style="color: #333;">${goalText}</label>
+                        <button class="remove-goal" style="background: none; border: none; color: #999; cursor: pointer; font-size: 16px; padding: 0; width: 20px; height: 20px;">×</button>
+                    </div>
+                `;
+                
+                goalsList.appendChild(goalItem);
+                newGoalInput.value = '';
+                updateProgress();
+            }
+            
+            // Add button click functionality for adding goals
+            const addGoalBtn = document.getElementById('add-goal-btn');
+            addGoalBtn.addEventListener('click', function() {
+                addNewGoal();
+            });
+            
+            // Remove goal functionality
+            goalsList.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-goal')) {
+                    e.target.closest('.goal-item').remove();
+                    updateProgress();
+                }
+            });
+            
+            // Initial progress calculation
+            updateProgress();
         });
         
         // Music player functionality
