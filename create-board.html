@@ -334,6 +334,70 @@
   <script src="global-sound.js"></script>
   <script src="shared-scripts.js"></script>
   <script src="profile-dropdown.js"></script>
+  <script src="cloudinary-config.js"></script>
+  <script src="firebase-vision-boards.js"></script>
+  <script>
+// Example: Image upload and board creation
+document.addEventListener('DOMContentLoaded', function() {
+    const imageUploadInput = document.getElementById('image-upload');
+    const createBoardBtn = document.getElementById('create-board-btn');
+    
+    // Handle image upload
+    imageUploadInput?.addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            try {
+                console.log('Uploading image...');
+                const uploadResult = await uploadToCloudinary(file);
+                console.log('Image uploaded:', uploadResult);
+                
+                // Store the upload result for later use
+                window.uploadedImage = uploadResult;
+                
+                // Show preview
+                const preview = document.getElementById('image-preview');
+                if (preview) {
+                    preview.src = uploadResult.url;
+                    preview.style.display = 'block';
+                }
+            } catch (error) {
+                alert('Error uploading image: ' + error.message);
+            }
+        }
+    });
+    
+    // Handle board creation
+    createBoardBtn?.addEventListener('click', async function() {
+        const boardName = document.getElementById('board-name').value;
+        const user = firebase.auth().currentUser;
+        
+        if (!user) {
+            alert('Please log in first');
+            return;
+        }
+        
+        if (!boardName) {
+            alert('Please enter a board name');
+            return;
+        }
+        
+        try {
+            // Create the board
+            const boardId = await createVisionBoard(boardName, user.uid);
+            
+            // Add uploaded image if any
+            if (window.uploadedImage) {
+                await addImageToBoard(boardId, window.uploadedImage, { x: 100, y: 100 });
+            }
+            
+            alert('Vision board created successfully!');
+            window.location.href = `edit-board.html?id=${boardId}`;
+        } catch (error) {
+            alert('Error creating board: ' + error.message);
+        }
+    });
+});
+  </script>
 
   <!-- Add a small script to handle search display -->
   <script>
@@ -469,20 +533,29 @@
             previewItem.querySelector('.remove-btn').addEventListener('click', function() {
               const idx = parseInt(this.getAttribute('data-index'));
               selectedImages.splice(idx, 1);
+              window.selectedImages = selectedImages; // Update global array
               updatePreviewGrid();
             });
             
             previewGrid.appendChild(previewItem);
           });
         }
+        
+        // Always update the global selectedImages
+        window.selectedImages = selectedImages;
       }
       
       // Function to add image to the preview grid
-      function addImageToPreview(imageUrl, altText) {
+      function addImageToPreview(imageUrl, altText, file = null) {
         selectedImages.push({
           url: imageUrl,
-          alt: altText
+          alt: altText,
+          file: file
         });
+        
+        // Also update the global selectedImages for the save function
+        window.selectedImages = selectedImages;
+        
         updatePreviewGrid();
       }
       
@@ -503,12 +576,11 @@
           if (file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = function(e) {
-              addImageToPreview(e.target.result, file.name);
+              addImageToPreview(e.target.result, file.name, file);
             };
             reader.readAsDataURL(file);
           }
         });
-        // Reset input so same files can be selected again
         fileInput.value = '';
       });
       
@@ -535,7 +607,7 @@
           if (file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = function(e) {
-              addImageToPreview(e.target.result, file.name);
+              addImageToPreview(e.target.result, file.name, file);
             };
             reader.readAsDataURL(file);
           }
@@ -593,6 +665,99 @@
       // Initialize empty preview grid
       updatePreviewGrid();
     }
+  </script>
+
+  <script>
+// Board creation and saving functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Get UI elements
+    const boardTitleInput = document.getElementById('board-title');
+    const boardCategorySelect = document.getElementById('board-category');
+    const boardDescriptionTextarea = document.getElementById('board-description');
+    const saveBoardBtn = document.getElementById('save-board-btn');
+    
+    // Make selectedImages globally accessible
+    window.selectedImages = [];
+    
+    // Handle save board button click
+    saveBoardBtn.addEventListener('click', async function() {
+        const user = firebase.auth().currentUser;
+        
+        if (!user) {
+            alert('Please log in first');
+            return;
+        }
+        
+        const boardTitle = boardTitleInput.value.trim();
+        const boardCategory = boardCategorySelect.value;
+        const boardDescription = boardDescriptionTextarea.value.trim();
+        
+        if (!boardTitle) {
+            alert('Please enter a board title');
+            return;
+        }
+        
+        console.log('Selected images count:', window.selectedImages ? window.selectedImages.length : 0);
+        console.log('Selected images:', window.selectedImages);
+        
+        if (!window.selectedImages || window.selectedImages.length === 0) {
+            alert('Please add at least one image to your board');
+            return;
+        }
+        
+        try {
+            console.log('Creating vision board...');
+            saveBoardBtn.textContent = 'Saving...';
+            saveBoardBtn.disabled = true;
+            
+            // Create the vision board
+            const boardId = await createVisionBoard(boardTitle, user.uid, {
+                category: boardCategory,
+                description: boardDescription
+            });
+            
+            console.log('Board created with ID:', boardId);
+            
+            // Process images
+            for (let i = 0; i < window.selectedImages.length; i++) {
+                const image = window.selectedImages[i];
+                
+                if (image.file) {
+                    // Upload file to Cloudinary
+                    console.log('Uploading image to Cloudinary:', image.file.name);
+                    const uploadResult = await uploadToCloudinary(image.file);
+                    
+                    await addImageToBoard(boardId, uploadResult, {
+                        x: 50 + (i * 20),
+                        y: 50 + (i * 20)
+                    });
+                } else {
+                    // Unsplash image - store URL directly
+                    const imageData = {
+                        url: image.url,
+                        publicId: `unsplash_${Date.now()}_${i}`,
+                        width: 400,
+                        height: 300
+                    };
+                    
+                    await addImageToBoard(boardId, imageData, {
+                        x: 50 + (i * 20),
+                        y: 50 + (i * 20)
+                    });
+                }
+            }
+            
+            alert('Vision board saved successfully!');
+            window.location.href = 'boards.html';
+            
+        } catch (error) {
+            console.error('Error creating vision board:', error);
+            alert('Error saving vision board: ' + error.message);
+            saveBoardBtn.textContent = 'Save Board';
+            saveBoardBtn.disabled = false;
+        }
+    });
+});
   </script>
 </body>
 </html>

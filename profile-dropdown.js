@@ -137,10 +137,28 @@ function setupBasicProfileDropdown() {
 }
 
 function setupProfileDropdown(user) {
+    console.log('Setting up profile dropdown with user:', user);
+    console.log('User email:', user.email);
+    console.log('User displayName:', user.displayName);
+    
+    // Get the actual user name
+    let userName;
+    if (user.displayName && user.displayName.trim() !== '') {
+        userName = user.displayName;
+    } else {
+        userName = user.email.split('@')[0];
+    }
+    
+    const userInitial = userName.charAt(0).toUpperCase();
+    const profileImageUrl = user.photoURL || `https://via.placeholder.com/40x40/6b46c1/ffffff?text=${userInitial}`;
+    
+    console.log('Using name:', userName);
+    console.log('Using initial:', userInitial);
+    
     const profileHTML = `
         <div class="profile-container">
             <div class="profile-button" id="profile-button">
-                <img src="${user.photoURL || 'https://via.placeholder.com/40x40/ff6b6b/ffffff?text=' + (user.displayName ? user.displayName.charAt(0) : 'U')}" 
+                <img src="${profileImageUrl}" 
                      alt="Profile" class="profile-image">
             </div>
             <div class="profile-dropdown" id="profile-dropdown">
@@ -256,23 +274,32 @@ function setupProfileEvents() {
     if (profileOption) {
         profileOption.addEventListener('click', function() {
             profileDropdown.classList.remove('show');
-            alert('Profile page - coming soon!');
+            window.location.href = 'profile.html';
         });
     }
 
     if (logoutOption) {
         logoutOption.addEventListener('click', async function() {
             profileDropdown.classList.remove('show');
-            if (typeof firebase !== 'undefined' && firebase.auth) {
+            if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
                 try {
                     await firebase.auth().signOut();
+                    console.log('Firebase logout successful');
                     window.location.href = 'login.html';
                 } catch (error) {
                     console.error('Logout error:', error);
-                    alert('Error logging out');
+                    alert('Error logging out: ' + error.message);
                 }
             } else {
-                alert('Logout clicked - Firebase not available');
+                // For cases where Firebase is not available or user is not logged in via Firebase
+                console.log('Firebase not available or no Firebase user, performing local logout');
+                
+                // Clear any local storage or session storage
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Redirect to login page
+                window.location.href = 'login.html';
             }
         });
     }

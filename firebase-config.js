@@ -1,19 +1,22 @@
-// Firebase configuration
+// Firebase configuration with actual project values
 const firebaseConfig = {
-    apiKey: "AIzaSyDs9_aRBzltPKNU3i8uZxoyaGiBZSoPb5s",
-    authDomain: "visionly-project.firebaseapp.com", // Replace with your actual project domain
-    projectId: "visionly-project", // Replace with your actual project ID
-    storageBucket: "visionly-project.appspot.com", // Replace with your actual storage bucket
-    messagingSenderId: "123456789012", // Replace with your actual sender ID
-    appId: "1:123456789012:web:abcdef123456789012345678" // Replace with your actual app ID
+  apiKey: "AIzaSyDs9_aRBzltPKNU3i8uZxoyaGiBZSoPb5s",
+  authDomain: "project-708324469283.firebaseapp.com", 
+  projectId: "project-708324469283", 
+  storageBucket: "project-708324469283.appspot.com",
+  messagingSenderId: "708324469283",
+  appId: "1:708324469283:web:project-708324469283"
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+try {
+  firebase.initializeApp(firebaseConfig);
+  console.log('Firebase initialized successfully with project:', firebaseConfig.projectId);
+} catch (error) {
+  console.error('Firebase initialization failed:', error);
+}
 
 // Initialize Firebase services
 const auth = firebase.auth();
 const db = firebase.firestore();
-const storage = firebase.storage(); // Add this line for Storage
-
-console.log('Firebase initialized successfully');
+const storage = firebase.storage();
