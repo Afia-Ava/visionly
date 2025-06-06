@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Productive Workspace Vision Board - Visionly</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .vision-board-container {
+      max-width: 1200px;
+      margin: 120px auto 40px auto;
+      padding: 0 24px;
+    }
+    
+    .board-content {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+    }
+    
+    .board-main {
+      flex: 1;
+    }
+    
+    .board-sidebar {
+      width: 300px;
+      flex-shrink: 0;
+    }
+    
+    .board-header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #2d1a45;
+      margin-bottom: 8px;
+    }
+    
+    .board-subtitle {
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 32px;
+    }
+    
+    .vision-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .vision-item {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .vision-item:hover {
+      transform: scale(1.03);
+    }
+    
+    .vision-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .vision-item.wide {
+      grid-column: span 2;
+      aspect-ratio: 2/1;
+    }
+    
+    .vision-item.tall {
+      grid-row: span 2;
+      aspect-ratio: 1/2;
+    }
+    
+    .vision-item.text-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      padding: 16px;
+    }
+    
+    .board-details {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+    }
+    
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+    
+    .detail-label {
+      color: #666;
+      font-weight: 500;
+    }
+    
+    .detail-value {
+      color: #333;
+      font-weight: 600;
+    }
+    
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .button-row {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      font-size: 0.95rem;
+      flex: 1;
+      text-align: center;
+    }
+    
+    .btn-primary {
+      background: #2d1a45;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #3a2259;
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: #2d1a45;
+      border: 2px solid #2d1a45;
+    }
+    
+    .btn-secondary:hover {
+      background: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+        <div style="display: flex; align-items: center;">
+            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+            <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+            <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+        </div>
+    </nav>
+
+    <div class="vision-board-container">
+        <div class="board-header">
+            <h1>Productive Workspace</h1>
+            <p class="board-subtitle">Created June 6, 2025 | Last Edited June 6, 2025 | Privacy: Private</p>
+        </div>
+
+        <div class="board-content">
+            <div class="board-main">
+                <div class="vision-grid">
+                    <!-- Row 1 -->
+                    <div class="vision-item">
+                        <img src="assets/card1.jpg" alt="Modern Office Setup">
+                    </div>
+                    <div class="vision-item tall">
+                        <img src="assets/card1.jpg" alt="Standing Desk">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/card4.jpg" alt="Creative Workspace">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/card2.jpeg" alt="Healthy Habits">
+                    </div>
+                    
+                    <!-- Row 2 -->
+                    <div class="vision-item text-card" style="background: linear-gradient(135deg, #4a90a4 0%, #357a7a 100%);">
+                        Productivity Goals
+                    </div>
+                    <!-- Tall item continues here -->
+                    <div class="vision-item">
+                        <img src="assets/card3.jpeg" alt="Inspirational Quotes">
+                    </div>
+                    <div class="vision-item text-card" style="background: linear-gradient(135deg, #2d4a36 0%, #1e3327 100%);">
+                        Focus & Flow
+                    </div>
+                    
+                    <!-- Row 3 -->
+                    <div class="vision-item wide">
+                        <img src="assets/card1.jpg" alt="Dream Office Space">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/card4.jpg" alt="Work-Life Balance">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/card2.jpeg" alt="Success Mindset">
+                    </div>
+                </div>
+            </div>
+
+            <div class="board-sidebar">
+                <div class="board-details">
+                    <h3 style="margin: 0 0 16px 0; color: #2d1a45;">Board Details</h3>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Board Theme</span>
+                        <span class="detail-value">Productive Workspace</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Created</span>
+                        <span class="detail-value">June 6, 2025</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Last Edited</span>
+                        <span class="detail-value">June 6, 2025</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Privacy</span>
+                        <span class="detail-value">Private</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Items</span>
+                        <span class="detail-value">10 images, 2 text cards</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <div class="button-row">
+                        <button class="btn btn-secondary" onclick="history.back()">← Back</button>
+                        <button class="btn btn-secondary">Edit</button>
+                    </div>
+                    <button class="btn btn-primary">Share Board</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script src="shared-scripts.js"></script>
+    <script src="profile-dropdown.js"></script>
+</body>
+</html>
