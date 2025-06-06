@@ -44,6 +44,18 @@
   </style>
 </head>
 <body style="font-family: 'Inter', sans-serif; background-color: #fff; color: #333; margin: 0; padding: 0;">
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+        <div style="display: flex; align-items: center;">
+            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+            <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+            <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+        </div>
+    </nav>
+
     <div id="navbar-container"></div>
 
     <!-- Hero Section as a centered card with background image and dark purple overlay -->
@@ -229,7 +241,9 @@
         <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon">
     </button>
 
+    <script src="firebase-config.js"></script>
     <script src="shared-scripts.js"></script>
+    <script src="profile-dropdown.js"></script>
     <script>
       // Ensure audio toggle works on landing page
       document.addEventListener('DOMContentLoaded', function() {
