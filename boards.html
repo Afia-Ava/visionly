@@ -235,55 +235,9 @@
     
     <main>
       <!-- Example boards that will be displayed once created -->
-      <div id="boards-container" class="boards-grid" style="display: none;">
-        <div class="board-card">
-          <div class="board-image" style="background-color: #2d4b4e; display: flex; align-items: center; justify-content: center; color: white;">
-            <div style="text-align: center;">
-              <div style="font-weight: 600;">CAREER</div>
-              <div style="font-size: 12px;">GOALS 2024</div>
-            </div>
-          </div>
-          <div class="board-meta">
-            <h3 class="board-title">Career Goals 2024</h3>
-            <p class="board-date">Created: 2023-04-16</p>
-          </div>
-        </div>
-        
-        <div class="board-card">
-          <div class="board-image" style="background-image: url('assets/health-wellness.jpg');"></div>
-          <div class="board-meta">
-            <h3 class="board-title">Health & Wellness</h3>
-            <p class="board-date">Created: 2023-11-20</p>
-          </div>
-        </div>
-        
-        <div class="board-card">
-          <div class="board-image" style="background-image: url('assets/travel-bucket.jpg');"></div>
-          <div class="board-meta">
-            <h3 class="board-title">Travel Bucket List</h3>
-            <p class="board-date">Created: 2023-10-05</p>
-          </div>
-        </div>
-        
-        <div class="board-card">
-          <div class="board-image" style="background-image: url('assets/financial-freedom.jpg');"></div>
-          <div class="board-meta">
-            <h3 class="board-title">Financial Freedom</h3>
-            <p class="board-date">Created: 2023-09-10</p>
-          </div>
-        </div>
-        
-        <div class="board-card">
-          <div class="board-image" style="background-color: #2d4b4e; display: flex; align-items: center; justify-content: center; color: white;">
-            <div style="text-align: center;">
-              <div style="font-weight: 600;">PERSONAL</div>
-              <div style="font-size: 12px;">DEVELOPMENT</div>
-            </div>
-          </div>
-          <div class="board-meta">
-            <h3 class="board-title">Personal Growth</h3>
-            <p class="board-date">Created: 2023-08-25</p>
-          </div>
+      <div id="boards-container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; padding: 40px; color: #666;">
+            Loading your vision boards...
         </div>
       </div>
 
@@ -313,89 +267,48 @@
 
   <script src="firebase-config.js"></script>
   <script src="nav-auth.js"></script>
-  <script src="global-sound.js"></script>
-  <script src="shared-scripts.js"></script>
+  <script src="cloudinary-config.js"></script>
+  <script src="firebase-vision-boards.js"></script>
   <script src="profile-dropdown.js"></script>
-  
-  <!-- Script to handle board display logic -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const boardsContainer = document.getElementById('boards-container');
-      const emptyState = document.getElementById('empty-state');
-      
-      // Function to check if the user has any boards
-      function checkForBoards() {
-        // This would normally query Firebase for the user's boards
-        // For now, we'll set hasBoards to false by default
-        const hasBoards = false; // Default to empty state
-        
-        if (!hasBoards) {
-          boardsContainer.style.display = 'none';
-          emptyState.style.display = 'block';
-        } else {
-          boardsContainer.style.display = 'grid';
-          emptyState.style.display = 'none';
-        }
-      }
-      
-      // Initialize the board display
-      checkForBoards();
-      
-      // In a complete implementation, this function would be called after creating a board
-      function addNewBoard(boardData) {
-        // Create a new board card element
-        const boardCard = document.createElement('div');
-        boardCard.className = 'board-card';
-        
-        // Set background based on if there's an image or if it's a color background
-        let backgroundStyle = '';
-        if (boardData.imageUrl) {
-          backgroundStyle = `background-image: url('${boardData.imageUrl}');`;
-        } else {
-          backgroundStyle = `background-color: #2d4b4e; display: flex; align-items: center; justify-content: center; color: white;`;
-        }
-        
-        // Build the board HTML
-        if (boardData.imageUrl) {
-          boardCard.innerHTML = `
-            <div class="board-image" style="${backgroundStyle}"></div>
-            <div class="board-meta">
-              <h3 class="board-title">${boardData.title}</h3>
-              <p class="board-date">Created: ${boardData.createdAt}</p>
-            </div>
-          `;
-        } else {
-          boardCard.innerHTML = `
-            <div class="board-image" style="${backgroundStyle}">
-              <div style="text-align: center;">
-                <div style="font-weight: 600;">${boardData.category.toUpperCase()}</div>
-                <div style="font-size: 12px;">${boardData.subtitle.toUpperCase()}</div>
-              </div>
-            </div>
-            <div class="board-meta">
-              <h3 class="board-title">${boardData.title}</h3>
-              <p class="board-date">Created: ${boardData.createdAt}</p>
-            </div>
-          `;
-        }
-        
-        // Add to the board container
-        boardsContainer.appendChild(boardCard);
-        
-        // Show the boards container and hide empty state
-        boardsContainer.style.display = 'grid';
-        emptyState.style.display = 'none';
-      }
-      
-      // Handle tab clicks
-      const tabs = document.querySelectorAll('.tab');
-      tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-          tabs.forEach(t => t.classList.remove('active'));
-          this.classList.add('active');
+        // Load user's vision boards when page loads
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    const boards = await getUserVisionBoards(user.uid);
+                    displayVisionBoards(boards);
+                } catch (error) {
+                    console.error('Error loading boards:', error);
+                    document.getElementById('boards-container').innerHTML = 
+                        '<div style="text-align: center; padding: 40px; color: #999;">Error loading vision boards</div>';
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
         });
-      });
-    });
-  </script>
+        
+        function displayVisionBoards(boards) {
+            const container = document.getElementById('boards-container');
+            
+            if (boards.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <h3>No vision boards yet</h3>
+                        <p style="color: #666;">Create your first vision board to get started!</p>
+                        <a href="create-board.html" style="background: #6b46c1; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; display: inline-block; margin-top: 20px;">Create Vision Board</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = boards.map(board => `
+                <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;" onclick="window.location.href='edit-board.html?id=${board.id}'">
+                    <h3 style="margin: 0 0 10px 0; color: #333;">${board.name}</h3>
+                    <p style="color: #666; margin: 0 0 10px 0;">Created: ${board.createdAt ? new Date(board.createdAt.toDate()).toLocaleDateString() : 'Recently'}</p>
+                    <p style="color: #999; margin: 0; font-size: 14px;">${board.elements?.length || 0} elements</p>
+                </div>
+            `).join('');
+        }
+    </script>
 </body>
 </html>

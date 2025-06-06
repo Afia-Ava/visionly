@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Visionly</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .profile-content {
+            max-width: 1000px;
+            margin: 100px auto 40px;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .profile-header {
+            margin-bottom: 40px;
+        }
+        
+        .profile-header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .profile-header p {
+            font-size: 16px;
+            color: #666;
+            margin: 0;
+        }
+        
+        .profile-main {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 60px;
+            margin-bottom: 40px;
+        }
+        
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            object-fit: cover;
+        }
+        
+        .profile-details h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: #333;
+        }
+        
+        .profile-details p {
+            font-size: 16px;
+            color: #666;
+            margin: 0 0 30px 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .profile-forms {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .edit-section h3,
+        .settings-section h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 25px 0;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px 18px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f8f9fa;
+            box-sizing: border-box;
+            color: #333;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #6b46c1;
+            background: white;
+        }
+        
+        .settings-section {
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
+        
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .settings-item span {
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: #e0e0e0;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch.active {
+            background: #007bff;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(22px);
+        }
+        
+        .save-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: background 0.3s;
+        }
+        
+        .save-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+        <div style="display: flex; align-items: center;">
+            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+            <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+            <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+        </div>
+    </nav>
+
+    <div class="profile-content">
+        <div class="profile-header">
+            <h1>Profile</h1>
+            <p>Manage your account settings and preferences.</p>
+        </div>
+        
+        <div class="profile-main">
+            <div class="profile-info">
+                <img id="profile-avatar" src="https://via.placeholder.com/120x120/6b46c1/ffffff?text=SC" alt="Profile Avatar" class="profile-avatar">
+                <div class="profile-details">
+                    <h2 id="profile-name">Sophia Carter</h2>
+                    <p id="profile-email">sophia.carter@email.com</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="vision-boards-count">0</div>
+                        <div class="stat-label">Vision Boards</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="journal-entries-count">0</div>
+                        <div class="stat-label">Journal Entries</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="goals-achieved-count">0</div>
+                        <div class="stat-label">Goals Achieved</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-forms">
+                <div class="edit-section">
+                    <h3>Edit Profile</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" id="name-input" class="form-input" placeholder="Enter your name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="email-input" class="form-input" placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password-input" class="form-input" placeholder="Enter new password">
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Settings</h3>
+                    
+                    <div class="settings-item">
+                        <span>Dark Mode</span>
+                        <div class="toggle-switch" id="dark-mode-toggle">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <span>Email Notifications</span>
+                        <div class="toggle-switch active" id="notifications-toggle">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    
+                    <button class="save-btn" id="save-changes">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script src="nav-auth.js"></script>
+    <script src="profile-dropdown.js"></script>
+    <script>
+        // Load user data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            setupToggles();
+            setupSaveButton();
+        });
+        
+        function loadUserData() {
+            console.log('=== STARTING PROFILE LOAD ===');
+            
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                firebase.auth().onAuthStateChanged(async (user) => {
+                    if (user) {
+                        console.log('User found:', user.email);
+                        
+                        const userEmail = user.email;
+                        let userName = "Afia Ava"; // Set your desired name here
+                        
+                        // Update Firebase displayName if it's not already set
+                        if (!user.displayName || user.displayName !== userName) {
+                            try {
+                                await user.updateProfile({
+                                    displayName: userName
+                                });
+                                console.log('Updated displayName to:', userName);
+                            } catch (error) {
+                                console.error('Error updating displayName:', error);
+                            }
+                        }
+                        
+                        const photoURL = user.photoURL || `https://via.placeholder.com/120x120/6b46c1/ffffff?text=AA`;
+                        
+                        // Update all profile elements
+                        document.getElementById('profile-name').textContent = userName;
+                        document.getElementById('profile-email').textContent = userEmail;
+                        document.getElementById('profile-avatar').src = photoURL;
+                        document.getElementById('name-input').value = userName;
+                        document.getElementById('email-input').value = userEmail;
+                        
+                        // Load user statistics
+                        loadUserStatistics(user.uid);
+                        
+                        console.log('Profile updated with:', userName, userEmail);
+                        
+                    } else {
+                        console.log('No user found');
+                        setDefaultUserData();
+                    }
+                });
+            } else {
+                console.log('Firebase not available');
+                setDefaultUserData();
+            }
+        }
+        
+        function loadUserStatistics(userId) {
+            let visionBoardsCount = 0;
+            let journalEntriesCount = 0;
+            let goalsAchievedCount = 0;
+            
+            if (typeof firebase !== 'undefined' && firebase.firestore) {
+                const db = firebase.firestore();
+                
+                // Count vision boards
+                db.collection('visionBoards').where('userId', '==', userId).get()
+                    .then(snapshot => {
+                        visionBoardsCount = snapshot.size;
+                        document.getElementById('vision-boards-count').textContent = visionBoardsCount;
+                        console.log('Vision boards count:', visionBoardsCount);
+                    })
+                    .catch(error => {
+                        console.error('Error getting vision boards:', error);
+                        document.getElementById('vision-boards-count').textContent = '0';
+                    });
+                
+                // Count journal entries
+                db.collection('journalEntries').where('userId', '==', userId).get()
+                    .then(snapshot => {
+                        journalEntriesCount = snapshot.size;
+                        document.getElementById('journal-entries-count').textContent = journalEntriesCount;
+                        console.log('Journal entries count:', journalEntriesCount);
+                    })
+                    .catch(error => {
+                        console.error('Error getting journal entries:', error);
+                        document.getElementById('journal-entries-count').textContent = '0';
+                    });
+                
+                // Count completed goals
+                db.collection('goals').where('userId', '==', userId).where('completed', '==', true).get()
+                    .then(snapshot => {
+                        goalsAchievedCount = snapshot.size;
+                        document.getElementById('goals-achieved-count').textContent = goalsAchievedCount;
+                        console.log('Goals achieved count:', goalsAchievedCount);
+                    })
+                    .catch(error => {
+                        console.error('Error getting goals:', error);
+                        document.getElementById('goals-achieved-count').textContent = '0';
+                    });
+            } else {
+                // Set all to 0 if Firebase not available
+                document.getElementById('vision-boards-count').textContent = '0';
+                document.getElementById('journal-entries-count').textContent = '0';
+                document.getElementById('goals-achieved-count').textContent = '0';
+            }
+        }
+        
+        function setDefaultUserData() {
+            const defaultName = 'Afia Ava';
+            const defaultEmail = 'user@example.com';
+            
+            document.getElementById('profile-name').textContent = defaultName;
+            document.getElementById('profile-email').textContent = defaultEmail;
+            document.getElementById('profile-avatar').src = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=AA`;
+            document.getElementById('name-input').value = defaultName;
+            document.getElementById('email-input').value = defaultEmail;
+            
+            // Set stats to 0 for new users
+            document.getElementById('vision-boards-count').textContent = '0';
+            document.getElementById('journal-entries-count').textContent = '0';
+            document.getElementById('goals-achieved-count').textContent = '0';
+        }
+        
+        function setupToggles() {
+            document.querySelectorAll('.toggle-switch').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+        }
+        
+        function setupSaveButton() {
+            document.getElementById('save-changes').addEventListener('click', async function() {
+                const name = document.getElementById('name-input').value;
+                const email = document.getElementById('email-input').value;
+                const password = document.getElementById('password-input').value;
+                
+                try {
+                    if (typeof firebase !== 'undefined' && firebase.auth) {
+                        const user = firebase.auth().currentUser;
+                        if (user) {
+                            // Update display name if changed
+                            if (name && name !== user.displayName) {
+                                await user.updateProfile({
+                                    displayName: name
+                                });
+                            }
+                            
+                            // Update email if changed
+                            if (email && email !== user.email) {
+                                await user.updateEmail(email);
+                            }
+                            
+                            // Update password if provided
+                            if (password) {
+                                await user.updatePassword(password);
+                            }
+                            
+                            // Update UI
+                            document.getElementById('profile-name').textContent = name;
+                            document.getElementById('profile-email').textContent = email;
+                            
+                            const initial = name.charAt(0).toUpperCase();
+                            document.getElementById('profile-avatar').src = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;
+                            
+                            alert('Profile updated successfully!');
+                        }
+                    } else {
+                        // Fallback for when Firebase is not available
+                        document.getElementById('profile-name').textContent = name;
+                        document.getElementById('profile-email').textContent = email;
+                        
+                        const initial = name.charAt(0).toUpperCase();
+                        document.getElementById('profile-avatar').src = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;
+                        
+                        alert('Profile updated successfully!');
+                    }
+                    
+                    // Clear password field
+                    document.getElementById('password-input').value = '';
+                    
+                } catch (error) {
+                    console.error('Error updating profile:', error);
+                    alert('Error updating profile: ' + error.message);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
