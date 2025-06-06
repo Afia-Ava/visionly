@@ -54,7 +54,7 @@
         <div style="padding: 80px 24px 72px 24px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 3;">
           <h1 style="color: #fff; font-size: 2.3rem; font-weight: 700; margin-bottom: 12px; text-align: center; letter-spacing: -1px;">Vision Boards And Track Progress</h1>
           <p style="color: #f3eaff; font-size: 1.08rem; margin-bottom: 32px; text-align: center;">Visualize your goals and turn them into reality</p>
-          <a href="create-board.html" style="background: #3578e5; color: #fff; font-weight: 600; border-radius: 6px; padding: 12px 32px; font-size: 1rem; text-decoration: none; box-shadow: 0 2px 8px rgba(80,40,120,0.08); transition: background 0.2s;">Create</a>
+          <a href="create-board.html" style="background: #6b46c1; color: #fff; font-weight: 600; border-radius: 6px; padding: 12px 32px; font-size: 1rem; text-decoration: none; box-shadow: 0 2px 8px rgba(80,40,120,0.08); transition: background 0.2s;">Create</a>
         </div>
       </div>
     </div>
@@ -228,9 +228,59 @@
     <button id="toggle-sound">
         <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon">
     </button>
-    
-        <script src="shared-scripts.js"></script>
-        <script>
+
+    <script src="shared-scripts.js"></script>
+    <script>
+      // Ensure audio toggle works on landing page
+      document.addEventListener('DOMContentLoaded', function() {
+        const audio = document.getElementById('background-sound');
+        const toggleBtn = document.getElementById('toggle-sound');
+        const soundIcon = document.getElementById('sound-icon');
+        let isPlaying = false;
+
+        // Try to autoplay (may be blocked by browser until user interacts)
+        function tryAutoplay() {
+          if (audio.paused) {
+            audio.volume = 0.5;
+            audio.play().catch(() => {});
+          }
+        }
+
+        // Toggle sound on button click
+        toggleBtn.addEventListener('click', function() {
+          if (audio.paused) {
+            audio.play();
+            soundIcon.src = 'assets/speaker-on-icon.png';
+            soundIcon.alt = 'Sound On';
+            isPlaying = true;
+          } else {
+            audio.pause();
+            soundIcon.src = 'assets/speaker-off-icon.png';
+            soundIcon.alt = 'Sound Off';
+            isPlaying = false;
+          }
+        });
+
+        // Update icon if user interacts with audio elsewhere
+        audio.addEventListener('play', function() {
+          soundIcon.src = 'assets/speaker-on-icon.png';
+          soundIcon.alt = 'Sound On';
+          isPlaying = true;
+        });
+        audio.addEventListener('pause', function() {
+          soundIcon.src = 'assets/speaker-off-icon.png';
+          soundIcon.alt = 'Sound Off';
+          isPlaying = false;
+        });
+
+        // Try to autoplay after user gesture
+        document.body.addEventListener('click', tryAutoplay, { once: true });
+
+        // If you want to start audio immediately (if allowed)
+        // tryAutoplay();
+      });
+    </script>
+    <script>
       // Gallery carousel functionality
       document.addEventListener('DOMContentLoaded', function() {
         const images = document.querySelectorAll('.gallery-img');
