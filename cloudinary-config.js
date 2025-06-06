@@ -1,8 +1,8 @@
 // Cloudinary configuration
 const CLOUDINARY_CONFIG = {
     cloudName: 'dsf1mbhkh', 
-    uploadPreset: 'Visionly', // Your upload preset name
-    apiKey: '877378913253124'
+    uploadPreset: 'Visionly', 
+    apiKey: '877378913253124' 
 };
 
 // Function to upload image to Cloudinary
