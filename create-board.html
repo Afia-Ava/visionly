@@ -219,7 +219,8 @@
         
         <div class="upload-area">
           <p>Drag and drop images here or<br>click to upload</p>
-          <button class="upload-button">Upload Images</button>
+          <button class="upload-button" id="upload-button">Upload Images</button>
+          <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
         </div>
         
         <div class="search-container">
@@ -284,7 +285,19 @@
 
   <!-- Add a small script to handle search display -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    // Check authentication before loading page content
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        // User is not logged in, redirect to login page
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // User is logged in, initialize page functionality
+      initializePage();
+    });
+
+    function initializePage() {
       const searchInput = document.getElementById('unsplash-search');
       const searchResultsContainer = document.getElementById('search-results-container');
       const searchResults = document.getElementById('search-results');
@@ -292,6 +305,69 @@
       
       // Array to store selected images
       const selectedImages = [];
+      
+      // Unsplash API configuration
+      const UNSPLASH_ACCESS_KEY = 'p29nv_Gk3XXhdiyPqaQFBBfmOfzKummKPpxsR73yq6Y'; 
+      const UNSPLASH_API_URL = 'https://api.unsplash.com';
+      
+      // Function to search Unsplash
+      async function searchUnsplash(query) {
+        if (!query.trim()) return;
+        
+        try {
+          const response = await fetch(`${UNSPLASH_API_URL}/search/photos?query=${encodeURIComponent(query)}&per_page=12&client_id=${UNSPLASH_ACCESS_KEY}`);
+          
+          if (!response.ok) {
+            throw new Error('Search failed');
+          }
+          
+          const data = await response.json();
+          displaySearchResults(data.results);
+        } catch (error) {
+          console.error('Search error:', error);
+          // Show fallback images or error message
+          displaySearchError();
+        }
+      }
+      
+      // Function to display search results
+      function displaySearchResults(images) {
+        searchResultsContainer.classList.add('show');
+        
+        if (images.length === 0) {
+          searchResults.innerHTML = `
+            <div style="grid-column: span 2; text-align: center; padding: 40px 0; color: #999;">
+              No images found. Try a different search term.
+            </div>
+          `;
+          return;
+        }
+        
+        searchResults.innerHTML = '';
+        images.forEach(image => {
+          const resultItem = document.createElement('div');
+          resultItem.className = 'search-result-item';
+          resultItem.innerHTML = `
+            <img src="${image.urls.small}" alt="${image.alt_description || image.description || 'Image'}" loading="lazy">
+          `;
+          
+          resultItem.addEventListener('click', function() {
+            addImageToPreview(image.urls.regular, image.alt_description || image.description || 'Vision board image');
+          });
+          
+          searchResults.appendChild(resultItem);
+        });
+      }
+      
+      // Function to display search error
+      function displaySearchError() {
+        searchResultsContainer.classList.add('show');
+        searchResults.innerHTML = `
+          <div style="grid-column: span 2; text-align: center; padding: 40px 0; color: #999;">
+            Unable to load images. Please try again later.
+          </div>
+        `;
+      }
       
       // Function to show search results with empty state
       function showSearchResults() {
@@ -358,36 +434,113 @@
         updatePreviewGrid();
       }
       
-      // Add click event to search results
-      searchResults.addEventListener('click', function(e) {
-        const item = e.target.closest('.search-result-item');
-        if (item) {
-          const img = item.querySelector('img');
-          if (img) {
-            addImageToPreview(img.src, img.alt);
+      // File upload functionality
+      const uploadButton = document.getElementById('upload-button');
+      const fileInput = document.getElementById('file-input');
+      const uploadArea = document.querySelector('.upload-area');
+      
+      // Handle upload button click
+      uploadButton.addEventListener('click', function() {
+        fileInput.click();
+      });
+      
+      // Handle file selection
+      fileInput.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        files.forEach(file => {
+          if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              addImageToPreview(e.target.result, file.name);
+            };
+            reader.readAsDataURL(file);
           }
+        });
+        // Reset input so same files can be selected again
+        fileInput.value = '';
+      });
+      
+      // Handle drag and drop
+      uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadArea.style.backgroundColor = '#f0f0f0';
+        uploadArea.style.borderColor = '#007bff';
+      });
+      
+      uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadArea.style.backgroundColor = '';
+        uploadArea.style.borderColor = '#ddd';
+      });
+      
+      uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.style.backgroundColor = '';
+        uploadArea.style.borderColor = '#ddd';
+        
+        const files = Array.from(e.dataTransfer.files);
+        files.forEach(file => {
+          if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              addImageToPreview(e.target.result, file.name);
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      });
+      
+      // Search input event listeners
+      let searchTimeout;
+      searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        // Clear previous timeout
+        clearTimeout(searchTimeout);
+        
+        if (query.length > 2) {
+          // Debounce search by 500ms
+          searchTimeout = setTimeout(() => {
+            searchUnsplash(query);
+          }, 500);
+        } else if (query.length === 0) {
+          // Clear results if input is empty
+          searchResults.innerHTML = `
+            <div style="grid-column: span 2; text-align: center; padding: 40px 0; color: #999;">
+              Search for images to see results here
+            </div>
+          `;
         }
       });
       
       // Listen for search input focus
       searchInput.addEventListener('focus', showSearchResults);
       
-      // Also show results when user clicks on search icon or presses Enter
-      searchInput.parentNode.querySelector('svg').addEventListener('click', function() {
-        searchInput.focus();
-        showSearchResults();
-      });
-      
+      // Handle Enter key press
       searchInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
+          const query = this.value.trim();
+          if (query) {
+            searchUnsplash(query);
+          }
+        }
+      });
+      
+      // Handle search icon click
+      searchInput.parentNode.querySelector('svg').addEventListener('click', function() {
+        const query = searchInput.value.trim();
+        if (query) {
+          searchUnsplash(query);
+        } else {
+          searchInput.focus();
           showSearchResults();
         }
       });
       
       // Initialize empty preview grid
       updatePreviewGrid();
-    });
+    }
   </script>
 </body>
 </html>

@@ -1,0 +1,10 @@
+[33m52bd6b4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fixed the search image and upload image functionality
+[33ma402dd3[m Fixed the images in landing page, spacing, functions of the button etc
+[33m9f89475[m Redesigned the home/landing page
+[33ma17d73b[m Changed the create board preview
+[33m57d003c[m Redesigned the create board page
+[33md7be5ba[m More color scheme changes in the index.html file
+[33m71aa978[m Changed the music player styles and changed the home page style
+[33me72554f[m Added a new cleaner and minimal navbar
+[33m4a9761b[m Redesigned progress page massively because didn't get the camera thing to work yet
+[33mfc8663c[m Adding pomodoro timers
