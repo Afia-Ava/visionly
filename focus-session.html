@@ -18,82 +18,91 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
         }
         
         .focus-container {
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             text-align: center;
             padding: 20px;
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 60px);
         }
         
         .album-art {
-            width: 200px;
-            height: 200px;
-            border-radius: 8px;
+            width: 220px;
+            height: 220px;
+            border-radius: 18px;
             margin: 0 auto 20px;
             display: block;
-            background-color: #fef0e4; /* Light peach background */
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: transparent;
+            padding: 0;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            overflow: hidden;
         }
         
         .album-art img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
+            border-radius: 18px;
         }
         
         .track-info {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .track-info h2 {
-            font-size: 1.5rem;
+            font-size: 1.7rem;
             margin: 0;
             font-weight: 600;
         }
         
         .track-info p {
+            font-size: 1.1rem;
             color: #666;
             margin: 5px 0 0;
-            font-size: 1rem;
         }
         
         .player-controls {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 18px;
+            margin-bottom: 28px;
         }
         
         .control-button {
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 26px;
             color: #333;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         
         .play-button {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             background-color: #007bff;
             border-radius: 50%;
             color: white;
-            font-size: 28px;
+            font-size: 32px;
         }
         
         .timer-display {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
+            margin-bottom: 28px;
             width: 100%;
         }
         
@@ -102,23 +111,23 @@
             background-color: #f0f2f5;
             padding: 10px;
             border-radius: 8px;
-            margin: 0 5px;
+            margin: 0 4px;
         }
         
         .time-value {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 600;
             margin: 0;
         }
         
         .time-label {
-            font-size: 14px;
+            font-size: 13px;
             color: #666;
-            margin: 5px 0 0;
+            margin: 2px 0 0;
         }
         
         .exit-button {
-            padding: 10px 20px;
+            padding: 12px 28px;
             background-color: #f0f2f5;
             color: #333;
             border: none;
@@ -126,6 +135,7 @@
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.2s;
+            font-size: 16px;
         }
         
         .exit-button:hover {
@@ -217,61 +227,83 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get the selected music from sessionStorage
-            const selectedMusic = sessionStorage.getItem('selectedMusic') || 'Serene Beats';
-            const selectedArtist = sessionStorage.getItem('selectedArtist') || 'Ambient Flow';
-            const selectedMusicSrc = sessionStorage.getItem('selectedMusicSrc') || 'assets/music/ambient.mp3';
+            const selectedMusic = sessionStorage.getItem('selectedMusic') || 'Select a sound';
+            const selectedMusicSrc = sessionStorage.getItem('selectedMusicSrc') || '';
+            
+            console.log('Selected music:', selectedMusic);
+            console.log('Selected music src:', selectedMusicSrc);
             
             // Update track info
             document.getElementById('track-name').textContent = selectedMusic;
-            document.getElementById('track-artist').textContent = selectedArtist;
+            document.getElementById('track-artist').textContent = 'Focus Sound';
             
-            // Create audio element if it doesn't exist
-            let audioPlayer = document.getElementById('focus-audio');
-            if (!audioPlayer) {
-                audioPlayer = new Audio(selectedMusicSrc);
-                audioPlayer.id = 'focus-audio';
-                audioPlayer.loop = true;
-                document.body.appendChild(audioPlayer);
-            } else {
-                audioPlayer.src = selectedMusicSrc;
+            // Update album art based on selected music
+            const albumArt = document.querySelector('.album-art img');
+            switch(selectedMusic) {
+                case 'Calm Rain':
+                    albumArt.src = 'assets/calm-rain.jpg';
+                    albumArt.alt = 'Calm rain illustration';
+                    break;
+                case 'Lo-Fi Beats':
+                    albumArt.src = 'assets/lofi-beats.png';
+                    albumArt.alt = 'Lo-fi beats illustration';
+                    break;
+                case 'Brown Noise':
+                    albumArt.src = 'assets/brown-noise.jpg';
+                    albumArt.alt = 'Brown noise illustration';
+                    break;
+                case 'Piano Ambient':
+                    albumArt.src = 'assets/ambient-piano.jpg';
+                    albumArt.alt = 'Piano ambient illustration';
+                    break;
+                default:
+                    albumArt.src = 'assets/leaf-illustration.png';
+                    albumArt.alt = 'Default ambient music illustration';
             }
             
-            // Play button functionality
-            let isPlaying = false;
-            const playButton = document.querySelector('.play-button');
-            
-            playButton.addEventListener('click', function() {
-                isPlaying = !isPlaying;
-                if (isPlaying) {
-                    playButton.innerHTML = '<span>⏸</span>';
-                    audioPlayer.play();
-                } else {
-                    playButton.innerHTML = '<span>▶</span>';
-                    audioPlayer.pause();
-                }
-            });
+            // Get audio element and set source
+            let audioPlayer = document.getElementById('focus-audio');
+            if (selectedMusicSrc) {
+                audioPlayer.src = selectedMusicSrc;
+                audioPlayer.volume = 0.5; // Increase volume for better audibility
+                audioPlayer.loop = true;
+            } else {
+                // Hide play controls if no music selected
+                document.querySelector('.player-controls').style.opacity = '0.5';
+            }
+            document.body.appendChild(audioPlayer);
             
             // Get the focus duration from session storage
             const storedFocusDuration = sessionStorage.getItem('focusDuration');
             const storedBreakDuration = sessionStorage.getItem('breakDuration');
             
-            // Set initial minutes to the stored focus duration or default to 25
+            // Timer variables
             let minutes = storedFocusDuration ? parseInt(storedFocusDuration) : 25;
             let seconds = 0;
+            let isPlaying = false;
+            let timerInterval = null;
+            let currentSession = 'focus'; // 'focus' or 'break'
+            let breakMinutes = storedBreakDuration ? parseInt(storedBreakDuration) : 5;
+            
+            // DOM elements
+            const playButton = document.querySelector('.play-button');
+            const minutesDisplay = document.querySelector('.timer-unit:nth-child(2) .time-value');
+            const secondsDisplay = document.querySelector('.timer-unit:nth-child(3) .time-value');
+            const trackNameEl = document.getElementById('track-name');
+            const trackArtistEl = document.getElementById('track-artist');
             
             // Update the display initially
-            document.querySelector('.timer-unit:nth-child(2) .time-value').textContent = 
-                minutes.toString().padStart(2, '0');
+            minutesDisplay.textContent = minutes.toString().padStart(2, '0');
+            secondsDisplay.textContent = seconds.toString().padStart(2, '0');
             
-            // Timer functionality
+            // Timer countdown function
             function startCountdown() {
-                const timerInterval = setInterval(() => {
+                timerInterval = setInterval(() => {
                     if (seconds === 0) {
                         if (minutes === 0) {
+                            // Timer finished
                             clearInterval(timerInterval);
-                            // Session complete logic
-                            document.querySelector('.play-button').innerHTML = '<span>▶</span>';
-                            document.querySelector('.play-button').classList.remove('playing');
+                            sessionComplete();
                             return;
                         }
                         minutes--;
@@ -281,19 +313,103 @@
                     }
                     
                     // Update timer display
-                    document.querySelector('.timer-unit:nth-child(2) .time-value').textContent = 
-                        minutes.toString().padStart(2, '0');
-                    document.querySelector('.timer-unit:nth-child(3) .time-value').textContent = 
-                        seconds.toString().padStart(2, '0');
+                    minutesDisplay.textContent = minutes.toString().padStart(2, '0');
+                    secondsDisplay.textContent = seconds.toString().padStart(2, '0');
                 }, 1000);
-                
-                return timerInterval;
             }
             
-            // When play is clicked, start the countdown
-            document.querySelector('.play-button').addEventListener('click', function() {
-                if (this.classList.contains('playing')) {
+            // Session complete handler
+            function sessionComplete() {
+                if (currentSession === 'focus') {
+                    // Focus session complete, start break
+                    currentSession = 'break';
+                    minutes = breakMinutes;
+                    seconds = 0;
+                    
+                    // Update UI for break
+                    playButton.innerHTML = '<span>▶</span>';
+                    audioPlayer.pause();
+                    isPlaying = false;
+                    
+                    // Change display to show break
+                    trackNameEl.textContent = 'Break Time';
+                    trackArtistEl.textContent = 'Rest & Recharge';
+                    document.body.style.backgroundColor = '#e8f5e8'; // Light green for break
+                    
+                    // Update timer display
+                    minutesDisplay.textContent = minutes.toString().padStart(2, '0');
+                    secondsDisplay.textContent = seconds.toString().padStart(2, '0');
+                    
+                    // Auto-start break timer (soundless)
+                    setTimeout(() => {
+                        alert('Focus session complete! Starting ' + breakMinutes + ' minute break.');
+                        startCountdown();
+                    }, 1000);
+                    
+                } else {
+                    // Break complete, reset for next focus session
+                    currentSession = 'focus';
+                    minutes = storedFocusDuration ? parseInt(storedFocusDuration) : 25;
+                    seconds = 0;
+                    
+                    // Reset UI for focus
+                    trackNameEl.textContent = selectedMusic;
+                    trackArtistEl.textContent = 'Focus Sound';
+                    document.body.style.backgroundColor = '#f9f9f9'; // Original background
+                    
+                    // Update timer display
+                    minutesDisplay.textContent = minutes.toString().padStart(2, '0');
+                    secondsDisplay.textContent = seconds.toString().padStart(2, '0');
+                    
+                    alert('Break complete! Ready for next focus session.');
+                }
+            }
+            
+            // Stop countdown function
+            function stopCountdown() {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+            }
+            
+            // Play/Pause button functionality
+            playButton.addEventListener('click', function() {
+                if (currentSession === 'break') {
+                    // During break, only allow pausing/resuming timer (no music)
+                    isPlaying = !isPlaying;
+                    
+                    if (isPlaying) {
+                        playButton.innerHTML = '<span>⏸</span>';
+                        startCountdown();
+                    } else {
+                        playButton.innerHTML = '<span>▶</span>';
+                        stopCountdown();
+                    }
+                    return;
+                }
+                
+                // Focus session logic
+                if (!selectedMusicSrc) {
+                    alert('Please select music from the progress page first!');
+                    return;
+                }
+                
+                isPlaying = !isPlaying;
+                
+                if (isPlaying) {
+                    playButton.innerHTML = '<span>⏸</span>';
+                    audioPlayer.play().then(() => {
+                        console.log('Audio playing successfully');
+                    }).catch(error => {
+                        console.log('Audio play error:', error);
+                        alert('Error playing audio: ' + error.message);
+                    });
                     startCountdown();
+                } else {
+                    playButton.innerHTML = '<span>▶</span>';
+                    audioPlayer.pause();
+                    stopCountdown();
                 }
             });
         });
