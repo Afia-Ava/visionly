@@ -164,17 +164,68 @@ function setupProfileDropdown(user) {
 }
 
 function insertProfileDropdown(profileHTML) {
-    // Create profile dropdown in top-right corner
-    const container = document.createElement('div');
-    container.innerHTML = profileHTML;
-    container.style.position = 'fixed';
-    container.style.top = '20px';
-    container.style.right = '20px';
-    container.style.zIndex = '9999';
+    // Look for the profile photo in the navbar first
+    const profileSelectors = [
+        '#profile-photo',
+        '.profile-pic', 
+        '.profile-icon', 
+        '#profile-pic', 
+        '[class*="profile"]',
+        'img[src*="profile"]',
+        'img[alt*="profile"]',
+        'img[alt*="Profile"]',
+        '.user-avatar',
+        '.avatar',
+        'nav img:last-child',
+        'header img:last-child',
+        '.navbar img:last-child',
+        '#navbar-container img',
+        'nav div:last-child',
+        'header div:last-child'
+    ];
     
-    document.body.appendChild(container.firstElementChild);
-    setupProfileEvents();
-    console.log('Profile dropdown created');
+    let profileElement = null;
+    
+    for (const selector of profileSelectors) {
+        profileElement = document.querySelector(selector);
+        if (profileElement) {
+            console.log('Found profile element with selector:', selector);
+            break;
+        }
+    }
+    
+    if (profileElement) {
+        // Replace the found element with the dropdown
+        profileElement.outerHTML = profileHTML;
+        setupProfileEvents();
+        console.log('Profile element replaced with dropdown');
+    } else {
+        // Create profile dropdown in navbar area
+        const navbar = document.querySelector('.navbar, nav');
+        if (navbar) {
+            const navRight = navbar.querySelector('div:last-child');
+            if (navRight) {
+                const container = document.createElement('div');
+                container.innerHTML = profileHTML;
+                navRight.appendChild(container.firstElementChild);
+                setupProfileEvents();
+                console.log('Profile dropdown added to navbar');
+                return;
+            }
+        }
+        
+        // Fallback: Create in top-right corner
+        const container = document.createElement('div');
+        container.innerHTML = profileHTML;
+        container.style.position = 'fixed';
+        container.style.top = '20px';
+        container.style.right = '20px';
+        container.style.zIndex = '9999';
+        
+        document.body.appendChild(container.firstElementChild);
+        setupProfileEvents();
+        console.log('Profile dropdown created as fallback');
+    }
 }
 
 function setupProfileEvents() {

@@ -155,10 +155,57 @@
       font-family: 'Inter', sans-serif;
       font-weight: 400;
     }
+
+    /* Navbar styles */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #fff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      padding: 14px 30px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+    
+    .navbar .logo {
+      font-family: 'Dancing Script', cursive;
+      font-weight: bold;
+      font-size: 2rem;
+      color: #333;
+      text-decoration: none;
+    }
+    
+    .navbar a {
+      text-decoration: none;
+      color: #333;
+      margin: 0 12px;
+    }
+    
+    #profile-photo {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <div id="navbar-container"></div>
+  <nav class="navbar">
+      <a href="index.html" class="logo">Visionly</a>
+      <div style="display: flex; align-items: center;">
+          <a href="index.html">Home</a>
+          <a href="create-board.html">Create</a>
+          <a href="boards.html">Boards</a>
+          <a href="progress.html">Progress</a>
+          <a href="journal.html" style="margin-right: 15px;">Journal</a>
+          <img id="profile-photo" src="assets/digital-avatar.jpg" alt="Profile">
+      </div>
+  </nav>
   
   <div class="container">
     <!-- Adjust margin to match progress page spacing -->
@@ -268,6 +315,7 @@
   <script src="nav-auth.js"></script>
   <script src="global-sound.js"></script>
   <script src="shared-scripts.js"></script>
+  <script src="profile-dropdown.js"></script>
   
   <!-- Script to handle board display logic -->
   <script>
