@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dream Travel Vision Board - Visionly</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #fff;
+        background-image: 
+          linear-gradient(135deg, rgba(139, 95, 179, 0.12) 25%, transparent 25%), 
+          linear-gradient(225deg, rgba(139, 95, 179, 0.12) 25%, transparent 25%), 
+          linear-gradient(45deg, rgba(139, 95, 179, 0.12) 25%, transparent 25%), 
+          linear-gradient(315deg, rgba(139, 95, 179, 0.12) 25%, transparent 25%);
+        background-size: 20px 20px;
+        background-position: 10px 0, 10px 0, 0 0, 0 0;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
+
+    #mouse-highlight {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(76, 36, 131, 0.6);
+      pointer-events: none;
+      z-index: 1;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.1s ease;
+      mix-blend-mode: multiply;
+    }
+
+    body.mouse-active #mouse-highlight {
+      opacity: 1;
+    }
+    
+    .vision-board-container {
+      max-width: 1200px;
+      margin: 120px auto 40px auto;
+      padding: 0 24px;
+    }
+    
+    .board-content {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+    }
+    
+    .board-main {
+      flex: 1;
+    }
+    
+    .board-sidebar {
+      width: 300px;
+      flex-shrink: 0;
+    }
+    
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 32px;
+      background: white;
+      padding: 24px 24px 24px 40px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .board-header-left h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #2d1a45;
+      margin-bottom: 8px;
+    }
+    
+    .board-subtitle {
+      color: #666;
+      font-size: 0.95rem;
+      margin: 0;
+      line-height: 1.4;
+    }
+    
+    .header-buttons {
+      display: flex;
+      gap: 12px;
+      margin-right: 20px;
+    }
+    
+    .header-buttons .btn {
+      flex: 1;
+      min-width: 90px;
+    }
+    
+    .vision-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .vision-item {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .vision-item:hover {
+      transform: scale(1.03);
+    }
+    
+    .vision-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .vision-item.wide {
+      grid-column: span 2;
+      aspect-ratio: 2/1;
+    }
+    
+    .vision-item.tall {
+      grid-row: span 2;
+      aspect-ratio: 1/2;
+    }
+    
+    .vision-item.text-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      padding: 16px;
+    }
+    
+    .board-details {
+      background: white;
+      border-radius: 12px;
+      padding: 24px 24px 24px 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+    }
+    
+    .detail-row {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 12px;
+    }
+    
+    .detail-label {
+      color: #666;
+      font-weight: 500;
+      min-width: 80px;
+    }
+    
+    .detail-value {
+      color: #333;
+      font-weight: 600;
+    }
+    
+    .btn {
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      font-size: 0.95rem;
+      text-align: center;
+      white-space: nowrap;
+      min-width: 80px;
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: #2d1a45;
+      border: 2px solid #2d1a45;
+    }
+    
+    .btn-secondary:hover {
+      background: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+    <div id="mouse-highlight"></div>
+    
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+        <div style="display: flex; align-items: center;">
+            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+            <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+            <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+        </div>
+    </nav>
+
+    <div class="vision-board-container">
+        <div class="board-header">
+            <div class="board-header-left">
+                <h1>Dream Travel</h1>
+                <p class="board-subtitle">Created May 15, 2025 | Last Edited June 5, 2025<br>Privacy: Private</p>
+            </div>
+            <div class="header-buttons">
+                <button class="btn btn-secondary" onclick="window.location.href='index.html#gallery'">← Back</button>
+                <button class="btn btn-secondary">Edit</button>
+            </div>
+        </div>
+
+        <div class="board-content">
+            <div class="board-main">
+                <div class="vision-grid">
+                    <!-- Row 1 -->
+                    <div class="vision-item">
+                        <img src="assets/travel1.jpg" alt="Paris Eiffel Tower">
+                    </div>
+                    <div class="vision-item tall">
+                        <img src="assets/travel2.jpg" alt="Tokyo Streets">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/travel3.jpg" alt="Bali Beach">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/travel4.jpg" alt="Swiss Alps">
+                    </div>
+                    
+                    <!-- Row 2 -->
+                    <div class="vision-item text-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);">
+                        Adventure Awaits
+                    </div>
+                    <!-- Tall item continues here -->
+                    <div class="vision-item">
+                        <img src="assets/travel5.jpg" alt="Santorini Greece">
+                    </div>
+                    <div class="vision-item text-card" style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);">
+                        Wanderlust
+                    </div>
+                    
+                    <!-- Row 3 -->
+                    <div class="vision-item wide">
+                        <img src="assets/travel6.jpg" alt="Maldives Resort">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/travel7.jpg" alt="New York City">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/travel8.jpg" alt="Safari Adventure">
+                    </div>
+                </div>
+            </div>
+
+            <div class="board-sidebar">
+                <div class="board-details">
+                    <h3 style="margin: 0 0 16px 0; color: #2d1a45;">Travel Goals</h3>
+                    
+                    <div style="margin-bottom: 24px;">
+                        <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #2d1a45;">
+                            <div style="font-size: 0.9rem; color: #333;">Visit Europe this summer</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #2d1a45;">
+                            <div style="font-size: 0.9rem; color: #333;">Save $5000 for travel fund</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #2d1a45;">
+                            <div style="font-size: 0.9rem; color: #333;">Learn basic phrases in 3 languages</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #2d1a45;">
+                            <div style="font-size: 0.9rem; color: #333;">Get passport renewed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="board-details">
+                    <h3 style="margin: 0 0 16px 0; color: #2d1a45;">Board Details</h3>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Theme</span>
+                        <span class="detail-value">Travel & Adventure</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Privacy</span>
+                        <span class="detail-value">Private</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Items</span>
+                        <span class="detail-value">8 images, 2 text cards</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script src="shared-scripts.js"></script>
+    <script src="profile-dropdown.js"></script>
+    <script>
+      // Mouse tracking for background highlight effect
+      document.addEventListener('mousemove', (e) => {
+          const highlight = document.getElementById('mouse-highlight');
+          const mouseX = e.clientX;
+          const mouseY = e.clientY;
+          
+          highlight.style.left = mouseX + 'px';
+          highlight.style.top = mouseY + 'px';
+          document.body.classList.add('mouse-active');
+      });
+
+      document.addEventListener('mouseleave', () => {
+          document.body.classList.remove('mouse-active');
+      });
+    </script>
+</body>
+</html>
