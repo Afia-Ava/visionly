@@ -75,6 +75,14 @@
                             <div>
                                 <span style="color: #666; font-size: 14px;">% Goals Complete</span>
                             </div>
+                            <div style="margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #2d1a45 0%, #1a0f2e 100%); border-radius: 8px; text-align: center;">
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 4px;">
+                                    <span style="font-size: 20px;">🔥</span>
+                                    <span id="streak-count" style="font-size: 18px; font-weight: bold; color: white;">7</span>
+                                    <span style="font-size: 14px; color: white; opacity: 0.9;">day streak</span>
+                                </div>
+                                <div style="font-size: 12px; color: white; opacity: 0.8;">Keep it up!</div>
+                            </div>
                         </div>
                     </div>
                     <div class="goals-list" style="display: flex; flex-direction: column; gap: 5px;">
@@ -129,6 +137,17 @@
             </div>
         </div>
     </main>
+
+    <!-- Background Sound -->
+    <audio id="background-sound" loop>
+        <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Toggle Sound Button -->
+    <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
+        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+    </button>
 
     <script src="firebase-config.js"></script>
     <script src="shared-scripts.js"></script>
@@ -233,6 +252,120 @@
             
             // Initial progress calculation
             updateProgress();
+        });
+        
+        // Streak tracking functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const streakCountElement = document.getElementById('streak-count');
+            
+            function updateStreak() {
+                const today = new Date().toDateString();
+                const lastVisit = localStorage.getItem('lastVisitDate');
+                let currentStreak = parseInt(localStorage.getItem('currentStreak')) || 0;
+                
+                if (lastVisit) {
+                    const lastVisitDate = new Date(lastVisit);
+                    const todayDate = new Date(today);
+                    const daysDifference = Math.floor((todayDate - lastVisitDate) / (1000 * 60 * 60 * 24));
+                    
+                    if (daysDifference === 1) {
+                        // Consecutive day - increment streak
+                        currentStreak += 1;
+                    } else if (daysDifference > 1) {
+                        // Missed days - reset streak to 1 (today counts as day 1)
+                        currentStreak = 1;
+                    }
+                    // If daysDifference === 0, it's the same day, keep current streak
+                } else {
+                    // First time visiting - start with day 1
+                    currentStreak = 1;
+                }
+                
+                // Update storage
+                localStorage.setItem('lastVisitDate', today);
+                localStorage.setItem('currentStreak', currentStreak.toString());
+                
+                // Update display
+                streakCountElement.textContent = currentStreak;
+            }
+            
+            // Initialize streak on page load
+            updateStreak();
+        });
+        
+        // Background music functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const backgroundAudio = document.getElementById('background-sound');
+            const toggleBtn = document.getElementById('toggle-sound');
+            const soundIcon = document.getElementById('sound-icon');
+            const focusAudioPlayer = document.getElementById('audio-player');
+            let isBackgroundPlaying = false;
+
+            // Set volume and try to start automatically
+            backgroundAudio.volume = 0.3;
+
+            // Function to start background audio
+            function startBackgroundAudio() {
+                backgroundAudio.play().then(() => {
+                    soundIcon.src = 'assets/speaker-on-icon.png';
+                    soundIcon.alt = 'Sound On';
+                    isBackgroundPlaying = true;
+                }).catch(() => {
+                    soundIcon.src = 'assets/speaker-off-icon.png';
+                    soundIcon.alt = 'Sound Off';
+                    isBackgroundPlaying = false;
+                });
+            }
+
+            // Function to stop background audio
+            function stopBackgroundAudio() {
+                backgroundAudio.pause();
+                isBackgroundPlaying = false;
+            }
+
+            // Try to start background audio immediately
+            startBackgroundAudio();
+
+            // Also try to start on first user interaction
+            const enableAudio = () => {
+                if (!isBackgroundPlaying && backgroundAudio.paused) {
+                    startBackgroundAudio();
+                }
+            };
+
+            document.addEventListener('click', enableAudio, { once: true });
+            document.addEventListener('touchstart', enableAudio, { once: true });
+            document.addEventListener('keydown', enableAudio, { once: true });
+
+            // Toggle background sound on button click
+            toggleBtn.addEventListener('click', function() {
+                if (backgroundAudio.paused) {
+                    startBackgroundAudio();
+                } else {
+                    backgroundAudio.pause();
+                    soundIcon.src = 'assets/speaker-off-icon.png';
+                    soundIcon.alt = 'Sound Off';
+                    isBackgroundPlaying = false;
+                }
+            });
+
+            // Stop background music when focus music starts
+            focusAudioPlayer.addEventListener('play', function() {
+                stopBackgroundAudio();
+            });
+
+            // Optionally restart background music when focus music stops
+            focusAudioPlayer.addEventListener('pause', function() {
+                if (!isBackgroundPlaying && !backgroundAudio.paused) {
+                    // Focus music was paused, but background is still "playing"
+                    return;
+                }
+                // Only restart if user had background music on before
+                const wasBackgroundOn = soundIcon.alt === 'Sound On';
+                if (wasBackgroundOn && backgroundAudio.paused) {
+                    startBackgroundAudio();
+                }
+            });
         });
         
         // Music player functionality

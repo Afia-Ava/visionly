@@ -281,36 +281,61 @@
     </audio>
     
     <!-- Toggle Sound Button -->
-    <button id="toggle-sound">
-        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon">
+    <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
+        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
     </button>
 
     <script src="firebase-config.js"></script>
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
     <script>
-      // Ensure audio toggle works on landing page
+
       document.addEventListener('DOMContentLoaded', function() {
         const audio = document.getElementById('background-sound');
         const toggleBtn = document.getElementById('toggle-sound');
         const soundIcon = document.getElementById('sound-icon');
         let isPlaying = false;
 
-        // Try to autoplay (may be blocked by browser until user interacts)
-        function tryAutoplay() {
-          if (audio.paused) {
-            audio.volume = 0.5;
-            audio.play().catch(() => {});
-          }
+        // Set volume and try to start automatically
+        audio.volume = 0.5;
+
+        // Function to start audio
+        function startAudio() {
+          audio.play().then(() => {
+            soundIcon.src = 'assets/speaker-on-icon.png';
+            soundIcon.alt = 'Sound On';
+            isPlaying = true;
+          }).catch(() => {
+            // Autoplay blocked - set icon to off state
+            soundIcon.src = 'assets/speaker-off-icon.png';
+            soundIcon.alt = 'Sound Off';
+            isPlaying = false;
+          });
         }
+
+        // Try to start audio immediately
+        startAudio();
+
+        // Also try to start on first user interaction
+        const enableAudio = () => {
+          if (!isPlaying && audio.paused) {
+            startAudio();
+          }
+        };
+
+        // Listen for various user interactions
+        document.addEventListener('click', enableAudio, { once: true });
+        document.addEventListener('touchstart', enableAudio, { once: true });
+        document.addEventListener('keydown', enableAudio, { once: true });
 
         // Toggle sound on button click
         toggleBtn.addEventListener('click', function() {
           if (audio.paused) {
-            audio.play();
-            soundIcon.src = 'assets/speaker-on-icon.png';
-            soundIcon.alt = 'Sound On';
-            isPlaying = true;
+            audio.play().then(() => {
+              soundIcon.src = 'assets/speaker-on-icon.png';
+              soundIcon.alt = 'Sound On';
+              isPlaying = true;
+            });
           } else {
             audio.pause();
             soundIcon.src = 'assets/speaker-off-icon.png';
@@ -319,7 +344,7 @@
           }
         });
 
-        // Update icon if user interacts with audio elsewhere
+        // Update icon based on audio state
         audio.addEventListener('play', function() {
           soundIcon.src = 'assets/speaker-on-icon.png';
           soundIcon.alt = 'Sound On';
@@ -330,12 +355,6 @@
           soundIcon.alt = 'Sound Off';
           isPlaying = false;
         });
-
-        // Try to autoplay after user gesture
-        document.body.addEventListener('click', tryAutoplay, { once: true });
-
-        // If you want to start audio immediately (if allowed)
-        // tryAutoplay();
       });
     </script>
     <script>
