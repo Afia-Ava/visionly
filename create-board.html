@@ -251,19 +251,33 @@
     <div class="main-layout">
       <div class="left-column">
         <div style="margin-bottom: 15px;">
-          <input type="text" id="board-title" placeholder="Board Title">
-          
-          <select id="board-category" style="width: 100%; padding: 12px; padding-right: 30px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 15px; background-color: white; color: #333; appearance: menulist; -webkit-appearance: menulist;">
-            <option value="" disabled selected>Select Category</option>
-            <option value="career">Career</option>
-            <option value="health">Health</option>
-            <option value="travel">Travel</option>
-            <option value="finance">Finance</option>
-            <option value="personal">Personal</option>
-            <option value="other">Other</option>
-          </select>
+          <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+            <input type="text" id="board-title" placeholder="Board Title" style="flex: 2; margin-bottom: 0;">
+            
+            <select id="board-category" style="flex: 1; padding: 12px; padding-right: 30px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 0; background-color: white; color: #333; appearance: menulist; -webkit-appearance: menulist;">
+              <option value="" disabled selected>Select Category</option>
+              <option value="career">Career</option>
+              <option value="health">Health</option>
+              <option value="travel">Travel</option>
+              <option value="finance">Finance</option>
+              <option value="personal">Personal</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
           
           <textarea id="board-description" placeholder="Description" style="min-height: 100px;"></textarea>
+        </div>
+        
+        <!-- Goals Section - moved before upload/search -->
+        <div style="margin-bottom: 20px;">
+          <h2 style="font-weight: 500; font-size: 16px; margin-top: 0; margin-bottom: 10px; color: #333;">Goals & Intentions (Optional)</h2>
+          <div id="goals-container" style="margin-bottom: 10px;">
+            <div class="goal-item" style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+              <input type="text" placeholder="What do you want to achieve?" style="flex: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 0; font-size: 13px;">
+              <button type="button" class="remove-goal-btn" style="background: #dc3545; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer; display: none;">×</button>
+            </div>
+          </div>
+          <button type="button" id="add-goal-btn" style="background: #f8f9fa; color: #666; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; font-size: 11px; cursor: pointer; font-family: 'Inter', sans-serif;">+ Add Goal</button>
         </div>
         
         <h2 style="font-weight: 500; font-size: 16px; margin-top: 0; margin-bottom: 10px;">Upload or Search Images</h2>
@@ -303,7 +317,7 @@
         </div>
           
         <div class="board-preview" style="margin-top: 0; margin-bottom: 20px;">
-          <div class="preview-grid" id="preview-grid" style="height: 500px;">
+          <div class="preview-grid" id="preview-grid" style="min-height: 500px; height: auto;">
             <div style="grid-column: span 3; text-align: center; padding: 60px 20px; color: #999; background-color: #f5f5f5; border-radius: 8px; height: 100%;">
               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" style="margin-bottom: 15px; opacity: 0.5;">
                 <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
@@ -515,9 +529,21 @@ document.addEventListener('DOMContentLoaded', function() {
               <p style="margin: 0;">Select images from search results or<br>upload your own to add them to your board</p>
             </div>
           `;
+          // Reset to fixed height for empty state
+          previewGrid.style.height = '500px';
         } else {
           // Clear the grid
           previewGrid.innerHTML = '';
+          
+          // Calculate dynamic height based on number of images
+          const imagesPerRow = 3;
+          const numberOfRows = Math.ceil(selectedImages.length / imagesPerRow);
+          const itemHeight = 150; // Approximate height of each grid item including gap
+          const dynamicHeight = Math.max(500, numberOfRows * itemHeight);
+          
+          // Set dynamic height
+          previewGrid.style.height = 'auto';
+          previewGrid.style.minHeight = dynamicHeight + 'px';
           
           // Add each image to the grid
           selectedImages.forEach((image, index) => {
@@ -697,6 +723,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const boardCategory = boardCategorySelect.value;
             const boardDescription = boardDescriptionTextarea.value.trim();
             
+            // Collect goals
+            const goalInputs = document.querySelectorAll('#goals-container input[type="text"]');
+            const goals = Array.from(goalInputs)
+                .map(input => input.value.trim())
+                .filter(goal => goal.length > 0);
+            
             if (!boardTitle) {
                 alert('Please enter a board title');
                 return;
@@ -704,6 +736,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             console.log('Selected images count:', window.selectedImages ? window.selectedImages.length : 0);
             console.log('Selected images:', window.selectedImages);
+            console.log('Goals:', goals);
             
             if (!window.selectedImages || window.selectedImages.length === 0) {
                 alert('Please add at least one image to your board');
@@ -718,7 +751,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Create the vision board
                 const boardId = await createVisionBoard(boardTitle, user.uid, {
                     category: boardCategory,
-                    description: boardDescription
+                    description: boardDescription,
+                    goals: goals
                 });
                 
                 console.log('Board created with ID:', boardId);
@@ -767,6 +801,55 @@ document.addEventListener('DOMContentLoaded', function() {
             saveBoardBtn.textContent = 'Save Board';
             saveBoardBtn.disabled = false;
         }
+    });
+    
+    // Goals functionality
+    const addGoalBtn = document.getElementById('add-goal-btn');
+    const goalsContainer = document.getElementById('goals-container');
+    
+    // Add new goal input
+    addGoalBtn.addEventListener('click', function() {
+        const goalItem = document.createElement('div');
+        goalItem.className = 'goal-item';
+        goalItem.style.cssText = 'display: flex; align-items: center; gap: 6px; margin-bottom: 6px;';
+        
+        goalItem.innerHTML = `
+            <input type="text" placeholder="Enter another goal..." style="flex: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 0; font-size: 13px;">
+            <button type="button" class="remove-goal-btn" style="background: #dc3545; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer;">×</button>
+        `;
+        
+        goalsContainer.appendChild(goalItem);
+        
+        // Add remove functionality
+        goalItem.querySelector('.remove-goal-btn').addEventListener('click', function() {
+            goalItem.remove();
+            updateRemoveButtons();
+        });
+        
+        // Focus on the new input
+        goalItem.querySelector('input').focus();
+        
+        updateRemoveButtons();
+    });
+    
+    // Function to show/hide remove buttons
+    function updateRemoveButtons() {
+        const goalItems = document.querySelectorAll('.goal-item');
+        goalItems.forEach((item, index) => {
+            const removeBtn = item.querySelector('.remove-goal-btn');
+            if (goalItems.length > 1) {
+                removeBtn.style.display = 'block';
+            } else {
+                removeBtn.style.display = 'none';
+            }
+        });
+    }
+    
+    // Add remove functionality to the initial goal item
+    document.querySelector('.remove-goal-btn').addEventListener('click', function() {
+        const goalItem = this.closest('.goal-item');
+        goalItem.remove();
+        updateRemoveButtons();
     });
   });
   </script>
