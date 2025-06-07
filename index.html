@@ -31,24 +31,6 @@
         position: relative;
     }
 
-    #mouse-highlight {
-      position: fixed;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(76, 36, 131, 0.6);
-      pointer-events: none;
-      z-index: 10;
-      transform: translate(-50%, -100%);
-      opacity: 0;
-      transition: opacity 0.1s ease;
-      mix-blend-mode: multiply;
-    }
-
-    body.mouse-active #mouse-highlight {
-      opacity: 1;
-    }
-
     .cta-button {
       display: inline-block;
       background-color: #2d1a45; /* Changed from previous color to purple */
@@ -89,7 +71,6 @@
   </style>
 </head>
 <body style="font-family: 'Inter', sans-serif; background-color: #fff; color: #333; margin: 0; padding: 0;">
-    <div id="mouse-highlight"></div>
     
     <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
         <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
@@ -288,8 +269,11 @@
     <script src="firebase-config.js"></script>
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
+    
+    <!-- Import sprinkles effect from mouse-sprinkles -->
+    <script src="mouse-sprinkles-script.js"></script>
+    
     <script>
-
       document.addEventListener('DOMContentLoaded', function() {
         const audio = document.getElementById('background-sound');
         const toggleBtn = document.getElementById('toggle-sound');
@@ -358,21 +342,6 @@
       });
     </script>
     <script>
-      // Mouse tracking for background highlight effect
-      document.addEventListener('mousemove', (e) => {
-          const highlight = document.getElementById('mouse-highlight');
-          const mouseX = e.clientX;
-          const mouseY = e.clientY;
-          
-          highlight.style.left = mouseX + 'px';
-          highlight.style.top = mouseY + 'px';
-          document.body.classList.add('mouse-active');
-      });
-
-      document.addEventListener('mouseleave', () => {
-          document.body.classList.remove('mouse-active');
-      });
-
       // Gallery carousel functionality
       document.addEventListener('DOMContentLoaded', function() {
         const images = document.querySelectorAll('.gallery-img');

@@ -156,41 +156,77 @@
     <script src="firebase-config.js"></script>
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
+    
+    <!-- Import sprinkles effect from mouse-sprinkles -->
+    <script src="mouse-sprinkles-script.js"></script>
+    
     <script>
-        // Background music functionality
+        // Background music auto-play functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const backgroundSound = document.getElementById('background-sound');
-            const toggleSoundBtn = document.getElementById('toggle-sound');
+            const audio = document.getElementById('background-sound');
+            const toggleBtn = document.getElementById('toggle-sound');
             const soundIcon = document.getElementById('sound-icon');
-            let backgroundMusicEnabled = true;
+            let isPlaying = false;
 
-            // Auto-play background music on page load
-            function playBackgroundMusic() {
-                if (backgroundMusicEnabled) {
-                    backgroundSound.play().catch(error => {
-                        console.log('Background music auto-play failed:', error);
-                        // Auto-play might be blocked, user will need to click toggle
-                    });
-                }
-            }
+            // Set volume and try to start automatically
+            audio.volume = 0.5;
 
-            // Toggle background music
-            toggleSoundBtn.addEventListener('click', function() {
-                if (backgroundSound.paused) {
-                    backgroundSound.play();
-                    backgroundMusicEnabled = true;
+            // Function to start audio
+            function startAudio() {
+                audio.play().then(() => {
                     soundIcon.src = 'assets/speaker-on-icon.png';
                     soundIcon.alt = 'Sound On';
-                } else {
-                    backgroundSound.pause();
-                    backgroundMusicEnabled = false;
+                    isPlaying = true;
+                }).catch(() => {
+                    // Autoplay blocked - set icon to off state
                     soundIcon.src = 'assets/speaker-off-icon.png';
                     soundIcon.alt = 'Sound Off';
+                    isPlaying = false;
+                });
+            }
+
+            // Try to start audio immediately
+            startAudio();
+
+            // Also try to start on first user interaction
+            const enableAudio = () => {
+                if (!isPlaying && audio.paused) {
+                    startAudio();
+                }
+            };
+
+            // Listen for various user interactions
+            document.addEventListener('click', enableAudio, { once: true });
+            document.addEventListener('touchstart', enableAudio, { once: true });
+            document.addEventListener('keydown', enableAudio, { once: true });
+
+            // Toggle sound on button click
+            toggleBtn.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play().then(() => {
+                        soundIcon.src = 'assets/speaker-on-icon.png';
+                        soundIcon.alt = 'Sound On';
+                        isPlaying = true;
+                    });
+                } else {
+                    audio.pause();
+                    soundIcon.src = 'assets/speaker-off-icon.png';
+                    soundIcon.alt = 'Sound Off';
+                    isPlaying = false;
                 }
             });
 
-            // Start background music
-            playBackgroundMusic();
+            // Update icon based on audio state
+            audio.addEventListener('play', function() {
+                soundIcon.src = 'assets/speaker-on-icon.png';
+                soundIcon.alt = 'Sound On';
+                isPlaying = true;
+            });
+            audio.addEventListener('pause', function() {
+                soundIcon.src = 'assets/speaker-off-icon.png';
+                soundIcon.alt = 'Sound Off';
+                isPlaying = false;
+            });
         });
 
         // Music player functionality

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouse Sprinkles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Base styles for the body */
+        body {
+            background-color: #1a1a2e; /* Dark background to make sprinkles visible */
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden; /* Hide scrollbars if particles go off-screen */
+            height: 100vh; /* Ensure body takes full viewport height */
+            cursor: default; /* Ensure default cursor */
+        }
+
+        /* Styles for the individual sprinkle particles */
+        .sprinkle {
+            position: fixed; /* Fixed position relative to the viewport */
+            /* Background color will be set dynamically by JavaScript */
+            border-radius: 50%; /* Makes them round */
+            pointer-events: none; /* Allows clicks/hovers to pass through to elements beneath */
+            opacity: 1; /* Initial opacity */
+            transform: scale(1); /* Initial scale */
+            /* Changed transition duration to 1.6s for a longer fade */
+            transition: opacity 1.6s ease-out, transform 1.6s ease-out, top 1.6s ease-out; /* Smooth transition for fading, scaling, and moving */
+            z-index: 9999; /* Ensure sprinkles are on top of other content */
+        }
+
+        /* Class to trigger the fade-out and shrink animation */
+        .sprinkle-fade {
+            opacity: 0; /* Fade out */
+            transform: scale(0.5) translateY(-20px); /* Shrink and move slightly upwards */
+        }
+
+        /* Basic container for text */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #e0e0e0; /* Light text color */
+            font-size: 2rem;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Move your mouse around to see the dark purple sprinkles!</h1>
+    </div>
+
+    <script>
+        // Define an array of dark purple shades
+        const darkPurpleShades = [
+            '#6A0DAD', // Original dark purple
+            '#4B0082', // Indigo (darker)
+            '#8A2BE2', // Blue Violet (a bit lighter, but still dark)
+            '#5D3FD3', // Amethyst (darker, slightly bluer)
+            '#361F54', // Darker custom purple
+            '#483D8B'  // Dark Slate Blue
+        ];
+
+        document.addEventListener('mousemove', (e) => {
+            // Create a random number of sprinkles (1 or 2) for a more subtle effect
+            const numberOfSprinkles = Math.floor(Math.random() * 2) + 1; // Generates 1 or 2
+
+            for (let i = 0; i < numberOfSprinkles; i++) {
+                const sprinkle = document.createElement('div');
+                sprinkle.classList.add('sprinkle');
+
+                // Select a random dark purple shade from the array
+                const randomPurple = darkPurpleShades[Math.floor(Math.random() * darkPurpleShades.length)];
+                sprinkle.style.backgroundColor = randomPurple;
+
+                // Add slight random offsets to create a "sprinkle" effect around the pointer
+                const offsetX = (Math.random() - 0.5) * 30; // -15px to +15px
+                const offsetY = (Math.random() - 0.5) * 30; // -15px to +15px
+
+                // Set initial position of the sprinkle
+                sprinkle.style.left = `${e.clientX + offsetX}px`;
+                sprinkle.style.top = `${e.clientY + offsetY}px`;
+
+                // Set a random initial size for the sprinkle to add variety
+                const size = Math.random() * 8 + 4; // Size between 4px and 12px
+                sprinkle.style.width = `${size}px`;
+                sprinkle.style.height = `${size}px`;
+
+                // Append the sprinkle to the body
+                document.body.appendChild(sprinkle);
+
+                // Trigger the fade-out animation after a very short delay
+                setTimeout(() => {
+                    sprinkle.classList.add('sprinkle-fade');
+                }, 10); // 10ms delay
+
+                // Remove the sprinkle from the DOM after its animation completes
+                setTimeout(() => {
+                    sprinkle.remove();
+                }, 1600); // 1600ms
+            }
+        });
+    </script>
+</body>
+</html>

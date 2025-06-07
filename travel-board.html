@@ -23,24 +23,6 @@
         padding: 0;
         position: relative;
     }
-
-    #mouse-highlight {
-      position: fixed;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(76, 36, 131, 0.6);
-      pointer-events: none;
-      z-index: 1;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity 0.1s ease;
-      mix-blend-mode: multiply;
-    }
-
-    body.mouse-active #mouse-highlight {
-      opacity: 1;
-    }
     
     .vision-board-container {
       max-width: 1200px;
@@ -198,8 +180,6 @@
   </style>
 </head>
 <body>
-    <div id="mouse-highlight"></div>
-    
     <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
         <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
         <div style="display: flex; align-items: center;">
@@ -325,6 +305,10 @@
     <script src="firebase-config.js"></script>
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
+    
+    <!-- Import sprinkles effect from mouse-sprinkles -->
+    <script src="mouse-sprinkles-script.js"></script>
+    
     <script>
         // Background music auto-play functionality
         document.addEventListener('DOMContentLoaded', function() {
@@ -393,21 +377,6 @@
                 isPlaying = false;
             });
         });
-
-      // Mouse tracking for background highlight effect
-      document.addEventListener('mousemove', (e) => {
-          const highlight = document.getElementById('mouse-highlight');
-          const mouseX = e.clientX;
-          const mouseY = e.clientY;
-          
-          highlight.style.left = mouseX + 'px';
-          highlight.style.top = mouseY + 'px';
-          document.body.classList.add('mouse-active');
-      });
-
-      document.addEventListener('mouseleave', () => {
-          document.body.classList.remove('mouse-active');
-      });
     </script>
 </body>
 </html>
