@@ -19,10 +19,10 @@
         font-family: 'Inter', sans-serif;
         background-color: #fff;
         background-image: 
-          linear-gradient(135deg, rgba(139, 95, 179, 0.12) 25%, transparent 25%), 
-          linear-gradient(225deg, rgba(139, 95, 179, 0.12) 25%, transparent 25%), 
-          linear-gradient(45deg, rgba(139, 95, 179, 0.12) 25%, transparent 25%), 
-          linear-gradient(315deg, rgba(139, 95, 179, 0.12) 25%, transparent 25%);
+          linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+          linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+          linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+          linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
         background-size: 20px 20px;
         background-position: 10px 0, 10px 0, 0 0, 0 0;
         color: #333;
@@ -38,8 +38,8 @@
       border-radius: 50%;
       background: rgba(76, 36, 131, 0.6);
       pointer-events: none;
-      z-index: 1;
-      transform: translate(-50%, -50%);
+      z-index: 10;
+      transform: translate(-50%, -100%);
       opacity: 0;
       transition: opacity 0.1s ease;
       mix-blend-mode: multiply;
@@ -98,7 +98,7 @@
             <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
             <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
             <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
-            <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+            <a href="elevate.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Elevate</a>
             <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
         </div>
     </nav>
@@ -113,7 +113,7 @@
         <div style="padding: 80px 24px 72px 24px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 3;">
           <h1 style="color: #fff; font-size: 2.3rem; font-weight: 700; margin-bottom: 12px; text-align: center; letter-spacing: -1px;">Vision Boards And Track Progress</h1>
           <p style="color: #f3eaff; font-size: 1.08rem; margin-bottom: 32px; text-align: center;">Visualize your goals and turn them into reality</p>
-          <a href="create-board.html" style="background: #3b207a; color: #fff; font-weight: 600; border-radius: 6px; padding: 12px 32px; font-size: 1rem; text-decoration: none; box-shadow: 0 2px 8px rgba(80,40,120,0.08); transition: background 0.2s; border: 1px solid #8b5fb3;">Create</a>
+          <a href="create-board.html" style="background: #3b207a; color: #fff; font-weight: 600; border-radius: 6px; padding: 12px 32px; font-size: 1rem; text-decoration: none; box-shadow: 0 2px 8px rgba(80,40,120,0.08); transition: all 0.3s ease; border: 1px solid #8b5fb3;" onmouseover="this.style.transform='translateY(-4px) scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(80,40,120,0.25)'; this.style.background='#4a2889';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 2px 8px rgba(80,40,120,0.08)'; this.style.background='#3b207a';">Create</a>
         </div>
       </div>
     </div>
@@ -196,7 +196,7 @@
             <div style="padding: 20px 18px 16px 18px; flex: 1;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px;">Productive Workspace</div>
               <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Design a workspace that fosters creativity and efficiency.</div>
-              <a href="vision-board.html" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View</a>
+              <a href="vision-board.html" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#f5f5f5';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#fafbfc';">View</a>
             </div>
           </div>
           <!-- Card 2 -->
@@ -205,7 +205,7 @@
             <div style="padding: 20px 18px 16px 18px; flex: 1;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px;">Healthy Habits</div>
               <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Inspire your wellness journey with visuals that motivate daily healthy choices.</div>
-              <a href="healthy-habits-board.html" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View</a>
+              <a href="healthy-habits-board.html" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#f5f5f5';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#fafbfc';">View</a>
             </div>
           </div>
           <!-- Card 3 -->
@@ -214,7 +214,7 @@
             <div style="padding: 20px 18px 16px 18px; flex: 1;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px;">Travel Dreams</div>
               <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Visualize your next adventure and keep your travel goals top of mind.</div>
-              <a href="travel-board.html" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View</a>
+              <a href="travel-board.html" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#f5f5f5';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#fafbfc';">View</a>
             </div>
           </div>
           <!-- Card 4 -->
@@ -223,7 +223,7 @@
             <div style="padding: 20px 18px 16px 18px; flex: 1;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px;">Creative Pursuits</div>
               <div style="color: #555; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Fuel your artistic side with boards dedicated to your creative passions.</div>
-              <a href="creative-board.html" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: background 0.2s;">View</a>
+              <a href="creative-board.html" style="display: block; width: 100%; background: #fafbfc; border: 1px solid #ececec; color: #222; font-weight: 500; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#f5f5f5';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#fafbfc';">View</a>
             </div>
           </div>
         </div>
