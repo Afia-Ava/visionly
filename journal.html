@@ -91,10 +91,10 @@
             <!-- Header with Entry Actions -->
             <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;">
                 <div style="display: flex; gap: 10px;">
-                    <button style="background: #6b46c1; color: white; border: none; border-radius: 8px; padding: 10px 16px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <button style="background: #2d1a45; color: white; border: none; border-radius: 8px; padding: 10px 16px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;">
                         Get Prompt
                     </button>
-                    <button style="background: #6b46c1; color: white; border: none; border-radius: 8px; padding: 10px 16px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <button style="background: #2d1a45; color: white; border: none; border-radius: 8px; padding: 10px 16px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;">
                         New Entry
                     </button>
                 </div>
@@ -139,8 +139,8 @@
     </audio>
 
     <!-- Toggle Sound Button -->
-    <button id="toggle-sound">
-        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon">
+    <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
+        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
     </button>
 
     <script src="firebase-config.js"></script>
@@ -171,12 +171,20 @@
                 monthYear.textContent = `${monthNames[month]} ${year}`;
                 calendarDays.innerHTML = '';
                 
+                const today = new Date();
+                const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+                const currentDate = today.getDate();
+                
                 for (let i = 0; i < 42; i++) {
                     const date = new Date(startDate);
                     date.setDate(startDate.getDate() + i);
                     
                     const dayElement = document.createElement('div');
                     dayElement.textContent = date.getDate();
+                    
+                    // Check if this is today's date
+                    const isToday = isCurrentMonth && date.getDate() === currentDate && date.getMonth() === month;
+                    
                     dayElement.style.cssText = `
                         text-align: center; 
                         padding: 8px; 
@@ -184,7 +192,7 @@
                         border-radius: 4px;
                         font-size: 14px;
                         ${date.getMonth() === month ? 'color: #333;' : 'color: #ccc;'}
-                        ${date.getDate() === 8 && date.getMonth() === month ? 'background: #6b46c1; color: white; font-weight: 600;' : ''}
+                        ${isToday ? 'background: #2d1a45; color: white; font-weight: 600;' : ''}
                     `;
                     
                     dayElement.addEventListener('click', function() {
@@ -193,7 +201,7 @@
                             d.style.color = d.style.color.includes('#ccc') ? '#ccc' : '#333';
                             d.style.fontWeight = '';
                         });
-                        this.style.background = '#6b46c1';
+                        this.style.background = '#2d1a45';
                         this.style.color = 'white';
                         this.style.fontWeight = '600';
                     });
@@ -219,7 +227,7 @@
                         b.style.borderColor = '#ddd';
                         b.style.background = 'white';
                     });
-                    this.style.borderColor = '#6b46c1';
+                    this.style.borderColor = '#2d1a45';
                     this.style.background = '#f3f0ff';
                 });
             });
@@ -244,7 +252,7 @@
                     // Save current entry if there's content
                     const title = entryTitle.value.trim();
                     const content = entryTextarea.value.trim();
-                    const selectedMood = document.querySelector('.mood-btn[style*="#6b46c1"]');
+                    const selectedMood = document.querySelector('.mood-btn[style*="#2d1a45"]');
                     
                     if (title || content) {
                         // Remove "no entries" message if it exists
@@ -255,7 +263,7 @@
                         
                         // Create entry element
                         const entryElement = document.createElement('div');
-                        entryElement.style.cssText = 'padding: 10px; background: #f8f9fa; border-radius: 8px; cursor: pointer; border-left: 3px solid #6b46c1; position: relative;';
+                        entryElement.style.cssText = 'padding: 10px; background: #f8f9fa; border-radius: 8px; cursor: pointer; border-left: 3px solid #2d1a45; position: relative;';
                         
                         const entryTitleDiv = document.createElement('div');
                         entryTitleDiv.style.cssText = 'font-weight: 500; font-size: 14px; margin-bottom: 4px;';
@@ -327,7 +335,7 @@
                             if (this.dataset.mood) {
                                 const moodBtn = document.querySelector(`[data-mood="${this.dataset.mood}"]`);
                                 if (moodBtn) {
-                                    moodBtn.style.borderColor = '#6b46c1';
+                                    moodBtn.style.borderColor = '#2d1a45';
                                     moodBtn.style.background = '#f3f0ff';
                                 }
                             }
@@ -336,7 +344,7 @@
                             document.querySelectorAll('#entries-list > div').forEach(d => {
                                 d.style.borderLeft = '3px solid transparent';
                             });
-                            this.style.borderLeft = '3px solid #6b46c1';
+                            this.style.borderLeft = '3px solid #2d1a45';
                         });
                         
                         // Add to entries list at the top
