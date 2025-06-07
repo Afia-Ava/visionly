@@ -8,11 +8,6 @@
     <link rel="stylesheet" href="journal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     <style>
         /* Override any CSS that might be preventing scrolling */
         html, body {
@@ -143,15 +138,188 @@
         <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
     </button>
 
-    <script src="firebase-config.js"></script>
     <script src="nav-auth.js"></script>
     <script src="journal.js"></script>
     <script src="global-sound.js"></script>
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
     <script>
+        // Global variables for journal entries
+        let journalEntries = [];
+        
+        // Journal prompts array
+        const journalPrompts = [
+            "What are three things you're genuinely grateful for today, and why do they matter to you?",
+            "Describe a moment this week when you felt completely at peace. What made it special?",
+            "If you could have a conversation with your future self, what would you want to know?",
+            "What's one fear you've overcome recently, and how did it change you?",
+            "Write about a person who inspires you. What qualities do they have that you admire?",
+            "What does success mean to you personally, beyond what others expect?",
+            "Describe your ideal day from morning to night. What would make it perfect?",
+            "What's something you've learned about yourself in the past month?",
+            "If you could give advice to someone going through what you went through last year, what would you say?",
+            "What small act of kindness could you do tomorrow that would make someone's day better?",
+            "Write about a challenge you're facing. What strengths do you have to overcome it?",
+            "What's a dream you've been putting off? What's one small step you could take toward it today?",
+            "Describe a place where you feel most like yourself. What is it about that place?",
+            "What are you most proud of accomplishing this year, no matter how small?",
+            "If you could change one thing about how you spend your time, what would it be?",
+            "Write about someone who believed in you when you didn't believe in yourself.",
+            "What's something you do that brings you pure joy, and how can you do more of it?",
+            "Describe a mistake you made that taught you something valuable.",
+            "What would you do if you knew you couldn't fail?",
+            "Write about a moment when you felt truly connected to someone or something.",
+            "What's one habit you want to develop, and why is it important to you?",
+            "If today was your last day, what would you want people to remember about you?",
+            "What's something you've been avoiding, and what's the first step to facing it?",
+            "Describe a time when you surprised yourself with your own strength or resilience.",
+            "What does 'home' mean to you, and where do you feel most at home?",
+            "Write about a book, movie, or song that changed your perspective on something.",
+            "What's one thing you wish you could tell your younger self?",
+            "Describe your biggest dream. What would achieving it feel like?",
+            "What's something you're excited about in the near future?",
+            "Write about a tradition or ritual that's meaningful to you and why.",
+            "What's one way you've grown or changed in the past six months?",
+            "If you could master any skill instantly, what would it be and how would you use it?",
+            "Describe a moment when you felt truly proud of who you are.",
+            "What's something you want to let go of that's no longer serving you?",
+            "Write about the best advice you've ever received and how it impacted your life."
+        ];
+
+        // Function to get a random prompt
+        function getRandomPrompt() {
+            const randomIndex = Math.floor(Math.random() * journalPrompts.length);
+            return journalPrompts[randomIndex];
+        }
+
+        function loadEntriesFromStorage() {
+            const saved = localStorage.getItem('journalEntries');
+            if (saved) {
+                journalEntries = JSON.parse(saved);
+                displaySavedEntries();
+            }
+        }
+        function saveEntriesToStorage() {
+            localStorage.setItem('journalEntries', JSON.stringify(journalEntries));
+        }
+
+        function displaySavedEntries() {
+            const entriesList = document.getElementById('entries-list');
+            entriesList.innerHTML = '';
+
+            if (journalEntries.length === 0) {
+                const noEntriesDiv = document.createElement('div');
+                noEntriesDiv.style.cssText = 'padding: 15px; text-align: center; color: #666; font-style: italic; font-size: 14px;';
+                noEntriesDiv.textContent = 'You do not have any journal yet. Write your first journal!';
+                entriesList.appendChild(noEntriesDiv);
+                return;
+            }
+
+            journalEntries.forEach((entry, index) => {
+                createEntryElement(entry, index);
+            });
+        }
+
+        function createEntryElement(entry, index) {
+            const entriesList = document.getElementById('entries-list');
+            
+            const entryElement = document.createElement('div');
+            entryElement.style.cssText = 'padding: 10px; background: #f8f9fa; border-radius: 8px; cursor: pointer; border-left: 3px solid #2d1a45; position: relative; margin-bottom: 8px;';
+            entryElement.dataset.index = index;
+            
+            const entryTitleDiv = document.createElement('div');
+            entryTitleDiv.style.cssText = 'font-weight: 500; font-size: 14px; margin-bottom: 4px;';
+            entryTitleDiv.textContent = entry.title || 'Untitled Entry';
+            
+            const entryDate = document.createElement('div');
+            entryDate.style.cssText = 'font-size: 12px; color: #666;';
+            entryDate.textContent = entry.date;
+            
+            if (entry.mood) {
+                const moodSpan = document.createElement('span');
+                moodSpan.style.cssText = 'margin-left: 8px; font-size: 14px;';
+                moodSpan.textContent = entry.mood;
+                entryDate.appendChild(moodSpan);
+            }
+            
+            // Create delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = '×';
+            deleteBtn.style.cssText = 'position: absolute; top: 5px; right: 5px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; display: none; line-height: 1;';
+            
+            // Show/hide delete button on hover
+            entryElement.addEventListener('mouseenter', function() {
+                deleteBtn.style.display = 'block';
+            });
+            
+            entryElement.addEventListener('mouseleave', function() {
+                deleteBtn.style.display = 'none';
+            });
+            
+            // Delete functionality
+            deleteBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (confirm('Are you sure you want to delete this entry?')) {
+                    journalEntries.splice(index, 1);
+                    saveEntriesToStorage();
+                    displaySavedEntries();
+                    
+                    // Clear form if this entry was being viewed
+                    const entryTitle = document.querySelector('input[placeholder="Entry Title"]');
+                    const entryTextarea = document.querySelector('textarea');
+                    entryTitle.value = '';
+                    entryTextarea.value = '';
+                    
+                    // Reset mood selection
+                    document.querySelectorAll('.mood-btn').forEach(b => {
+                        b.style.borderColor = '#ddd';
+                        b.style.background = 'white';
+                    });
+                }
+            });
+            
+            // Load entry functionality
+            entryElement.addEventListener('click', function() {
+                const entryTitle = document.querySelector('input[placeholder="Entry Title"]');
+                const entryTextarea = document.querySelector('textarea');
+                
+                entryTitle.value = entry.title;
+                entryTextarea.value = entry.content;
+                
+                // Reset mood selection
+                document.querySelectorAll('.mood-btn').forEach(b => {
+                    b.style.borderColor = '#ddd';
+                    b.style.background = 'white';
+                });
+                
+                // Select the saved mood
+                if (entry.mood) {
+                    const moodBtn = document.querySelector(`[data-mood="${entry.mood}"]`);
+                    if (moodBtn) {
+                        moodBtn.style.borderColor = '#2d1a45';
+                        moodBtn.style.background = '#f3f0ff';
+                    }
+                }
+                
+                // Update border for selected entry
+                document.querySelectorAll('#entries-list > div').forEach(d => {
+                    d.style.borderLeft = '3px solid transparent';
+                });
+                this.style.borderLeft = '3px solid #2d1a45';
+            });
+            
+            entryElement.appendChild(entryTitleDiv);
+            entryElement.appendChild(entryDate);
+            entryElement.appendChild(deleteBtn);
+            
+            entriesList.appendChild(entryElement);
+        }
+
         // Calendar functionality
         document.addEventListener('DOMContentLoaded', function() {
+            // Load entries from storage first
+            loadEntriesFromStorage();
+
             const monthYear = document.getElementById('month-year');
             const calendarDays = document.getElementById('calendar-days');
             const prevMonth = document.getElementById('prev-month');
@@ -171,6 +339,7 @@
                 monthYear.textContent = `${monthNames[month]} ${year}`;
                 calendarDays.innerHTML = '';
                 
+                // Get current date for highlighting
                 const today = new Date();
                 const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
                 const currentDate = today.getDate();
@@ -232,21 +401,58 @@
                 });
             });
             
-            // New Entry functionality
+            // Get Prompt and New Entry functionality
             const buttons = document.querySelectorAll('button');
+            let getPromptBtn = null;
             let newEntryBtn = null;
             
-            // Find the "New Entry" button by its text content
+            // Find the buttons by their text content
             buttons.forEach(btn => {
-                if (btn.textContent.trim() === 'New Entry') {
+                if (btn.textContent.trim() === 'Get Prompt') {
+                    getPromptBtn = btn;
+                } else if (btn.textContent.trim() === 'New Entry') {
                     newEntryBtn = btn;
                 }
             });
             
             const entryTitle = document.querySelector('input[placeholder="Entry Title"]');
             const entryTextarea = document.querySelector('textarea');
-            const entriesList = document.getElementById('entries-list');
             
+            // Get Prompt functionality
+            if (getPromptBtn) {
+                getPromptBtn.addEventListener('click', function() {
+                    const prompt = getRandomPrompt();
+                    
+                    // Clear current content
+                    entryTitle.value = '';
+                    entryTextarea.value = '';
+                    
+                    // Reset mood selection
+                    document.querySelectorAll('.mood-btn').forEach(b => {
+                        b.style.borderColor = '#ddd';
+                        b.style.background = 'white';
+                    });
+                    
+                    // Reset entry selection
+                    document.querySelectorAll('#entries-list > div').forEach(d => {
+                        if (d.style.borderLeft) {
+                            d.style.borderLeft = '3px solid transparent';
+                        }
+                    });
+                    
+                    // Add the prompt to the textarea with some formatting
+                    entryTextarea.value = `💭 Today's Journal Prompt:\n"${prompt}"\n\n`;
+                    
+                    // Focus on the end of the textarea where they can start writing
+                    entryTextarea.focus();
+                    entryTextarea.setSelectionRange(entryTextarea.value.length, entryTextarea.value.length);
+                    
+                    // Set a default title
+                    entryTitle.value = `Reflection - ${new Date().toLocaleDateString()}`;
+                });
+            }
+            
+            // New Entry functionality
             if (newEntryBtn) {
                 newEntryBtn.addEventListener('click', function() {
                     // Save current entry if there's content
@@ -255,100 +461,23 @@
                     const selectedMood = document.querySelector('.mood-btn[style*="#2d1a45"]');
                     
                     if (title || content) {
-                        // Remove "no entries" message if it exists
-                        const noEntriesMessage = entriesList.querySelector('div[style*="font-style: italic"]');
-                        if (noEntriesMessage) {
-                            noEntriesMessage.remove();
-                        }
+                        // Create new entry object
+                        const newEntry = {
+                            title: title || 'Untitled Entry',
+                            content: content,
+                            mood: selectedMood ? selectedMood.getAttribute('data-mood') : '',
+                            date: new Date().toLocaleDateString(),
+                            timestamp: Date.now()
+                        };
                         
-                        // Create entry element
-                        const entryElement = document.createElement('div');
-                        entryElement.style.cssText = 'padding: 10px; background: #f8f9fa; border-radius: 8px; cursor: pointer; border-left: 3px solid #2d1a45; position: relative;';
+                        // Add to beginning of array
+                        journalEntries.unshift(newEntry);
                         
-                        const entryTitleDiv = document.createElement('div');
-                        entryTitleDiv.style.cssText = 'font-weight: 500; font-size: 14px; margin-bottom: 4px;';
-                        entryTitleDiv.textContent = title || 'Untitled Entry';
+                        // Save to localStorage
+                        saveEntriesToStorage();
                         
-                        const entryDate = document.createElement('div');
-                        entryDate.style.cssText = 'font-size: 12px; color: #666;';
-                        const now = new Date();
-                        entryDate.textContent = now.toLocaleDateString();
-                        
-                        if (selectedMood) {
-                            const moodSpan = document.createElement('span');
-                            moodSpan.style.cssText = 'margin-left: 8px; font-size: 14px;';
-                            moodSpan.textContent = selectedMood.getAttribute('data-mood');
-                            entryDate.appendChild(moodSpan);
-                        }
-                        
-                        // Create delete button
-                        const deleteBtn = document.createElement('button');
-                        deleteBtn.innerHTML = '×';
-                        deleteBtn.style.cssText = 'position: absolute; top: 5px; right: 5px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; display: none; line-height: 1;';
-                        
-                        // Show/hide delete button on hover
-                        entryElement.addEventListener('mouseenter', function() {
-                            deleteBtn.style.display = 'block';
-                        });
-                        
-                        entryElement.addEventListener('mouseleave', function() {
-                            deleteBtn.style.display = 'none';
-                        });
-                        
-                        // Delete functionality
-                        deleteBtn.addEventListener('click', function(e) {
-                            e.stopPropagation(); // Prevent entry selection
-                            if (confirm('Are you sure you want to delete this entry?')) {
-                                entryElement.remove();
-                                
-                                // If no entries left, show the "no entries" message
-                                if (entriesList.children.length === 0) {
-                                    const noEntriesDiv = document.createElement('div');
-                                    noEntriesDiv.style.cssText = 'padding: 15px; text-align: center; color: #666; font-style: italic; font-size: 14px;';
-                                    noEntriesDiv.textContent = 'You do not have any journal yet. Write your first journal!';
-                                    entriesList.appendChild(noEntriesDiv);
-                                }
-                            }
-                        });
-                        
-                        entryElement.appendChild(entryTitleDiv);
-                        entryElement.appendChild(entryDate);
-                        entryElement.appendChild(deleteBtn);
-                        
-                        // Store entry data
-                        entryElement.dataset.title = title;
-                        entryElement.dataset.content = content;
-                        entryElement.dataset.mood = selectedMood ? selectedMood.getAttribute('data-mood') : '';
-                        
-                        // Add click handler to load entry
-                        entryElement.addEventListener('click', function() {
-                            entryTitle.value = this.dataset.title;
-                            entryTextarea.value = this.dataset.content;
-                            
-                            // Reset mood selection
-                            document.querySelectorAll('.mood-btn').forEach(b => {
-                                b.style.borderColor = '#ddd';
-                                b.style.background = 'white';
-                            });
-                            
-                            // Select the saved mood
-                            if (this.dataset.mood) {
-                                const moodBtn = document.querySelector(`[data-mood="${this.dataset.mood}"]`);
-                                if (moodBtn) {
-                                    moodBtn.style.borderColor = '#2d1a45';
-                                    moodBtn.style.background = '#f3f0ff';
-                                }
-                            }
-                            
-                            // Update border for selected entry
-                            document.querySelectorAll('#entries-list > div').forEach(d => {
-                                d.style.borderLeft = '3px solid transparent';
-                            });
-                            this.style.borderLeft = '3px solid #2d1a45';
-                        });
-                        
-                        // Add to entries list at the top
-                        entriesList.insertBefore(entryElement, entriesList.firstChild);
+                        // Refresh the display
+                        displaySavedEntries();
                     }
                     
                     // Clear form for new entry
