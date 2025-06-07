@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Progress Tracking - Visionly</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+ Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -94,26 +94,7 @@
                     </div>
                 </div>
 
-                <!-- Progress Chart Section -->
-                <div class="progress-chart" style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="font-weight: 600; color: #333; margin: 0;">Goal Completion Progress</h3>
-                        <select id="chart-filter" style="padding: 6px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px; cursor: pointer;">
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="quarterly">Quarterly</option>
-                        </select>
-                    </div>
-                    <div style="position: relative; height: 300px;">
-                        <canvas id="progressChart" width="400" height="300" style="width: 100%; height: 100%;"></canvas>
-                    </div>
-                    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 12px; color: #666;">
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <div style="width: 12px; height: 12px; background-color: #2d1a45; border-radius: 2px;"></div>
-                            <span>Goal Completion %</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Progress Chart Section - REMOVED -->
             </div>
 
             <div class="focus-right" style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
@@ -336,6 +317,28 @@
             sessionStorage.setItem('focusDuration', focusDuration);
             sessionStorage.setItem('breakDuration', breakDuration);
             
+            // Store selected music if any is playing
+            const musicOptions = document.querySelectorAll('.music-option');
+            let selectedMusic = null;
+            let selectedMusicSrc = null;
+            
+            musicOptions.forEach(option => {
+                if (option.style.backgroundColor === 'rgb(227, 242, 253)') { // Active selection
+                    selectedMusic = option.querySelector('p').textContent;
+                    selectedMusicSrc = option.dataset.src;
+                }
+            });
+            
+            if (selectedMusic && selectedMusicSrc) {
+                sessionStorage.setItem('selectedMusic', selectedMusic);
+                sessionStorage.setItem('selectedMusicSrc', selectedMusicSrc);
+                console.log('Saving selected music:', selectedMusic, selectedMusicSrc);
+            } else {
+                sessionStorage.removeItem('selectedMusic');
+                sessionStorage.removeItem('selectedMusicSrc');
+                console.log('No music selected');
+            }
+            
             // Navigate to the focus session page
             window.location.href = 'focus-session.html';
         });
@@ -470,11 +473,11 @@
                 addNewGoal();
             });
             
-            // Remove goal functionality
+            // Remove goal functionality (using event delegation)
             goalsList.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-goal')) {
                     e.target.closest('.goal-item').remove();
-                    updateProgressAndChart();
+                    updateProgress(); // Changed from updateProgressAndChart to just updateProgress
                 }
             });
             
@@ -483,260 +486,7 @@
             updateStreak();
         });
 
-        // Progress Chart functionality - separate DOMContentLoaded
-        document.addEventListener('DOMContentLoaded', function() {
-            const canvas = document.getElementById('progressChart');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            
-            // Set actual canvas size for better resolution
-            canvas.width = 800;
-            canvas.height = 600;
-            
-            // Function to get progress data from localStorage
-            function getProgressData() {
-                const data = localStorage.getItem('progressHistory');
-                const filter = document.getElementById('chart-filter').value;
-                
-                if (data) {
-                    const parsedData = JSON.parse(data);
-                    // Reset all to 0% for testing
-                    return parsedData.map(item => ({ ...item, percentage: 0 }));
-                }
-                
-                // Initialize with flat 0% data based on filter
-                const today = new Date();
-                const sampleData = [];
-                let days;
-                
-                switch(filter) {
-                    case 'weekly':
-                        days = 7;
-                        break;
-                    case 'monthly':
-                        days = 30;
-                        break;
-                    case 'quarterly':
-                        days = 90;
-                        break;
-                    default:
-                        days = 7;
-                }
-                
-                for (let i = days - 1; i >= 0; i--) {
-                    const date = new Date(today);
-                    date.setDate(date.getDate() - i);
-                    const dateStr = date.toDateString();
-                    sampleData.push({
-                        date: dateStr,
-                        percentage: 0 // Always start at 0% for new users
-                    });
-                }
-                
-                localStorage.setItem('progressHistory', JSON.stringify(sampleData));
-                return sampleData;
-            }
-            
-            // Function to save today's progress
-            function saveProgressData(percentage) {
-                const today = new Date().toDateString();
-                const filter = document.getElementById('chart-filter').value;
-                let data = getProgressData();
-                
-                // Update today's data only
-                const todayIndex = data.findIndex(entry => entry.date === today);
-                if (todayIndex >= 0) {
-                    data[todayIndex].percentage = percentage;
-                } else {
-                    // Add new day but keep only based on filter
-                    data.push({ date: today, percentage: percentage });
-                    
-                    let maxDays;
-                    switch(filter) {
-                        case 'weekly':
-                            maxDays = 7;
-                            break;
-                        case 'monthly':
-                            maxDays = 30;
-                            break;
-                        case 'quarterly':
-                            maxDays = 90;
-                            break;
-                        default:
-                            maxDays = 7;
-                    }
-                    
-                    if (data.length > maxDays) {
-                        data = data.slice(-maxDays);
-                    }
-                }
-                
-                localStorage.setItem('progressHistory', JSON.stringify(data));
-                return data;
-            }
-            
-            // Function to draw the chart
-            function drawChart(data) {
-                // Clear canvas
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                if (data.length === 0) return;
-                
-                const filter = document.getElementById('chart-filter').value;
-                let maxDays;
-                
-                switch(filter) {
-                    case 'weekly':
-                        maxDays = 7;
-                        break;
-                    case 'monthly':
-                        maxDays = 30;
-                        break;
-                    case 'quarterly':
-                        maxDays = 90;
-                        break;
-                    default:
-                        maxDays = 7;
-                }
-                
-                // Ensure we have correct number of days of data
-                while (data.length < maxDays) {
-                    const lastDate = data.length > 0 ? new Date(data[data.length - 1].date) : new Date();
-                    lastDate.setDate(lastDate.getDate() + 1);
-                    data.push({
-                        date: lastDate.toDateString(),
-                        percentage: 0
-                    });
-                }
-                
-                // Take only the specified number of days
-                data = data.slice(-maxDays);
-                
-                const padding = 60;
-                const chartWidth = canvas.width - 2 * padding;
-                const chartHeight = canvas.height - 2 * padding;
-                
-                // Draw axes
-                ctx.strokeStyle = '#e0e0e0';
-                ctx.lineWidth = 1;
-                
-                // Y-axis
-                ctx.beginPath();
-                ctx.moveTo(padding, padding);
-                ctx.lineTo(padding, canvas.height - padding);
-                ctx.stroke();
-                
-                // X-axis
-                ctx.beginPath();
-                ctx.moveTo(padding, canvas.height - padding);
-                ctx.lineTo(canvas.width - padding, canvas.height - padding);
-                ctx.stroke();
-                
-                // Draw grid lines and labels
-                ctx.font = '12px Inter';
-                ctx.fillStyle = '#666';
-                ctx.textAlign = 'right';
-                
-                // Y-axis labels (0% to 100%)
-                for (let i = 0; i <= 5; i++) {
-                    const y = canvas.height - padding - (i * chartHeight / 5);
-                    const percentage = i * 20;
-                    
-                    // Grid line
-                    ctx.strokeStyle = '#f0f0f0';
-                    ctx.beginPath();
-                    ctx.moveTo(padding, y);
-                    ctx.lineTo(canvas.width - padding, y);
-                    ctx.stroke();
-                    
-                    // Label
-                    ctx.fillText(percentage + '%', padding - 10, y + 4);
-                }
-                
-                // X-axis labels (dates) - adjust spacing based on data length
-                ctx.textAlign = 'center';
-                const pointSpacing = data.length > 1 ? chartWidth / (data.length - 1) : chartWidth / 2;
-                
-                // Show fewer labels for longer periods
-                const labelStep = filter === 'quarterly' ? 7 : filter === 'monthly' ? 3 : 1;
-                
-                data.forEach((point, index) => {
-                    if (index % labelStep === 0 || index === data.length - 1) {
-                        const x = padding + (index * pointSpacing);
-                        const date = new Date(point.date);
-                        const label = (date.getMonth() + 1) + '/' + date.getDate();
-                        
-                        ctx.fillText(label, x, canvas.height - padding + 20);
-                    }
-                });
-                
-                // Draw the line
-                ctx.strokeStyle = '#2d1a45';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                
-                data.forEach((point, index) => {
-                    const x = padding + (index * pointSpacing);
-                    const y = canvas.height - padding - (point.percentage * chartHeight / 100);
-                    
-                    if (index === 0) {
-                        ctx.moveTo(x, y);
-                    } else {
-                        ctx.lineTo(x, y);
-                    }
-                });
-                
-                ctx.stroke();
-                
-                // Draw points (fewer for longer periods)
-                ctx.fillStyle = '#2d1a45';
-                data.forEach((point, index) => {
-                    const x = padding + (index * pointSpacing);
-                    const y = canvas.height - padding - (point.percentage * chartHeight / 100);
-                    
-                    ctx.beginPath();
-                    ctx.arc(x, y, filter === 'quarterly' ? 2 : 4, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // Show percentage on last point only if > 0%
-                    if (index === data.length - 1 && point.percentage > 0) {
-                        ctx.fillStyle = '#333';
-                        ctx.font = 'bold 12px Inter';
-                        ctx.textAlign = 'center';
-                        ctx.fillText(point.percentage + '%', x, y - 10);
-                        ctx.fillStyle = '#2d1a45';
-                        ctx.font = '12px Inter';
-                    }
-                });
-            }
-            
-            // Function to update chart with current progress
-            window.updateProgressChart = function() {
-                const progressText = document.getElementById('progress-percentage').textContent;
-                const currentPercentage = parseInt(progressText.replace('%', '')) || 0;
-                
-                const data = saveProgressData(currentPercentage);
-                drawChart(data);
-            };
-            
-            // Add filter change event listener
-            document.getElementById('chart-filter').addEventListener('change', function() {
-                // Clear existing data to reset for new filter
-                localStorage.removeItem('progressHistory');
-                
-                // Redraw chart with new filter
-                const initialData = getProgressData();
-                drawChart(initialData);
-            });
-            
-            // Clear any existing data and start fresh
-            localStorage.removeItem('progressHistory');
-            
-            // Initial chart draw
-            const initialData = getProgressData();
-            drawChart(initialData);
-        });
+        // Remove the entire Progress Chart functionality section
     </script>
 </body>
 </html>

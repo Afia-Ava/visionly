@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Journey - Visionly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body style="font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #333; margin: 0; padding: 0;">
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+        <div style="display: flex; align-items: center;">
+            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+            <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+            <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+        </div>
+    </nav>
+
+    <main style="width: 100%; max-width: 1000px; margin: 0 auto; padding: 20px 40px;">
+        <header style="margin: 100px 0 40px; text-align: left;">
+            <h1 style="font-size: 2rem; font-weight: bold; color: #333; margin-bottom: 8px;">My Journey</h1>
+            <p style="color: #666; margin: 0; font-size: 1rem;">Visualize your path to success with key milestones and achievements</p>
+        </header>
+
+        <!-- Timeline Container -->
+        <div style="background-color: #fff; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 40px;">
+            
+            <!-- Timeline Item 1 - Expanded -->
+            <div style="margin-bottom: 20px;">
+                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 18px; cursor: pointer; transition: all 0.2s ease;" onclick="toggleTimeline('timeline1')">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <h3 style="margin: 0 0 4px 0; font-size: 0.95rem; font-weight: 600; color: #333;">Getting into College</h3>
+                            <p style="margin: 0; color: #666; font-size: 0.8rem;">Expected Completion: 2024-08-15</p>
+                        </div>
+                        <span id="arrow1" style="font-size: 14px; color: #666; transform: rotate(180deg); transition: transform 0.3s;">▼</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Item 2 - Collapsed -->
+            <div style="margin-bottom: 20px;">
+                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 18px; cursor: pointer; transition: all 0.2s ease;" onclick="toggleTimeline('timeline2')">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <h3 style="margin: 0; font-size: 0.95rem; font-weight: 600; color: #333;">Work on Personal Brand</h3>
+                        </div>
+                        <span id="arrow2" style="font-size: 14px; color: #666; transition: transform 0.3s;">▼</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Item 3 - Collapsed -->
+            <div style="margin-bottom: 0;">
+                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 18px; cursor: pointer; transition: all 0.2s ease;" onclick="toggleTimeline('timeline3')">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <h3 style="margin: 0; font-size: 0.95rem; font-weight: 600; color: #333;">Build Projects</h3>
+                        </div>
+                        <span id="arrow3" style="font-size: 14px; color: #666; transition: transform 0.3s;">▼</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="firebase-config.js"></script>
+    <script src="shared-scripts.js"></script>
+    <script src="profile-dropdown.js"></script>
+    
+    <script>
+        function toggleTimeline(timelineId) {
+            const arrow = document.getElementById('arrow' + timelineId.slice(-1));
+            
+            // Just toggle the arrow, no content expansion in this minimal design
+            if (arrow.style.transform === 'rotate(180deg)') {
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Load timeline data from vision boards (placeholder for future implementation)
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Timeline page loaded - ready to display vision board goals');
+        });
+    </script>
+</body>
+</html>

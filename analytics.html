@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Visionly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body style="font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #333; margin: 0; padding: 0;">
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+        <div style="display: flex; align-items: center;">
+            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+            <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+            <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+        </div>
+    </nav>
+
+    <main style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <header style="margin: 100px 0 40px; text-align: left;">
+            <h1 style="font-size: 2rem; font-weight: bold; color: #333; margin-bottom: 5px;">Analytics Dashboard</h1>
+            <p style="color: #666; margin-top: 0; margin-bottom: 0;">Get detailed insights into your progress with advanced analytics and reports</p>
+        </header>
+
+        <!-- Progress Chart Section -->
+        <div style="display: flex; gap: 30px; margin-bottom: 30px;">
+            <!-- Chart Container -->
+            <div class="progress-chart" style="background-color: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex: 2;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="font-weight: 600; color: #333; margin: 0; font-size: 1.2rem;">Goal Completion Progress</h3>
+                    <select id="chart-filter" style="padding: 6px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 13px; cursor: pointer;">
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                    </select>
+                </div>
+                <div style="position: relative; height: 300px;">
+                    <canvas id="progressChart" width="400" height="300" style="width: 100%; height: 100%;"></canvas>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px; font-size: 13px; color: #666;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 14px; height: 14px; background-color: #2d1a45; border-radius: 3px;"></div>
+                        <span>Goal Completion %</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Cards Container -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                <!-- Weekly Summary Card -->
+                <div style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <h3 style="font-weight: 600; color: #333; margin: 0 0 12px 0; font-size: 1.1rem;">Weekly Summary</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666; font-size: 14px;">Goals Completed</span>
+                            <span id="weekly-goals" style="font-weight: 600; color: #333;">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666; font-size: 14px;">Focus Sessions</span>
+                            <span id="weekly-sessions" style="font-weight: 600; color: #333;">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666; font-size: 14px;">Avg. Completion Rate</span>
+                            <span id="weekly-rate" style="font-weight: 600; color: #333;">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Trends Card -->
+                <div style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <h3 style="font-weight: 600; color: #333; margin: 0 0 12px 0; font-size: 1.1rem;">Monthly Trends</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666; font-size: 14px;">Best Day</span>
+                            <span id="best-day" style="font-weight: 600; color: #333;">-</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666; font-size: 14px;">Longest Streak</span>
+                            <span id="longest-streak" style="font-weight: 600; color: #333;">0 days</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666; font-size: 14px;">Total Hours Focused</span>
+                            <span id="total-hours" style="font-weight: 600; color: #333;">0h</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Productivity Insights Card -->
+                <div style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <h3 style="font-weight: 600; color: #333; margin: 0 0 12px 0; font-size: 1.1rem;">Productivity Insights</h3>
+                    <div style="padding: 12px; background: linear-gradient(135deg, #f3f0ff 0%, #e8deff 100%); border-radius: 6px;">
+                        <p style="margin: 0; color: #666; font-size: 13px; line-height: 1.4;">
+                            <strong style="color: #333;">Tip:</strong> Your most productive days tend to be when you complete goals early in the day. Try scheduling important tasks in the morning for better results.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="firebase-config.js"></script>
+    <script src="shared-scripts.js"></script>
+    <script src="profile-dropdown.js"></script>
+    
+    <script>
+        // Progress Chart functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('progressChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Set actual canvas size for better resolution
+            canvas.width = 800;
+            canvas.height = 600;
+            
+            // Function to get progress data from localStorage
+            function getProgressData() {
+                const data = localStorage.getItem('progressHistory');
+                const filter = document.getElementById('chart-filter').value;
+                
+                if (data) {
+                    const parsedData = JSON.parse(data);
+                    return parsedData;
+                }
+                
+                // Initialize with sample data based on filter
+                const today = new Date();
+                const sampleData = [];
+                let days;
+                
+                switch(filter) {
+                    case 'weekly':
+                        days = 7;
+                        break;
+                    case 'monthly':
+                        days = 30;
+                        break;
+                    case 'quarterly':
+                        days = 90;
+                        break;
+                    default:
+                        days = 7;
+                }
+                
+                for (let i = days - 1; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toDateString();
+                    sampleData.push({
+                        date: dateStr,
+                        percentage: Math.floor(Math.random() * 30) // Random sample data for demo
+                    });
+                }
+                
+                localStorage.setItem('progressHistory', JSON.stringify(sampleData));
+                return sampleData;
+            }
+            
+            // Function to draw the chart
+            function drawChart(data) {
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                if (data.length === 0) return;
+                
+                const filter = document.getElementById('chart-filter').value;
+                let maxDays;
+                
+                switch(filter) {
+                    case 'weekly':
+                        maxDays = 7;
+                        break;
+                    case 'monthly':
+                        maxDays = 30;
+                        break;
+                    case 'quarterly':
+                        maxDays = 90;
+                        break;
+                    default:
+                        maxDays = 7;
+                }
+                
+                // Take only the specified number of days
+                data = data.slice(-maxDays);
+                
+                const padding = 80;
+                const chartWidth = canvas.width - 2 * padding;
+                const chartHeight = canvas.height - 2 * padding;
+                
+                // Draw axes
+                ctx.strokeStyle = '#e0e0e0';
+                ctx.lineWidth = 2;
+                
+                // Y-axis
+                ctx.beginPath();
+                ctx.moveTo(padding, padding);
+                ctx.lineTo(padding, canvas.height - padding);
+                ctx.stroke();
+                
+                // X-axis
+                ctx.beginPath();
+                ctx.moveTo(padding, canvas.height - padding);
+                ctx.lineTo(canvas.width - padding, canvas.height - padding);
+                ctx.stroke();
+                
+                // Draw grid lines and labels
+                ctx.font = '16px Inter';
+                ctx.fillStyle = '#666';
+                ctx.textAlign = 'right';
+                
+                // Y-axis labels (0% to 100%)
+                for (let i = 0; i <= 5; i++) {
+                    const y = canvas.height - padding - (i * chartHeight / 5);
+                    const percentage = i * 20;
+                    
+                    // Grid line
+                    ctx.strokeStyle = '#f0f0f0';
+                    ctx.beginPath();
+                    ctx.moveTo(padding, y);
+                    ctx.lineTo(canvas.width - padding, y);
+                    ctx.stroke();
+                    
+                    // Label
+                    ctx.fillText(percentage + '%', padding - 15, y + 6);
+                }
+                
+                // X-axis labels (dates)
+                ctx.textAlign = 'center';
+                const pointSpacing = data.length > 1 ? chartWidth / (data.length - 1) : chartWidth / 2;
+                
+                // Show fewer labels for longer periods
+                const labelStep = filter === 'quarterly' ? 10 : filter === 'monthly' ? 5 : 1;
+                
+                data.forEach((point, index) => {
+                    if (index % labelStep === 0 || index === data.length - 1) {
+                        const x = padding + (index * pointSpacing);
+                        const date = new Date(point.date);
+                        const label = (date.getMonth() + 1) + '/' + date.getDate();
+                        
+                        ctx.fillText(label, x, canvas.height - padding + 30);
+                    }
+                });
+                
+                // Draw the line
+                ctx.strokeStyle = '#2d1a45';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                
+                data.forEach((point, index) => {
+                    const x = padding + (index * pointSpacing);
+                    const y = canvas.height - padding - (point.percentage * chartHeight / 100);
+                    
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                
+                ctx.stroke();
+                
+                // Draw points
+                ctx.fillStyle = '#2d1a45';
+                data.forEach((point, index) => {
+                    const x = padding + (index * pointSpacing);
+                    const y = canvas.height - padding - (point.percentage * chartHeight / 100);
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+            
+            // Add filter change event listener
+            document.getElementById('chart-filter').addEventListener('change', function() {
+                const data = getProgressData();
+                drawChart(data);
+                updateSummaryStats(data);
+            });
+            
+            // Function to update summary statistics
+            function updateSummaryStats(data) {
+                // Calculate summary statistics
+                const completedGoals = data.filter(d => d.percentage > 0).length;
+                const avgRate = data.reduce((sum, d) => sum + d.percentage, 0) / data.length;
+                const bestDay = data.reduce((best, current) => 
+                    current.percentage > best.percentage ? current : best, data[0]);
+                
+                document.getElementById('weekly-goals').textContent = completedGoals;
+                document.getElementById('weekly-rate').textContent = Math.round(avgRate) + '%';
+                document.getElementById('best-day').textContent = bestDay ? 
+                    new Date(bestDay.date).toLocaleDateString('en-US', { weekday: 'long' }) : '-';
+            }
+            
+            // Initial chart draw
+            const initialData = getProgressData();
+            drawChart(initialData);
+            updateSummaryStats(initialData);
+        });
+    </script>
+</body>
+</html>

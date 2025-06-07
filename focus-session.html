@@ -93,7 +93,7 @@
         .play-button {
             width: 60px;
             height: 60px;
-            background-color: #007bff;
+            background-color: #2d1a45;
             border-radius: 50%;
             color: white;
             font-size: 32px;
@@ -182,20 +182,8 @@
         </div>
         
         <div class="player-controls">
-            <button class="control-button">
-                <span>⏮</span>
-            </button>
-            <button class="control-button">
-                <span>⏪</span>
-            </button>
             <button class="control-button play-button">
                 <span>▶</span>
-            </button>
-            <button class="control-button">
-                <span>⏩</span>
-            </button>
-            <button class="control-button">
-                <span>⏭</span>
             </button>
         </div>
         
@@ -265,8 +253,9 @@
             let audioPlayer = document.getElementById('focus-audio');
             if (selectedMusicSrc) {
                 audioPlayer.src = selectedMusicSrc;
-                audioPlayer.volume = 0.5; // Increase volume for better audibility
+                audioPlayer.volume = 0.5;
                 audioPlayer.loop = true;
+                console.log('Audio source set to:', selectedMusicSrc);
             } else {
                 // Hide play controls if no music selected
                 document.querySelector('.player-controls').style.opacity = '0.5';
