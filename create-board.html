@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create Vision Board - Visionly</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dark-mode-global.css">
   <!-- Add back Dancing Script for navbar logo consistency -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
@@ -30,6 +30,117 @@
       color: #333;
       margin: 0;
       padding: 0;
+      transition: all 0.3s ease;
+    }
+    
+    /* Dark Mode Styles */
+    body.dark-mode {
+      background-color: #0a0612;
+      background-image: 
+        linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+        linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+        linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+        linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode nav.navbar {
+      background-color: #140a22 !important;
+      box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15) !important;
+    }
+    
+    body.dark-mode nav.navbar a,
+    body.dark-mode nav.navbar .logo {
+      color: #e0e0e0 !important;
+    }
+    
+    body.dark-mode h1,
+    body.dark-mode h2,
+    body.dark-mode h3 {
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode p {
+      color: #b0b0b0;
+    }
+    
+    body.dark-mode input[type="text"],
+    body.dark-mode textarea,
+    body.dark-mode select {
+      background: #1f0f35;
+      border-color: #2d1549;
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode input::placeholder,
+    body.dark-mode textarea::placeholder {
+      color: #888;
+    }
+    
+    body.dark-mode input:focus,
+    body.dark-mode textarea:focus,
+    body.dark-mode select:focus {
+      background: #2d1549;
+      border-color: #6b4897;
+    }
+    
+    body.dark-mode .search-section,
+    body.dark-mode .upload-area {
+      background: #1f0f35;
+      border-color: #2d1549;
+    }
+    
+    body.dark-mode .upload-area {
+      border-color: #2d1549;
+    }
+    
+    body.dark-mode .upload-button {
+      background: #2d1549;
+      color: #e0e0e0;
+      border: 1px solid #3a2259;
+    }
+    
+    body.dark-mode .upload-button:hover {
+      background: #3a2259;
+    }
+    
+    body.dark-mode .preview-item {
+      background-color: #1f0f35;
+    }
+    
+    body.dark-mode .search-result-item {
+      background-color: #1f0f35;
+    }
+    
+    body.dark-mode .search-input svg {
+      color: #888;
+    }
+    
+    body.dark-mode #save-board-btn {
+      background-color: #2d1a45;
+    }
+    
+    body.dark-mode #save-board-btn:hover {
+      background-color: #3a2259;
+    }
+    
+    body.dark-mode #add-goal-btn {
+      background: #1f0f35;
+      color: #e0e0e0;
+      border-color: #2d1549;
+    }
+    
+    body.dark-mode #add-goal-btn:hover {
+      background: #2d1549;
+    }
+    
+    body.dark-mode .remove-goal-btn {
+      background: #dc3545 !important;
+    }
+    
+    body.dark-mode .remove-btn {
+      background: rgba(255,255,255,0.9) !important;
+      color: #333 !important;
     }
     
     .container {
@@ -566,7 +677,7 @@ document.addEventListener('DOMContentLoaded', function() {
             previewItem.innerHTML = `
               <img src="${image.url}" alt="${image.alt || 'Vision board image'}" style="width: 100%; height: 100%; object-fit: cover;">
               <div style="position: absolute; top: 5px; right: 5px;">
-                <button class="remove-btn" data-index="${index}" style="background: rgba(255,255,255,0.7); border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>
+                <button class="remove-btn" data-index="${index}" style="background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>
               </div>
             `;
             
@@ -909,5 +1020,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
   </script>
+  
+  <script src="dark-mode-toggle.js"></script>
 </body>
 </html>

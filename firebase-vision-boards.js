@@ -1,78 +1,43 @@
 // Vision board management functions
 
-// Create a new vision board
-async function createVisionBoard(boardName, userId, metadata = {}) {
+// Save a new vision board
+async function saveVisionBoard(boardData) {
     try {
-        console.log('Creating vision board with data:', { boardName, userId, metadata });
+        console.log('Saving vision board:', boardData);
         
-        if (!firebase.firestore || !userId) {
-            throw new Error('Firestore not available or user not authenticated');
+        if (!firebase.auth().currentUser) {
+            throw new Error('User not authenticated');
         }
-        
+
         const db = firebase.firestore();
-        const boardData = {
-            name: boardName,
+        
+        // Prepare the board document
+        const boardDoc = {
+            name: boardData.name || 'Untitled Board',
+            description: boardData.description || '',
+            userId: firebase.auth().currentUser.uid,
+            elements: boardData.elements || [],
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            userId: userId,
-            elements: [],
-            category: metadata.category || '',
-            description: metadata.description || ''
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            isPublic: false,
+            tags: boardData.tags || []
         };
+
+        // Add the document to Firestore
+        const docRef = await db.collection('visionBoards').add(boardDoc);
         
-        console.log('Board data to save:', boardData);
-        
-        const docRef = await db.collection('visionBoards').add(boardData);
-        console.log('Vision board created with ID:', docRef.id);
+        console.log('Vision board saved with ID:', docRef.id);
         return docRef.id;
+        
     } catch (error) {
-        console.error('Error creating vision board:', error);
+        console.error('Error saving vision board:', error);
         throw error;
     }
 }
 
-// Add an image element to a vision board
-async function addImageToBoard(boardId, imageData, position) {
-    try {
-        console.log('Adding image to board:', { boardId, imageData, position });
-        
-        if (!firebase.firestore) {
-            throw new Error('Firestore not available');
-        }
-        
-        const db = firebase.firestore();
-        const boardRef = db.collection('visionBoards').doc(boardId);
-        
-        const element = {
-            id: Date.now().toString(),
-            type: 'image',
-            data: imageData,
-            position: position,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-        
-        console.log('Element to add:', element);
-        
-        await boardRef.update({
-            elements: firebase.firestore.FieldValue.arrayUnion(element)
-        });
-        
-        console.log('Image added to board successfully');
-        return element.id;
-    } catch (error) {
-        console.error('Error adding image to board:', error);
-        throw error;
-    }
-}
-
-// Get all vision boards for a user
+// Get user's vision boards
 async function getUserVisionBoards(userId) {
     try {
-        console.log('Getting vision boards for user:', userId);
-        
-        if (!firebase.firestore) {
-            throw new Error('Firestore not available');
-        }
-        
         const db = firebase.firestore();
         const snapshot = await db.collection('visionBoards')
             .where('userId', '==', userId)
@@ -87,56 +52,30 @@ async function getUserVisionBoards(userId) {
             });
         });
         
-        console.log('Found boards:', boards);
+        console.log('Loaded boards:', boards);
         return boards;
+        
     } catch (error) {
-        console.error('Error getting user vision boards:', error);
+        console.error('Error loading vision boards:', error);
         throw error;
     }
 }
 
-// Get a specific vision board
-async function getVisionBoard(boardId) {
+// Update an existing vision board
+async function updateVisionBoard(boardId, updateData) {
     try {
-        console.log('Getting vision board:', boardId);
-        
-        if (!firebase.firestore) {
-            throw new Error('Firestore not available');
-        }
-        
         const db = firebase.firestore();
-        const doc = await db.collection('visionBoards').doc(boardId).get();
         
-        if (doc.exists) {
-            console.log('Board found:', doc.data());
-            return { id: doc.id, ...doc.data() };
-        } else {
-            throw new Error('Vision board not found');
-        }
-    } catch (error) {
-        console.error('Error getting vision board:', error);
-        throw error;
-    }
-}
-
-// Update vision board elements
-async function updateBoardElements(boardId, elements) {
-    try {
-        console.log('Updating board elements:', { boardId, elements });
-        
-        if (!firebase.firestore) {
-            throw new Error('Firestore not available');
-        }
-        
-        const db = firebase.firestore();
-        await db.collection('visionBoards').doc(boardId).update({
-            elements: elements,
+        const updateDoc = {
+            ...updateData,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        };
         
-        console.log('Board elements updated successfully');
+        await db.collection('visionBoards').doc(boardId).update(updateDoc);
+        console.log('Vision board updated:', boardId);
+        
     } catch (error) {
-        console.error('Error updating board elements:', error);
+        console.error('Error updating vision board:', error);
         throw error;
     }
 }
@@ -144,18 +83,33 @@ async function updateBoardElements(boardId, elements) {
 // Delete a vision board
 async function deleteVisionBoard(boardId) {
     try {
-        console.log('Deleting vision board:', boardId);
-        
-        if (!firebase.firestore) {
-            throw new Error('Firestore not available');
-        }
-        
         const db = firebase.firestore();
         await db.collection('visionBoards').doc(boardId).delete();
+        console.log('Vision board deleted:', boardId);
         
-        console.log('Vision board deleted successfully');
     } catch (error) {
         console.error('Error deleting vision board:', error);
+        throw error;
+    }
+}
+
+// Get a single vision board by ID
+async function getVisionBoard(boardId) {
+    try {
+        const db = firebase.firestore();
+        const doc = await db.collection('visionBoards').doc(boardId).get();
+        
+        if (doc.exists) {
+            return {
+                id: doc.id,
+                ...doc.data()
+            };
+        } else {
+            throw new Error('Vision board not found');
+        }
+        
+    } catch (error) {
+        console.error('Error getting vision board:', error);
         throw error;
     }
 }

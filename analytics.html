@@ -4,14 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analytics - Visionly</title>
+    <link rel="stylesheet" href="dark-mode-global.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+            background-image: 
+                linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%);
+            background-size: 20px 20px;
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #0a0612;
+            background-image: 
+                linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .navbar {
+            background-color: #0a0612 !important;
+            box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15) !important;
+        }
+        
+        body.dark-mode .navbar a,
+        body.dark-mode .navbar .logo {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode h1 {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode p {
+            color: #b0b0b0 !important;
+        }
+        
+        body.dark-mode h3 {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode div[style*="background-color: #fff"] {
+            background-color: #1f0f35 !important;
+            box-shadow: 0 2px 4px rgba(139, 95, 179, 0.15) !important;
+        }
+        
+        body.dark-mode select {
+            background-color: #2d1549 !important;
+            border-color: #3a2259 !important;
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode span {
+            color: #b0b0b0 !important;
+        }
+        
+        body.dark-mode strong {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode div[style*="background: linear-gradient(135deg, #f3f0ff 0%, #e8deff 100%)"] {
+            background: linear-gradient(135deg, #2d1549 0%, #1f0f35 100%) !important;
+        }
+    </style>
 </head>
-<body style="font-family: 'Inter', sans-serif; background-color: #fff; background-image: linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%); background-size: 20px 20px; background-position: 10px 0, 10px 0, 0 0, 0 0; color: #333; margin: 0; padding: 0;">
+<body>
     <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
         <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
         <div style="display: flex; align-items: center;">
@@ -121,6 +195,7 @@
     <script src="firebase-config.js"></script>
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
+    <script src="dark-mode-toggle.js"></script>
     
     <!-- Import sprinkles effect from mouse-sprinkles -->
     <script src="mouse-sprinkles-script.js"></script>

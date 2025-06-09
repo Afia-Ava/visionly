@@ -4,12 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Progress Overview - Visionly</title>
+    <link rel="stylesheet" href="dark-mode-global.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+            background-image: 
+                linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%);
+            background-size: 20px 20px;
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #0a0612;
+            background-image: 
+                linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .navbar {
+            background-color: #0a0612 !important;
+            box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15) !important;
+        }
+        
+        body.dark-mode .navbar a,
+        body.dark-mode .navbar .logo {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode h1 {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode p {
+            color: #b0b0b0 !important;
+        }
+        
+        body.dark-mode .progress-card {
+            background-color: #1f0f35 !important;
+            box-shadow: 0 2px 4px rgba(139, 95, 179, 0.15) !important;
+        }
+        
+        body.dark-mode .progress-card h3 {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode .progress-card p {
+            color: #b0b0b0 !important;
+        }
+        
+        body.dark-mode .progress-card button {
+            background-color: #2d1a45 !important;
+        }
+        
+        body.dark-mode .progress-card button:hover {
+            background-color: #3a2259 !important;
+        }
+    </style>
 </head>
 <body style="font-family: 'Inter', sans-serif; background-color: #fff; background-image: linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%); background-size: 20px 20px; background-position: 10px 0, 10px 0, 0 0, 0 0; color: #333; margin: 0; padding: 0;">
     <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
@@ -32,7 +100,7 @@
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 40px;">
             <!-- Daily Focus Work Card -->
-            <div style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: flex; gap: 20px; align-items: center;">
+            <div class="progress-card" style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: flex; gap: 20px; align-items: center;">
                 <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f3f0ff 0%, #e8deff 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative;">
                     <!-- Clock/Timer icon -->
                     <div style="width: 40px; height: 40px; border: 3px solid #8b5fbf; border-radius: 50%; position: relative;">
@@ -53,7 +121,7 @@
             </div>
 
             <!-- Visualize Your Journey Card -->
-            <div style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: flex; gap: 20px; align-items: center;">
+            <div class="progress-card" style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: flex; gap: 20px; align-items: center;">
                 <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f8f4ff 0%, #ead8ff 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative;">
                     <!-- Timeline icon -->
                     <div style="position: absolute; width: 2px; height: 50px; background: #9d71c4; left: 50%; top: 15px; transform: translateX(-50%);"></div>
@@ -74,7 +142,7 @@
             </div>
 
             <!-- In-Depth Analysis Card -->
-            <div style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: flex; gap: 20px; align-items: center;">
+            <div class="progress-card" style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: flex; gap: 20px; align-items: center;">
                 <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f5f2ff 0%, #e1d5ff 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative;">
                     <div style="width: 50px; height: 30px; background: #7c3aed; border-radius: 6px 6px 0 0; position: relative;">
                         <div style="position: absolute; bottom: 0; left: 5px; width: 8px; height: 15px; background: #5b21b6; border-radius: 2px 2px 0 0;"></div>
@@ -92,7 +160,7 @@
             </div>
 
             <!-- Reflect on Your Journey Card -->
-            <div style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: flex; gap: 20px; align-items: center;">
+            <div class="progress-card" style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: flex; gap: 20px; align-items: center;">
                 <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #faf8ff 0%, #f0e6ff 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative;">
                     <div style="width: 45px; height: 55px; background: #a855f7; border-radius: 3px; position: relative;">
                         <div style="position: absolute; top: 8px; left: 6px; right: 6px; height: 2px; background: #7c2d92; border-radius: 1px;"></div>
@@ -200,5 +268,6 @@
             });
         });
     </script>
+    <script src="dark-mode-toggle.js"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
     <title>Visionly - Journal</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="journal.css">
+    <link rel="stylesheet" href="dark-mode-global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -29,6 +30,109 @@
             color: #333;
             margin: 0;
             padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #0a0612;
+            background-image: 
+                linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .navbar {
+            background-color: #0a0612 !important;
+            box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15) !important;
+        }
+        
+        body.dark-mode .navbar a,
+        body.dark-mode .navbar .logo {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode h1 {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode p {
+            color: #b0b0b0 !important;
+        }
+        
+        body.dark-mode h3 {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode div[style*="background: white"] {
+            background: #1f0f35 !important;
+            box-shadow: 0 2px 4px rgba(139, 95, 179, 0.15) !important;
+        }
+        
+        body.dark-mode input,
+        body.dark-mode textarea {
+            background-color: #2d1549 !important;
+            border-color: #3a2259 !important;
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode input::placeholder,
+        body.dark-mode textarea::placeholder {
+            color: #888 !important;
+        }
+        
+        body.dark-mode button[style*="background: #2d1a45"] {
+            background: #2d1a45 !important;
+        }
+        
+        body.dark-mode button[style*="background: #dc3545"] {
+            background: #dc3545 !important;
+        }
+        
+        body.dark-mode .mood-btn {
+            background: #2d1549 !important;
+            border-color: #3a2259 !important;
+        }
+        
+        body.dark-mode div[style*="background: #f8f9fa"] {
+            background: #2d1549 !important;
+        }
+        
+        body.dark-mode div[style*="color: #666"] {
+            color: #b0b0b0 !important;
+        }
+        
+        body.dark-mode span {
+            color: #b0b0b0 !important;
+        }
+        
+        body.dark-mode label {
+            color: #b0b0b0 !important;
+        }
+        
+        body.dark-mode div[style*="border-top: 1px solid #eee"] {
+            border-top: 1px solid #3a2259 !important;
+        }
+        
+        /* Journal entry titles in dark mode */
+        body.dark-mode #entries-list div[style*="font-weight: 500"] {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode #entries-list .entry-title {
+            color: #e0e0e0 !important;
+        }
+        
+        /* More specific selector for journal entry titles */
+        body.dark-mode #entries-list div div[style*="font-weight: 500"] {
+            color: #e0e0e0 !important;
+        }
+        
+        /* Target the dynamically created entry title divs */
+        body.dark-mode #entries-list > div > div:first-child {
+            color: #e0e0e0 !important;
         }
     </style>
 </head>
@@ -150,6 +254,7 @@
     <script src="global-sound.js"></script>
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
+    <script src="dark-mode-toggle.js"></script>
     
     <!-- Import sprinkles effect from mouse-sprinkles -->
     <script src="mouse-sprinkles-script.js"></script>
@@ -239,8 +344,14 @@
             entryElement.dataset.index = index;
             
             const entryTitleDiv = document.createElement('div');
-            entryTitleDiv.style.cssText = 'font-weight: 500; font-size: 14px; margin-bottom: 4px;';
+            entryTitleDiv.style.cssText = 'font-weight: 500; font-size: 14px; margin-bottom: 4px; color: #333;';
             entryTitleDiv.textContent = entry.title || 'Untitled Entry';
+            entryTitleDiv.classList.add('entry-title');
+            
+            // Check if dark mode is active and apply appropriate color
+            if (document.body.classList.contains('dark-mode')) {
+                entryTitleDiv.style.setProperty('color', '#2d1a45', 'important');
+            }
             
             const entryDate = document.createElement('div');
             entryDate.style.cssText = 'font-size: 12px; color: #666;';

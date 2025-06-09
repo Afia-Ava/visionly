@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dark-mode-global.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -21,6 +22,18 @@
             color: #333;
             margin: 0;
             padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #0a0612;
+            background-image: 
+              linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+              linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+              linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+              linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+            color: #e0e0e0;
         }
         
         .profile-content {
@@ -30,6 +43,131 @@
             background: white;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        body.dark-mode .profile-content {
+            background: #140a22;
+            box-shadow: 0 2px 8px rgba(139, 95, 179, 0.15);
+        }
+        
+        /* Navbar dark mode */
+        body.dark-mode nav.navbar {
+            background-color: #140a22 !important;
+            box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15) !important;
+        }
+        
+        body.dark-mode nav.navbar a,
+        body.dark-mode nav.navbar .logo {
+            color: #e0e0e0 !important;
+        }
+        
+        /* Text colors in dark mode */
+        body.dark-mode .profile-header h1,
+        body.dark-mode .profile-details h2,
+        body.dark-mode .edit-section h3,
+        body.dark-mode .settings-section h3 {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .profile-header p,
+        body.dark-mode .profile-details p,
+        body.dark-mode .settings-item span,
+        body.dark-mode .form-label {
+            color: #b0b0b0;
+        }
+        
+        body.dark-mode .stat-number {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .stat-label {
+            color: #888;
+        }
+        
+        /* Form inputs in dark mode */
+        body.dark-mode .form-input {
+            background: #1f0f35;
+            border-color: #2d1549;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .form-input:focus {
+            background: #2d1549;
+            border-color: #6b4897;
+        }
+        
+        body.dark-mode .form-input::placeholder {
+            color: #888;
+        }
+        
+        /* Settings section border in dark mode */
+        body.dark-mode .settings-section {
+            border-top: 1px solid #2d1549;
+        }
+        
+        /* Inspiration and Feature Cards Dark Mode */
+        body.dark-mode .inspiration-card,
+        body.dark-mode .feature-card,
+        body.dark-mode .card,
+        body.dark-mode .info-card {
+            background: #1f0f35 !important;
+            border-color: #2d1549 !important;
+            box-shadow: 0 2px 8px rgba(139, 95, 179, 0.15) !important;
+        }
+        
+        body.dark-mode .inspiration-card h3,
+        body.dark-mode .feature-card h3,
+        body.dark-mode .card h3,
+        body.dark-mode .info-card h3,
+        body.dark-mode .inspiration-card h4,
+        body.dark-mode .feature-card h4,
+        body.dark-mode .card h4,
+        body.dark-mode .info-card h4 {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode .inspiration-card p,
+        body.dark-mode .feature-card p,
+        body.dark-mode .card p,
+        body.dark-mode .info-card p,
+        body.dark-mode .inspiration-card .description,
+        body.dark-mode .feature-card .description {
+            color: #b0b0b0 !important;
+        }
+        
+        body.dark-mode .inspiration-card .quote,
+        body.dark-mode .feature-card .quote {
+            color: #c8a2e8 !important;
+        }
+        
+        body.dark-mode .inspiration-card .author,
+        body.dark-mode .feature-card .author {
+            color: #8b5fbf !important;
+        }
+        
+        body.dark-mode .card-icon,
+        body.dark-mode .feature-icon {
+            filter: brightness(0) invert(1) !important;
+        }
+        
+        body.dark-mode .card-badge,
+        body.dark-mode .feature-badge {
+            background: #2d1549 !important;
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode .card-button,
+        body.dark-mode .feature-button {
+            background: #1f0f35 !important;
+            border-color: #2d1549 !important;
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode .card-button:hover,
+        body.dark-mode .feature-button:hover {
+            background: #2d1549 !important;
+            border-color: #6b4897 !important;
         }
         
         .profile-header {
@@ -180,7 +318,7 @@
         }
         
         .toggle-switch.active {
-            background: #007bff;
+            background: #1f0f35;
         }
         
         .toggle-slider {
@@ -199,7 +337,7 @@
         }
         
         .save-btn {
-            background: #007bff;
+            background: #1f0f35;
             color: white;
             border: none;
             border-radius: 8px;
@@ -212,7 +350,7 @@
         }
         
         .save-btn:hover {
-            background: #0056b3;
+            background: #2d1549;
         }
     </style>
 </head>
@@ -316,6 +454,7 @@
     <script src="firebase-config.js"></script>
     <script src="nav-auth.js"></script>
     <script src="profile-dropdown.js"></script>
+    <script src="dark-mode-toggle.js"></script>
     
     <!-- Import sprinkles effect from mouse-sprinkles -->
     <script src="mouse-sprinkles-script.js"></script>
@@ -508,11 +647,57 @@
         }
         
         function setupToggles() {
-            document.querySelectorAll('.toggle-switch').forEach(toggle => {
-                toggle.addEventListener('click', function() {
-                    this.classList.toggle('active');
-                });
+            // Dark mode is now handled by dark-mode-toggle.js
+            // Just handle notifications toggle here
+            const notificationsToggle = document.getElementById('notifications-toggle');
+            
+            // Email notifications toggle
+            notificationsToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const isEnabled = this.classList.contains('active');
+                
+                // Save to localStorage
+                localStorage.setItem('emailNotifications', isEnabled);
+                
+                // Show notification
+                const message = isEnabled ? 'Email notifications enabled 📧' : 'Email notifications disabled';
+                showNotification(message);
             });
+        }
+        
+        function showNotification(message) {
+            // Create a temporary notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: #2d1a45;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 6px;
+                z-index: 10000;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Slide in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Slide out and remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
         }
         
         function setupSaveButton() {

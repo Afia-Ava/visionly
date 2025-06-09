@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your Vision Boards - Visionly</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="dark-mode-global.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
@@ -26,6 +27,102 @@
       color: #333;
       margin: 0;
       padding: 0;
+      transition: all 0.3s ease;
+    }
+    
+    /* Dark Mode Styles */
+    body.dark-mode {
+      background-color: #0a0612;
+      background-image: 
+        linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+        linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+        linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+        linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .navbar {
+      background-color: #0a0612 !important;
+      box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15) !important;
+    }
+    
+    body.dark-mode .navbar a,
+    body.dark-mode .navbar .logo {
+      color: #e0e0e0 !important;
+    }
+    
+    body.dark-mode h1 {
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .subtitle,
+    body.dark-mode p {
+      color: #b0b0b0;
+    }
+    
+    body.dark-mode .search-input {
+      background-color: #1f0f35;
+      color: #e0e0e0;
+      border: 1px solid #2d1549;
+    }
+    
+    body.dark-mode .search-input::placeholder {
+      color: #888;
+    }
+    
+    body.dark-mode .new-board-btn {
+      background-color: #2d1a45;
+    }
+    
+    body.dark-mode .new-board-btn:hover {
+      background-color: #3a2259;
+    }
+    
+    body.dark-mode .filter-tabs {
+      border-bottom-color: #2d1549;
+    }
+    
+    body.dark-mode .tab {
+      color: #b0b0b0;
+    }
+    
+    body.dark-mode .tab.active {
+      color: #e0e0e0;
+      border-bottom-color: #6b4897;
+    }
+    
+    body.dark-mode .board-card {
+      background: #1f0f35;
+      box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15);
+    }
+    
+    body.dark-mode .board-title {
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .board-date {
+      color: #888;
+    }
+    
+    body.dark-mode .empty-state {
+      color: #b0b0b0;
+    }
+    
+    /* Dynamic board cards dark mode */
+    body.dark-mode div[style*="background: white"] {
+      background: #1f0f35 !important;
+    }
+    
+    body.dark-mode div[style*="color: #333"] h3 {
+      color: #e0e0e0 !important;
+    }
+    
+    body.dark-mode div[style*="color: #666"] {
+      color: #b0b0b0 !important;
+    }
+    
+    body.dark-mode div[style*="color: #999"] {
+      color: #888 !important;
     }
     
     .container {
@@ -299,10 +396,10 @@
             }
             
             container.innerHTML = boards.map(board => `
-                <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;" onclick="window.location.href='edit-board.html?id=${board.id}'">
-                    <h3 style="margin: 0 0 10px 0; color: #333;">${board.name}</h3>
-                    <p style="color: #666; margin: 0 0 10px 0;">Created: ${board.createdAt ? new Date(board.createdAt.toDate()).toLocaleDateString() : 'Recently'}</p>
-                    <p style="color: #999; margin: 0; font-size: 14px;">${board.elements?.length || 0} elements</p>
+                <div class="board-card" style="border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;" onclick="window.location.href='edit-board.html?id=${board.id}'">
+                    <h3 class="board-title" style="margin: 0 0 10px 0;">${board.name}</h3>
+                    <p class="board-date" style="margin: 0 0 10px 0;">Created: ${board.createdAt ? new Date(board.createdAt.toDate()).toLocaleDateString() : 'Recently'}</p>
+                    <p class="board-date" style="margin: 0; font-size: 14px;">${board.elements?.length || 0} elements</p>
                 </div>
             `).join('');
         }
@@ -375,5 +472,6 @@
 
   <!-- Import sprinkles effect from mouse-sprinkles -->
   <script src="mouse-sprinkles-script.js"></script>
+  <script src="dark-mode-toggle.js"></script>
 </body>
 </html>
