@@ -270,6 +270,16 @@
     <script src="firebase-config.js"></script>
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
+    <script src="dark-mode-toggle.js"></script>
+    
+    <script>
+        // Check if user needs onboarding
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('isNewUser') === 'true') {
+                window.location.href = 'onboarding.html';
+            }
+        });
+    </script>
     
     <!-- Import sprinkles effect from mouse-sprinkles -->
     <script src="mouse-sprinkles-script.js"></script>
@@ -486,6 +496,5 @@
         }, 30000);;
     });
     </script>
-    <script src="dark-mode-toggle.js"></script>
   </body>
 </html>

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creative Pursuits Vision Board - Visionly</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="dark-mode-global.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
@@ -22,6 +23,79 @@
         margin: 0;
         padding: 0;
         position: relative;
+        transition: all 0.3s ease;
+    }
+    
+    /* Dark Mode Styles */
+    body.dark-mode {
+        background-color: #0a0612;
+        background-image: 
+            linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+            linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+            linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+            linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+        color: #e0e0e0;
+    }
+    
+    body.dark-mode .navbar {
+        background-color: #0a0612 !important;
+        box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15) !important;
+    }
+    
+    body.dark-mode .navbar a,
+    body.dark-mode .navbar .logo {
+        color: #e0e0e0 !important;
+    }
+    
+    body.dark-mode .board-header-left h1 {
+        color: #e0e0e0 !important;
+    }
+    
+    body.dark-mode .board-subtitle {
+        color: #b0b0b0 !important;
+    }
+    
+    body.dark-mode .board-details {
+        background: #1f0f35 !important;
+        box-shadow: 0 2px 8px rgba(139, 95, 179, 0.15) !important;
+    }
+    
+    body.dark-mode .board-details h3 {
+        color: #e0e0e0 !important;
+    }
+    
+    body.dark-mode .detail-label {
+        color: #b0b0b0 !important;
+    }
+    
+    body.dark-mode .detail-value {
+        color: #e0e0e0 !important;
+    }
+    
+    body.dark-mode .detail-row {
+        border-bottom: 1px solid #3a2259 !important;
+    }
+    
+    body.dark-mode .btn-secondary {
+        background: #2d1549 !important;
+        color: #e0e0e0 !important;
+        border-color: #3a2259 !important;
+    }
+    
+    body.dark-mode .btn-secondary:hover {
+        background: #3a2259 !important;
+    }
+    
+    body.dark-mode div[style*="background: #f8f9fa"] {
+        background: #2d1549 !important;
+    }
+    
+    body.dark-mode div[style*="border-left: 3px solid #2d1a45"] {
+        border-left: 3px solid #8b5fbf !important;
+    }
+    
+    body.dark-mode div[style*="color: #333"] {
+        color: #e0e0e0 !important;
     }
     
     .vision-board-container {
@@ -305,6 +379,7 @@
     <script src="firebase-config.js"></script>
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
+    <script src="dark-mode-toggle.js"></script>
     
     <!-- Import sprinkles effect from mouse-sprinkles -->
     <script src="mouse-sprinkles-script.js"></script>
