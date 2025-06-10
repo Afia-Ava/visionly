@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Note - Visionly</title>
+    <link rel="stylesheet" href="dark-mode-global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0612; /* Dark background by default */
+            background-image: 
+                linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+            background-size: 20px 20px;
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        /* Light mode overrides */
+        body:not(.dark-mode) {
+            background-color: #fff;
+            background-image: 
+                linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%);
+            color: #333;
+        }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #0a0612;
+            background-image: 
+                linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .navbar {
+            background-color: #0a0612 !important;
+            box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15) !important;
+        }
+        
+        body.dark-mode .navbar a,
+        body.dark-mode .navbar .logo {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode .time-capsule-container {
+            background-color: transparent !important;
+            box-shadow: none !important;
+        }
+        
+        body.dark-mode h1, 
+        body.dark-mode h2 {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-mode p {
+            color: #b0b0b0 !important;
+        }
+        
+        body.dark-mode textarea, 
+        body.dark-mode input {
+            background-color: #2d1549 !important;
+            color: #e0e0e0 !important;
+            border-color: #3a2259 !important;
+        }
+        
+        body.dark-mode .time-illustration {
+            filter: brightness(0.8) saturate(1.2);
+        }
+        
+        body.dark-mode .capsule-card {
+            background-color: #2d1549 !important;
+            border-color: #3a2259 !important;
+        }
+        
+        body.dark-mode .capsule-date {
+            color: #b990ff !important;
+        }
+        
+        .time-capsule-container {
+            max-width: 1100px;
+            margin: 100px auto 50px;
+            padding: 0 20px;
+        }
+        
+        .header-section {
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #8b5fbf;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: #a47dd4;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .description {
+            color: #b0b0b0;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+        
+        .capsule-form-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+        
+        .input-section {
+            background-color: rgba(28, 15, 40, 0.7);
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        body:not(.dark-mode) .input-section {
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 20px rgba(139, 95, 179, 0.1);
+        }
+        
+        .form-header {
+            margin-bottom: 20px;
+            color: #e0e0e0;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        body:not(.dark-mode) .form-header {
+            color: #6b46c1;
+        }
+        
+        textarea {
+            background-color: rgba(45, 21, 73, 0.5);
+            border: 1px solid #3a2259;
+            border-radius: 10px;
+            padding: 20px;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            height: 240px;
+            resize: none;
+            margin-bottom: 20px;
+        }
+        
+        body:not(.dark-mode) textarea {
+            background-color: #faf8ff;
+            border: 1px solid #e2d5ff;
+            color: #333;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #8b5fbf;
+        }
+        
+        .options-section {
+            background-color: rgba(28, 15, 40, 0.7);
+            border-radius: 16px;
+            padding: 30px;
+        }
+        
+        body:not(.dark-mode) .options-section {
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 20px rgba(139, 95, 179, 0.1);
+        }
+        
+        .option-group {
+            margin-bottom: 30px;
+        }
+        
+        .option-group label {
+            display: block;
+            margin-bottom: 12px;
+            color: #a47dd4;
+            font-weight: 500;
+        }
+        
+        .date-picker {
+            width: 100%;
+            padding: 14px;
+            background-color: rgba(45, 21, 73, 0.5);
+            border: 1px solid #3a2259;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+        
+        body:not(.dark-mode) .date-picker {
+            background-color: #faf8ff;
+            border: 1px solid #e2d5ff;
+            color: #333;
+        }
+        
+        .delivery-options {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .delivery-option {
+            background-color: rgba(45, 21, 73, 0.5);
+            border: 1px solid #3a2259;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            flex: 1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        body:not(.dark-mode) .delivery-option {
+            background-color: #faf8ff;
+            border: 1px solid #e2d5ff;
+        }
+        
+        .delivery-option.selected {
+            background-color: #3a2259;
+            border-color: #8b5fbf;
+        }
+        
+        body:not(.dark-mode) .delivery-option.selected {
+            background-color: #f0e6ff;
+            border-color: #8b5fbf;
+        }
+        
+        .delivery-option p {
+            margin: 8px 0 0;
+            font-size: 0.9rem;
+        }
+        
+        .email-field {
+            margin-top: 20px;
+        }
+        
+        .email-input {
+            width: 100%;
+            padding: 14px;
+            background-color: rgba(45, 21, 73, 0.5);
+            border: 1px solid #3a2259;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+        
+        body:not(.dark-mode) .email-input {
+            background-color: #faf8ff;
+            border: 1px solid #e2d5ff;
+            color: #333;
+        }
+        
+        .hourglass-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .hourglass {
+            width: 100px;
+            height: 100px;
+            opacity: 0.8;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            background-color: #6b46c1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .btn-primary {
+            background-color: #8b5fbf;
+        }
+        
+        .btn-primary:hover {
+            background-color: #7a4fb0;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #8b5fbf;
+            color: #8b5fbf;
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(139, 95, 179, 0.1);
+        }
+        
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #3a2259, transparent);
+            margin: 40px 0;
+        }
+        
+        .time-capsules-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #8b5fbf;
+            font-size: 1.5rem;
+        }
+        
+        .capsules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        .capsule-card {
+            background-color: rgba(28, 15, 40, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            transition: transform 0.3s ease;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        body:not(.dark-mode) .capsule-card {
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 15px rgba(139, 95, 179, 0.1);
+        }
+        
+        .capsule-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .capsule-date {
+            color: #a47dd4;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .capsule-snippet {
+            color: #e0e0e0;
+            font-size: 0.95rem;
+            flex: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+        }
+        
+        body:not(.dark-mode) .capsule-snippet {
+            color: #333;
+        }
+        
+        .capsule-status {
+            font-size: 0.8rem;
+            color: #a47dd4;
+            display: flex;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #8b5fbf;
+            margin-right: 8px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #a47dd4;
+            padding: 40px 0;
+            font-style: italic;
+        }
+        
+        /* Animation for the time capsule launch */
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @media (max-width: 900px) {
+            .capsule-form-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .time-capsule-container {
+                padding: 0 15px;
+                margin-top: 90px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .tagline {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+        <div style="display: flex; align-items: center;">
+            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+            <a href="elevate.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Elevate</a>
+            <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+        </div>
+    </nav>
+
+    <div class="time-capsule-container">
+        <div class="header-section">
+            <h1>Future Note</h1>
+            <p class="tagline">Send a message to your future self</p>
+            <p class="description">Leave a note, reflection, or words of encouragement for your future self. Choose when you want to receive it, and on that day, your message will find its way back to you.</p>
+        </div>
+        
+        <form id="time-capsule-form">
+            <div class="capsule-form-container">
+                <div class="input-section">
+                    <div class="form-header">Your Message to the Future</div>
+                    <textarea id="message" name="message" placeholder="Dear future me..."></textarea>
+                </div>
+                
+                <div class="options-section">
+                    <div class="option-group">
+                        <label for="delivery-date">When should this be delivered?</label>
+                        <input type="date" id="delivery-date" name="delivery-date" class="date-picker" required>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>How would you like to receive it?</label>
+                        <div class="delivery-options">
+                            <div class="delivery-option selected" data-option="app">
+                                <img src="assets/app-icon.png" alt="In App" width="28" height="28" onerror="this.src='https://via.placeholder.com/28x28/8b5fbf/ffffff?text=A'">
+                                <p>In App</p>
+                            </div>
+                            <div class="delivery-option" data-option="email">
+                                <img src="assets/email-icon.png" alt="Email" width="28" height="28" onerror="this.src='https://via.placeholder.com/28x28/8b5fbf/ffffff?text=@'">
+                                <p>Email</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-group email-field" style="display: none;">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="email-input" placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="hourglass-container">
+                        <!-- SVG for hourglass illustration -->
+                        <svg class="hourglass floating" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M30 10H70V30C70 40 60 40 50 50C40 60 30 60 30 70V90H70V70C70 60 60 60 50 50C40 40 30 40 30 30V10Z" stroke="#8B5FBF" stroke-width="3" fill="rgba(240,230,255,0.2)"/>
+                            <path d="M35 25C35 25 45 20 50 25C55 30 65 25 65 25" stroke="#8B5FBF" stroke-width="2"/>
+                            <path d="M35 75C35 75 45 80 50 75C55 70 65 75 65 75" stroke="#8B5FBF" stroke-width="2"/>
+                            <path d="M30 10H70" stroke="#8B5FBF" stroke-width="4"/>
+                            <path d="M30 90H70" stroke="#8B5FBF" stroke-width="4"/>
+                            <path d="M40 40C45 45 55 55 60 60" stroke="#8B5FBF" stroke-width="1.5"/>
+                            <path d="M60 40C55 45 45 55 40 60" stroke="#8B5FBF" stroke-width="1.5"/>
+                            <!-- Sand particles -->
+                            <circle cx="45" cy="65" r="2" fill="#A078E8"/>
+                            <circle cx="50" cy="68" r="2" fill="#A078E8"/>
+                            <circle cx="55" cy="65" r="2" fill="#A078E8"/>
+                            <circle cx="47" cy="71" r="2" fill="#A078E8"/>
+                            <circle cx="53" cy="71" r="2" fill="#A078E8"/>
+                            <circle cx="48" cy="75" r="2" fill="#A078E8"/>
+                            <circle cx="52" cy="75" r="2" fill="#A078E8"/>
+                            <circle cx="50" cy="78" r="2" fill="#A078E8"/>
+                        </svg>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary" id="send-capsule">Send to My Future</button>
+                        <button type="button" class="btn btn-outline" id="reset-form">Start Over</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <div class="divider"></div>
+        
+        <h2 class="time-capsules-header">Your Time Capsules</h2>
+        <div class="capsules-grid" id="capsules-list">
+            <!-- Capsules will be loaded here -->
+        </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('delivery-date').min = today;
+            
+            // Handle delivery option selection
+            const deliveryOptions = document.querySelectorAll('.delivery-option');
+            const emailField = document.querySelector('.email-field');
+            
+            deliveryOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    deliveryOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    // Show email field if email option is selected
+                    if (this.dataset.option === 'email') {
+                        emailField.style.display = 'block';
+                        document.getElementById('email').required = true;
+                    } else {
+                        emailField.style.display = 'none';
+                        document.getElementById('email').required = false;
+                    }
+                });
+            });
+            
+            // Reset form
+            document.getElementById('reset-form').addEventListener('click', function() {
+                document.getElementById('time-capsule-form').reset();
+                emailField.style.display = 'none';
+                deliveryOptions.forEach(opt => opt.classList.remove('selected'));
+                document.querySelector('[data-option="app"]').classList.add('selected');
+            });
+            
+            // Handle form submission
+            document.getElementById('time-capsule-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const message = document.getElementById('message').value;
+                const deliveryDate = document.getElementById('delivery-date').value;
+                const deliveryMethod = document.querySelector('.delivery-option.selected').dataset.option;
+                const email = document.getElementById('email').value;
+                
+                // Get current user
+                const user = firebase.auth().currentUser;
+                
+                if (user) {
+                    // Save to Firestore
+                    const db = firebase.firestore();
+                    db.collection('timeCapsules').add({
+                        userId: user.uid,
+                        message: message,
+                        deliveryDate: deliveryDate,
+                        deliveryMethod: deliveryMethod,
+                        email: deliveryMethod === 'email' ? email : null,
+                        created: firebase.firestore.FieldValue.serverTimestamp(),
+                        delivered: false
+                    })
+                    .then(() => {
+                        // Show success message
+                        alert('Your message to the future has been saved! It will be delivered on ' + new Date(deliveryDate).toLocaleDateString());
+                        // Reset form
+                        document.getElementById('reset-form').click();
+                        // Reload capsules list
+                        loadCapsules();
+                    })
+                    .catch(error => {
+                        console.error("Error saving time capsule: ", error);
+                        alert('There was an error saving your message. Please try again.');
+                    });
+                } else {
+                    // Redirect to login or show login modal
+                    alert('Please log in to send a message to your future self.');
+                }
+            });
+            
+            // Load user's time capsules
+            function loadCapsules() {
+                const user = firebase.auth().currentUser;
+                const capsulesList = document.getElementById('capsules-list');
+                
+                if (user) {
+                    const db = firebase.firestore();
+                    capsulesList.innerHTML = ''; // Clear current list
+                    
+                    db.collection('timeCapsules')
+                        .where('userId', '==', user.uid)
+                        .orderBy('deliveryDate', 'asc')
+                        .get()
+                        .then((querySnapshot) => {
+                            if (querySnapshot.empty) {
+                                capsulesList.innerHTML = '<p>You haven\'t created any time capsules yet.</p>';
+                                return;
+                            }
+                            
+                            querySnapshot.forEach((doc) => {
+                                const data = doc.data();
+                                const capsuleDate = new Date(data.deliveryDate).toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric' 
+                                });
+                                
+                                const capsuleHtml = `
+                                    <div class="capsule-card">
+                                        <div class="capsule-date">${capsuleDate}</div>
+                                        <div class="capsule-snippet">${data.message.substring(0, 100)}${data.message.length > 100 ? '...' : ''}</div>
+                                        <div class="capsule-status">${data.delivered ? 'Delivered' : 'Waiting'}</div>
+                                    </div>
+                                `;
+                                
+                                capsulesList.innerHTML += capsuleHtml;
+                            });
+                        })
+                        .catch((error) => {
+                            console.error("Error getting time capsules: ", error);
+                            capsulesList.innerHTML = '<p>There was an error loading your time capsules.</p>';
+                        });
+                } else {
+                    capsulesList.innerHTML = '<p>Please log in to view your time capsules.</p>';
+                }
+            }
+            
+            // Initialize
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    loadCapsules();
+                }
+            });
+        });
+    </script>
+    <script src="dark-mode-toggle.js"></script>
+    <script src="profile-dropdown.js"></script>
+</body>
+</html>

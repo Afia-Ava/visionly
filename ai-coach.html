@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Coach - Visionly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dark-mode-global.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Zigzag background pattern for light mode */
+            background-color: #fff;
+            background-image: 
+              linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+              linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+              linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+              linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%);
+            background-size: 20px 20px;
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            color: #2d1a45;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        body.dark-mode {
+            /* Zigzag background pattern for dark mode */
+            background-color: #0a0612;
+            background-image: 
+                linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+            background-size: 20px 20px;
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            color: #e0e0e0;
+        }
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(139,95,179,0.08);
+            padding: 14px 30px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+        .navbar .logo {
+            font-family: 'Dancing Script', cursive;
+            font-weight: bold;
+            font-size: 2rem;
+            color: #333;
+            text-decoration: none;
+        }
+        .navbar a {
+            text-decoration: none;
+            color: #333;
+            margin: 0 12px;
+        }
+        main {
+            max-width: 700px;
+            margin: 110px auto 0 auto;
+            padding: 24px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(139,95,179,0.10);
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #8b5fbf;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #a47dd4;  /* Updated to light purple */
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+        }
+        .chat-container {
+            background: #faf8ff;
+            border-radius: 12px;
+            border: 1.5px solid #e8deff;
+            padding: 20px;
+            min-height: 350px;
+            max-height: 420px;
+            overflow-y: auto;
+            margin-bottom: 18px;
+            font-size: 1rem;
+        }
+        .message {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .message.user .bubble {
+            background: #8b5fbf;
+            color: #fff;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .message.ai .bubble {
+            background: #fff;
+            color: #2d1a45;
+            border: 1.5px solid #8b5fbf;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+        .bubble {
+            border-radius: 14px;
+            padding: 12px 18px;
+            max-width: 75%;
+            box-shadow: 0 2px 8px rgba(139,95,179,0.07);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .sender {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: #8b5fbf;
+        }
+        .chat-input-row {
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input-row input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1.5px solid #e8deff;
+            font-size: 1rem;
+            outline: none;
+            background: #faf8ff;
+        }
+        .chat-input-row button {
+            background: #8b5fbf;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0 22px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .chat-input-row button:hover {
+            background: #2d1a45;
+        }
+        .typing-indicator {
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            margin: 0 2px;
+            background-color: #8b5fbf;
+            display: block;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: typing 1s infinite ease-in-out;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: 0ms; }
+        .typing-indicator span:nth-child(2) { animation-delay: 150ms; }
+        .typing-indicator span:nth-child(3) { animation-delay: 300ms; }
+        @keyframes typing {
+            0% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.4; transform: scale(1); }
+        }
+        @media (max-width: 800px) {
+            main { margin: 90px 8px 0 8px; }
+        }
+        body.dark-mode main {
+            background: #1f0f35;
+            color: #e0e0e0;
+        }
+        body.dark-mode .chat-container {
+            background: #2d1549;
+            border-color: #3a2259;
+        }
+        body.dark-mode .bubble {
+            background: #2d1a45;
+            color: #e0e0e0;
+        }
+        body.dark-mode .message.ai .bubble {
+            background: #1f0f35;
+            color: #e0e0e0;
+            border-color: #8b5fbf;
+        }
+        body.dark-mode .chat-input-row input[type="text"] {
+            background: #2d1549;
+            color: #e0e0e0;
+            border-color: #3a2259;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+        <div style="display: flex; align-items: center;">
+            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+            <a href="elevate.html" style="text-decoration: none; color: #333; margin: 0 12px;">Elevate</a>
+            <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+        </div>
+    </nav>
+    <main>
+        <h1>Zeni, Your AI Coach</h1>
+        <div class="subtitle">Talk to Zeni, your tough, realistic AI coach. Get no-nonsense advice and motivation to chase your goals.</div>
+        <div class="chat-container" id="chat-container">
+            <div class="message ai">
+                <div class="bubble">
+                    <span class="sender">Zeni:</span><br>
+                    Welcome. I'm Zeni, your AI coach. I'm not here to sugarcoat things. Tell me your goal, and let's see if you're actually ready to work for it.
+                </div>
+            </div>
+        </div>
+        <form id="chat-form" class="chat-input-row" autocomplete="off">
+            <input type="text" id="user-input" placeholder="Type your message..." required maxlength="300" />
+            <button type="submit">Send</button>
+        </form>
+    </main>
+    <script src="dark-mode-toggle.js"></script>
+    <script>
+        // Enhanced client-side AI coach
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        
+        // Track conversation context
+        let conversationContext = {
+            userGoal: null,
+            challengeLevel: 0,
+            lastTopicDiscussed: null,
+            messageCount: 0
+        };
+        
+        // Message history for reference
+        const messageHistory = [];
+        
+        // Function to show typing indicator
+        function showTypingIndicator() {
+            const indicator = document.createElement('div');
+            indicator.id = 'typing-indicator';
+            indicator.className = 'message ai';
+            indicator.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
+            chatContainer.appendChild(indicator);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Function to remove typing indicator
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        // Function to append message to chat
+        function appendMessage(sender, text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message ' + (sender === 'user' ? 'user' : 'ai');
+            msgDiv.innerHTML = `<div class="bubble"><span class="sender">${sender === 'user' ? 'You' : 'Zeni'}:</span><br>${text}</div>`;
+            chatContainer.appendChild(msgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // Store message in history
+            messageHistory.push({
+                role: sender === 'user' ? 'user' : 'assistant',
+                content: text
+            });
+        }
+        
+        // Advanced response system
+        function getZeniResponse(userMessage) {
+            const message = userMessage.toLowerCase();
+            conversationContext.messageCount++;
+            
+            // Check for goal mention
+            if (!conversationContext.userGoal) {
+                const goalKeywords = ["want to", "goal is", "trying to", "aim to", "achieve", "accomplish", "become", "learn", "lose weight", "get fit", "study", "business", "career", "relationship"];
+                for (const keyword of goalKeywords) {
+                    if (message.includes(keyword)) {
+                        conversationContext.userGoal = userMessage;
+                        return `So your goal is related to "${extractGoal(userMessage)}". That's step one - naming it. Now, what specific actions have you already taken? Not what you plan to do, what you've ACTUALLY done.`;
+                    }
+                }
+            }
+            
+            // Greeting responses
+            if (firstMessage(message)) {
+                return "Skip the small talk. I'm here to help you achieve results, not chat. What specific goal are you working toward?";
+            }
+            
+            // Excuse detection
+            if (containsExcuse(message)) {
+                conversationContext.challengeLevel++;
+                return getExcuseResponse();
+            }
+            
+            // Question handling
+            if (message.includes("?")) {
+                return handleQuestion(message);
+            }
+            
+            // Detect action statements
+            if (containsActionStatement(message)) {
+                return getActionResponse();
+            }
+            
+            // General responses based on conversation progress
+            if (conversationContext.messageCount < 3) {
+                return "I need something concrete to work with. What is your specific goal? Don't be vague.";
+            } else if (conversationContext.userGoal) {
+                return getGoalFollowupResponse();
+            } else {
+                return "Let's focus. Tell me exactly what you want to achieve, and we'll work backward from there. No more dancing around it.";
+            }
+        }
+        
+        // Helper functions for response generation
+        function extractGoal(message) {
+            // Simple extraction - in real app would be more sophisticated
+            const goalPhrases = [
+                "want to", "goal is", "trying to", "aim to", "achieve", 
+                "accomplish", "become", "learn", "lose weight", "get fit"
+            ];
+            
+            for (const phrase of goalPhrases) {
+                if (message.toLowerCase().includes(phrase)) {
+                    const parts = message.split(phrase);
+                    if (parts.length > 1) {
+                        // Get text after the phrase, limit to 40 chars
+                        return parts[1].trim().substring(0, 40);
+                    }
+                }
+            }
+            return "what you mentioned";
+        }
+        
+        function firstMessage(message) {
+            const greetings = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening"];
+            return greetings.some(greeting => message.includes(greeting)) && conversationContext.messageCount <= 2;
+        }
+        
+        function containsExcuse(message) {
+            const excusePatterns = [
+                "can't", "too hard", "impossible", "no time", "busy", 
+                "tried but", "difficult", "tomorrow", "later", "someday",
+                "not sure if", "don't know how", "would be nice", "wish I could"
+            ];
+            
+            return excusePatterns.some(pattern => message.includes(pattern));
+        }
+        
+        function containsActionStatement(message) {
+            const actionPatterns = [
+                "i will", "i've started", "i have begun", "i'm doing", 
+                "i already", "i've been", "started to", "began to",
+                "taking steps", "working on", "i did", "today i"
+            ];
+            
+            return actionPatterns.some(pattern => message.toLowerCase().includes(pattern));
+        }
+        
+        function getExcuseResponse() {
+            const responses = [
+                "That sounds like an excuse to me. What's the real reason you haven't made progress?",
+                "I hear excuses all day. Everyone has obstacles. What makes the people who succeed different is they find ways AROUND those obstacles.",
+                "If it were easy, everyone would do it. Success comes from pushing through when it's hard. So what's your next step?",
+                "Let me be clear: excuses don't build results. Actions do. What action can you commit to RIGHT NOW?",
+                "I'm not interested in why you can't. Tell me how you WILL.",
+                "If you're looking for sympathy, you've come to the wrong coach. I care about your results, which means I need your actions, not your excuses."
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        function getActionResponse() {
+            const responses = [
+                "Good. But is that enough? What's your NEXT action to build on this momentum?",
+                "That's a start. Now how will you ensure you follow through consistently?",
+                "Actions speak louder than words. How will you hold yourself accountable to keep this up?",
+                "Progress requires consistency. How will you make sure this becomes a habit rather than a one-time effort?",
+                "That's better than nothing. Now let's double it. What else can you commit to?",
+                "I like the initiative. Now set a specific deadline and measurable outcome for this action."
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        function getGoalFollowupResponse() {
+            const responses = [
+                "Let's break down your goal into measurable weekly targets. What's a realistic milestone you can hit in 7 days?",
+                "Who do you know that has achieved something similar? What can you learn from them?",
+                "What's the biggest obstacle standing between you and this goal? And don't tell me 'time' or 'money' - dig deeper.",
+                "On a scale of 1-10, how committed are you to this goal? If it's not a 9 or 10, why are we even talking about it?",
+                "What will happen if you DON'T achieve this goal? Sometimes the pain of not changing is the best motivator.",
+                "What specific skills do you need to develop to reach this goal? And what's your plan to acquire them?"
+            ];
+            
+            conversationContext.lastTopicDiscussed = "goal followup";
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        function handleQuestion(message) {
+            // Handle specific question types
+            if (message.includes("how do i") || message.includes("how can i") || message.includes("how should i")) {
+                return "I could give you a generic answer, but that's not helpful. What have you already tried? What specific obstacle are you facing right now?";
+            }
+            
+            if (message.includes("what if") || message.includes("what about")) {
+                return "Stop playing the 'what if' game. It's a form of procrastination. Focus on what you can control right now. What's your immediate next step?";
+            }
+            
+            return "That's a question Google can answer. I'm here to push you to take ACTION. So let's focus on your next concrete step.";
+        }
+
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = userInput.value.trim();
+            if (!input) return;
+            
+            // Display user message
+            appendMessage('user', input);
+            userInput.value = '';
+            
+            // Show typing indicator to simulate AI thinking
+            showTypingIndicator();
+            
+            // Add a realistic delay before response
+            setTimeout(() => {
+                removeTypingIndicator();
+                const reply = getZeniResponse(input);
+                appendMessage('ai', reply);
+            }, Math.floor(Math.random() * 1000) + 1000); // Random delay between 1-2 seconds
+        });
+    </script>
+</body>
+</html>
