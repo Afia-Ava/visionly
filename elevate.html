@@ -405,15 +405,20 @@
                 { text: "What lies behind us and what lies before us are tiny matters compared to what lies within us.", author: "Ralph Waldo Emerson" },
                 { text: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle" }
             ];
-            
-            const quoteButton = document.querySelector('button[style*="Get New Quote"]');
+
+            let lastIndex = 0;
+            const quoteButton = document.querySelector('aside section button');
             const quoteText = document.querySelector('blockquote p');
-            const quoteAuthor = document.querySelector('cite');
-            
+            const quoteAuthor = document.querySelector('blockquote cite');
+
             quoteButton.addEventListener('click', function() {
-                const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-                quoteText.textContent = `"${randomQuote.text}"`;
-                quoteAuthor.textContent = randomQuote.author;
+                let idx;
+                do {
+                    idx = Math.floor(Math.random() * quotes.length);
+                } while (quotes.length > 1 && idx === lastIndex);
+                lastIndex = idx;
+                quoteText.textContent = `"${quotes[idx].text}"`;
+                quoteAuthor.textContent = quotes[idx].author;
             });
 
             // Add hover effects
