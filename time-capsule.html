@@ -140,8 +140,56 @@
             padding: 30px;
             display: flex;
             flex-direction: column;
+            position: relative;
+            overflow: hidden; /* Keep the background contained */
         }
         
+        /* Background hourglass for the text input area - updating this to make it more visible */
+        .input-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'%3E%3Cpath d='M30 10H70V30C70 40 60 40 50 50C40 60 30 60 30 70V90H70V70C70 60 60 60 50 50C40 40 30 40 30 30V10Z' stroke='%238B5FBF' stroke-width='3' fill='rgba(240,230,255,0.1)'/%3E%3Cpath d='M35 25C35 25 45 20 50 25C55 30 65 25 65 25' stroke='%238B5FBF' stroke-width='2'/%3E%3Cpath d='M35 75C35 75 45 80 50 75C55 70 65 75 65 75' stroke='%238B5FBF' stroke-width='2'/%3E%3Cpath d='M30 10H70' stroke='%238B5FBF' stroke-width='4'/%3E%3Cpath d='M30 90H70' stroke='%238B5FBF' stroke-width='4'/%3E%3Cpath d='M40 40C45 45 55 55 60 60' stroke='%238B5FBF' stroke-width='1.5'/%3E%3Cpath d='M60 40C55 45 45 55 40 60' stroke='%238B5FBF' stroke-width='1.5'/%3E%3Ccircle cx='45' cy='65' r='2' fill='%23A078E8'/%3E%3Ccircle cx='50' cy='68' r='2' fill='%23A078E8'/%3E%3Ccircle cx='55' cy='65' r='2' fill='%23A078E8'/%3E%3Ccircle cx='47' cy='71' r='2' fill='%23A078E8'/%3E%3Ccircle cx='53' cy='71' r='2' fill='%23A078E8'/%3E%3Ccircle cx='48' cy='75' r='2' fill='%23A078E8'/%3E%3Ccircle cx='52' cy='75' r='2' fill='%23A078E8'/%3E%3Ccircle cx='50' cy='78' r='2' fill='%23A078E8'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 220px 220px; /* Increased size */
+            opacity: 0.3; /* Increased opacity */
+            pointer-events: none;
+            animation: float 4s ease-in-out infinite;
+            z-index: 0;
+        }
+        
+        body:not(.dark-mode) .input-section::before {
+            opacity: 0.15; /* Increased opacity for light mode too */
+        }
+        
+        textarea {
+            width: 100%;
+            height: 320px; /* Taller textarea */
+            padding: 18px; /* Increased padding */
+            border: 1px solid #e2d5ff;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.05rem; /* Slightly larger */
+            /* Make background more transparent to see the hourglass */
+            background-color: rgba(45, 21, 73, 0.4); 
+            resize: none;
+            transition: all 0.3s;
+            line-height: 1.6; /* Better line spacing */
+            position: relative;
+            z-index: 1; /* Position above the background image */
+            color: #e0e0e0;
+        }
+        
+        body:not(.dark-mode) textarea {
+            background-color: rgba(250, 248, 255, 0.5); /* More transparent in light mode */
+            color: #333;
+        }
+        
+        /* Light mode styles for the input section */
         body:not(.dark-mode) .input-section {
             background-color: rgba(255, 255, 255, 0.8);
             box-shadow: 0 4px 20px rgba(139, 95, 179, 0.1);
@@ -156,30 +204,6 @@
         
         body:not(.dark-mode) .form-header {
             color: #6b46c1;
-        }
-        
-        textarea {
-            background-color: rgba(45, 21, 73, 0.5);
-            border: 1px solid #3a2259;
-            border-radius: 10px;
-            padding: 20px;
-            color: #e0e0e0;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            height: 240px;
-            resize: none;
-            margin-bottom: 20px;
-        }
-        
-        body:not(.dark-mode) textarea {
-            background-color: #faf8ff;
-            border: 1px solid #e2d5ff;
-            color: #333;
-        }
-        
-        textarea:focus {
-            outline: none;
-            border-color: #8b5fbf;
         }
         
         .options-section {
@@ -276,19 +300,6 @@
             background-color: #faf8ff;
             border: 1px solid #e2d5ff;
             color: #333;
-        }
-        
-        .hourglass-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 30px 0;
-        }
-        
-        .hourglass {
-            width: 100px;
-            height: 100px;
-            opacity: 0.8;
         }
         
         .action-buttons {
@@ -416,9 +427,9 @@
         
         /* Animation for the time capsule launch */
         @keyframes float {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0); }
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(1deg); }
+            100% { transform: translateY(0) rotate(0deg); }
         }
         
         .floating {
@@ -495,28 +506,6 @@
                     <div class="option-group email-field" style="display: none;">
                         <label for="email">Email Address</label>
                         <input type="email" id="email" name="email" class="email-input" placeholder="your@email.com">
-                    </div>
-                    
-                    <div class="hourglass-container">
-                        <!-- SVG for hourglass illustration -->
-                        <svg class="hourglass floating" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M30 10H70V30C70 40 60 40 50 50C40 60 30 60 30 70V90H70V70C70 60 60 60 50 50C40 40 30 40 30 30V10Z" stroke="#8B5FBF" stroke-width="3" fill="rgba(240,230,255,0.2)"/>
-                            <path d="M35 25C35 25 45 20 50 25C55 30 65 25 65 25" stroke="#8B5FBF" stroke-width="2"/>
-                            <path d="M35 75C35 75 45 80 50 75C55 70 65 75 65 75" stroke="#8B5FBF" stroke-width="2"/>
-                            <path d="M30 10H70" stroke="#8B5FBF" stroke-width="4"/>
-                            <path d="M30 90H70" stroke="#8B5FBF" stroke-width="4"/>
-                            <path d="M40 40C45 45 55 55 60 60" stroke="#8B5FBF" stroke-width="1.5"/>
-                            <path d="M60 40C55 45 45 55 40 60" stroke="#8B5FBF" stroke-width="1.5"/>
-                            <!-- Sand particles -->
-                            <circle cx="45" cy="65" r="2" fill="#A078E8"/>
-                            <circle cx="50" cy="68" r="2" fill="#A078E8"/>
-                            <circle cx="55" cy="65" r="2" fill="#A078E8"/>
-                            <circle cx="47" cy="71" r="2" fill="#A078E8"/>
-                            <circle cx="53" cy="71" r="2" fill="#A078E8"/>
-                            <circle cx="48" cy="75" r="2" fill="#A078E8"/>
-                            <circle cx="52" cy="75" r="2" fill="#A078E8"/>
-                            <circle cx="50" cy="78" r="2" fill="#A078E8"/>
-                        </svg>
                     </div>
                     
                     <div class="action-buttons">
