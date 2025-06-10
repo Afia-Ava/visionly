@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Test - Visionly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2d1a45; margin-bottom: 20px; }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #8b5fbf;
+        }
+        button {
+            background: linear-gradient(135deg, #2d1a45 0%, #8b5fbf 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover { opacity: 0.9; }
+        .status { 
+            margin: 10px 0; 
+            padding: 10px; 
+            border-radius: 4px;
+            display: none;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📧 Visionly Email Test</h1>
+        
+        <div class="test-section">
+            <h3>Send Real Weekly Reminder</h3>
+            <input type="email" id="reminder-email" placeholder="User email" value="afiaava19@gmail.com">
+            <input type="text" id="reminder-name" placeholder="User name" value="Afia">
+            <button onclick="sendWeeklyReminder()">Send Weekly Reminder</button>
+            <div id="reminder-status" class="status"></div>
+        </div>
+    </div>
+
+    <!-- EmailJS SDK v4+ -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        // Initialize EmailJS ONCE at the top
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init('oesbudg4uybAuA3Ux');
+        }
+
+        function showStatus(elementId, message, isSuccess) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${isSuccess ? 'success' : 'error'}`;
+            element.style.display = 'block';
+        }
+
+        async function sendWeeklyReminder() {
+            const email = document.getElementById('reminder-email').value;
+            const name = document.getElementById('reminder-name').value;
+            if (!email || !email.includes('@')) {
+                showStatus('reminder-status', '❌ Please enter a valid email address', false);
+                return;
+            }
+            if (!name) {
+                showStatus('reminder-status', '❌ Please enter a user name', false);
+                return;
+            }
+            showStatus('reminder-status', 'Sending weekly reminder...', true);
+            try {
+                const result = await emailjs.send(
+                    'service_gg1zgp9',
+                    'template_weekly_reminder',
+                    {
+                        to_email: email,
+                        to_name: name,
+                        message: "This is a test email from Visionly."
+                    }
+                );
+                showStatus('reminder-status', '✅ Weekly reminder sent successfully!', true);
+                console.log('Weekly reminder result:', result);
+            } catch (error) {
+                console.error('Weekly reminder error:', error);
+                showStatus('reminder-status', '❌ ' + (error.text || error.message), false);
+            }
+        }
+    </script>
+</body>
+</html>

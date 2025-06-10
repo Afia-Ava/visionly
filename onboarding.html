@@ -546,6 +546,19 @@
         <div class="slide" id="slide-5">
             <h1>Your Journey Starts Now 💫</h1>
             <p>Ready to turn your dreams into reality?</p>
+            
+            <!-- Email notification preference -->
+            <div style="background: rgba(139, 95, 179, 0.15); border: 1px solid rgba(139, 95, 179, 0.3); border-radius: 12px; padding: 1.5rem; margin: 2rem auto; max-width: 400px;">
+                <h4 style="margin-bottom: 1rem; color: #f0f0f0;">Stay Motivated 📧</h4>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: #c0c0c0;">
+                    <input type="checkbox" id="weekly-email-checkbox" checked style="transform: scale(1.2);">
+                    <span>Send me weekly inspiration & check-ins via email</span>
+                </label>
+                <p style="font-size: 0.8rem; color: #8b5fbf; margin-top: 0.5rem; margin-bottom: 0;">
+                    Get weekly motivation delivered every Sunday ✨
+                </p>
+            </div>
+            
             <p style="margin-bottom: 3rem;">Let's create something amazing together ✨</p>
             <button class="cta-button" onclick="startJourney()">
                 Let's Go 🚀
@@ -675,8 +688,22 @@
 
         // Start journey
         function startJourney() {
+            // Save email preference
+            const emailEnabled = document.getElementById('weekly-email-checkbox').checked;
+            localStorage.setItem('weeklyEmailEnabled', emailEnabled.toString());
+            
             // Clear new user flag
             localStorage.removeItem('isNewUser');
+            
+            // If email enabled, setup weekly scheduler
+            if (emailEnabled) {
+                setTimeout(() => {
+                    if (typeof emailService !== 'undefined') {
+                        emailService.init();
+                        emailService.setupWeeklyScheduler();
+                    }
+                }, 2000);
+            }
             
             // Fade out current slide
             document.body.style.opacity = '0';
@@ -714,7 +741,9 @@
         });
     </script>
     
-    <!-- Import sprinkles effect from mouse-sprinkles -->
+    <!-- EmailJS CDN -->
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script src="email-service.js"></script>
     <script src="mouse-sprinkles-script.js"></script>
 </body>
 </html>

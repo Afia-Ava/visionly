@@ -271,6 +271,22 @@
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
     <script src="dark-mode-toggle.js"></script>
+    <script src="email-service.js"></script>
+    
+    <script>
+        // Check if user needs onboarding
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('isNewUser') === 'true') {
+                window.location.href = 'onboarding.html';
+            }
+            
+            // Initialize email service and setup weekly scheduler
+            if (typeof emailService !== 'undefined') {
+                emailService.init();
+                emailService.setupWeeklyScheduler();
+            }
+        });
+    </script>
     
     <script>
         // Check if user needs onboarding
