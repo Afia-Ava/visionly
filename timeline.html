@@ -97,42 +97,32 @@
         <!-- Timeline Container -->
         <div style="background-color: #fff; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 40px;">
             
-            <!-- Timeline Item 1 - Expanded -->
-            <div style="margin-bottom: 20px;">
-                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 18px; cursor: pointer; transition: all 0.2s ease;" onclick="toggleTimeline('timeline1')">
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
-                        <div>
-                            <h3 style="margin: 0 0 4px 0; font-size: 0.95rem; font-weight: 600; color: #333;">Getting into College</h3>
-                            <p style="margin: 0; color: #666; font-size: 0.8rem;">Expected Completion: 2024-08-15</p>
-                        </div>
-                        <span id="arrow1" style="font-size: 14px; color: #666; transform: rotate(180deg); transition: transform 0.3s;">▼</span>
+            <!-- Milestone Input Section -->
+            <form id="milestone-form" style="margin-bottom: 30px;">
+                <div style="margin-bottom: 18px;">
+                    <label for="main-goal" style="font-weight: 600; font-size: 1rem; color: #333;">Main Goal</label>
+                    <input type="text" id="main-goal" placeholder="Enter your main goal..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-top: 6px; font-size: 1rem;">
+                </div>
+                <div id="subgoals-container" style="margin-bottom: 12px;">
+                    <label style="font-weight: 500; font-size: 0.97rem; color: #333;">Subgoals</label>
+                    <div class="subgoal-item" style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+                        <input type="text" class="subgoal-input" placeholder="Enter a subgoal..." style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <button type="button" class="remove-subgoal-btn" style="display: none; background: #dc3545; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; cursor: pointer;">×</button>
                     </div>
                 </div>
-            </div>
+                <button type="button" id="add-subgoal-btn" style="background: #f8f9fa; color: #666; border: 1px solid #ddd; border-radius: 4px; padding: 5px 12px; font-size: 13px; cursor: pointer; margin-bottom: 10px;">+ Add Subgoal</button>
+                <button type="submit" style="background: #2d1a45; color: #fff; border: none; border-radius: 4px; padding: 8px 18px; font-size: 15px; font-weight: 500; cursor: pointer; margin-left: 10px;">Add Milestone</button>
+            </form>
 
-            <!-- Timeline Item 2 - Collapsed -->
-            <div style="margin-bottom: 20px;">
-                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 18px; cursor: pointer; transition: all 0.2s ease;" onclick="toggleTimeline('timeline2')">
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
-                        <div>
-                            <h3 style="margin: 0; font-size: 0.95rem; font-weight: 600; color: #333;">Work on Personal Brand</h3>
-                        </div>
-                        <span id="arrow2" style="font-size: 14px; color: #666; transition: transform 0.3s;">▼</span>
-                    </div>
-                </div>
+            <!-- No timeline items by default; show empty state -->
+            <div id="timeline-empty" style="text-align: center; color: #999; padding: 40px 0;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" style="margin-bottom: 15px; opacity: 0.5;">
+                  <path d="M8 3.293l-6 6V14a1 1 0 0 0 1 1h4v-4h2v4h4a1 1 0 0 0 1-1v-4.707l-6-6zm5 6.414V14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4.293l5-5 5 5z"/>
+                </svg>
+                <div style="font-size: 1.1rem;">No milestones yet.</div>
+                <div style="font-size: 0.95rem; color: #bbb;">Start by adding goals to your vision board!</div>
             </div>
-
-            <!-- Timeline Item 3 - Collapsed -->
-            <div style="margin-bottom: 0;">
-                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 18px; cursor: pointer; transition: all 0.2s ease;" onclick="toggleTimeline('timeline3')">
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
-                        <div>
-                            <h3 style="margin: 0; font-size: 0.95rem; font-weight: 600; color: #333;">Build Projects</h3>
-                        </div>
-                        <span id="arrow3" style="font-size: 14px; color: #666; transition: transform 0.3s;">▼</span>
-                    </div>
-                </div>
-            </div>
+            <div id="milestone-list"></div>
         </div>
     </main>
 
@@ -159,6 +149,541 @@
         // Load timeline data from vision boards (placeholder for future implementation)
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Timeline page loaded - ready to display vision board goals');
+        });
+
+        // Milestone logic
+        document.addEventListener('DOMContentLoaded', async function() {
+            const milestoneForm = document.getElementById('milestone-form');
+            const mainGoalInput = document.getElementById('main-goal');
+            const subgoalsContainer = document.getElementById('subgoals-container');
+            const addSubgoalBtn = document.getElementById('add-subgoal-btn');
+            const milestoneList = document.getElementById('milestone-list');
+            const timelineEmpty = document.getElementById('timeline-empty');
+
+            // --- BEGIN PROFILE-BASED STORAGE LOGIC ---
+            // Helper: get current user (Firebase Auth)
+            function getCurrentUserId() {
+                const user = firebase.auth().currentUser;
+                return user ? user.uid : null;
+            }
+
+            // Helper: get milestones from localStorage for user
+            function loadMilestonesForUser(uid) {
+                if (!uid) return [];
+                const data = localStorage.getItem('visionly_milestones_' + uid);
+                if (!data) return [];
+                try {
+                    return JSON.parse(data);
+                } catch {
+                    return [];
+                }
+            }
+
+            // Helper: save milestones to localStorage for user
+            function saveMilestonesForUser(uid, milestones) {
+                if (!uid) return;
+                localStorage.setItem('visionly_milestones_' + uid, JSON.stringify(milestones));
+            }
+
+            // Render all milestones for user
+            function renderAllMilestones(uid) {
+                milestoneList.innerHTML = '';
+                const milestones = loadMilestonesForUser(uid);
+                if (milestones.length === 0) {
+                    timelineEmpty.style.display = '';
+                } else {
+                    timelineEmpty.style.display = 'none';
+                    milestones.forEach(m => renderMilestone(m.mainGoal, m.subgoals, false));
+                }
+            }
+
+            // Wait for Firebase Auth to be ready and user to be logged in
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (!user) {
+                    // Optionally redirect to login or show message
+                    milestoneList.innerHTML = '<div style="color:#b00; text-align:center; margin:30px 0;">Please log in to save your milestones.</div>';
+                    timelineEmpty.style.display = 'none';
+                    milestoneForm.style.display = 'none';
+                    return;
+                }
+                milestoneForm.style.display = '';
+                renderAllMilestones(user.uid);
+
+                // Add milestone
+                milestoneForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const mainGoal = mainGoalInput.value.trim();
+                    const subgoals = Array.from(subgoalsContainer.querySelectorAll('.subgoal-input'))
+                        .map(input => input.value.trim())
+                        .filter(val => val.length > 0);
+
+                    if (!mainGoal) {
+                        alert('Please enter a main goal.');
+                        return;
+                    }
+
+                    // Save to localStorage for this user
+                    const uid = getCurrentUserId();
+                    if (!uid) {
+                        alert('You must be logged in to save milestones.');
+                        return;
+                    }
+                    const milestones = loadMilestonesForUser(uid);
+                    milestones.push({ mainGoal, subgoals });
+                    saveMilestonesForUser(uid, milestones);
+
+                    // Render all milestones
+                    renderAllMilestones(uid);
+
+                    // Reset form
+                    mainGoalInput.value = '';
+                    const allSubgoals = subgoalsContainer.querySelectorAll('.subgoal-item');
+                    allSubgoals.forEach((item, idx) => {
+                        if (idx === 0) {
+                            item.querySelector('.subgoal-input').value = '';
+                        } else {
+                            item.remove();
+                        }
+                    });
+                    updateRemoveSubgoalBtns();
+                });
+
+                // On page load, render milestones for logged-in user (if any)
+                firebase.auth().onAuthStateChanged(function(user) {
+                    if (!user) {
+                        milestoneList.innerHTML = '<div style="color:#b00; text-align:center; margin:30px 0;">Please log in to save your milestones.</div>';
+                        timelineEmpty.style.display = 'none';
+                        milestoneForm.style.display = 'none';
+                        return;
+                    }
+                    milestoneForm.style.display = '';
+                    renderAllMilestones(user.uid);
+                });
+
+                // Modified renderMilestone to support delete/edit with storage
+                function renderMilestone(mainGoal, subgoals, attachToList = true) {
+                    timelineEmpty.style.display = 'none';
+                    const milestoneDiv = document.createElement('div');
+                    milestoneDiv.style.background = '#f8f9fa';
+                    milestoneDiv.style.borderRadius = '8px';
+                    milestoneDiv.style.padding = '18px';
+                    milestoneDiv.style.marginBottom = '18px';
+                    milestoneDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)';
+                    milestoneDiv.innerHTML = `
+                        <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+                            <div class="milestone-content">
+                                <h3 class="milestone-main-goal" style="margin: 0 0 4px 0; font-size: 1.15rem; font-weight: 700; color: #231942 !important; text-shadow: none !important;">${mainGoal}</h3>
+                                ${subgoals.length > 0 ? `
+                                    <ul style="margin: 8px 0 0 18px; padding: 0; color: #231942; font-size: 0.97rem; list-style-type: disc; list-style-position: inside;">
+                                        ${subgoals.map(sg => `<li style="margin-bottom: 2px; color: #231942; font-weight: 600;">${sg}</li>`).join('')}
+                                    </ul>
+                                ` : ''}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <button type="button" class="edit-milestone-btn" style="background: #f8c146; color: #333; border: none; border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer; height: 28px;">Edit</button>
+                                <button type="button" class="remove-milestone-btn" style="background: #dc3545; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer; height: 28px;">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                    // Remove logic
+                    milestoneDiv.querySelector('.remove-milestone-btn').addEventListener('click', function() {
+                        // Remove from storage
+                        let milestones = loadMilestonesForUser(user.uid);
+                        milestones = milestones.filter(m => !(m.mainGoal === mainGoal && JSON.stringify(m.subgoals) === JSON.stringify(subgoals)));
+                        saveMilestonesForUser(user.uid, milestones);
+                        renderAllMilestones(user.uid);
+                    });
+
+                    // Edit logic
+                    milestoneDiv.querySelector('.edit-milestone-btn').addEventListener('click', function() {
+                        const contentDiv = milestoneDiv.querySelector('.milestone-content');
+                        // Get current values
+                        const currentMainGoal = contentDiv.querySelector('h3').textContent;
+                        const currentSubgoals = Array.from(contentDiv.querySelectorAll('ul li')).map(li => li.textContent);
+
+                        // Replace content with editable fields
+                        contentDiv.innerHTML = `
+                            <input type="text" class="edit-main-goal" value="${currentMainGoal.replace(/"/g, '&quot;')}" style="width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 4px; font-size: 1rem; margin-bottom: 8px; color: #231942; font-weight: 600;">
+                            <div class="edit-subgoals-list" style="margin-bottom: 8px;">
+                                ${currentSubgoals.map((sg, idx) => `
+                                    <div class="edit-subgoal-item" style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                                        <input type="text" class="edit-subgoal-input" value="${sg.replace(/"/g, '&quot;')}" style="flex: 1; padding: 7px; border: 1px solid #bbb; border-radius: 4px;">
+                                        <button type="button" class="remove-edit-subgoal-btn" style="background: #dc3545; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; cursor: pointer;">×</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <button type="button" class="add-edit-subgoal-btn" style="background: #f8f9fa; color: #666; border: 1px solid #bbb; border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer;">+ Add Subgoal</button>
+                            <div style="margin-top: 10px;">
+                                <button type="button" class="save-edit-milestone-btn" style="background: #2d1a45; color: #fff; border: none; border-radius: 4px; padding: 6px 16px; font-size: 13px; font-weight: 500; cursor: pointer;">Save</button>
+                                <button type="button" class="cancel-edit-milestone-btn" style="background: #bbb; color: #333; border: none; border-radius: 4px; padding: 6px 16px; font-size: 13px; font-weight: 500; cursor: pointer; margin-left: 8px;">Cancel</button>
+                            </div>
+                        `;
+
+                        // Remove subgoal logic in edit mode
+                        function updateEditRemoveBtns() {
+                            const items = contentDiv.querySelectorAll('.edit-subgoal-item');
+                            items.forEach((item, idx) => {
+                                const btn = item.querySelector('.remove-edit-subgoal-btn');
+                                btn.style.display = (items.length > 1) ? 'inline-block' : 'none';
+                            });
+                        }
+                        updateEditRemoveBtns();
+
+                        contentDiv.querySelectorAll('.remove-edit-subgoal-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                btn.parentElement.remove();
+                                updateEditRemoveBtns();
+                            });
+                        });
+
+                        // Add subgoal in edit mode
+                        contentDiv.querySelector('.add-edit-subgoal-btn').addEventListener('click', function() {
+                            const editList = contentDiv.querySelector('.edit-subgoals-list');
+                            const div = document.createElement('div');
+                            div.className = 'edit-subgoal-item';
+                            div.style.display = 'flex';
+                            div.style.alignItems = 'center';
+                            div.style.gap = '6px';
+                            div.style.marginBottom = '6px';
+                            div.innerHTML = `
+                                <input type="text" class="edit-subgoal-input" placeholder="Enter a subgoal..." style="flex: 1; padding: 7px; border: 1px solid #bbb; border-radius: 4px;">
+                                <button type="button" class="remove-edit-subgoal-btn" style="background: #dc3545; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; cursor: pointer;">×</button>
+                            `;
+                            div.querySelector('.remove-edit-subgoal-btn').addEventListener('click', function() {
+                                div.remove();
+                                updateEditRemoveBtns();
+                            });
+                            editList.appendChild(div);
+                            updateEditRemoveBtns();
+                            div.querySelector('.edit-subgoal-input').focus();
+                        });
+
+                        // Add subgoal on Enter key in edit mode
+                        contentDiv.querySelector('.edit-subgoals-list').addEventListener('keydown', function(e) {
+                            if (
+                              e.target.classList.contains('edit-subgoal-input') &&
+                              e.key === 'Enter'
+                            ) {
+                              e.preventDefault();
+                              contentDiv.querySelector('.add-edit-subgoal-btn').click();
+                            }
+                        });
+
+                        // Save edit
+                        contentDiv.querySelector('.save-edit-milestone-btn').addEventListener('click', function() {
+                            const newMainGoal = contentDiv.querySelector('.edit-main-goal').value.trim();
+                            const newSubgoals = Array.from(contentDiv.querySelectorAll('.edit-subgoal-input'))
+                                .map(input => input.value.trim())
+                                .filter(val => val.length > 0);
+
+                            if (!newMainGoal) {
+                                alert('Please enter a main goal.');
+                                return;
+                            }
+
+                            // Replace with updated milestone
+                            contentDiv.innerHTML = `
+                                <h3 style="margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: #231942;">${newMainGoal}</h3>
+                                ${newSubgoals.length > 0 ? `
+                                    <ul style="margin: 8px 0 0 18px; padding: 0; color: #666; font-size: 0.97rem;">
+                                        ${newSubgoals.map(sg => `<li style="margin-bottom: 2px;">${sg}</li>`).join('')}
+                                    </ul>
+                                ` : ''}
+                            `;
+                        });
+
+                        // Cancel edit
+                        contentDiv.querySelector('.cancel-edit-milestone-btn').addEventListener('click', function() {
+                            // Restore previous milestone view
+                            contentDiv.innerHTML = `
+                                <h3 style="margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: #231942;">${currentMainGoal}</h3>
+                                ${currentSubgoals.length > 0 ? `
+                                    <ul style="margin: 8px 0 0 18px; padding: 0; color: #666; font-size: 0.97rem;">
+                                        ${currentSubgoals.map(sg => `<li style="margin-bottom: 2px;">${sg}</li>`).join('')}
+                                    </ul>
+                                ` : ''}
+                            `;
+                        });
+                    });
+
+                    if (attachToList) milestoneList.appendChild(milestoneDiv);
+                }
+                // Expose for renderAllMilestones
+                window.renderMilestone = renderMilestone;
+            });
+            // --- END PROFILE-BASED STORAGE LOGIC ---
+
+            // Add subgoal input
+            addSubgoalBtn.addEventListener('click', function() {
+                addSubgoalInput();
+            });
+
+            // Add subgoal input on Enter key in any subgoal input
+            subgoalsContainer.addEventListener('keydown', function(e) {
+                if (
+                  e.target.classList.contains('subgoal-input') &&
+                  e.key === 'Enter'
+                ) {
+                  e.preventDefault();
+                  addSubgoalInput();
+                  // Focus the new input
+                  const allInputs = subgoalsContainer.querySelectorAll('.subgoal-input');
+                  allInputs[allInputs.length - 1].focus();
+                }
+            });
+
+            function addSubgoalInput() {
+                const subgoalDiv = document.createElement('div');
+                subgoalDiv.className = 'subgoal-item';
+                subgoalDiv.style.display = 'flex';
+                subgoalDiv.style.alignItems = 'center';
+                subgoalDiv.style.gap = '8px';
+                subgoalDiv.style.marginTop = '8px';
+                subgoalDiv.innerHTML = `
+                    <input type="text" class="subgoal-input" placeholder="Enter a subgoal..." style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <button type="button" class="remove-subgoal-btn" style="display: none; background: #dc3545; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; cursor: pointer;">×</button>
+                `;
+                subgoalDiv.querySelector('.remove-subgoal-btn').addEventListener('click', function() {
+                    subgoalDiv.remove();
+                    updateRemoveSubgoalBtns();
+                });
+                subgoalsContainer.appendChild(subgoalDiv);
+                updateRemoveSubgoalBtns();
+            }
+
+            // Remove subgoal button logic
+            function updateRemoveSubgoalBtns() {
+                const subgoalItems = subgoalsContainer.querySelectorAll('.subgoal-item');
+                subgoalItems.forEach((item, idx) => {
+                    const btn = item.querySelector('.remove-subgoal-btn');
+                    btn.style.display = (subgoalItems.length > 1) ? 'inline-block' : 'none';
+                });
+            }
+            updateRemoveSubgoalBtns();
+
+            // Add milestone
+            milestoneForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const mainGoal = mainGoalInput.value.trim();
+                const subgoals = Array.from(subgoalsContainer.querySelectorAll('.subgoal-input'))
+                    .map(input => input.value.trim())
+                    .filter(val => val.length > 0);
+
+                if (!mainGoal) {
+                    alert('Please enter a main goal.');
+                    return;
+                }
+
+                // Save to localStorage for this user
+                const uid = getCurrentUserId();
+                if (!uid) {
+                    alert('You must be logged in to save milestones.');
+                    return;
+                }
+                const milestones = loadMilestonesForUser(uid);
+                milestones.push({ mainGoal, subgoals });
+                saveMilestonesForUser(uid, milestones);
+
+                // Render all milestones
+                renderAllMilestones(uid);
+
+                // Reset form
+                mainGoalInput.value = '';
+                const allSubgoals = subgoalsContainer.querySelectorAll('.subgoal-item');
+                allSubgoals.forEach((item, idx) => {
+                    if (idx === 0) {
+                        item.querySelector('.subgoal-input').value = '';
+                    } else {
+                        item.remove();
+                    }
+                });
+                updateRemoveSubgoalBtns();
+            });
+
+            // On page load, render milestones for logged-in user (if any)
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (!user) {
+                    milestoneList.innerHTML = '<div style="color:#b00; text-align:center; margin:30px 0;">Please log in to save your milestones.</div>';
+                    timelineEmpty.style.display = 'none';
+                    milestoneForm.style.display = 'none';
+                    return;
+                }
+                milestoneForm.style.display = '';
+                renderAllMilestones(user.uid);
+            });
+
+            // Modified renderMilestone to support delete/edit with storage
+            function renderMilestone(mainGoal, subgoals, attachToList = true) {
+                timelineEmpty.style.display = 'none';
+                const milestoneDiv = document.createElement('div');
+                milestoneDiv.style.background = '#f8f9fa';
+                milestoneDiv.style.borderRadius = '8px';
+                milestoneDiv.style.padding = '18px';
+                milestoneDiv.style.marginBottom = '18px';
+                milestoneDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)';
+                milestoneDiv.innerHTML = `
+                    <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+                        <div class="milestone-content">
+                            <h3 class="milestone-main-goal" style="margin: 0 0 4px 0; font-size: 1.15rem; font-weight: 700; color: #231942 !important; text-shadow: none !important;">${mainGoal}</h3>
+                            ${subgoals.length > 0 ? `
+                                <ul style="margin: 8px 0 0 18px; padding: 0; color: #666; font-size: 0.97rem;">
+                                    ${subgoals.map(sg => `<li style="margin-bottom: 2px;">${sg}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            <button type="button" class="edit-milestone-btn" style="background: #f8c146; color: #333; border: none; border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer; height: 28px;">Edit</button>
+                            <button type="button" class="remove-milestone-btn" style="background: #dc3545; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer; height: 28px;">Remove</button>
+                        </div>
+                    </div>
+                `;
+                // Remove logic
+                milestoneDiv.querySelector('.remove-milestone-btn').addEventListener('click', function() {
+                    milestoneDiv.remove();
+                    if (milestoneList.children.length === 0) {
+                        timelineEmpty.style.display = '';
+                    }
+                });
+
+                // Edit logic
+                milestoneDiv.querySelector('.edit-milestone-btn').addEventListener('click', function() {
+                    const contentDiv = milestoneDiv.querySelector('.milestone-content');
+                    // Get current values
+                    const currentMainGoal = contentDiv.querySelector('h3').textContent;
+                    const currentSubgoals = Array.from(contentDiv.querySelectorAll('ul li')).map(li => li.textContent);
+
+                    // Replace content with editable fields
+                    contentDiv.innerHTML = `
+                        <input type="text" class="edit-main-goal" value="${currentMainGoal.replace(/"/g, '&quot;')}" style="width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 4px; font-size: 1rem; margin-bottom: 8px; color: #231942; font-weight: 600;">
+                        <div class="edit-subgoals-list" style="margin-bottom: 8px;">
+                            ${currentSubgoals.map((sg, idx) => `
+                                <div class="edit-subgoal-item" style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                                    <input type="text" class="edit-subgoal-input" value="${sg.replace(/"/g, '&quot;')}" style="flex: 1; padding: 7px; border: 1px solid #bbb; border-radius: 4px;">
+                                    <button type="button" class="remove-edit-subgoal-btn" style="background: #dc3545; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; cursor: pointer;">×</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button type="button" class="add-edit-subgoal-btn" style="background: #f8f9fa; color: #666; border: 1px solid #bbb; border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer;">+ Add Subgoal</button>
+                        <div style="margin-top: 10px;">
+                            <button type="button" class="save-edit-milestone-btn" style="background: #2d1a45; color: #fff; border: none; border-radius: 4px; padding: 6px 16px; font-size: 13px; font-weight: 500; cursor: pointer;">Save</button>
+                            <button type="button" class="cancel-edit-milestone-btn" style="background: #bbb; color: #333; border: none; border-radius: 4px; padding: 6px 16px; font-size: 13px; font-weight: 500; cursor: pointer; margin-left: 8px;">Cancel</button>
+                        </div>
+                    `;
+
+                    // Remove subgoal logic in edit mode
+                    function updateEditRemoveBtns() {
+                        const items = contentDiv.querySelectorAll('.edit-subgoal-item');
+                        items.forEach((item, idx) => {
+                            const btn = item.querySelector('.remove-edit-subgoal-btn');
+                            btn.style.display = (items.length > 1) ? 'inline-block' : 'none';
+                        });
+                    }
+                    updateEditRemoveBtns();
+
+                    contentDiv.querySelectorAll('.remove-edit-subgoal-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            btn.parentElement.remove();
+                            updateEditRemoveBtns();
+                        });
+                    });
+
+                    // Add subgoal in edit mode
+                    contentDiv.querySelector('.add-edit-subgoal-btn').addEventListener('click', function() {
+                        const editList = contentDiv.querySelector('.edit-subgoals-list');
+                        const div = document.createElement('div');
+                        div.className = 'edit-subgoal-item';
+                        div.style.display = 'flex';
+                        div.style.alignItems = 'center';
+                        div.style.gap = '6px';
+                        div.style.marginBottom = '6px';
+                        div.innerHTML = `
+                            <input type="text" class="edit-subgoal-input" placeholder="Enter a subgoal..." style="flex: 1; padding: 7px; border: 1px solid #bbb; border-radius: 4px;">
+                            <button type="button" class="remove-edit-subgoal-btn" style="background: #dc3545; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; cursor: pointer;">×</button>
+                        `;
+                        div.querySelector('.remove-edit-subgoal-btn').addEventListener('click', function() {
+                            div.remove();
+                            updateEditRemoveBtns();
+                        });
+                        editList.appendChild(div);
+                        updateEditRemoveBtns();
+                        div.querySelector('.edit-subgoal-input').focus();
+                    });
+
+                    // Add subgoal on Enter key in edit mode
+                    contentDiv.querySelector('.edit-subgoals-list').addEventListener('keydown', function(e) {
+                        if (
+                          e.target.classList.contains('edit-subgoal-input') &&
+                          e.key === 'Enter'
+                        ) {
+                          e.preventDefault();
+                          contentDiv.querySelector('.add-edit-subgoal-btn').click();
+                        }
+                    });
+
+                    // Save edit
+                    contentDiv.querySelector('.save-edit-milestone-btn').addEventListener('click', function() {
+                        const newMainGoal = contentDiv.querySelector('.edit-main-goal').value.trim();
+                        const newSubgoals = Array.from(contentDiv.querySelectorAll('.edit-subgoal-input'))
+                            .map(input => input.value.trim())
+                            .filter(val => val.length > 0);
+
+                        if (!newMainGoal) {
+                            alert('Please enter a main goal.');
+                            return;
+                        }
+
+                        // Replace with updated milestone
+                        contentDiv.innerHTML = `
+                            <h3 style="margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: #231942;">${newMainGoal}</h3>
+                            ${newSubgoals.length > 0 ? `
+                                <ul style="margin: 8px 0 0 18px; padding: 0; color: #666; font-size: 0.97rem;">
+                                    ${newSubgoals.map(sg => `<li style="margin-bottom: 2px;">${sg}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                        `;
+                    });
+
+                    // Cancel edit
+                    contentDiv.querySelector('.cancel-edit-milestone-btn').addEventListener('click', function() {
+                        // Restore previous milestone view
+                        contentDiv.innerHTML = `
+                            <h3 style="margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: #231942;">${currentMainGoal}</h3>
+                            ${currentSubgoals.length > 0 ? `
+                                <ul style="margin: 8px 0 0 18px; padding: 0; color: #666; font-size: 0.97rem;">
+                                    ${currentSubgoals.map(sg => `<li style="margin-bottom: 2px;">${sg}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                        `;
+                    });
+                });
+
+                milestoneList.appendChild(milestoneDiv);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Observe for dark mode and update milestone main goal color
+            function updateMilestoneGoalColors() {
+                const isDark = document.body.classList.contains('dark-mode');
+                document.querySelectorAll('.milestone-main-goal').forEach(el => {
+                    el.style.color = isDark ? '#231942' : '#231942';
+                    el.style.textShadow = isDark
+                        ? '0 1px 2px #fff, 0 0 2px #bbb'
+                        : '0 1px 2px #fff, 0 0 2px #bbb';
+                });
+            }
+            // Initial call
+            updateMilestoneGoalColors();
+            // Listen for dark mode toggle
+            const observer = new MutationObserver(updateMilestoneGoalColors);
+            observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+            // Also call after every milestone render
+            const origRenderMilestone = window.renderMilestone || renderMilestone;
+            window.renderMilestone = function() {
+                origRenderMilestone.apply(this, arguments);
+                updateMilestoneGoalColors();
+            };
         });
     </script>
 </body>
