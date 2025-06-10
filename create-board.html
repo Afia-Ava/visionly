@@ -9,13 +9,19 @@
   <!-- Add back Dancing Script for navbar logo consistency -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <!-- <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-  <!-- Load Firebase configuration and navigation -->
-  <script src="firebase-config.js"></script>
-  <script src="nav-auth.js"></script>
+  <script src="firebase-config.js"></script> -->
+  <!-- Add Supabase JS client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+  <script>
+    // Supabase initialization
+    const SUPABASE_URL = 'https://lnoilkukrrsoumyvhivz.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxub2lsa3VrcnJzb3VteXZoaXZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1MDMxMDcsImV4cCI6MjA2NTA3OTEwN30.2QD9oAN2LDcf0SoV13kvEku4bT_QCyz2HvcarATKg-M';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -477,550 +483,226 @@
   <script src="mouse-sprinkles-script.js"></script>
   
   <script>
-// Example: Image upload and board creation
+// Supabase authentication check and page initialization
 document.addEventListener('DOMContentLoaded', function() {
-    const imageUploadInput = document.getElementById('image-upload');
-    const createBoardBtn = document.getElementById('create-board-btn');
-    
-    // Handle image upload
-    imageUploadInput?.addEventListener('change', async function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            try {
-                console.log('Uploading image...');
-                const uploadResult = await uploadToCloudinary(file);
-                console.log('Image uploaded:', uploadResult);
-                
-                // Store the upload result for later use
-                window.uploadedImage = uploadResult;
-                
-                // Show preview
-                const preview = document.getElementById('image-preview');
-                if (preview) {
-                    preview.src = uploadResult.url;
-                    preview.style.display = 'block';
-                }
-            } catch (error) {
-                alert('Error uploading image: ' + error.message);
-            }
-        }
-    });
-    
-    // Handle board creation
-    createBoardBtn?.addEventListener('click', async function() {
-        const boardName = document.getElementById('board-name').value;
-        const user = firebase.auth().currentUser;
-        
-        if (!user) {
-            alert('Please log in first');
-            return;
-        }
-        
-        if (!boardName) {
-            alert('Please enter a board name');
-            return;
-        }
-        
-        try {
-            // Create the board
-            const boardId = await createVisionBoard(boardName, user.uid);
-            
-            // Add uploaded image if any
-            if (window.uploadedImage) {
-                await addImageToBoard(boardId, window.uploadedImage, { x: 100, y: 100 });
-            }
-            
-            alert('Vision board created successfully!');
-            window.location.href = `edit-board.html?id=${boardId}`;
-        } catch (error) {
-            alert('Error creating board: ' + error.message);
-        }
-    });
+    alert('Supabase is not set up. Please configure your Supabase account and update the SUPABASE_URL and SUPABASE_KEY in this file.');
+    // Optionally, you can redirect to a setup page or disable the UI here.
 });
   </script>
 
-  <!-- Add a small script to handle search display -->
+  <!-- Remove Firebase auth check, replace with Supabase -->
   <script>
-    // Check authentication before loading page content
-    firebase.auth().onAuthStateChanged((user) => {
+    // Supabase auth check
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        // User is not logged in, redirect to login page
         window.location.href = 'login.html';
-        return;
+        return null;
       }
-      
-      // User is logged in, initialize page functionality
-      initializePage();
-    });
-
-    function initializePage() {
-      const searchInput = document.getElementById('unsplash-search');
-      const searchResultsContainer = document.getElementById('search-results-container');
-      const searchResults = document.getElementById('search-results');
-      const previewGrid = document.getElementById('preview-grid');
-      
-      // Array to store selected images
-      const selectedImages = [];
-      
-      // Unsplash API configuration
-      const UNSPLASH_ACCESS_KEY = 'p29nv_Gk3XXhdiyPqaQFBBfmOfzKummKPpxsR73yq6Y'; 
-      const UNSPLASH_API_URL = 'https://api.unsplash.com';
-      
-      // Function to search Unsplash
-      async function searchUnsplash(query) {
-        if (!query.trim()) return;
-        
-        try {
-          const response = await fetch(`${UNSPLASH_API_URL}/search/photos?query=${encodeURIComponent(query)}&per_page=12&client_id=${UNSPLASH_ACCESS_KEY}`);
-          
-          if (!response.ok) {
-            throw new Error('Search failed');
-          }
-          
-          const data = await response.json();
-          displaySearchResults(data.results);
-        } catch (error) {
-          console.error('Search error:', error);
-          // Show fallback images or error message
-          displaySearchError();
-        }
-      }
-      
-      // Function to display search results
-      function displaySearchResults(images) {
-        searchResultsContainer.classList.add('show');
-        
-        if (images.length === 0) {
-          searchResults.innerHTML = `
-            <div style="grid-column: span 2; text-align: center; padding: 40px 0; color: #999;">
-              No images found. Try a different search term.
-            </div>
-          `;
-          return;
-        }
-        
-        searchResults.innerHTML = '';
-        images.forEach(image => {
-          const resultItem = document.createElement('div');
-          resultItem.className = 'search-result-item';
-          resultItem.innerHTML = `
-            <img src="${image.urls.small}" alt="${image.alt_description || image.description || 'Image'}" loading="lazy">
-          `;
-          
-          resultItem.addEventListener('click', function() {
-            addImageToPreview(image.urls.regular, image.alt_description || image.description || 'Vision board image');
-          });
-          
-          searchResults.appendChild(resultItem);
-        });
-      }
-      
-      // Function to display search error
-      function displaySearchError() {
-        searchResultsContainer.classList.add('show');
-        searchResults.innerHTML = `
-          <div style="grid-column: span 2; text-align: center; padding: 40px 0; color: #999;">
-            Unable to load images. Please try again later.
-          </div>
-        `;
-      }
-      
-      // Function to show search results with empty state
-      function showSearchResults() {
-        // Show the results container
-        searchResultsContainer.classList.add('show');
-        
-        // Add empty state message if not already searching
-        if (!searchResults.innerHTML.trim()) {
-          searchResults.innerHTML = `
-            <div style="grid-column: span 2; text-align: center; padding: 40px 0; color: #999;">
-              Search for images to see results here
-            </div>
-          `;
-        }
-      }
-      
-      function updatePreviewGrid() {
-        if (selectedImages.length === 0) {
-          // Show empty state
-          previewGrid.innerHTML = `
-            <div style="grid-column: span 3; text-align: center; padding: 60px 20px; color: #999; background-color: #f5f5f5; border-radius: 8px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" style="margin-bottom: 15px; opacity: 0.5;">
-                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
-              </svg>
-              <p style="margin: 0;">Select images from search results or<br>upload your own to add them to your board</p>
-            </div>
-          `;
-          // Reset to fixed height for empty state
-          previewGrid.style.height = '500px';
-        } else {
-          // Clear the grid
-          previewGrid.innerHTML = '';
-          
-          // Calculate dynamic height based on number of images
-          const imagesPerRow = 3;
-          const numberOfRows = Math.ceil(selectedImages.length / imagesPerRow);
-          const itemHeight = 150; // Approximate height of each grid item including gap
-          const dynamicHeight = Math.max(500, numberOfRows * itemHeight);
-          
-          // Set dynamic height
-          previewGrid.style.height = 'auto';
-          previewGrid.style.minHeight = dynamicHeight + 'px';
-          
-          // Add each image to the grid
-          selectedImages.forEach((image, index) => {
-            const previewItem = document.createElement('div');
-            previewItem.className = 'preview-item';
-            previewItem.style.position = 'relative';
-            
-            previewItem.innerHTML = `
-              <img src="${image.url}" alt="${image.alt || 'Vision board image'}" style="width: 100%; height: 100%; object-fit: cover;">
-              <div style="position: absolute; top: 5px; right: 5px;">
-                <button class="remove-btn" data-index="${index}" style="background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>
-              </div>
-            `;
-            
-            // Add event listener to remove button
-            previewItem.querySelector('.remove-btn').addEventListener('click', function() {
-              const idx = parseInt(this.getAttribute('data-index'));
-              selectedImages.splice(idx, 1);
-              window.selectedImages = selectedImages; // Update global array
-              updatePreviewGrid();
-            });
-            
-            previewGrid.appendChild(previewItem);
-          });
-        }
-        
-        // Always update the global selectedImages
-        window.selectedImages = selectedImages;
-      }
-      
-      // Function to add image to the preview grid
-      function addImageToPreview(imageUrl, altText, file = null) {
-        selectedImages.push({
-          url: imageUrl,
-          alt: altText,
-          file: file
-        });
-        
-        // Also update the global selectedImages for the save function
-        window.selectedImages = selectedImages;
-        
-        updatePreviewGrid();
-      }
-      
-      // File upload functionality
-      const uploadButton = document.getElementById('upload-button');
-      const fileInput = document.getElementById('file-input');
-      const uploadArea = document.querySelector('.upload-area');
-      
-      // Handle upload button click
-      uploadButton.addEventListener('click', function() {
-        fileInput.click();
-      });
-      
-      // Handle file selection
-      fileInput.addEventListener('change', function(e) {
-        const files = Array.from(e.target.files);
-        files.forEach(file => {
-          if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-              addImageToPreview(e.target.result, file.name, file);
-            };
-            reader.readAsDataURL(file);
-          }
-        });
-        fileInput.value = '';
-      });
-      
-      // Handle drag and drop
-      uploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        uploadArea.style.backgroundColor = '#f0f0f0';
-        uploadArea.style.borderColor = '#007bff';
-      });
-      
-      uploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        uploadArea.style.backgroundColor = '';
-        uploadArea.style.borderColor = '#ddd';
-      });
-      
-      uploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        uploadArea.style.backgroundColor = '';
-        uploadArea.style.borderColor = '#ddd';
-        
-        const files = Array.from(e.dataTransfer.files);
-        files.forEach(file => {
-          if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-              addImageToPreview(e.target.result, file.name, file);
-            };
-            reader.readAsDataURL(file);
-          }
-        });
-      });
-      
-      // Search input event listeners
-      let searchTimeout;
-      searchInput.addEventListener('input', function() {
-        const query = this.value.trim();
-        
-        // Clear previous timeout
-        clearTimeout(searchTimeout);
-        
-        if (query.length > 2) {
-          // Debounce search by 500ms
-          searchTimeout = setTimeout(() => {
-            searchUnsplash(query);
-          }, 500);
-        } else if (query.length === 0) {
-          // Clear results if input is empty
-          searchResults.innerHTML = `
-            <div style="grid-column: span 2; text-align: center; padding: 40px 0; color: #999;">
-              Search for images to see results here
-            </div>
-          `;
-        }
-      });
-      
-      // Listen for search input focus
-      searchInput.addEventListener('focus', showSearchResults);
-      
-      // Handle Enter key press
-      searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          const query = this.value.trim();
-          if (query) {
-            searchUnsplash(query);
-          }
-        }
-      });
-      
-      // Handle search icon click
-      searchInput.parentNode.querySelector('svg').addEventListener('click', function() {
-        const query = searchInput.value.trim();
-        if (query) {
-          searchUnsplash(query);
-        } else {
-          searchInput.focus();
-          showSearchResults();
-        }
-      });      
-      updatePreviewGrid();
+      return user;
     }
+    checkAuth().then(user => {
+      if (user) initializePage();
+    });
   </script>
 
+  <script src="dark-mode-toggle.js"></script>
   <script>
-// Board creation and saving functionality with better error handling
-document.addEventListener('DOMContentLoaded', function() {
-    // Get UI elements
-    const boardTitleInput = document.getElementById('board-title');
-    const boardCategorySelect = document.getElementById('board-category');
-    const boardDescriptionTextarea = document.getElementById('board-description');
-    const saveBoardBtn = document.getElementById('save-board-btn');
-    
-    // Make selectedImages globally accessible
-    window.selectedImages = [];
-    
-    // Handle save board button click
-    saveBoardBtn.addEventListener('click', async function() {
-        try {
-            console.log('Save button clicked');
-            
-            const user = firebase.auth().currentUser;
-            console.log('Current user:', user);
-            
-            if (!user) {
-                alert('Please log in first');
-                return;
-            }
-            
-            const boardTitle = boardTitleInput.value.trim();
-            const boardCategory = boardCategorySelect.value;
-            const boardDescription = boardDescriptionTextarea.value.trim();
-            
-            // Collect goals
-            const goalInputs = document.querySelectorAll('#goals-container input[type="text"]');
-            const goals = Array.from(goalInputs)
-                .map(input => input.value.trim())
-                .filter(goal => goal.length > 0);
-            
-            if (!boardTitle) {
-                alert('Please enter a board title');
-                return;
-            }
-            
-            console.log('Selected images count:', window.selectedImages ? window.selectedImages.length : 0);
-            console.log('Selected images:', window.selectedImages);
-            console.log('Goals:', goals);
-            
-            if (!window.selectedImages || window.selectedImages.length === 0) {
-                alert('Please add at least one image to your board');
-                return;
-            }
-            
-            try {
-                console.log('Creating vision board...');
-                saveBoardBtn.textContent = 'Saving...';
-                saveBoardBtn.disabled = true;
-                
-                // Create the vision board
-                const boardId = await createVisionBoard(boardTitle, user.uid, {
-                    category: boardCategory,
-                    description: boardDescription,
-                    goals: goals
-                });
-                
-                console.log('Board created with ID:', boardId);
-                
-                // Process images
-                for (let i = 0; i < window.selectedImages.length; i++) {
-                    const image = window.selectedImages[i];
-                    
-                    if (image.file) {
-                        // Upload file to Cloudinary
-                        console.log('Uploading image to Cloudinary:', image.file.name);
-                        const uploadResult = await uploadToCloudinary(image.file);
-                        
-                        await addImageToBoard(boardId, uploadResult, {
-                            x: 50 + (i * 20),
-                            y: 50 + (i * 20)
-                        });
-                    } else {
-                        // Unsplash image - store URL directly
-                        const imageData = {
-                            url: image.url,
-                            publicId: `unsplash_${Date.now()}_${i}`,
-                            width: 400,
-                            height: 300
-                        };
-                        
-                        await addImageToBoard(boardId, imageData, {
-                            x: 50 + (i * 20),
-                            y: 50 + (i * 20)
-                        });
-                    }
-                }
-                
-                alert('Vision board saved successfully!');
-                window.location.href = 'boards.html';
-                
-            } catch (error) {
-                console.error('Error creating vision board:', error);
-                alert('Error saving vision board: ' + error.message);
-                saveBoardBtn.textContent = 'Save Board';
-                saveBoardBtn.disabled = false;
-            }
-        } catch (error) {
-            console.error('Unexpected error:', error);
-            alert('An unexpected error occurred. Please try again later.');
-            saveBoardBtn.textContent = 'Save Board';
-            saveBoardBtn.disabled = false;
-        }
+  // Cloudinary configuration
+  const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dsf1mbhkh/upload';
+  const CLOUDINARY_UPLOAD_PRESET = 'Visionly';
+
+  function addImageToPreview(imageUrl, altText, file = null) {
+    if (!window.selectedImages) window.selectedImages = [];
+    window.selectedImages.push({
+      url: imageUrl,
+      alt: altText,
+      file: file
     });
-    
-    // Goals functionality
-    const addGoalBtn = document.getElementById('add-goal-btn');
-    const goalsContainer = document.getElementById('goals-container');
-    
-    // Add new goal input
-    addGoalBtn.addEventListener('click', function() {
-        const goalItem = document.createElement('div');
-        goalItem.className = 'goal-item';
-        goalItem.style.cssText = 'display: flex; align-items: center; gap: 6px; margin-bottom: 6px;';
-        
-        goalItem.innerHTML = `
-            <input type="text" placeholder="Enter another goal..." style="flex: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 0; font-size: 13px;">
-            <button type="button" class="remove-goal-btn" style="background: #dc3545; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer;">×</button>
+    setTimeout(updatePreviewGrid, 0);
+  }
+
+  function updatePreviewGrid() {
+    const previewGrid = document.getElementById('preview-grid');
+    const images = window.selectedImages || [];
+    if (!previewGrid) return;
+    if (images.length === 0) {
+      previewGrid.innerHTML = `
+        <div style="grid-column: span 3; text-align: center; padding: 60px 20px; color: #999; background-color: #f5f5f5; border-radius: 8px; height: 100%;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" style="margin-bottom: 15px; opacity: 0.5;">
+            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+            <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+          </svg>
+          <p style="margin: 0;">Select images from search results or<br>upload your own to add them to your board</p>
+        </div>
+      `;
+      previewGrid.style.height = '500px';
+    } else {
+      previewGrid.innerHTML = '';
+      images.forEach((image, index) => {
+        const previewItem = document.createElement('div');
+        previewItem.className = 'preview-item';
+        previewItem.style.position = 'relative';
+        previewItem.innerHTML = `
+          <img src="${image.url}" alt="${image.alt || 'Vision board image'}" style="width: 100%; height: 100%; object-fit: cover;">
+          <div style="position: absolute; top: 5px; right: 5px;">
+            <button class="remove-btn" data-index="${index}" style="background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>
+          </div>
         `;
-        
-        goalsContainer.appendChild(goalItem);
-        
-        // Add remove functionality
-        goalItem.querySelector('.remove-goal-btn').addEventListener('click', function() {
-            goalItem.remove();
-            updateRemoveButtons();
+        previewItem.querySelector('.remove-btn').addEventListener('click', function() {
+          window.selectedImages.splice(index, 1);
+          updatePreviewGrid();
         });
-        
-        // Focus on the new input
-        goalItem.querySelector('input').focus();
-        
-        updateRemoveButtons();
-    });
-    
-    // Function to show/hide remove buttons
-    function updateRemoveButtons() {
-        const goalItems = document.querySelectorAll('.goal-item');
-        goalItems.forEach((item, index) => {
-            const removeBtn = item.querySelector('.remove-goal-btn');
-            if (goalItems.length > 1) {
-                removeBtn.style.display = 'block';
-            } else {
-                removeBtn.style.display = 'none';
-            }
-        });
+        previewGrid.appendChild(previewItem);
+      });
+      previewGrid.style.height = 'auto';
+      previewGrid.style.minHeight = (Math.max(500, Math.ceil(images.length / 3) * 150)) + 'px';
     }
-    
-    // Add remove functionality to the initial goal item
-    document.querySelector('.remove-goal-btn').addEventListener('click', function() {
-        const goalItem = this.closest('.goal-item');
-        goalItem.remove();
-        updateRemoveButtons();
+  }
+
+  async function uploadToCloudinary(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+    const res = await fetch(CLOUDINARY_URL, {
+      method: 'POST',
+      body: formData
     });
+    const data = await res.json();
+    if (data.secure_url) {
+      return data.secure_url;
+    } else {
+      throw new Error('Cloudinary upload failed: ' + (data.error && data.error.message ? data.error.message : 'Unknown error'));
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Fix: ensure upload button triggers file input
+    const fileInput = document.getElementById('file-input');
+    const uploadButton = document.getElementById('upload-button');
+    if (uploadButton && fileInput) {
+      uploadButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        fileInput.click();
+      });
+    }
+    if (fileInput) {
+      fileInput.addEventListener('change', async function(e) {
+        const files = Array.from(e.target.files);
+        for (const file of files) {
+          if (file.type.startsWith('image/')) {
+            try {
+              const imageUrl = await uploadToCloudinary(file);
+              addImageToPreview(imageUrl, file.name, null);
+            } catch (err) {
+              alert('Upload failed: ' + err.message);
+            }
+          }
+        }
+        this.value = '';
+      });
+    }
+    setTimeout(updatePreviewGrid, 0);
   });
   </script>
 
+  <!-- This will enable Unsplash image search and add images to the preview grid -->
   <script>
-// Authentication functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const userStatus = document.getElementById('user-status');
-    const quickLoginBtn = document.getElementById('quick-login');
-    
-    // Quick login for testing
-    quickLoginBtn.addEventListener('click', async () => {
-        try {
-            const email = 'test@visionly.com';
-            const password = 'test123456';
-            
-            // Try to sign in, if fails then create account
-            try {
-                await firebase.auth().signInWithEmailAndPassword(email, password);
-                console.log('Signed in successfully');
-            } catch (error) {
-                if (error.code === 'auth/user-not-found') {
-                    await firebase.auth().createUserWithEmailAndPassword(email, password);
-                    console.log('Account created and signed in');
-                } else {
-                    throw error;
-                }
+    document.addEventListener('DOMContentLoaded', function() {
+      const unsplashSearchInput = document.getElementById('unsplash-search');
+      const searchResultsContainer = document.getElementById('search-results-container');
+      const searchResultsGrid = document.getElementById('search-results');
+      const UNSPLASH_ACCESS_KEY = 'p29nv_Gk3XXhdiyPqaQFBBfmOfzKummKPpxsR73yq6Y';
+
+      if (!unsplashSearchInput || !searchResultsContainer || !searchResultsGrid) return;
+
+      unsplashSearchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        if (query.length < 3) {
+          searchResultsContainer.classList.remove('show');
+          searchResultsGrid.innerHTML = '';
+          return;
+        }
+        searchResultsContainer.classList.add('show');
+        searchResultsGrid.innerHTML = '<p style="grid-column: span 2; text-align: center; color: #999;">Searching...</p>';
+
+        // Call Unsplash API to search for images
+        fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&client_id=${UNSPLASH_ACCESS_KEY}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.results && data.results.length > 0) {
+              searchResultsGrid.innerHTML = '';
+              data.results.forEach(image => {
+                const item = document.createElement('div');
+                item.className = 'search-result-item';
+                item.style.position = 'relative';
+                item.innerHTML = `
+                  <img src="${image.urls.small}" alt="${image.alt_description || 'Unsplash image'}" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+                `;
+                // Add click event to the image (anywhere in the item)
+                item.addEventListener('click', function() {
+                  addImageToPreview(image.urls.regular, image.alt_description || 'Unsplash image', null);
+                  // Do NOT hide the search results container, so user can select more images
+                  // searchResultsContainer.classList.remove('show');
+                });
+                searchResultsGrid.appendChild(item);
+              });
+            } else {
+              searchResultsGrid.innerHTML = '<p style="grid-column: span 2; text-align: center; color: #999;">No results found</p>';
             }
-        } catch (error) {
-            console.error('Authentication error:', error);
-            userStatus.textContent = 'Authentication failed: ' + error.message;
-        }
+          })
+          .catch(err => {
+            console.error('Error fetching Unsplash images:', err);
+            searchResultsGrid.innerHTML = '<p style="grid-column: span 2; text-align: center; color: #999;">Error fetching results</p>';
+          });
+      });
     });
-    
-    // Monitor authentication state
-    firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            userStatus.textContent = `✅ Logged in as: ${user.email} (${user.uid})`;
-            quickLoginBtn.style.display = 'none';
-            console.log('User authenticated:', user.uid);
-        } else {
-            userStatus.textContent = '❌ Not logged in - Click Quick Login to test';
-            quickLoginBtn.style.display = 'inline-block';
-        }
-    });
-});
   </script>
-  
-  <script src="dark-mode-toggle.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add Goal button functionality
+    const addGoalBtn = document.getElementById('add-goal-btn');
+    const goalsContainer = document.getElementById('goals-container');
+    if (addGoalBtn && goalsContainer) {
+      addGoalBtn.addEventListener('click', function() {
+        const goalItem = document.createElement('div');
+        goalItem.className = 'goal-item';
+        goalItem.style.display = 'flex';
+        goalItem.style.alignItems = 'center';
+        goalItem.style.gap = '6px';
+        goalItem.style.marginBottom = '6px';
+        goalItem.innerHTML = `
+          <input type="text" placeholder="What do you want to achieve?" style="flex: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 0; font-size: 13px;">
+          <button type="button" class="remove-goal-btn" style="background: #dc3545; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer;">×</button>
+        `;
+        // Show remove button for all but the first goal
+        goalItem.querySelector('.remove-goal-btn').addEventListener('click', function() {
+          goalItem.remove();
+        });
+        goalsContainer.appendChild(goalItem);
+        // Show remove button for all goal items except the first one
+        const allGoalItems = goalsContainer.querySelectorAll('.goal-item');
+        allGoalItems.forEach((item, idx) => {
+          const btn = item.querySelector('.remove-goal-btn');
+          btn.style.display = (allGoalItems.length > 1) ? 'inline-block' : 'none';
+        });
+      });
+
+      // Initial remove button logic for the first goal item
+      const firstGoalItem = goalsContainer.querySelector('.goal-item');
+      if (firstGoalItem) {
+        const removeBtn = firstGoalItem.querySelector('.remove-goal-btn');
+        removeBtn.addEventListener('click', function() {
+          firstGoalItem.remove();
+        });
+      }
+    }
+
+    setTimeout(updatePreviewGrid, 0);
+  });
+  </script>
+
 </body>
 </html>
