@@ -483,11 +483,11 @@
   <script src="mouse-sprinkles-script.js"></script>
   
   <script>
-// Supabase authentication check and page initialization
-document.addEventListener('DOMContentLoaded', function() {
-    alert('Supabase is not set up. Please configure your Supabase account and update the SUPABASE_URL and SUPABASE_KEY in this file.');
-    // Optionally, you can redirect to a setup page or disable the UI here.
-});
+  // Supabase authentication check and page initialization
+  // REMOVE the alert below, Supabase is already configured
+  // document.addEventListener('DOMContentLoaded', function() {
+  //     alert('Supabase is not set up. Please configure your Supabase account and update the SUPABASE_URL and SUPABASE_KEY in this file.');
+  // });
   </script>
 
   <!-- Remove Firebase auth check, replace with Supabase -->
@@ -504,6 +504,66 @@ document.addEventListener('DOMContentLoaded', function() {
     checkAuth().then(user => {
       if (user) initializePage();
     });
+
+    // Add a minimal initializePage function if missing
+    function initializePage() {
+      // Enable Save Board button
+      const saveBtn = document.getElementById('save-board-btn');
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Board';
+        saveBtn.onclick = async function() {
+          // Gather board data
+          const title = document.getElementById('board-title').value.trim();
+          const category = document.getElementById('board-category').value;
+          const description = document.getElementById('board-description').value.trim();
+          const goals = Array.from(document.querySelectorAll('#goals-container input[type="text"]'))
+            .map(input => input.value.trim()).filter(Boolean);
+          const images = (window.selectedImages || []).map(img => img.url);
+
+          if (!title) {
+            alert('Please enter a board title.');
+            return;
+          }
+          if (!category) {
+            alert('Please select a category.');
+            return;
+          }
+          if (images.length === 0) {
+            alert('Please add at least one image.');
+            return;
+          }
+
+          // Get the current user (handle possible null)
+          const { data: userData, error: userError } = await supabase.auth.getUser();
+          if (userError || !userData || !userData.user) {
+            alert('User not authenticated. Please log in again.');
+            window.location.href = 'login.html';
+            return;
+          }
+
+          // Save to Supabase (table: vision_boards)
+          const { error } = await supabase
+            .from('vision_boards')
+            .insert([{
+              title,
+              category,
+              description,
+              goals,
+              images,
+              user_id: userData.user.id,
+              created_at: new Date().toISOString()
+            }]);
+
+          if (error) {
+            alert('Failed to save board: ' + error.message + '\n\nMake sure you have created the "vision_boards" table in your Supabase project with the correct columns and enabled Row Level Security (RLS) with appropriate policies.');
+          } else {
+            alert('Board saved!');
+            // Optionally redirect or clear form
+          }
+        };
+      }
+    }
   </script>
 
   <script src="dark-mode-toggle.js"></script>
