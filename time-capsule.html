@@ -89,9 +89,21 @@
             background-color: #2d1549 !important;
             border-color: #3a2259 !important;
         }
-        
-        body.dark-mode .capsule-date {
+          body.dark-mode .capsule-date {
             color: #b990ff !important;
+        }
+        
+        /* Add some additional light mode styles */
+        body:not(.dark-mode) .capsule-date {
+            color: #8b5fbf;
+        }
+        
+        body:not(.dark-mode) .capsule-status {
+            color: #8b5fbf;
+        }
+        
+        body:not(.dark-mode) .status-indicator {
+            background-color: #8b5fbf;
         }
         
         .time-capsule-container {
@@ -99,78 +111,78 @@
             margin: 100px auto 50px;
             padding: 0 20px;
         }
-        
-        .header-section {
-            margin-bottom: 50px;
-            text-align: center;
+          .header-section {
+            margin: 100px 0 40px;
+            text-align: left;
         }
         
         h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #8b5fbf;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             font-weight: 600;
         }
         
         .tagline {
-            font-size: 1.2rem;
-            color: #a47dd4;
-            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #666;
+            margin-top: 0;
+            margin-bottom: 15px;
             font-weight: 500;
         }
         
         .description {
             color: #b0b0b0;
-            max-width: 600px;
-            margin: 0 auto 30px;
+            max-width: 800px;
+            margin: 0 0 30px;
             line-height: 1.7;
             font-size: 1rem;
+            text-align: left;
         }
-        
-        .capsule-form-container {
+          .capsule-form-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 40px;
             margin-bottom: 80px;
         }
-        
-        .input-section {
+          .input-section {
             background-color: rgba(28, 15, 40, 0.7);
             border-radius: 16px;
-            padding: 30px;
+            padding: 25px;
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden; /* Keep the background contained */
+            box-sizing: border-box; /* Ensures padding is included in the element's dimensions */
         }
         
-        /* Background hourglass for the text input area - updating this to make it more visible */
-        .input-section::before {
+        /* Hourglass icon for the form header - right aligned */
+        .input-section::after {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            /* Using a simpler SVG to avoid potential URL encoding issues with Git */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'%3E%3Cpath d='M30 10H70V30C70 40 60 40 50 50C40 60 30 60 30 70V90H70V70C70 60 60 60 50 50C40 40 30 40 30 30V10Z' stroke='%238B5FBF' stroke-width='3' fill='rgba(139,95,179,0.1)'/%3E%3C/svg%3E");
+            top: 25px; /* Align with the header text */
+            right: 25px; /* Position on the right side with padding */
+            width: 40px; /* Fixed width */
+            height: 40px; /* Fixed height */
+            /* Using a lighter purple color for better visibility */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'%3E%3Cpath d='M30 10H70V30C70 40 60 40 50 50C40 60 30 60 30 70V90H70V70C70 60 60 60 50 50C40 40 30 40 30 30V10Z' stroke='%23C9A9FF' stroke-width='3' fill='rgba(201,169,255,0.3)'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: center;
-            background-size: 220px 220px;
-            opacity: 0.4;
+            background-size: contain;
+            opacity: 0.8; /* Higher opacity for better visibility */
             pointer-events: none;
             animation: float 4s ease-in-out infinite;
-            z-index: 0;
+            z-index: 2; /* Position above the background but below form header text */
         }
         
-        body:not(.dark-mode) .input-section::before {
-            opacity: 0.15; /* Increased opacity for light mode too */
+        body:not(.dark-mode) .input-section::after {
+            opacity: 0.6; /* Slightly lower opacity for light mode but still visible */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'%3E%3Cpath d='M30 10H70V30C70 40 60 40 50 50C40 60 30 60 30 70V90H70V70C70 60 60 60 50 50C40 40 30 40 30 30V10Z' stroke='%238B5FBF' stroke-width='3' fill='rgba(139,95,179,0.35)'/%3E%3C/svg%3E");
         }
-        
-        textarea {
-            width: 100%;
-            height: 320px; /* Taller textarea */
-            padding: 18px; /* Increased padding */
+          textarea {
+            width: calc(100% - 2px); /* Adjusted to account for the border width */
+            height: 200px; /* Adjusted height */
+            padding: 18px 18px 40px 18px; /* Increased bottom padding to match the red line in the image */
             border: 1px solid #e2d5ff;
             border-radius: 12px;
             font-family: 'Inter', sans-serif;
@@ -183,6 +195,8 @@
             position: relative;
             z-index: 1; /* Position above the background image */
             color: #e0e0e0;
+            box-sizing: border-box; /* Ensures padding is included in width calculation */
+            margin: 0; /* No margin */
         }
         
         body:not(.dark-mode) textarea {
@@ -197,10 +211,16 @@
         }
         
         .form-header {
-            margin-bottom: 20px;
+            margin-bottom: 18px; /* Adjusted to match textarea padding */
             color: #e0e0e0;
             font-size: 1.2rem;
             font-weight: 500;
+            text-align: left; /* Explicitly left-align the header */
+            position: relative; /* Position relative for z-indexing */
+            z-index: 3; /* Place above the hourglass */
+            display: flex;
+            justify-content: space-between; /* Push the hourglass to the right */
+            align-items: center;
         }
         
         body:not(.dark-mode) .form-header {
@@ -260,6 +280,10 @@
             flex: 1;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         
         body:not(.dark-mode) .delivery-option {
@@ -275,6 +299,28 @@
         body:not(.dark-mode) .delivery-option.selected {
             background-color: #f0e6ff;
             border-color: #8b5fbf;
+        }
+        
+        .icon-container {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        
+        .option-icon {
+            color: #a47dd4;
+            transition: all 0.2s;
+        }
+        
+        .delivery-option.selected .option-icon {
+            color: #c9a9ff;
+        }
+        
+        body:not(.dark-mode) .delivery-option.selected .option-icon {
+            color: #8b5fbf;
         }
         
         .delivery-option p {
@@ -355,13 +401,13 @@
             color: #8b5fbf;
             font-size: 1.5rem;
         }
-        
+
         .capsules-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 25px;
         }
-        
+
         .capsule-card {
             background-color: rgba(28, 15, 40, 0.7);
             border-radius: 12px;
@@ -371,11 +417,13 @@
             height: 150px;
             display: flex;
             flex-direction: column;
+            border: 1px solid #3a2259;
         }
         
         body:not(.dark-mode) .capsule-card {
             background-color: rgba(255, 255, 255, 0.8);
             box-shadow: 0 4px 15px rgba(139, 95, 179, 0.1);
+            border: 1px solid #e2d5ff;
         }
         
         .capsule-card:hover {
@@ -388,14 +436,14 @@
             font-weight: 600;
             margin-bottom: 10px;
         }
-        
-        .capsule-snippet {
+          .capsule-snippet {
             color: #e0e0e0;
             font-size: 0.95rem;
             flex: 1;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 4;
+            line-clamp: 4;
             -webkit-box-orient: vertical;
         }
         
@@ -424,6 +472,11 @@
             color: #a47dd4;
             padding: 40px 0;
             font-style: italic;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            grid-column: 1 / -1; /* Span all columns in grid */
         }
         
         /* Animation for the time capsule launch */
@@ -436,13 +489,12 @@
         .floating {
             animation: float 3s ease-in-out infinite;
         }
-        
-        @media (max-width: 900px) {
+          @media (max-width: 900px) {
             .capsule-form-container {
                 grid-template-columns: 1fr;
             }
             
-            .time-capsule-container {
+            main {
                 padding: 0 15px;
                 margin-top: 90px;
             }
@@ -454,28 +506,129 @@
             .tagline {
                 font-size: 1.1rem;
             }
-        }
-    </style>
+        }    </style>
 </head>
-<body class="dark-mode">
-    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
-        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+<body>
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; text-decoration: none; color: #333; transition: color 0.3s ease;">Visionly</a>
         <div style="display: flex; align-items: center;">
-            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
-            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
-            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
-            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
-            <a href="elevate.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Elevate</a>
+            <a href="index.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Create</a>
+            <a href="boards.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Progress</a>
+            <a href="elevate.html" style="text-decoration: none; margin: 0 12px; margin-right: 15px; color: #333; transition: color 0.3s ease;">Elevate</a>
             <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
         </div>
     </nav>
-
-    <div class="time-capsule-container">
-        <div class="header-section">
-            <h1>Future Note</h1>
-            <p class="tagline">Send a message to your future self</p>
-            <p class="description">Leave a note, reflection, or words of encouragement for your future self. Choose when you want to receive it, and on that day, your message will find its way back to you.</p>
+    
+    <!-- Time Capsule Confirmation Modal -->
+    <div id="capsule-confirmation-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="background-color: #2d1549; width: 90%; max-width: 550px; border-radius: 16px; padding: 30px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" class="confirmation-modal-content">
+            <div style="position: absolute; top: 15px; right: 15px; cursor: pointer;" onclick="document.getElementById('capsule-confirmation-modal').style.display = 'none';">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'%3E%3Cpath d='M30 10H70V30C70 40 60 40 50 50C40 60 30 60 30 70V90H70V70C70 60 60 60 50 50C40 40 30 40 30 30V10Z' stroke='%23C9A9FF' stroke-width='3' fill='rgba(201,169,255,0.3)'/%3E%3C/svg%3E" style="width: 80px; height: 80px; margin-bottom: 10px; animation: float 3s ease-in-out infinite;" alt="Time Capsule">
+                <h2 style="color: #e0e0e0; margin-top: 10px;">Time Capsule Created!</h2>
+            </div>
+            <div style="color: #b0b0b0; line-height: 1.6; margin-bottom: 20px;">
+                <p id="capsule-confirmation-message" style="text-align: center; font-size: 1.1rem;"></p>
+            </div>
+            <div style="border-top: 1px solid #3a2259; padding-top: 20px; margin-top: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <span style="color: #a47dd4;">Delivery Date:</span>
+                    <span id="confirm-delivery-date" style="color: #e0e0e0; font-weight: 500;"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <span style="color: #a47dd4;">Delivery Method:</span>
+                    <span id="confirm-delivery-method" style="color: #e0e0e0; font-weight: 500;"></span>
+                </div>
+                <div id="confirm-email-container" style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <span style="color: #a47dd4;">Email Address:</span>
+                    <span id="confirm-email" style="color: #e0e0e0; font-weight: 500;"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <span style="color: #a47dd4;">Account Connected:</span>
+                    <span id="confirm-account-connected" style="color: #e0e0e0; font-weight: 500;"></span>
+                </div>
+                <div style="background-color: rgba(139, 95, 179, 0.1); padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #8b5fbf;">
+                    <p style="margin: 0; color: #e0e0e0; font-size: 0.95rem;">
+                        <strong style="color: #b990ff;">How it works:</strong> Your message is securely stored in our database. On <span id="delivery-date-inline" style="font-weight: 500;"></span>, our automated system will deliver your message to you via the selected method. You'll receive a notification in the app and can view your delivered message in the time capsule section.
+                    </p>
+                </div>
+                <div style="margin-top: 20px;">
+                    <p style="color: #b0b0b0; font-size: 0.9rem; text-align: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 5px;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        You can view all your pending time capsules below
+                    </p>
+                </div>
+            </div>
+            <button style="width: 100%; padding: 14px; background-color: #8b5fbf; color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 500; cursor: pointer; margin-top: 20px;" onclick="document.getElementById('capsule-confirmation-modal').style.display = 'none';">
+                Got it!
+            </button>
         </div>
+    </div>
+    
+    <!-- Account Verification Modal -->
+    <div id="account-verification-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="background-color: #2d1549; width: 90%; max-width: 500px; border-radius: 16px; padding: 25px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" class="verification-modal-content">
+            <div style="position: absolute; top: 15px; right: 15px; cursor: pointer;" onclick="document.getElementById('account-verification-modal').style.display = 'none';">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#b990ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 15px;">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7" r="4"></circle>
+                    <line x1="18" y1="8" x2="23" y2="13"></line>
+                    <line x1="23" y1="8" x2="18" y2="13"></line>
+                </svg>
+                <h2 style="color: #e0e0e0; margin-top: 5px;">Account Verification Needed</h2>
+            </div>
+            <div style="color: #b0b0b0; line-height: 1.6; margin-bottom: 20px; text-align: center;">
+                <p>To ensure you receive your time capsule in the future, we need to verify your account.</p>
+            </div>
+            <div id="verification-options" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                <button id="verify-email-btn" style="width: 100%; padding: 14px; background-color: #8b5fbf; color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    Verify Email
+                </button>
+                <button id="complete-profile-btn" style="width: 100%; padding: 14px; background-color: transparent; color: #8b5fbf; border: 1px solid #8b5fbf; border-radius: 10px; font-size: 1rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Complete Profile
+                </button>
+            </div>
+            <p style="color: #b0b0b0; font-size: 0.85rem; text-align: center; margin-top: 20px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 5px;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 16v-4"></path>
+                    <path d="M12 8h.01"></path>
+                </svg>
+                This ensures your time capsule will be delivered to you in the future
+            </p>
+        </div>
+    </div>
+    
+    <main style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <header style="margin: 100px 0 40px; text-align: left;">
+            <h1 style="font-size: 2rem; font-weight: bold; color: #333; margin-bottom: 5px;">Future Note</h1>
+            <p style="color: #666; margin-top: 0; margin-bottom: 15px;">Send a message to your future self</p>
+            <p class="description" style="text-align: left; margin-left: 0; max-width: 800px;">Leave a note, reflection, or words of encouragement for your future self. Choose when you want to receive it, and on that day, your message will find its way back to you.</p>        </header>
         
         <form id="time-capsule-form">
             <div class="capsule-form-container">
@@ -491,14 +644,24 @@
                     </div>
                     
                     <div class="option-group">
-                        <label>How would you like to receive it?</label>
-                        <div class="delivery-options">
+                        <label>How would you like to receive it?</label>                        <div class="delivery-options">
                             <div class="delivery-option selected" data-option="app">
-                                <img src="assets/app-icon.png" alt="In App" width="28" height="28" onerror="this.src='https://via.placeholder.com/28x28/8b5fbf/ffffff?text=A'">
+                                <div class="icon-container">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="option-icon">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                        <path d="M8.5 8.5L15.5 15.5"></path>
+                                    </svg>
+                                </div>
                                 <p>In App</p>
                             </div>
                             <div class="delivery-option" data-option="email">
-                                <img src="assets/email-icon.png" alt="Email" width="28" height="28" onerror="this.src='https://via.placeholder.com/28x28/8b5fbf/ffffff?text=@'">
+                                <div class="icon-container">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="option-icon">
+                                        <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+                                        <path d="M22 4l-10 8L2 4"></path>
+                                    </svg>
+                                </div>
                                 <p>Email</p>
                             </div>
                         </div>
@@ -518,12 +681,10 @@
         </form>
         
         <div class="divider"></div>
-        
-        <h2 class="time-capsules-header">Your Time Capsules</h2>
+          <h2 class="time-capsules-header">Your Time Capsules</h2>
         <div class="capsules-grid" id="capsules-list">
             <!-- Capsules will be loaded here -->
         </div>
-    </div>
 
     <script src="firebase-config.js"></script>
     <script>
@@ -562,45 +723,292 @@
                 document.querySelector('[data-option="app"]').classList.add('selected');
             });
             
+            // Create a toast notification function
+            function showToast(message, type = 'success') {
+                // Remove any existing toast
+                const existingToast = document.querySelector('.toast-notification');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+                
+                // Create toast element
+                const toast = document.createElement('div');
+                toast.className = `toast-notification ${type}`;
+                toast.innerHTML = message;
+                
+                // Style the toast
+                Object.assign(toast.style, {
+                    position: 'fixed',
+                    bottom: '30px',
+                    right: '30px',
+                    padding: '15px 25px',
+                    borderRadius: '10px',
+                    backgroundColor: type === 'success' ? '#3a2259' : '#e74c3c',
+                    color: 'white',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    zIndex: '9999',
+                    transition: 'all 0.3s ease',
+                    opacity: '0',
+                    fontFamily: 'Inter, sans-serif'
+                });
+                
+                // Add toast to body
+                document.body.appendChild(toast);
+                
+                // Trigger animation
+                setTimeout(() => {
+                    toast.style.opacity = '1';
+                }, 10);
+                
+                // Remove toast after 5 seconds
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }, 5000);
+            }
+            
+            // Function to check account verification status
+            function checkAccountVerification() {
+                const user = firebase.auth().currentUser;
+                
+                if (user) {
+                    // Check if email is verified
+                    if (!user.emailVerified) {
+                        return {verified: false, reason: 'email'};
+                    }
+                    
+                    // Check if profile is complete (displayName is set)
+                    if (!user.displayName) {
+                        return {verified: false, reason: 'profile'};
+                    }
+                    
+                    return {verified: true};
+                }
+                
+                return {verified: false, reason: 'not_logged_in'};
+            }
+            
+            // Function to handle account verification
+            function handleVerification() {
+                const user = firebase.auth().currentUser;
+                
+                document.getElementById('verify-email-btn').addEventListener('click', function() {
+                    if (user) {
+                        user.sendEmailVerification()
+                            .then(() => {
+                                showToast('Verification email sent! Please check your inbox.', 'success');
+                                document.getElementById('account-verification-modal').style.display = 'none';
+                            })
+                            .catch(error => {
+                                showToast('Error sending verification email. Please try again.', 'error');
+                            });
+                    }
+                });
+                
+                document.getElementById('complete-profile-btn').addEventListener('click', function() {
+                    document.getElementById('account-verification-modal').style.display = 'none';
+                    // Redirect to profile page
+                    setTimeout(() => {
+                        window.location.href = 'profile.html';
+                    }, 300);
+                });
+            }
+            
+            // Function to show confirmation modal
+            function showConfirmationModal(message, deliveryDate, deliveryMethod, email) {
+                // Set the modal content
+                document.getElementById('capsule-confirmation-message').textContent = message;
+                
+                // Format the date for display
+                const formattedDate = new Date(deliveryDate).toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric'
+                });
+                document.getElementById('confirm-delivery-date').textContent = formattedDate;
+                document.getElementById('delivery-date-inline').textContent = formattedDate;
+                
+                // Set delivery method
+                const displayMethod = deliveryMethod === 'app' ? 'In App Notification' : 'Email';
+                document.getElementById('confirm-delivery-method').textContent = displayMethod;
+                
+                // Handle email display
+                const emailContainer = document.getElementById('confirm-email-container');
+                if (deliveryMethod === 'email' && email) {
+                    emailContainer.style.display = 'flex';
+                    document.getElementById('confirm-email').textContent = email;
+                } else {
+                    emailContainer.style.display = 'none';
+                }
+                
+                // Display account connection information
+                const user = firebase.auth().currentUser;
+                if (user) {
+                    const verifiedStatus = user.emailVerified ? '✓ Verified' : '⚠ Needs verification';
+                    document.getElementById('confirm-account-connected').innerHTML = 
+                        `${user.email} <span style="color: ${user.emailVerified ? '#4CAF50' : '#FFC107'}; font-size: 0.85rem; margin-left: 5px;">${verifiedStatus}</span>`;
+                }
+                
+                // Calculate days until delivery
+                const today = new Date();
+                const deliveryDateObj = new Date(deliveryDate);
+                const diffTime = Math.abs(deliveryDateObj - today);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                // Add countdown message
+                let countdownMsg;
+                if (diffDays === 0) {
+                    countdownMsg = "Your message will be delivered today!";
+                } else if (diffDays === 1) {
+                    countdownMsg = "Your message will be delivered tomorrow!";
+                } else {
+                    countdownMsg = `Your message will be delivered in ${diffDays} days.`;
+                }
+                
+                // Adjust modal background color for light/dark mode
+                const modalContent = document.querySelector('.confirmation-modal-content');
+                if (!document.body.classList.contains('dark-mode')) {
+                    modalContent.style.backgroundColor = '#ffffff';
+                    modalContent.style.color = '#333333';
+                    document.querySelector('.confirmation-modal-content h2').style.color = '#333333';
+                    document.querySelectorAll('.confirmation-modal-content span[style*="color: #e0e0e0"]').forEach(
+                        span => span.style.color = '#333333'
+                    );
+                }
+                
+                // Create new paragraph for countdown
+                const countdownP = document.createElement('p');
+                countdownP.style.textAlign = 'center';
+                countdownP.style.fontSize = '1.1rem';
+                countdownP.style.fontWeight = '500';
+                countdownP.style.color = document.body.classList.contains('dark-mode') ? '#b990ff' : '#8b5fbf';
+                countdownP.textContent = countdownMsg;
+                
+                // Insert after main message
+                const messageElement = document.getElementById('capsule-confirmation-message');
+                messageElement.parentNode.insertBefore(countdownP, messageElement.nextSibling);
+                
+                // Show the modal
+                document.getElementById('capsule-confirmation-modal').style.display = 'flex';
+            }
+            
             // Handle form submission
             document.getElementById('time-capsule-form').addEventListener('submit', function(e) {
                 e.preventDefault();
+                
+                // Add loading state to button
+                const submitButton = document.getElementById('send-capsule');
+                const originalButtonText = submitButton.innerHTML;
+                submitButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>';
+                submitButton.disabled = true;
+                
+                // Add spinning animation
+                const style = document.createElement('style');
+                style.innerHTML = `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`;
+                document.head.appendChild(style);
                 
                 const message = document.getElementById('message').value;
                 const deliveryDate = document.getElementById('delivery-date').value;
                 const deliveryMethod = document.querySelector('.delivery-option.selected').dataset.option;
                 const email = document.getElementById('email').value;
                 
+                // Validate inputs
+                if (!message.trim()) {
+                    showToast('Please enter a message to send to your future self.', 'error');
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                    return;
+                }
+                
+                if (!deliveryDate) {
+                    showToast('Please select a delivery date.', 'error');
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                    return;
+                }
+                
+                if (deliveryMethod === 'email' && !email) {
+                    showToast('Please enter your email address.', 'error');
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                    return;
+                }
+                
                 // Get current user
                 const user = firebase.auth().currentUser;
                 
                 if (user) {
+                    // Check account verification status before proceeding
+                    const verificationStatus = checkAccountVerification();
+                    
+                    if (!verificationStatus.verified) {
+                        // Reset button
+                        submitButton.innerHTML = originalButtonText;
+                        submitButton.disabled = false;
+                        
+                        // Show verification modal
+                        document.getElementById('account-verification-modal').style.display = 'flex';
+                        handleVerification();
+                        return;
+                    }
+                    
                     // Save to Firestore
                     const db = firebase.firestore();
                     db.collection('timeCapsules').add({
                         userId: user.uid,
+                        userEmail: user.email,
+                        userName: user.displayName || '',
                         message: message,
                         deliveryDate: deliveryDate,
                         deliveryMethod: deliveryMethod,
-                        email: deliveryMethod === 'email' ? email : null,
+                        email: deliveryMethod === 'email' ? email : user.email,
                         created: firebase.firestore.FieldValue.serverTimestamp(),
-                        delivered: false
+                        delivered: false,
+                        deliveryStatus: 'scheduled',
+                        scheduleId: Date.now().toString(36) + Math.random().toString(36).substr(2)
                     })
-                    .then(() => {
-                        // Show success message
-                        alert('Your message to the future has been saved! It will be delivered on ' + new Date(deliveryDate).toLocaleDateString());
+                    .then((docRef) => {
+                        // Reset button
+                        submitButton.innerHTML = originalButtonText;
+                        submitButton.disabled = false;
+                        
+                        // Show confirmation modal with delivery details
+                        showConfirmationModal(
+                            "Your message has been safely stored in a time capsule and will be delivered to you on the scheduled date.",
+                            deliveryDate,
+                            deliveryMethod,
+                            email || user.email
+                        );
+                        
                         // Reset form
                         document.getElementById('reset-form').click();
+                        
                         // Reload capsules list
                         loadCapsules();
+                        
+                        console.log("Time capsule created with ID: ", docRef.id);
                     })
                     .catch(error => {
                         console.error("Error saving time capsule: ", error);
-                        alert('There was an error saving your message. Please try again.');
+                        showToast('Error saving your message. Please try again.', 'error');
+                        
+                        // Reset button
+                        submitButton.innerHTML = originalButtonText;
+                        submitButton.disabled = false;
                     });
                 } else {
-                    // Redirect to login or show login modal
-                    alert('Please log in to send a message to your future self.');
+                    // Handle user not logged in
+                    showToast('Please log in to send a message to your future self.', 'error');
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                    
+                    // Could redirect to login page or show login modal
+                    setTimeout(() => {
+                        window.location.href = 'login.html'; 
+                    }, 2000);
                 }
             });
             
@@ -611,7 +1019,7 @@
                 
                 if (user) {
                     const db = firebase.firestore();
-                    capsulesList.innerHTML = ''; // Clear current list
+                    capsulesList.innerHTML = '<div style="text-align: center; width: 100%;"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg></div>'; // Loading indicator
                     
                     db.collection('timeCapsules')
                         .where('userId', '==', user.uid)
@@ -619,9 +1027,11 @@
                         .get()
                         .then((querySnapshot) => {
                             if (querySnapshot.empty) {
-                                capsulesList.innerHTML = '<p>You haven\'t created any time capsules yet.</p>';
+                                capsulesList.innerHTML = '<div class="empty-state">You haven\'t created any time capsules yet.</div>';
                                 return;
                             }
+                            
+                            capsulesList.innerHTML = ''; // Clear loading indicator
                             
                             querySnapshot.forEach((doc) => {
                                 const data = doc.data();
@@ -631,11 +1041,19 @@
                                     day: 'numeric' 
                                 });
                                 
+                                // Check if the capsule is delivered based on date
+                                const today = new Date();
+                                const deliveryDate = new Date(data.deliveryDate);
+                                const isDelivered = today >= deliveryDate;
+                                
                                 const capsuleHtml = `
                                     <div class="capsule-card">
                                         <div class="capsule-date">${capsuleDate}</div>
                                         <div class="capsule-snippet">${data.message.substring(0, 100)}${data.message.length > 100 ? '...' : ''}</div>
-                                        <div class="capsule-status">${data.delivered ? 'Delivered' : 'Waiting'}</div>
+                                        <div class="capsule-status">
+                                            <span class="status-indicator" style="background-color: ${isDelivered ? '#4CAF50' : '#8b5fbf'}"></span>
+                                            ${isDelivered ? 'Delivered' : 'Waiting'}
+                                        </div>
                                     </div>
                                 `;
                                 
@@ -644,10 +1062,10 @@
                         })
                         .catch((error) => {
                             console.error("Error getting time capsules: ", error);
-                            capsulesList.innerHTML = '<p>There was an error loading your time capsules.</p>';
+                            capsulesList.innerHTML = '<div class="empty-state">There was an error loading your time capsules.</div>';
                         });
                 } else {
-                    capsulesList.innerHTML = '<p>Please log in to view your time capsules.</p>';
+                    capsulesList.innerHTML = '<div class="empty-state">Please log in to view your time capsules.</div>';
                 }
             }
             
@@ -655,11 +1073,73 @@
             firebase.auth().onAuthStateChanged(function(user) {
                 if (user) {
                     loadCapsules();
+                    
+                    // Update the time capsule delivery behavior
+                    const db = firebase.firestore();
+                    
+                    // Check for capsules that should be delivered today but aren't marked as delivered
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Start of today
+                    const todayStr = today.toISOString().split('T')[0];
+                    
+                    db.collection('timeCapsules')
+                        .where('userId', '==', user.uid)
+                        .where('delivered', '==', false)
+                        .where('deliveryDate', '<=', todayStr)
+                        .get()
+                        .then((querySnapshot) => {
+                            if (!querySnapshot.empty) {
+                                querySnapshot.forEach((doc) => {
+                                    // Mark as delivered
+                                    db.collection('timeCapsules').doc(doc.id).update({
+                                        delivered: true,
+                                        deliveryStatus: 'delivered',
+                                        deliveredAt: firebase.firestore.FieldValue.serverTimestamp()
+                                    });
+                                });
+                                
+                                // Reload capsules after updating
+                                setTimeout(() => loadCapsules(), 500);
+                            }
+                        });
+                } else {
+                    document.getElementById('capsules-list').innerHTML = '<div class="empty-state">Please log in to view your time capsules.</div>';
                 }
             });
+            
+            // Add CSS for the status indicator colors in dark mode
+            if (document.body.classList.contains('dark-mode')) {
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    body.dark-mode .status-indicator[style*="4CAF50"] {
+                        background-color: #81c784 !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
         });
     </script>
     <script src="dark-mode-toggle.js"></script>
     <script src="profile-dropdown.js"></script>
+    <script>
+        // Check for user's preferred theme
+        document.addEventListener('DOMContentLoaded', function() {DOMContentLoaded', function() {
+            // Check if dark mode preference is stored in localStorage
+            const darkModePreference = localStorage.getItem('darkMode');darkMode');
+            if (darkModePreference === 'true') {odePreference === 'true') {
+                document.body.classList.add('dark-mode');cument.body.classList.add('dark-mode');
+            } else if (darkModePreference === 'false') {lse') {
+                document.body.classList.remove('dark-mode');   document.body.classList.remove('dark-mode');
+            } else { } else {
+                // Check for system preference if nothing in localStorage   // Check for system preference if nothing in localStorage
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.body.classList.add('dark-mode');('dark-mode');
+                } else {    } else {
+                    document.body.classList.remove('dark-mode');.remove('dark-mode');
+                }
+            }
+        });
+    </script>
+    </main>
 </body>
 </html>
