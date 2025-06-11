@@ -139,7 +139,13 @@
             font-size: 1rem;
             text-align: left;
         }
-          .capsule-form-container {
+        
+        /* Fix description text color in light mode */
+        body:not(.dark-mode) .description {
+            color: #333333;
+        }
+        
+        .capsule-form-container {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 40px;
@@ -224,7 +230,7 @@
         }
         
         body:not(.dark-mode) .form-header {
-            color: #6b46c1;
+            color: #4a2f6b; /* Darker purple for better contrast */
         }
         
         .options-section {
@@ -245,7 +251,7 @@
         .option-group label {
             display: block;
             margin-bottom: 12px;
-            color: #a47dd4;
+            color: #4a2f6b; /* Darker purple */
             font-weight: 500;
         }
         
@@ -489,7 +495,42 @@
         .floating {
             animation: float 3s ease-in-out infinite;
         }
-          @media (max-width: 900px) {
+        
+        /* Fix text colors in light mode to be dark purple */
+        body:not(.dark-mode) .form-header {
+            color: #4a2f6b; /* Darker purple for better contrast */
+        }
+        
+        body:not(.dark-mode) h1 {
+            color: #4a2f6b; /* Darker purple */
+        }
+        
+        body:not(.dark-mode) .time-capsules-header {
+            color: #4a2f6b; /* Darker purple */
+        }
+        
+        body:not(.dark-mode) .option-group label {
+            color: #4a2f6b; /* Darker purple */
+        }
+        
+        body:not(.dark-mode) .btn-outline {
+            color: #4a2f6b; /* Darker purple */
+            border-color: #4a2f6b; /* Darker purple */
+        }
+        
+        body:not(.dark-mode) .btn-primary {
+            background-color: #4a2f6b; /* Darker purple */
+        }
+        
+        body:not(.dark-mode) .btn-primary:hover {
+            background-color: #3e2455; /* Even darker for hover effect */
+        }
+        
+        body:not(.dark-mode) .empty-state {
+            color: #4a2f6b; /* Darker purple for empty state text */
+        }
+        
+        @media (max-width: 900px) {
             .capsule-form-container {
                 grid-template-columns: 1fr;
             }
@@ -1138,8 +1179,8 @@
                     document.body.classList.remove('dark-mode');.remove('dark-mode');
                 }
             }
-        });
-    </script>
+        });    </script>
     </main>
+    <script src="mouse-sprinkles-script.js"></script>
 </body>
 </html>

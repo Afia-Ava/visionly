@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Coach - Visionly</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+ Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="dark-mode-global.css">
     <style>
         body {
@@ -39,14 +39,16 @@
         .navbar {
             position: fixed;
             top: 0; left: 0; width: 100%;
-            background: #fff;
-            box-shadow: 0 1px 3px rgba(139,95,179,0.08);
             padding: 14px 30px;
             height: 70px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             z-index: 1000;
+            box-sizing: border-box;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
         }
         .navbar .logo {
             font-family: 'Dancing Script', cursive;
@@ -54,11 +56,13 @@
             font-size: 2rem;
             color: #333;
             text-decoration: none;
+            transition: color 0.3s ease;
         }
         .navbar a {
             text-decoration: none;
             color: #333;
             margin: 0 12px;
+            transition: color 0.3s ease;
         }
         main {
             max-width: 700px;
@@ -71,14 +75,24 @@
         h1 {
             font-size: 2rem;
             font-weight: 700;
-            color: #8b5fbf;
+            color: #2d1a45; /* Darker color for better readability in light mode */
             margin-bottom: 8px;
         }
+        
+        body.dark-mode h1 {
+            color: #8b5fbf; /* Keep purple for dark mode */
+        }
+        
         .subtitle {
-            color: #a47dd4;  /* Updated to light purple */
+            color: #333; /* Darker color for better readability in light mode */
             font-size: 1.1rem;
             margin-bottom: 24px;
         }
+        
+        body.dark-mode .subtitle {
+            color: #a47dd4; /* Keep light purple for dark mode */
+        }
+        
         .chat-container {
             background: #faf8ff;
             border-radius: 12px;
@@ -120,8 +134,13 @@
             font-size: 0.8rem;
             font-weight: 600;
             margin-bottom: 2px;
-            color: #8b5fbf;
+            color: #2d1a45; /* Darker color for better readability in light mode */
         }
+        
+        body.dark-mode .sender {
+            color: #8b5fbf; /* Keep purple for dark mode */
+        }
+        
         .chat-input-row {
             display: flex;
             gap: 10px;
@@ -136,7 +155,7 @@
             background: #faf8ff;
         }
         .chat-input-row button {
-            background: #8b5fbf;
+            background: #2d1a45; /* Darker purple in light mode for better contrast */
             color: #fff;
             border: none;
             border-radius: 8px;
@@ -146,8 +165,17 @@
             cursor: pointer;
             transition: background 0.2s;
         }
+        
         .chat-input-row button:hover {
-            background: #2d1a45;
+            background: #1a0f2e; /* Even darker on hover */
+        }
+        
+        body.dark-mode .chat-input-row button {
+            background: #8b5fbf; /* Keep lighter purple in dark mode */
+        }
+        
+        body.dark-mode .chat-input-row button:hover {
+            background: #7a4fb0; /* Darker purple on hover in dark mode */
         }
         .typing-indicator {
             padding: 12px 18px;
@@ -198,17 +226,37 @@
             color: #e0e0e0;
             border-color: #3a2259;
         }
+
+        /* Dark mode navbar styling */
+        body.dark-mode .navbar {
+            background-color: #0a0612 !important;
+            box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15) !important;
+        }
+        
+        body.dark-mode .navbar a,
+        body.dark-mode .navbar .logo {
+            color: #e0e0e0 !important;
+        }
+
+        /* Navbar transition */
+        .navbar a, .navbar .logo {
+            transition: color 0.3s ease;
+        }
+        
+        .navbar {
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
-        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; text-decoration: none; color: #333; transition: color 0.3s ease;">Visionly</a>
         <div style="display: flex; align-items: center;">
-            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
-            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
-            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
-            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
-            <a href="elevate.html" style="text-decoration: none; color: #333; margin: 0 12px;">Elevate</a>
+            <a href="index.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Create</a>
+            <a href="boards.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Progress</a>
+            <a href="elevate.html" style="text-decoration: none; margin: 0 12px; margin-right: 15px; color: #333; transition: color 0.3s ease;">Elevate</a>
             <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
         </div>
     </nav>
@@ -444,5 +492,6 @@
             }, Math.floor(Math.random() * 1000) + 1000); // Random delay between 1-2 seconds
         });
     </script>
+    <script src="mouse-sprinkles-script.js"></script>
 </body>
 </html>

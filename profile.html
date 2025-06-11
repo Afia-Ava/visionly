@@ -352,6 +352,45 @@
         .save-btn:hover {
             background: #2d1549;
         }
+        
+        /* Avatar options styles */
+        .avatar-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .avatar-option {
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s ease;
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .avatar-option img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Responsive adjustments for avatar options */
+        @media (max-width: 768px) {
+            .avatar-options {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Dark mode specific styles for avatar options */
+        body.dark-mode .avatar-option.selected {
+            border-color: #c9a9ff;
+            box-shadow: 0 0 0 2px rgba(201, 169, 255, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -400,6 +439,38 @@
             <div class="profile-forms">
                 <div class="edit-section">
                     <h3>Edit Profile</h3>
+                    
+                    <!-- Avatar selection section -->
+                    <div class="form-group">
+                        <label class="form-label">Choose Avatar</label>
+                        <div class="avatar-options">
+                            <div class="avatar-option" data-avatar="avatar1">
+                                <img src="assets/avatar1.png" alt="Avatar 1">
+                            </div>
+                            <div class="avatar-option" data-avatar="avatar2">
+                                <img src="assets/avatar2.png" alt="Avatar 2">
+                            </div>
+                            <div class="avatar-option" data-avatar="avatar3">
+                                <img src="assets/avatar3.png" alt="Avatar 3">
+                            </div>
+                            <div class="avatar-option" data-avatar="avatar4">
+                                <img src="assets/avatar4.png" alt="Avatar 4">
+                            </div>
+                            <div class="avatar-option" data-avatar="avatar5">
+                                <img src="assets/avatar5.png" alt="Avatar 5">
+                            </div>
+                            <div class="avatar-option" data-avatar="avatar6">
+                                <img src="assets/avatar6.png" alt="Avatar 6">
+                            </div>
+                            <div class="avatar-option" data-avatar="avatar7">
+                                <img src="assets/avatar7.png" alt="Avatar 7">
+                            </div>
+                            <div class="avatar-option" data-avatar="avatar8">
+                                <img src="assets/avatar8.png" alt="Avatar 8">
+                            </div>
+                        </div>
+                        <input type="hidden" id="selected-avatar" value="avatar1">
+                    </div>
                     
                     <div class="form-group">
                         <label class="form-label">Name</label>
@@ -458,6 +529,75 @@
     
     <!-- Import sprinkles effect from mouse-sprinkles -->
     <script src="mouse-sprinkles-script.js"></script>
+    
+    <!-- Control sprinkles behavior - only show on mouse movement -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Try to stop any automatic sprinkle creation
+            if (window._sprinkleInterval) {
+                clearInterval(window._sprinkleInterval);
+            }
+            
+            // Clear any existing sprinkles
+            document.querySelectorAll('.sprinkle-particle').forEach(el => el.remove());
+            
+            // Create a replacement function for creating sprinkles
+            window.createSprinkle = function(x, y) {
+                // Only create if we have coordinates (from mouse movement)
+                if (!x || !y) return;
+                
+                const colors = ['#8b5fbf', '#6b46c1', '#9d78c9', '#c9a9ff'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = 4 + Math.random() * 4;
+                
+                const sprinkle = document.createElement('div');
+                sprinkle.className = 'sprinkle-particle';
+                sprinkle.style.cssText = `
+                    position: fixed;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background-color: ${color};
+                    border-radius: 50%;
+                    left: ${x}px;
+                    top: ${y}px;
+                    pointer-events: none;
+                    z-index: 9999;
+                    opacity: 0.8;
+                    transform: scale(0);
+                    animation: sprinkleFadeOut 1s ease forwards;
+                `;
+                
+                document.body.appendChild(sprinkle);
+                
+                // Remove after animation completes
+                setTimeout(() => {
+                    if (sprinkle.parentNode) sprinkle.parentNode.removeChild(sprinkle);
+                }, 1000);
+            };
+            
+            // Add styles for animation
+            if (!document.getElementById('sprinkle-styles')) {
+                const style = document.createElement('style');
+                style.id = 'sprinkle-styles';
+                style.textContent = `
+                    @keyframes sprinkleFadeOut {
+                        0% { transform: scale(0); opacity: 0.8; }
+                        50% { transform: scale(1); opacity: 0.6; }
+                        100% { transform: scale(0); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Only create sprinkles on mouse movement
+            document.addEventListener('mousemove', function(e) {
+                // Control rate of sprinkle creation (not on every pixel of movement)
+                if (Math.random() > 0.6) {
+                    createSprinkle(e.clientX, e.clientY);
+                }
+            });
+        });
+    </script>
     
     <script>
         // Background music auto-play functionality
@@ -529,7 +669,44 @@
             loadUserData();
             setupToggles();
             setupSaveButton();
+            setupAvatarSelection();
         });
+        
+        // Setup avatar selection functionality
+        function setupAvatarSelection() {
+            const avatarOptions = document.querySelectorAll('.avatar-option');
+            const selectedAvatarInput = document.getElementById('selected-avatar');
+            
+            // Set the first avatar as selected by default
+            if (avatarOptions.length > 0) {
+                avatarOptions[0].classList.add('selected');
+            }
+            
+            // Add click event to each avatar option
+            avatarOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    avatarOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    // Update hidden input with selected avatar
+                    selectedAvatarInput.value = this.dataset.avatar;
+                    
+                    // Preview the selected avatar
+                    const avatarSrc = this.querySelector('img').src;
+                    
+                    // Update both the main profile avatar and the navbar profile photo
+                    const profileAvatar = document.getElementById('profile-avatar');
+                    const profilePhoto = document.getElementById('profile-photo');
+                    
+                    // Check if elements exist before updating
+                    if (profileAvatar) profileAvatar.src = avatarSrc;
+                    if (profilePhoto) profilePhoto.src = avatarSrc;
+                });
+            });
+        }
         
         function loadUserData() {
             console.log('=== STARTING PROFILE LOAD ===');
@@ -560,12 +737,17 @@
                         document.getElementById('profile-name').textContent = userName;
                         document.getElementById('profile-email').textContent = userEmail;
                         document.getElementById('profile-avatar').src = photoURL;
+                        document.getElementById('profile-photo').src = photoURL; // Update navbar photo
                         document.getElementById('name-input').value = userName;
                         document.getElementById('email-input').value = userEmail;
                         
+                        // Select the matching avatar if it exists
+                        if (user.photoURL) {
+                            selectMatchingAvatar(user.photoURL);
+                        }
+                        
                         // Load user statistics
                         loadUserStatistics(user.uid);
-                        
                         console.log('Profile updated with:', userName, userEmail);
                         
                     } else {
@@ -576,6 +758,36 @@
             } else {
                 console.log('Firebase not available');
                 setDefaultUserData();
+            }
+        }
+        
+        // Find and select the avatar that matches user's current avatar
+        function selectMatchingAvatar(photoURL) {
+            // Extract the avatar filename from the full URL
+            let avatarFilename = photoURL.split('/').pop();
+            
+            // Check if this is an avatar from our collection
+            if (avatarFilename.startsWith('avatar')) {
+                const avatarOptions = document.querySelectorAll('.avatar-option');
+                let matched = false;
+                
+                avatarOptions.forEach(option => {
+                    const avatarImg = option.querySelector('img');
+                    if (avatarImg && photoURL.includes(option.dataset.avatar)) {
+                        // Remove selected class from all options
+                        avatarOptions.forEach(opt => opt.classList.remove('selected'));
+                        
+                        // Add selected class to matching option
+                        option.classList.add('selected');
+                        document.getElementById('selected-avatar').value = option.dataset.avatar;
+                        matched = true;
+                    }
+                });
+                
+                // If no match found, default to first avatar
+                if (!matched && avatarOptions.length > 0) {
+                    avatarOptions[0].classList.add('selected');
+                }
             }
         }
         
@@ -647,11 +859,8 @@
         }
         
         function setupToggles() {
-            // Dark mode is now handled by dark-mode-toggle.js
-            // Just handle notifications toggle here
             const notificationsToggle = document.getElementById('notifications-toggle');
             
-            // Email notifications toggle
             notificationsToggle.addEventListener('click', function() {
                 this.classList.toggle('active');
                 const isEnabled = this.classList.contains('active');
@@ -683,7 +892,6 @@
                 transition: transform 0.3s ease;
             `;
             notification.textContent = message;
-            
             document.body.appendChild(notification);
             
             // Slide in
@@ -706,6 +914,10 @@
                 const email = document.getElementById('email-input').value;
                 const password = document.getElementById('password-input').value;
                 
+                // Get selected avatar URL
+                const selectedAvatar = document.querySelector('.avatar-option.selected img');
+                const avatarURL = selectedAvatar ? selectedAvatar.src : null;
+                
                 try {
                     if (typeof firebase !== 'undefined' && firebase.auth) {
                         const user = firebase.auth().currentUser;
@@ -717,45 +929,65 @@
                                 });
                             }
                             
-                            // Update email if changed
-                            if (email && email !== user.email) {
-                                await user.updateEmail(email);
-                            }
+                            // Update avatar if changed
+                            if (avatarURL && avatarURL !== user.photoURL) {
+                                await user.updateProfile({
+                                    photoURL: avatarURL
+                                });
+                                
+                                // Ensure the avatar is updated in both places with safety checks
+                                const profileAvatar = document.getElementById('profile-avatar');
+                                const profilePhoto = document.getElementById('profile-photo');
+                                
+                                if (profileAvatar) profileAvatar.src = avatarURL;
+                                if (profilePhoto) profilePhoto.src = avatarURL;// Update email if changed
+                            }ail) {
+                            }updateEmail(email);
                             
                             // Update password if provided
-                            if (password) {
-                                await user.updatePassword(password);
+                            if (password) {// Update password if provided
+                                await user.updatePassword(password);) {
                             }
                             
                             // Update UI
                             document.getElementById('profile-name').textContent = name;
-                            document.getElementById('profile-email').textContent = email;
-                            
-                            const initial = name.charAt(0).toUpperCase();
+                            document.getElementById('profile-email').textContent = email;document.getElementById('profile-name').textContent = name;
+                            const initial = name.charAt(0).toUpperCase();).textContent = email;
+                            document.getElementById('profile-avatar').src = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;   const initial = name.charAt(0).toUpperCase();
                             document.getElementById('profile-avatar').src = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;
-                            
                             alert('Profile updated successfully!');
                         }
                     } else {
-                        // Fallback for when Firebase is not available
+                        // Fallback for when Firebase is not availablese {
                         document.getElementById('profile-name').textContent = name;
-                        document.getElementById('profile-email').textContent = email;
+                        document.getElementById('profile-email').textContent = email;entById('profile-name').textContent = name;
                         
-                        const initial = name.charAt(0).toUpperCase();
-                        document.getElementById('profile-avatar').src = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;
-                        
+                        // Always update the avatar in the non-Firebase case
+                        if (avatarURL) {s update the avatar in the non-Firebase case
+                            document.getElementById('profile-avatar').src = avatarURL;
+                            document.getElementById('profile-photo').src = avatarURL;
+                        } else {
+                            const initial = name.charAt(0).toUpperCase();
+                            const photoURL = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;   const initial = name.charAt(0).toUpperCase();
+                            document.getElementById('profile-avatar').src = photoURL;    const photoURL = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;
+                            document.getElementById('profile-photo').src = photoURL;atar').src = photoURL;
+                        }       document.getElementById('profile-photo').src = photoURL;
+                            }
                         alert('Profile updated successfully!');
                     }
                     
                     // Clear password field
                     document.getElementById('password-input').value = '';
-                    
-                } catch (error) {
-                    console.error('Error updating profile:', error);
-                    alert('Error updating profile: ' + error.message);
-                }
-            });
-        }
+                } catch (error) {   document.getElementById('password-input').value = '';
+                    console.error('Error updating profile:', error); } catch (error) {
+                    alert('Error updating profile: ' + error.message);           console.error('Error updating profile:', error);
+                }       alert('Error updating profile: ' + error.message);
+            });         }
+        }     });
+
+
+
+</html></body>    </script>        }
     </script>
 </body>
 </html>
