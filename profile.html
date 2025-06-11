@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="dark-mode-global.css">
+    <link rel="stylesheet" href="theme-manager.css">
+    <link rel="stylesheet" href="theme-colors.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -315,6 +317,8 @@
             border-radius: 14px;
             cursor: pointer;
             transition: background 0.3s;
+            border: 1px solid #ddd; /* Add outline to make the toggle more visible */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         }
         
         .toggle-switch.active {
@@ -390,6 +394,67 @@
         body.dark-mode .avatar-option.selected {
             border-color: #c9a9ff;
             box-shadow: 0 0 0 2px rgba(201, 169, 255, 0.5);
+        }
+        
+        /* Theme selector styles */
+        .theme-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .theme-options {
+            display: flex;
+            gap: 15px;
+            margin-left: auto;
+        }
+
+        .theme-option {
+            cursor: pointer;
+            padding: 3px;
+            border: 3px solid transparent;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        .theme-option.selected {
+            border-color: #6b46c1;
+            box-shadow: 0 0 0 2px rgba(107, 70, 193, 0.3);
+        }
+
+        [data-theme="dark-purple"] .theme-option.selected {
+            border-color: #c9a9ff;
+            box-shadow: 0 0 0 2px rgba(201, 169, 255, 0.3);
+        }
+
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: block;
+        }
+
+        /* Make sure the theme options are visible and clickable */
+        .theme-option {
+            position: relative;
+            z-index: 10;
+        }
+
+        @media (max-width: 480px) {
+            .theme-selector {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .theme-options {
+                margin-left: 0;
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
@@ -491,6 +556,29 @@
                 <div class="settings-section">
                     <h3>Settings</h3>
                     
+                    <!-- Theme selector -->
+                    <div class="settings-item theme-selector">
+                        <span>Theme</span>
+                        <div class="theme-options">
+                            <div class="theme-option" data-theme="soft-white">
+                                <div class="color-preview" style="background-color: #ffffff; border: 1px solid #e0e0e0;"></div>
+                            </div>
+                            <div class="theme-option" data-theme="dark-purple">
+                                <div class="color-preview" style="background-color: #140a22;"></div>
+                            </div>
+                            <div class="theme-option" data-theme="sky-blue">
+                                <div class="color-preview" style="background-color: #4a90e2;"></div>
+                            </div>
+                            <div class="theme-option" data-theme="teal-green">
+                                <div class="color-preview" style="background-color: #009688;"></div>
+                            </div>
+                            <div class="theme-option" data-theme="coral-pink">
+                                <div class="color-preview" style="background-color: #ff7e79;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Add back the dark mode toggle -->
                     <div class="settings-item">
                         <span>Dark Mode</span>
                         <div class="toggle-switch" id="dark-mode-toggle">
@@ -859,6 +947,7 @@
         }
         
         function setupToggles() {
+            // Setup email notifications toggle
             const notificationsToggle = document.getElementById('notifications-toggle');
             
             notificationsToggle.addEventListener('click', function() {
@@ -872,122 +961,154 @@
                 const message = isEnabled ? 'Email notifications enabled 📧' : 'Email notifications disabled';
                 showNotification(message);
             });
+            
+            // Setup dark mode toggle
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            
+            // Check if dark mode is enabled and update toggle state
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.classList.add('active');
+            }
+            
+            // Add click event to dark mode toggle
+            darkModeToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                
+                if (this.classList.contains('active')) {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('darkMode', 'enabled');
+                    showNotification('Dark mode enabled');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('darkMode', 'disabled');
+                    showNotification('Dark mode disabled');
+                }
+            });
+            
+            // Setup theme selection
+            const themeOptions = document.querySelectorAll('.theme-option');
+            console.log('Theme options found:', themeOptions.length);
+            
+            // Get saved theme or default to soft-white
+            const savedTheme = localStorage.getItem('theme') || 'soft-white';
+            
+            // Mark the current theme as selected and apply it
+            themeOptions.forEach(option => {
+                const theme = option.getAttribute('data-theme');
+                console.log('Theme option:', theme);
+                
+                if (theme === savedTheme) {
+                    option.classList.add('selected');
+                }
+                
+                // Add click event to each theme option
+                option.onclick = function() {
+                    console.log('Theme clicked:', theme);
+                    
+                    // Remove selected class from all options
+                    themeOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    // Apply theme with explicit dark mode handling
+                    document.body.setAttribute('data-theme', theme);
+                    
+                    // Handle dark mode specifically
+                    if (theme === 'dark-purple') {
+                        console.log('Enabling dark mode');
+                        document.body.classList.add('dark-mode');
+                        localStorage.setItem('darkMode', 'enabled');
+                    } else {
+                        console.log('Disabling dark mode');
+                        document.body.classList.remove('dark-mode');
+                        localStorage.setItem('darkMode', 'disabled');
+                    }
+                    
+                    // Save preference
+                    localStorage.setItem('theme', theme);
+                    
+                    // Show notification
+                    showNotification(`Theme changed to ${theme.replace(/-/g, ' ')}`);
+                    
+                    return false; // Prevent event bubbling
+                };
+            });
         }
         
+        // Function to apply the theme
+        function applyTheme(theme) {
+            // Set the theme attribute on body
+            document.body.setAttribute('data-theme', theme);
+            
+            // Handle dark mode specifically
+            if (theme === 'dark-purple') {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+            
+            console.log('Theme applied:', theme, 'Dark mode:', document.body.classList.contains('dark-mode'));
+        }
+        
+        // Apply theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup the theme selector
+            setupToggles();
+            
+            // Apply the saved theme or default
+            const savedTheme = localStorage.getItem('theme') || 'soft-white';
+            applyTheme(savedTheme);
+        });
+        
+        // Direct implementation for theme switching
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simple direct theme switching implementation
+            const themeOptions = document.querySelectorAll('.theme-option');
+            
+            themeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const theme = this.getAttribute('data-theme');
+                    console.log('Theme clicked:', theme);
+                    
+                    // Remove selected class from all
+                    themeOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked
+                    this.classList.add('selected');
+                    
+                    // Handle dark mode
+                    if (theme === 'dark-purple') {
+                        console.log('Enabling dark mode');
+                        document.body.classList.add('dark-mode');
+                        localStorage.setItem('darkMode', 'enabled');
+                    } else {
+                        console.log('Disabling dark mode');
+                        document.body.classList.remove('dark-mode');
+                        localStorage.setItem('darkMode', 'disabled');
+                    }
+                    
+                    // Set theme attribute
+                    document.body.setAttribute('data-theme', theme);
+                    
+                    // Save preference
+                    localStorage.setItem('theme', theme);
+                    
+                    // Show visual feedback
+                    showNotification(`Theme changed to ${theme.replace(/-/g, ' ')}`);
+                });
+            });
+        });
+        
         function showNotification(message) {
-            // Create a temporary notification
-            const notification = document.createElement('div');
-            notification.style.cssText = `
+            // Create a temporary notificationnt
+            const notification = document.createElement('div');entLoaded', function() {
+            notification.style.cssText = ` ...
                 position: fixed;
                 top: 100px;
                 right: 20px;
                 background: #2d1a45;
-                color: white;
-                padding: 12px 20px;
-                border-radius: 6px;
-                z-index: 10000;
-                font-size: 14px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
-            `;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            // Slide in
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            
-            // Slide out and remove after 3 seconds
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
-            }, 3000);
-        }
-        
-        function setupSaveButton() {
-            document.getElementById('save-changes').addEventListener('click', async function() {
-                const name = document.getElementById('name-input').value;
-                const email = document.getElementById('email-input').value;
-                const password = document.getElementById('password-input').value;
-                
-                // Get selected avatar URL
-                const selectedAvatar = document.querySelector('.avatar-option.selected img');
-                const avatarURL = selectedAvatar ? selectedAvatar.src : null;
-                
-                try {
-                    if (typeof firebase !== 'undefined' && firebase.auth) {
-                        const user = firebase.auth().currentUser;
-                        if (user) {
-                            // Update display name if changed
-                            if (name && name !== user.displayName) {
-                                await user.updateProfile({
-                                    displayName: name
-                                });
-                            }
-                            
-                            // Update avatar if changed
-                            if (avatarURL && avatarURL !== user.photoURL) {
-                                await user.updateProfile({
-                                    photoURL: avatarURL
-                                });
-                                
-                                // Ensure the avatar is updated in both places with safety checks
-                                const profileAvatar = document.getElementById('profile-avatar');
-                                const profilePhoto = document.getElementById('profile-photo');
-                                
-                                if (profileAvatar) profileAvatar.src = avatarURL;
-                                if (profilePhoto) profilePhoto.src = avatarURL;// Update email if changed
-                            }ail) {
-                            }updateEmail(email);
-                            
-                            // Update password if provided
-                            if (password) {// Update password if provided
-                                await user.updatePassword(password);) {
-                            }
-                            
-                            // Update UI
-                            document.getElementById('profile-name').textContent = name;
-                            document.getElementById('profile-email').textContent = email;document.getElementById('profile-name').textContent = name;
-                            const initial = name.charAt(0).toUpperCase();).textContent = email;
-                            document.getElementById('profile-avatar').src = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;   const initial = name.charAt(0).toUpperCase();
-                            document.getElementById('profile-avatar').src = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;
-                            alert('Profile updated successfully!');
-                        }
-                    } else {
-                        // Fallback for when Firebase is not availablese {
-                        document.getElementById('profile-name').textContent = name;
-                        document.getElementById('profile-email').textContent = email;entById('profile-name').textContent = name;
-                        
-                        // Always update the avatar in the non-Firebase case
-                        if (avatarURL) {s update the avatar in the non-Firebase case
-                            document.getElementById('profile-avatar').src = avatarURL;
-                            document.getElementById('profile-photo').src = avatarURL;
-                        } else {
-                            const initial = name.charAt(0).toUpperCase();
-                            const photoURL = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;   const initial = name.charAt(0).toUpperCase();
-                            document.getElementById('profile-avatar').src = photoURL;    const photoURL = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;
-                            document.getElementById('profile-photo').src = photoURL;atar').src = photoURL;
-                        }       document.getElementById('profile-photo').src = photoURL;
-                            }
-                        alert('Profile updated successfully!');
-                    }
-                    
-                    // Clear password field
-                    document.getElementById('password-input').value = '';
-                } catch (error) {   document.getElementById('password-input').value = '';
-                    console.error('Error updating profile:', error); } catch (error) {
-                    alert('Error updating profile: ' + error.message);           console.error('Error updating profile:', error);
-                }       alert('Error updating profile: ' + error.message);
-            });         }
-        }     });
-
-
-
-</html></body>    </script>        }
-    </script>
-</body>
-</html>
+                color: white;                padding: 12px 20px;                border-radius: 6px;                z-index: 10000;                font-size: 14px;                box-shadow: 0 4px 12px rgba(0,0,0,0.3);                transform: translateX(100%);                transition: transform 0.3s ease;            `;            notification.textContent = message;            document.body.appendChild(notification);                        // Slide in            setTimeout(() => {                notification.style.transform = 'translateX(0)';            }, 100);                        // Slide out and remove after 3 seconds            setTimeout(() => {                notification.style.transform = 'translateX(100%)';                setTimeout(() => {                    notification.remove();                }, 300);            }, 3000);        }                function setupSaveButton() {            document.getElementById('save-changes').addEventListener('click', async function() {                const name = document.getElementById('name-input').value;                const email = document.getElementById('email-input').value;                const password = document.getElementById('password-input').value;                                // Get selected avatar URL                const selectedAvatar = document.querySelector('.avatar-option.selected img');                const avatarURL = selectedAvatar ? selectedAvatar.src : null;                                try {                    if (typeof firebase !== 'undefined' && firebase.auth) {                        const user = firebase.auth().currentUser;                        if (user) {                            // Update display name if changed                            if (name && name !== user.displayName) {                                await user.updateProfile({                                    displayName: name                                });                            }                                                        // Update avatar if changed                            if (avatarURL && avatarURL !== user.photoURL) {                                await user.updateProfile({                                    photoURL: avatarURL                                });                                                                // Ensure the avatar is updated in both places with safety checks                                const profileAvatar = document.getElementById('profile-avatar');                                const profilePhoto = document.getElementById('profile-photo');                                                                if (profileAvatar) profileAvatar.src = avatarURL;                    document.getElementById('password-input').value = '';                                if (profilePhoto) profilePhoto.src = avatarURL;// Update email if changed                } catch (error) {   document.getElementById('password-input').value = '';                            }ail) {rror updating profile:', error); } catch (error) {                            }updateEmail(email);       alert('Error updating profile: ' + error.message);           console.error('Error updating profile:', error);                                     }       alert('Error updating profile: ' + error.message);                            // Update password if provided     });         }            });                }                    alert('Failed to update profile. Please try again.');                    console.error('Error updating profile:', error);                } catch (error) {                    document.getElementById('password-input').value = '';                    // Clear password field                                        }                        alert('Profile updated successfully!');                            }                        }       document.getElementById('profile-photo').src = photoURL;                            document.getElementById('profile-photo').src = photoURL;atar').src = photoURL;                            document.getElementById('profile-avatar').src = photoURL;    const photoURL = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;                            const photoURL = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;   const initial = name.charAt(0).toUpperCase();                            const initial = name.charAt(0).toUpperCase();                        } else {                            document.getElementById('profile-photo').src = avatarURL;                            document.getElementById('profile-avatar').src = avatarURL;                        if (avatarURL) {s update the avatar in the non-Firebase case                        // Always update the avatar in the non-Firebase case                                                document.getElementById('profile-email').textContent = email;entById('profile-name').textContent = name;                        document.getElementById('profile-name').textContent = name;                        // Fallback for when Firebase is not availablese {                    } else {                        }                            alert('Profile updated successfully!');                            document.getElementById('profile-avatar').src = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;                            document.getElementById('profile-avatar').src = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;   const initial = name.charAt(0).toUpperCase();                            const initial = name.charAt(0).toUpperCase();).textContent = email;                            document.getElementById('profile-email').textContent = email;document.getElementById('profile-name').textContent = name;                            document.getElementById('profile-name').textContent = name;                            // Update UI                                                        }                                await user.updatePassword(password);) {                            if (password) {// Update password if provided        }     });         }            });

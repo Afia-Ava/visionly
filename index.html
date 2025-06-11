@@ -89,7 +89,7 @@
 
     <!-- Hero Section as a centered card with background image and dark purple overlay -->
     <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 110px; margin-bottom: 32px;">
-      <div style="width: 98vw; max-width: 1100px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(80,40,120,0.07); position: relative; min-height: 280px;">
+      <div style="width: 98vw; max-width: 1100px; border-radius: 12px, 12px 0 0; overflow: hidden; box-shadow: 0 4px 24px rgba(80,40,120,0.07); position: relative; min-height: 280px;">
         <div style="position: absolute; inset: 0; z-index: 1; background: url('assets/inspiration3.png') center center / cover no-repeat;"></div>
         <div style="position: absolute; inset: 0; z-index: 2; background: linear-gradient(120deg, rgba(76, 36, 131, 0.72) 0%, rgba(60, 30, 100, 0.82) 100%);"></div>
         <div style="padding: 80px 24px 72px 24px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 3;">
@@ -164,7 +164,448 @@
       </div>
     </section>
     
-    <!-- Add more space before Inspiration Gallery -->
+    <!-- Add space after Features section -->
+    <div style="height: 48px;"></div>
+    
+    <!-- Create Board Feature Highlight Section -->
+    <section style="padding: 0 0 56px 0;">
+      <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
+        <div style="display: flex; flex-direction: column; align-items: flex-end; text-align: right;">
+          <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #181818;">Create Your Vision Board</h2>
+          <p style="color: #444; margin-bottom: 32px; max-width: 700px; line-height: 1.6;">
+            Bring your dreams to life with our intuitive board creator.<br>
+            Add images, quotes, goals, and track your progress all in one place.
+          </p>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f8f5ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
+            <!-- Polaroid Images - Left Side -->
+            <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
+              <!-- Vision Board Image -->
+              <div style="transform: rotate(-5deg); box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 180px; position: relative; z-index: 3;">
+                <img src="assets/polaroid1.png" alt="Vision Board Example" style="width: 100%; display: block;" onerror="this.src='https://via.placeholder.com/180x220/aa88cc/ffffff?text=Vision+Board'; this.onerror=null;">
+              </div>
+              
+              <!-- Progress Path Image -->
+              <div style="transform: rotate(7deg); box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 150px; margin-top: -15px; position: relative; z-index: 2;">
+                <img src="assets/polaroid2.png" alt="Vision Progress" style="width: 100%; display: block;" onerror="this.src='https://via.placeholder.com/150x180/9977bb/ffffff?text=Progress+Path'; this.onerror=null;">
+              </div>
+              
+              <!-- Decorative elements -->
+              <div style="position: absolute; top: 50%; left: 25%; width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.1) 0%, rgba(139, 95, 179, 0.05) 100%); z-index: 0;"></div>
+              <div style="position: absolute; bottom: 10%; right: 10%; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.15) 0%, rgba(139, 95, 179, 0.08) 100%); z-index: 0;"></div>
+              
+              <!-- Small decorative elements (pins, stickers, etc.) -->
+              <div style="position: absolute; top: 20px; left: 50px; width: 15px; height: 15px; background: #e83e8c; border-radius: 50%; z-index: 4;"></div>
+              <div style="position: absolute; bottom: 40px; right: 30%; width: 24px; height: 8px; background: #3a2259; border-radius: 4px; transform: rotate(30deg); z-index: 4;"></div>
+            </div>
+            
+            <!-- Right Text Content -->
+            <div style="width: 50%; text-align: right;">
+              <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #2d1a45;">Design Your Future</h3>
+              <ul style="text-align: right; padding-right: 24px; list-style-position: inside;">
+                <li style="margin-bottom: 12px; color: #333;">Choose from multiple templates or start from scratch</li>
+                <li style="margin-bottom: 12px; color: #333;">Drag and drop your favorite inspiration images</li>
+                <li style="margin-bottom: 12px; color: #333;">Add personalized goals with tracking features</li>
+                <li style="color: #333;">Share your board or keep it private</li>
+              </ul>
+              <div style="margin-top: 24px;">
+                <a href="create-board.html" class="cta-button" style="display: inline-block;">Create Now</a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Add more space before Daily Focus Work feature -->
+          <div style="height: 80px;"></div>
+          
+          <!-- Daily Focus Work Feature - Left Aligned -->
+          <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #181818; text-align: left; align-self: flex-start;">Daily Focus Work</h2>
+          <p style="color: #444; margin-bottom: 32px; max-width: 700px; line-height: 1.6; text-align: left; align-self: flex-start;">
+            Track your daily focus sessions and build productive habits with our timer.<br>
+            Maximize productivity and achieve your goals through dedicated focus time.
+          </p>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f0f8ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden; align-self: flex-start;">
+            <!-- Left: Pomodoro Timer Visualization -->
+            <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
+              <div style="position: relative; z-index: 3; text-align: center;">
+                <div style="width: 180px; height: 180px; border-radius: 50%; background: #2d1a45; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                  <div style="font-size: 2.5rem; font-weight: bold; color: white; font-family: 'Inter', sans-serif;">25</div>
+                  <div style="font-size: 1rem; color: #c8a2e8; margin-top: 5px;">minutes</div>
+                </div>
+                <div style="display: flex; margin-top: 15px; justify-content: center, gap: 10px;">
+                  <div style="width: 30px; height: 30px; border-radius: 50%; background: #2d1a45;"></div>
+                  <div style="width: 30px; height: 30px; border-radius: 50%; background: rgba(45, 26, 69, 0.3);"></div>
+                  <div style="width: 30px; height: 30px; border-radius: 50%; background: rgba(45, 26, 69, 0.3);"></div>
+                  <div style="width: 30px; height: 30px; border-radius: 50%; background: rgba(45, 26, 69, 0.3);"></div>
+                </div>
+              </div>
+              
+              <!-- Decorative elements -->
+              <div style="position: absolute; top: 20%; left: 15%; width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.1) 0%, rgba(139, 95, 179, 0.05) 100%); z-index: 0;"></div>
+              <div style="position: absolute; bottom: 10%; right: 15%; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.15) 0%, rgba(139, 95, 179, 0.08) 100%); z-index: 0;"></div>
+            </div>
+            
+            <!-- Right: Feature Points -->
+            <div style="width: 50%; text-align: left;">
+              <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #2d1a45;">Build Focus Habits</h3>
+              <ul style="text-align: left; padding-left: 24px; list-style-position: outside;">
+                <li style="margin-bottom: 12px; color: #333;">Pomodoro technique timer to maximize focus</li>
+                <li style="margin-bottom: 12px; color: #333;">Daily and weekly productivity tracking</li>
+                <li style="margin-bottom: 12px; color: #333;">Achievement badges for consistent work</li>
+                <li style="color: #333;">Productivity analytics and insights</li>
+              </ul>
+              <div style="margin-top: 24px;">
+                <a href="focus-timer.html" class="cta-button" style="display: inline-block;">Start Focusing</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Add space before Visualize Your Journey section -->
+    <div style="height: 48px;"></div>
+
+    <!-- Visualize Your Journey Feature - Right Aligned -->
+    <section style="padding: 0 0 56px 0;">
+      <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
+        <div style="display: flex; flex-direction: column; align-items: flex-end;">
+          <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #181818; text-align: right;">Visualize Your Journey</h2>
+          <p style="color: #444; margin-bottom: 32px; max-width: 700px; line-height: 1.6; text-align: right;">
+            View timeline and milestones from all your vision board goals in one place.<br>
+            Track your progress visually and celebrate achievements along your path.
+          </p>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f2f0ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
+            <!-- Right Text Content -->
+            <div style="width: 50%; text-align: right;">
+              <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #2d1a45;">Track Your Progress</h3>
+              <ul style="text-align: right; padding-right: 24px; list-style-position: inside;">
+                <li style="margin-bottom: 12px; color: #333;">View all your goals and milestones in a timeline view</li>
+                <li style="margin-bottom: 12px; color: #333;">Celebrate progress with achievement markers</li>
+                <li style="margin-bottom: 12px; color: #333;">Set and adjust timeline projections</li>
+                <li style="color: #333;">Share your journey progress with your community</li>
+              </ul>
+              <div style="margin-top: 24px;">
+                <a href="timeline.html" class="cta-button" style="display: inline-block;">View Timeline</a>
+              </div>
+            </div>
+            
+            <!-- Left: Timeline Visualization -->
+            <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
+              <div style="position: relative; z-index: 3; text-align: center; width: 100%;">
+                <!-- Timeline visualization -->
+                <div style="position: relative; height: 200px; padding-left: 20px;">
+                  <!-- Vertical timeline line -->
+                  <div style="position: absolute; left: 10px; top: 0; bottom: 0; width: 4px; background: #3a2259; border-radius: 2px;"></div>
+                  
+                  <!-- Milestone 1 - Completed -->
+                  <div style="position: absolute; left: 0; top: 20px; display: flex; align-items: center;">
+                    <div style="width: 24px; height: 24px; border-radius: 50%; background: #2d1a45; border: 3px solid #c8a2e8; margin-right: 15px; position: relative; z-index: 2;"></div>
+                    <div style="background: #2d1a45; padding: 10px 15px; border-radius: 6px; color: white; box-shadow: 0 3px 8px rgba(0,0,0,0.1);">
+                      <div style="font-weight: 600; font-size: 0.9rem;">Goal Started</div>
+                      <div style="font-size: 0.8rem; color: #c8a2e8;">January 15, 2025</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Milestone 2 - In Progress -->
+                  <div style="position: absolute; left: 0; top: 90px; display: flex; align-items: center;">
+                    <div style="width: 24px; height: 24px; border-radius: 50%; background: #2d1a45; border: 3px solid #c8a2e8; margin-right: 15px; position: relative, z-index: 2;"></div>
+                    <div style="background: #2d1a45; padding: 10px 15px; border-radius: 6px; color: white; box-shadow: 0 3px 8px rgba(0,0,0,0.1);">
+                      <div style="font-weight: 600; font-size: 0.9rem;">25% Complete</div>
+                      <div style="font-size: 0.8rem; color: #c8a2e8;">March 10, 2025</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Milestone 3 - Future -->
+                  <div style="position: absolute; left: 0; top: 160px; display: flex; align-items: center; opacity: 0.7;">
+                    <div style="width: 24px; height: 24px; border-radius: 50%; background: transparent; border: 3px solid #c8a2e8; margin-right: 15px; position: relative; z-index: 2;"></div>
+                    <div style="background: #3a2259; padding: 10px 15px; border-radius: 6px; color: white; box-shadow: 0 3px 8px rgba(0,0,0,0.1);">
+                      <div style="font-weight: 600; font-size: 0.9rem;">Goal Completion</div>
+                      <div style="font-size: 0.8rem; color: #c8a2e8;">August 30, 2025</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Decorative elements -->
+              <div style="position: absolute; top: 20%; right: 15%; width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.1) 0%, rgba(139, 95, 179, 0.05) 100%); z-index: 0;"></div>
+              <div style="position: absolute; bottom: 10%; left: 15%; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.15) 0%, rgba(139, 95, 179, 0.08) 100%); z-index: 0;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Add space before In-Depth Analysis section -->
+    <div style="height: 48px;"></div>
+
+    <!-- In-Depth Analysis Feature - Left Aligned -->
+    <section style="padding: 0 0 56px 0;">
+      <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
+        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+          <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #181818; text-align: left;">In-Depth Analysis</h2>
+          <p style="color: #444; margin-bottom: 32px; max-width: 700px; line-height: 1.6; text-align: left;">
+            Get detailed insights into your progress with advanced analytics and reports.<br>
+            Understand patterns and optimize your journey to achieve goals faster.
+          </p>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f5f0ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden; align-self: flex-start;">
+            <!-- Left: Analytics Visualization -->
+            <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
+              <div style="position: relative; z-index: 3; text-align: center; width: 100%;">
+                <!-- Analytics Visualization -->
+                <div style="position: relative; margin-bottom: 20px;">
+                  <!-- Bar Chart -->
+                  <div style="display: flex; height: 140px; align-items: flex-end; justify-content: space-between; margin-bottom: 10px;">
+                    <div style="width: 30px; height: 70%; background: #3a2259; border-radius: 4px 4px 0 0; position: relative;">
+                      <div style="position: absolute; top: -20px; width: 100%; text-align: center; font-size: 0.8rem; color: #2d1a45;">Mon</div>
+                    </div>
+                    <div style="width: 30px; height: 50%; background: #3a2259; border-radius: 4px 4px 0 0; position: relative;">
+                      <div style="position: absolute; top: -20px; width: 100%; text-align: center, font-size: 0.8rem; color: #2d1a45;">Tue</div>
+                    </div>
+                    <div style="width: 30px; height: 90%; background: #3a2259; border-radius: 4px 4px 0 0; position: relative;">
+                      <div style="position: absolute; top: -20px; width: 100%; text-align: center; font-size: 0.8rem; color: #2d1a45;">Wed</div>
+                    </div>
+                    <div style="width: 30px; height: 60%; background: #3a2259; border-radius: 4px 4px 0 0; position: relative;">
+                      <div style="position: absolute; top: -20px; width: 100%; text-align: center; font-size: 0.8rem; color: #2d1a45;">Thu</div>
+                    </div>
+                    <div style="width: 30px; height: 80%; background: #3a2259; border-radius: 4px 4px 0 0; position: relative;">
+                      <div style="position: absolute; top: -20px; width: 100%; text-align: center; font-size: 0.8rem; color: #2d1a45;">Fri</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Axis Line -->
+                  <div style="height: 2px; background: #3a2259; width: 100%;"></div>
+                </div>
+                
+                <!-- Circular Progress Chart -->
+                <div style="display: flex; justify-content: space-around; align-items: center;">
+                  <div style="position: relative; width: 70px; height: 70px; border-radius: 50%; background: conic-gradient(#3a2259 0% 75%, #e0e0e0 75% 100%); transform: rotate(-90deg);">
+                    <div style="position: absolute; top: 10px; left: 10px; width: 50px; height: 50px; border-radius: 50%; background: white; transform: rotate(90deg); display: flex; justify-content: center; align-items: center; font-weight: bold; color: #2d1a45;">75%</div>
+                  </div>
+                  <div style="position: relative; width: 70px; height: 70px; border-radius: 50%; background: conic-gradient(#3a2259 0% 40%, #e0e0e0 40% 100%); transform: rotate(-90deg);">
+                    <div style="position: absolute; top: 10px; left: 10px; width: 50px; height: 50px; border-radius: 50%; background: white; transform: rotate(90deg); display: flex; justify-content: center; align-items: center; font-weight: bold; color: #2d1a45;">40%</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Decorative elements -->
+              <div style="position: absolute; top: 20%; left: 15%; width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.1) 0%, rgba(139, 95, 179, 0.05) 100%); z-index: 0;"></div>
+              <div style="position: absolute; bottom: 10%; right: 15%; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.15) 0%, rgba(139, 95, 179, 0.08) 100%); z-index: 0;"></div>
+            </div>
+            
+            <!-- Right: Feature Points -->
+            <div style="width: 50%; text-align: left;">
+              <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #2d1a45;">Unlock Data-Driven Insights</h3>
+              <ul style="text-align: left; padding-left: 24px; list-style-position: outside;">
+                <li style="margin-bottom: 12px; color: #333;">Track patterns in your progress over time</li>
+                <li style="margin-bottom: 12px; color: #333;">Identify peak productivity hours and environments</li>
+                <li style="margin-bottom: 12px; color: #333;">Get personalized recommendations based on your data</li>
+                <li style="color: #333;">Generate detailed visual reports of your achievements</li>
+              </ul>
+              <div style="margin-top: 24px;">
+                <a href="analytics.html" class="cta-button" style="display: inline-block;">Explore</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Add space before Zeni AI Coach section -->
+    <div style="height: 48px;"></div>
+
+    <!-- Zeni AI Coach Feature - Right Aligned -->
+    <section style="padding: 0 0 56px 0;">
+      <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
+        <div style="display: flex; flex-direction: column; align-items: flex-end;">
+          <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #181818; text-align: right;">Zeni, Your AI Coach</h2>
+          <p style="color: #444; margin-bottom: 32px; max-width: 700px; line-height: 1.6; text-align: right;">
+            Talk to Zeni, your tough, realistic AI coach. Get no-nonsense advice and motivation to chase your goals.
+          </p>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #1f0f35; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
+            <!-- Right Text Content -->
+            <div style="width: 50%; text-align: right;">
+              <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #e0e0e0;">Tough Love for Real Results</h3>
+              
+              <!-- Chat Preview -->
+              <div style="background: #2d1a45; border-radius: 8px; padding: 12px; margin-bottom: 15px; text-align: left;">
+                <div style="color: #c8a2e8; font-weight: 600; margin-bottom: 5px;">Zeni</div>
+                <div style="color: #e0e0e0; line-height: 1.4; font-size: 0.95rem;">
+                  Ready to push your limits?
+                </div>
+              </div>
+              
+              <!-- List items - simplified -->
+              <ul style="text-align: right; padding-right: 20px; list-style-position: inside; color: #b0b0b0;">
+                <li style="margin-bottom: 12px;">Get straightforward feedback on your progress</li>
+                <li style="margin-bottom: 12px;">Receive personalized accountability checks</li>
+                <li style="margin-bottom: 12px;">Develop a realistic plan to achieve your goals</li>
+                <li>Stay motivated with tough but fair coaching</li>
+              </ul>
+              <div style="margin-top: 24px;">
+                <a href="zeni-coach.html" class="cta-button" style="display: inline-block; background-color: #4a2889;">Talk to Zeni</a>
+              </div>
+            </div>
+            
+            <!-- Left: Zeni AI Coach Visualization -->
+            <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
+              <div style="position: relative; z-index: 3; width: 100%; text-align: center;">
+                <!-- AI Coach Avatar -->
+                <div style="width: 180px; height: 180px; border-radius: 50%; background: #3a2259; margin: 0 auto; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                  <img src="assets/zeni-coach.png" alt="Zeni AI Coach" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/180x180/3a2259/ffffff?text=ZENI'; this.onerror=null;">
+                  <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(45, 26, 69, 0.8); padding: 5px 0; text-align: center;">
+                    <div style="color: white; font-weight: 600; font-size: 1.1rem;">ZENI</div>
+                  </div>
+                </div>
+                
+                <!-- Coach Status Indicator -->
+                <div style="margin-top: 15px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 12px; height: 12px; border-radius: 50%; background: #4CAF50; margin-right: 8px;"></div>
+                  <div style="color: #c8a2e8; font-size: 0.9rem;">Online now</div>
+                </div>
+              </div>
+              
+              <!-- Decorative elements -->
+              <div style="position: absolute; top: 20%; left: 15%; width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.1) 0%, rgba(139, 95, 179, 0.05) 100%); z-index: 0;"></div>
+              <div style="position: absolute; bottom: 10%; right: 15%; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.15) 0%, rgba(139, 95, 179, 0.08) 100%); z-index: 0;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add space before Reflect on Your Journey section -->
+    <div style="height: 48px;"></div>
+
+    <!-- Reflect on Your Journey Feature - Left Aligned -->
+    <section style="padding: 0 0 56px 0;">
+      <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
+        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+          <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #181818; text-align: left;">Reflect on Your Journey</h2>
+          <p style="color: #444; margin-bottom: 32px; max-width: 700px; line-height: 1.6; text-align: left;">
+            Document your thoughts, insights, and reflections in your personal journal.<br>
+            Process your experiences and gain deeper understanding of your progress.
+          </p>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #faf6ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden; align-self: flex-start;">
+            <!-- Left: Journal Visualization -->
+            <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
+              <div style="position: relative; z-index: 3; text-align: center; width: 100%;">
+                <!-- Journal Visualization -->
+                <div style="position: relative; width: 220px; height: 180px; margin: 0 auto; perspective: 1000px;">
+                  <!-- Journal Cover -->
+                  <div style="position: absolute; width: 180px; height: 180px; background: #3a2259; border-radius: 4px; transform: rotateY(15deg); box-shadow: 2px 4px 15px rgba(0,0,0,0.3); z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden;">
+                    <div style="font-size: 1.2rem; color: white; font-weight: bold; text-align: center; margin-bottom: 10px;">My Journey</div>
+                    <div style="width: 60%; height: 2px; background: white; margin-bottom: 15px;"></div>
+                    <div style="color: #c8a2e8; text-align: center; font-size: 0.9rem;">2025</div>
+                  </div>
+                  
+                  <!-- Journal Pages -->
+                  <div style="position: absolute; width: 170px; height: 170px; background: white; border-radius: 4px; right: 20px; top: 5px; box-shadow: 1px 3px 8px rgba(0,0,0,0.2);">
+                    <!-- Page Lines -->
+                    <div style="padding: 20px;">
+                      <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
+                      <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
+                      <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
+                      <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
+                      <div style="width: 80%; height: 1px; background: #ddd;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Decorative elements -->
+              <div style="position: absolute; top: 20%; right: 15%; width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.1) 0%, rgba(139, 95, 179, 0.05) 100%); z-index: 0;"></div>
+              <div style="position: absolute; bottom: 10%; left: 15%; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.15) 0%, rgba(139, 95, 179, 0.08) 100%); z-index: 0;"></div>
+            </div>
+            
+            <!-- Right Text Content -->
+            <div style="width: 50%; text-align: left;">
+              <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #2d1a45;">Journal Your Growth</h3>
+              <ul style="text-align: left; padding-left: 24px; list-style-position: outside;">
+                <li style="margin-bottom: 12px; color: #333;">Capture thoughts and insights about your progress</li>
+                <li style="margin-bottom: 12px; color: #333;">Document breakthroughs and learning moments</li>
+                <li style="margin-bottom: 12px; color: #333;">Review past entries to see your evolution</li>
+                <li style="color: #333;">Link journal entries to specific goals and milestones</li>
+              </ul>
+              <div style="margin-top: 24px;">
+                <a href="journal.html" class="cta-button" style="display: inline-block;">Journal</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Add space before Future Note section -->
+    <div style="height: 48px;"></div>
+
+    <!-- Future Note Feature - Right Aligned -->
+    <section style="padding: 0 0 56px 0;">
+      <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
+        <div style="display: flex; flex-direction: column; align-items: flex-end;">
+          <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #181818; text-align: right;">Future Note</h2>
+          <p style="color: #444; margin-bottom: 32px; max-width: 700px; line-height: 1.6; text-align: right;">
+            Write a message to your future self. Set a date and receive it when you need it most.
+          </p>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f8f0ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
+            <!-- Left: Future Note Visualization -->
+            <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
+              <div style="position: relative; z-index: 3; text-align: center; width: 100%;">
+                <!-- Letter/Note Visualization -->
+                <div style="position: relative; width: 220px; height: 180px; margin: 0 auto; perspective: 1000px;">
+                  <!-- Envelope -->
+                  <div style="position: absolute; width: 180px; height: 120px; background: #3a2259; border-radius: 4px; transform: rotate(-5deg); box-shadow: 2px 4px 15px rgba(0,0,0,0.3); z-index: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden;">
+                    <div style="border-top: 60px solid #2d1a45; border-left: 90px solid transparent; border-right: 90px solid transparent; position: absolute; top: 0; left: 0;"></div>
+                    <div style="position: absolute; top: 20px; width: 100%; text-align: center;">
+                      <div style="font-size: 0.8rem; color: white; font-weight: bold; margin-bottom: 5px;">TO: FUTURE ME</div>
+                      <div style="width: 40%; height: 1px; background: #c8a2e8; margin: 0 auto;"></div>
+                      <div style="font-size: 0.7rem; color: #c8a2e8; margin-top: 5px;">OPEN ON: DEC 31, 2025</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Note paper -->
+                  <div style="position: absolute; width: 160px; height: 180px; background: white; border-radius: 4px; right: 10px; top: 0px; box-shadow: 1px 3px 8px rgba(0,0,0,0.2); transform: rotate(3deg); z-index: 0;">
+                    <!-- Note Lines -->
+                    <div style="padding: 30px 20px;">
+                      <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
+                      <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
+                      <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
+                      <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
+                      <div style="width: 80%; height: 1px; background: #ddd;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Decorative elements -->
+              <div style="position: absolute; top: 20%; right: 15%; width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.1) 0%, rgba(139, 95, 179, 0.05) 100%); z-index: 0;"></div>
+              <div style="position: absolute; bottom: 10%; left: 15%; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.15) 0%, rgba(139, 95, 179, 0.08) 100%); z-index: 0;"></div>
+            </div>
+            
+            <!-- Right Text Content -->
+            <div style="width: 50%; text-align: right;">
+              <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #2d1a45;">Send Messages Through Time</h3>
+              <ul style="text-align: right; padding-right: 24px; list-style-position: inside;">
+                <li style="margin-bottom: 12px; color: #333;">Create motivational notes for your future self</li>
+                <li style="margin-bottom: 12px; color: #333;">Schedule delivery for meaningful dates</li>
+                <li style="margin-bottom: 12px; color: #333;">Reflect on past ambitions and growth</li>
+                <li style="color: #333;">Surprise yourself with forgotten wisdom</li>
+              </ul>
+              <div style="margin-top: 24px;">
+                <a href="future-note.html" class="cta-button" style="display: inline-block;">Write a Note</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add space before Inspiration Gallery -->
     <div style="height: 48px;"></div>
 
     <!-- Inspiration Gallery Section (new design) -->

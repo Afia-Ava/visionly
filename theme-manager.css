@@ -1,0 +1,156 @@
+/* Theme variables */
+:root {
+    /* Default Soft White theme */
+    --primary: #6b46c1;
+    --primary-light: #8b5fbf;
+    --primary-lighter: #c9a9ff;
+    --primary-dark: #2d1a45;
+    --primary-darker: #1f0f35;
+    
+    /* Light theme variables */
+    --bg-main: #fff;
+    --bg-content: #fff;
+    --bg-input: #f8f9fa;
+    --bg-hover: rgba(0, 0, 0, 0.05);
+    
+    --text-primary: #333;
+    --text-secondary: #666;
+    --text-tertiary: #999;
+    
+    --border-light: #e0e0e0;
+    --border-focus: var(--primary);
+    
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --pattern-color: rgba(139, 95, 179, 0.03);
+}
+
+/* Dark Purple Theme - matches current dark mode */
+body[data-theme="dark-purple"] {
+    --primary: #6b46c1;
+    --primary-light: #8b5fbf;
+    --primary-lighter: #c9a9ff;
+    
+    --bg-main: #0a0612;
+    --bg-content: #140a22;
+    --bg-input: #1f0f35;
+    --bg-hover: rgba(255, 255, 255, 0.1);
+    
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-tertiary: #888;
+    
+    --border-light: #2d1549;
+    --border-focus: #6b4897;
+    
+    --shadow-light: rgba(139, 95, 179, 0.15);
+    --pattern-color: rgba(139, 95, 179, 0.06);
+}
+
+/* Sky Blue Theme */
+body[data-theme="sky-blue"] {
+    --primary: #4a90e2;
+    --primary-light: #72abed;
+    --primary-lighter: #c5dbf7;
+    --primary-dark: #2a5ca0;
+    --primary-darker: #1a4585;
+    
+    --pattern-color: rgba(74, 144, 226, 0.03);
+}
+
+/* Teal Green Theme */
+body[data-theme="teal-green"] {
+    --primary: #009688;
+    --primary-light: #4db6ac;
+    --primary-lighter: #b2dfdb;
+    --primary-dark: #00796b;
+    --primary-darker: #004d40;
+    
+    --pattern-color: rgba(0, 150, 136, 0.03);
+}
+
+/* Coral Pink Theme */
+body[data-theme="coral-pink"] {
+    --primary: #ff7e79;
+    --primary-light: #ff9d99;
+    --primary-lighter: #ffcecb;
+    --primary-dark: #d9534f;
+    --primary-darker: #c9302c;
+    
+    --pattern-color: rgba(255, 126, 121, 0.03);
+}
+
+/* Apply theme variables to elements */
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    background-image: 
+      linear-gradient(135deg, var(--pattern-color) 25%, transparent 25%), 
+      linear-gradient(225deg, var(--pattern-color) 25%, transparent 25%), 
+      linear-gradient(45deg, var(--pattern-color) 25%, transparent 25%), 
+      linear-gradient(315deg, var(--pattern-color) 25%, transparent 25%);
+}
+
+.profile-content {
+    background: var(--bg-content);
+    box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.form-input {
+    background: var(--bg-input);
+    border-color: var(--border-light);
+    color: var(--text-primary);
+}
+
+.form-input:focus {
+    border-color: var(--border-focus);
+}
+
+.save-btn {
+    background: var(--primary-dark);
+    color: white;
+}
+
+.save-btn:hover {
+    background: var(--primary-darker);
+}
+
+/* Typography colors */
+.profile-header h1, 
+.profile-details h2,
+.edit-section h3,
+.settings-section h3 {
+    color: var(--text-primary);
+}
+
+.profile-header p,
+.profile-details p,
+.settings-item span,
+.form-label {
+    color: var(--text-secondary);
+}
+
+.stat-number {
+    color: var(--text-primary);
+}
+
+.stat-label {
+    color: var(--text-tertiary);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    background: #e0e0e0;
+}
+
+.toggle-switch.active {
+    background: var(--primary);
+}
+
+/* Avatar Selection */
+.avatar-option.selected {
+    border-color: var(--primary);
+}
+
+[data-theme="dark-purple"] .avatar-option.selected {
+    border-color: var(--primary-lighter);
+}

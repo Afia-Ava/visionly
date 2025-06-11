@@ -1,0 +1,93 @@
+/* Theme color variables */
+:root {
+    /* Default Purple Theme */
+    --primary: #6b46c1;
+    --primary-light: #8b5fbf;
+    --primary-lighter: #c9a9ff;
+    --primary-dark: #2d1a45;
+    --primary-darker: #1f0f35;
+    
+    --background-pattern: rgba(139, 95, 179, 0.03);
+    --dark-background-pattern: rgba(139, 95, 179, 0.06);
+}
+
+/* Theme: Blue */
+body[data-theme="blue"] {
+    --primary: #3f51b5;
+    --primary-light: #7986cb;
+    --primary-lighter: #c5cae9;
+    --primary-dark: #1a237e;
+    --primary-darker: #0d1442;
+    
+    --background-pattern: rgba(63, 81, 181, 0.03);
+    --dark-background-pattern: rgba(63, 81, 181, 0.06);
+}
+
+/* Theme: Green */
+body[data-theme="green"] {
+    --primary: #4CAF50;
+    --primary-light: #81C784;
+    --primary-lighter: #C8E6C9;
+    --primary-dark: #2E7D32;
+    --primary-darker: #1B5E20;
+    
+    --background-pattern: rgba(76, 175, 80, 0.03);
+    --dark-background-pattern: rgba(76, 175, 80, 0.06);
+}
+
+/* Theme: Pink */
+body[data-theme="pink"] {
+    --primary: #E91E63;
+    --primary-light: #F06292;
+    --primary-lighter: #F8BBD0;
+    --primary-dark: #AD1457;
+    --primary-darker: #880E4F;
+    
+    --background-pattern: rgba(233, 30, 99, 0.03);
+    --dark-background-pattern: rgba(233, 30, 99, 0.06);
+}
+
+/* Theme: Orange */
+body[data-theme="orange"] {
+    --primary: #FF9800;
+    --primary-light: #FFB74D;
+    --primary-lighter: #FFE0B2;
+    --primary-dark: #E65100;
+    --primary-darker: #BF360C;
+    
+    --background-pattern: rgba(255, 152, 0, 0.03);
+    --dark-background-pattern: rgba(255, 152, 0, 0.06);
+}
+
+/* Apply theme colors to elements */
+body {
+    background-image: 
+      linear-gradient(135deg, var(--background-pattern) 25%, transparent 25%), 
+      linear-gradient(225deg, var(--background-pattern) 25%, transparent 25%), 
+      linear-gradient(45deg, var(--background-pattern) 25%, transparent 25%), 
+      linear-gradient(315deg, var(--background-pattern) 25%, transparent 25%);
+}
+
+body.dark-mode {
+    background-image: 
+      linear-gradient(135deg, var(--dark-background-pattern) 25%, transparent 25%), 
+      linear-gradient(225deg, var(--dark-background-pattern) 25%, transparent 25%), 
+      linear-gradient(45deg, var(--dark-background-pattern) 25%, transparent 25%), 
+      linear-gradient(315deg, var(--dark-background-pattern) 25%, transparent 25%);
+}
+
+.form-input:focus {
+    border-color: var(--primary);
+}
+
+.save-btn, .toggle-switch.active, .avatar-option.selected {
+    background: var(--primary-darker);
+}
+
+.save-btn:hover {
+    background: var(--primary-dark);
+}
+
+body.dark-mode .avatar-option.selected {
+    border-color: var(--primary-lighter);
+}
