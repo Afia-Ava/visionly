@@ -69,9 +69,163 @@
       transform: translateY(-6px);
       box-shadow: 0 6px 20px rgba(45, 26, 69, 0.15) !important;
     }
+
+    /* 3D and Animation Effects */
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .floating-slow {
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    .floating-fast {
+      animation: float 4s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-15px);
+      }
+      100% {
+        transform: translateY(0px);
+      }
+    }
+    
+    .rotate-3d {
+      transition: transform 0.8s ease;
+      transform-style: preserve-3d;
+    }
+    
+    .rotate-3d:hover {
+      transform: rotateY(10deg) rotateX(5deg);
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    .shimmer {
+      background: linear-gradient(
+        to right,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.2) 50%,
+        rgba(255,255,255,0) 100%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% {
+        background-position: -100% 0;
+      }
+      100% {
+        background-position: 100% 0;
+      }
+    }
+    
+    .scale-in {
+      animation: scaleIn 0.5s ease-out forwards;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    
+    @keyframes scaleIn {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Particle background */
+    .particle-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    /* Fun 3D card effect */
+    .tilt-card {
+      transform-style: preserve-3d;
+      transition: all 0.5s ease;
+      perspective: 1000px;
+    }
+
+    .tilt-card-inner {
+      transform-style: preserve-3d;
+    }
+    
+    .tilt-card:hover .tilt-card-inner {
+      transform: translateZ(20px);
+    }
+
+    .tilt-card-shine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    
+    .tilt-card:hover .tilt-card-shine {
+      opacity: 1;
+    }
+
+    /* Confetti button effect */
+    .confetti-button {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .confetti-button .confetti {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      opacity: 0;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body style="font-family: 'Inter', sans-serif; background-color: #fff; color: #333; margin: 0; padding: 0;">
+    
+    <!-- Particle background container -->
+    <div class="particle-container" id="particle-container"></div>
     
     <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
         <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
@@ -87,20 +241,21 @@
 
     <div id="navbar-container"></div>
 
-    <!-- Hero Section as a centered card with background image and dark purple overlay -->
+    <!-- Hero Section with animation effects -->
     <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 110px; margin-bottom: 32px;">
-      <div style="width: 98vw; max-width: 1100px; border-radius: 12px, 12px 0 0; overflow: hidden; box-shadow: 0 4px 24px rgba(80,40,120,0.07); position: relative; min-height: 280px;">
+      <div class="tilt-card" style="width: 98vw; max-width: 1100px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(80,40,120,0.07); position: relative; min-height: 280px;">
         <div style="position: absolute; inset: 0; z-index: 1; background: url('assets/inspiration3.png') center center / cover no-repeat;"></div>
         <div style="position: absolute; inset: 0; z-index: 2; background: linear-gradient(120deg, rgba(76, 36, 131, 0.72) 0%, rgba(60, 30, 100, 0.82) 100%);"></div>
-        <div style="padding: 80px 24px 72px 24px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 3;">
-          <h1 style="color: #fff; font-size: 2.3rem; font-weight: 700; margin-bottom: 12px; text-align: center; letter-spacing: -1px;">Vision Boards And Track Progress</h1>
-          <p style="color: #f3eaff; font-size: 1.08rem; margin-bottom: 32px; text-align: center;">Visualize your goals and turn them into reality</p>
-          <a href="create-board.html" style="background: #3b207a; color: #fff; font-weight: 600; border-radius: 6px; padding: 12px 32px; font-size: 1rem; text-decoration: none; box-shadow: 0 2px 8px rgba(80,40,120,0.08); transition: all 0.3s ease; border: 1px solid #8b5fb3;" onmouseover="this.style.transform='translateY(-4px) scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(80,40,120,0.25)'; this.style.background='#4a2889';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 2px 8px rgba(80,40,120,0.08)'; this.style.background='#3b207a';">Create</a>
+        <div class="tilt-card-inner" style="padding: 80px 24px 72px 24px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 3;">
+          <h1 class="scale-in" style="color: #fff; font-size: 2.3rem; font-weight: 700; margin-bottom: 12px; text-align: center; letter-spacing: -1px; animation-delay: 0.2s;">Vision Boards And Track Progress</h1>
+          <p class="scale-in" style="color: #f3eaff; font-size: 1.08rem; margin-bottom: 32px; text-align: center; animation-delay: 0.4s;">Visualize your goals and turn them into reality</p>
+          <a href="create-board.html" class="confetti-button scale-in" style="background: #3b207a; color: #fff; font-weight: 600; border-radius: 6px; padding: 12px 32px; font-size: 1rem; text-decoration: none; box-shadow: 0 2px 8px rgba(80,40,120,0.08); transition: all 0.3s ease; border: 1px solid #8b5fb3; animation-delay: 0.6s;" onmouseover="this.style.transform='translateY(-4px) scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(80,40,120,0.25)'; this.style.background='#4a2889';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 2px 8px rgba(80,40,120,0.08)'; this.style.background='#3b207a';">Create</a>
         </div>
+        <div class="tilt-card-shine"></div>
       </div>
     </div>
 
-    <!-- Features Section -->
+    <!-- Features Section with floating animations -->
     <section style="padding: 0 0 56px 0;">
       <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
         <!-- Add more spacing before the headline -->
@@ -109,7 +264,7 @@
         <p style="color: #444; margin-bottom: 38px; max-width: none; line-height: 1.6; white-space: nowrap;">Visionly empowers you to visualize your goals, maintain focus, and track your progress, transforming your aspirations into reality.</p>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
           <!-- Feature 1 -->
-          <div class="feature-card" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0;">
+          <div class="feature-card floating" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0;">
             <div style="margin-bottom: 12px;">
               <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #2d1549; border-radius: 50%;">
                 <svg width="20" height="20" fill="none" stroke="#c8a2e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -124,7 +279,7 @@
             </div>
           </div>
           <!-- Feature 2 -->
-          <div class="feature-card" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0;">
+          <div class="feature-card floating-slow" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0; animation-delay: 0.2s;">
             <div style="margin-bottom: 12px;">
               <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #2d1549; border-radius: 50%;">
                 <svg width="20" height="20" fill="none" stroke="#c8a2e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -139,7 +294,7 @@
             </div>
           </div>
           <!-- Feature 3 -->
-          <div class="feature-card" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0;">
+          <div class="feature-card floating-fast" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0; animation-delay: 0.4s;">
             <div style="margin-bottom: 12px;">
               <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #2d1549; border-radius: 50%;">
                 <svg width="20" height="20" fill="none" stroke="#c8a2e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -167,7 +322,55 @@
     <!-- Add space after Features section -->
     <div style="height: 48px;"></div>
     
-    <!-- Create Board Feature Highlight Section -->
+    <!-- Inspiration Gallery Section (new design) - MOVED HERE -->
+    <section class="gallery" id="gallery" style="padding: 0 0 56px 0; background: transparent !important;">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+        <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 28px; color: #181818;">Inspiration Gallery</h2>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+          <!-- Card 1 -->
+          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
+            <img src="assets/card1.jpg" alt="Productive Workspace" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Productive Workspace</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Design a workspace that fosters creativity and efficiency.</div>
+              <a href="workspace.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
+            <img src="assets/card2.jpeg" alt="Healthy Habits" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Healthy Habits</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Inspire your wellness journey with visuals that motivate daily healthy choices.</div>
+              <a href="healthy-habits-board.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
+            <img src="assets/card3.jpeg" alt="Travel Dreams" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Travel Dreams</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Visualize your next adventure and keep your travel goals top of mind.</div>
+              <a href="travel-board.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
+            </div>
+          </div>
+          <!-- Card 4 -->
+          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
+            <img src="assets/card4.jpg" alt="Creative Pursuits" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Creative Pursuits</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Fuel your artistic side with boards dedicated to your creative passions.</div>
+              <a href="creative-board.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Add space before Create Your Vision Board section -->
+    <div style="height: 48px;"></div>
+    
+    <!-- Create Board Feature Highlight Section - NOW AFTER GALLERY -->
     <section style="padding: 0 0 56px 0;">
       <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
         <div style="display: flex; flex-direction: column; align-items: flex-end; text-align: right;">
@@ -178,25 +381,33 @@
           </p>
           
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f8f5ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
-            <!-- Polaroid Images - Left Side -->
-            <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
-              <!-- Vision Board Image -->
-              <div style="transform: rotate(-5deg); box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 180px; position: relative; z-index: 3;">
-                <img src="assets/polaroid1.png" alt="Vision Board Example" style="width: 100%; display: block;" onerror="this.src='https://via.placeholder.com/180x220/aa88cc/ffffff?text=Vision+Board'; this.onerror=null;">
-              </div>
-              
-              <!-- Progress Path Image -->
-              <div style="transform: rotate(7deg); box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 150px; margin-top: -15px; position: relative; z-index: 2;">
-                <img src="assets/polaroid2.png" alt="Vision Progress" style="width: 100%; display: block;" onerror="this.src='https://via.placeholder.com/150x180/9977bb/ffffff?text=Progress+Path'; this.onerror=null;">
+            <!-- Left Side: Modern Board Visualization -->
+            <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
+              <!-- Vision Board Mockup -->
+              <div style="position: relative; width: 240px; height: 200px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden; z-index: 3;">
+                <!-- Board Header -->
+                <div style="padding: 8px 12px; background: #3a2259; color: white; font-size: 0.9rem; font-weight: 600;">My Vision Board</div>
+                
+                <!-- Board Grid with Emojis -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 6px; padding: 8px;">
+                  <div style="background: #f0e6ff; height: 60px; border-radius: 4px; display: flex; justify-content: center; align-items: center;">
+                    <span style="font-size: 24px;" role="img" aria-label="travel">✈️</span>
+                  </div>
+                  <div style="background: #e2d6ff; height: 60px; border-radius: 4px; display: flex; justify-content: center; align-items: center;">
+                    <span style="font-size: 24px;" role="img" aria-label="fitness">💪</span>
+                  </div>
+                  <div style="background: #d8c8ff; height: 60px; border-radius: 4px; display: flex; justify-content: center; align-items: center;">
+                    <span style="font-size: 24px;" role="img" aria-label="home">🏡</span>
+                  </div>
+                  <div style="background: #f0e6ff; height: 60px; border-radius: 4px; display: flex; justify-content: center; align-items: center;">
+                    <span style="font-size: 24px;" role="img" aria-label="education">📚</span>
+                  </div>
+                </div>
               </div>
               
               <!-- Decorative elements -->
-              <div style="position: absolute; top: 50%; left: 25%; width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.1) 0%, rgba(139, 95, 179, 0.05) 100%); z-index: 0;"></div>
-              <div style="position: absolute; bottom: 10%; right: 10%; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.15) 0%, rgba(139, 95, 179, 0.08) 100%); z-index: 0;"></div>
-              
-              <!-- Small decorative elements (pins, stickers, etc.) -->
-              <div style="position: absolute; top: 20px; left: 50px; width: 15px; height: 15px; background: #e83e8c; border-radius: 50%; z-index: 4;"></div>
-              <div style="position: absolute; bottom: 40px; right: 30%; width: 24px; height: 8px; background: #3a2259; border-radius: 4px; transform: rotate(30deg); z-index: 4;"></div>
+              <div style="position: absolute; top: 20%; left: 15%; width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.1) 0%, rgba(139, 95, 179, 0.05) 100%); z-index: 0;"></div>
+              <div style="position: absolute; bottom: 10%; right: 15%; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.15) 0%, rgba(139, 95, 179, 0.08) 100%); z-index: 0;"></div>
             </div>
             
             <!-- Right Text Content -->
@@ -422,7 +633,8 @@
         <div style="display: flex; flex-direction: column; align-items: flex-end;">
           <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #181818; text-align: right;">Zeni, Your AI Coach</h2>
           <p style="color: #444; margin-bottom: 32px; max-width: 700px; line-height: 1.6; text-align: right;">
-            Talk to Zeni, your tough, realistic AI coach. Get no-nonsense advice and motivation to chase your goals.
+            Talk to Zeni, your tough, realistic AI coach.<br>
+            Get no-nonsense advice and motivation to chase your goals.
           </p>
           
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #1f0f35; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
@@ -445,9 +657,6 @@
                 <li style="margin-bottom: 12px;">Develop a realistic plan to achieve your goals</li>
                 <li>Stay motivated with tough but fair coaching</li>
               </ul>
-              <div style="margin-top: 24px;">
-                <a href="zeni-coach.html" class="cta-button" style="display: inline-block; background-color: #4a2889;">Talk to Zeni</a>
-              </div>
             </div>
             
             <!-- Left: Zeni AI Coach Visualization -->
@@ -465,6 +674,11 @@
                 <div style="margin-top: 15px; display: flex; align-items: center; justify-content: center;">
                   <div style="width: 12px; height: 12px; border-radius: 50%; background: #4CAF50; margin-right: 8px;"></div>
                   <div style="color: #c8a2e8; font-size: 0.9rem;">Online now</div>
+                </div>
+                
+                <!-- Talk to Zeni Button - Moved here -->
+                <div style="margin-top: 15px;">
+                  <a href="zeni-coach.html" class="cta-button" style="display: inline-block; background-color: #4a2889; font-size: 1rem; padding: 10px 20px;">Talk to Zeni</a>
                 </div>
               </div>
               
@@ -511,7 +725,8 @@
                       <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
                       <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
                       <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
-                      <div style="width: 80%; height: 1px; background: #ddd;"></div>
+                      <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
+                      <div style="width: 70%; height: 1px; background: #ddd;"></div>
                     </div>
                   </div>
                 </div>
@@ -605,54 +820,6 @@
       </div>
     </section>
 
-    <!-- Add space before Inspiration Gallery -->
-    <div style="height: 48px;"></div>
-
-    <!-- Inspiration Gallery Section (new design) -->
-    <section class="gallery" id="gallery" style="padding: 0 0 56px 0; background: transparent !important;">
-      <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
-        <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 28px; color: #181818;">Inspiration Gallery</h2>
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
-          <!-- Card 1 -->
-          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
-            <img src="assets/card1.jpg" alt="Productive Workspace" style="width: 100%; height: 140px; object-fit: cover;">
-            <div style="padding: 20px 18px 16px 18px; flex: 1;">
-              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Productive Workspace</div>
-              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Design a workspace that fosters creativity and efficiency.</div>
-              <a href="workspace.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
-            </div>
-          </div>
-          <!-- Card 2 -->
-          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
-            <img src="assets/card2.jpeg" alt="Healthy Habits" style="width: 100%; height: 140px; object-fit: cover;">
-            <div style="padding: 20px 18px 16px 18px; flex: 1;">
-              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Healthy Habits</div>
-              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Inspire your wellness journey with visuals that motivate daily healthy choices.</div>
-              <a href="healthy-habits-board.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
-            </div>
-          </div>
-          <!-- Card 3 -->
-          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
-            <img src="assets/card3.jpeg" alt="Travel Dreams" style="width: 100%; height: 140px; object-fit: cover;">
-            <div style="padding: 20px 18px 16px 18px; flex: 1;">
-              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Travel Dreams</div>
-              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Visualize your next adventure and keep your travel goals top of mind.</div>
-              <a href="travel-board.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
-            </div>
-          </div>
-          <!-- Card 4 -->
-          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
-            <img src="assets/card4.jpg" alt="Creative Pursuits" style="width: 100%; height: 140px; object-fit: cover;">
-            <div style="padding: 20px 18px 16px 18px; flex: 1;">
-              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Creative Pursuits</div>
-              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Fuel your artistic side with boards dedicated to your creative passions.</div>
-              <a href="creative-board.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    
     <div style="height: 36px;"></div>
 
     <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin-bottom: 36px;">
@@ -684,6 +851,7 @@
 
     <!-- Footer similar to the screenshot, no social media -->
     <footer style="padding: 24px 0 12px 0; border-top: 1px solid #f2f2f2;">
+
       <div style="max-width: 900px; margin: 0 auto; text-align: center;">
         <div style="display: flex; justify-content: center; gap: 28px; margin-bottom: 10px; flex-wrap: wrap;">
           <a href="about.html" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">About</a>
@@ -759,16 +927,14 @@
             isPlaying = true;
           }).catch(() => {
             // Autoplay blocked - set icon to off state
-            soundIcon.src = 'assets/speaker-off-icon.png';
-            soundIcon.alt = 'Sound Off';
-            isPlaying = false;
+            soundIcon.src = 'assets/speaker-off-icon
           });
         }
 
         // Try to start audio immediately
-        startAudio();
 
         // Also try to start on first user interaction
+       
         const enableAudio = () => {
           if (!isPlaying && audio.paused) {
             startAudio();
@@ -821,6 +987,7 @@
         function showImage(index) {
           // Hide all images
           images.forEach(img => img.classList.remove('active'));
+
           dots.forEach(dot => dot.classList.remove('active'));
           
           // Show selected image
