@@ -352,7 +352,36 @@
     .container {
       margin-top: 70px;
     }
+
+    .bg-option {
+      position: relative;
+      border: 2px solid transparent;
+      min-width: 60px;
+      min-height: 60px;
+      background-color: #eee;
+      transition: border 0.2s;
+      box-sizing: border-box;
+    }
+    .bg-option[style*="background-image"]:not([style*="none"])::after {
+      content: '';
+      display: block;
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      box-shadow: 0 0 0 1px #ccc inset;
+    }
+    .bg-option.selected, .bg-option[style*="outline"] {
+      border: 2px solid #3a2259 !important;
+    }
+    #text-card-preview {
+      background-color: #f5f5f5;
+      min-width: 250px;
+      min-height: 250px;
+      /* ...existing inline styles... */
+    }
   </style>
+  <!-- Add these Google Fonts in the <head> if not already present -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Oswald:wght@400;700&family=Great+Vibes&family=Prilly+Script&family=Helvetica:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
@@ -407,10 +436,147 @@
         
         <h2 style="font-weight: 500; font-size: 16px; margin-top: 0; margin-bottom: 10px;">Upload or Search Images</h2>
         
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <button class="upload-button" id="upload-button" style="flex: 1;">Upload Images</button>
+          <button class="upload-button" id="create-text-card-button" style="flex: 1; background: #3a2259; color: white;">Create Text Card</button>
+        </div>
+        
         <div class="upload-area">
           <p>Drag and drop images here or<br>click to upload</p>
-          <button class="upload-button" id="upload-button">Upload Images</button>
           <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
+        </div>
+
+        <!-- Text Card Creator Modal -->
+        <div id="text-card-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 1001; overflow-y: auto;">
+          <div style="background: white; max-width: 1100px; min-width: 900px; margin: 60px auto; padding: 40px 40px 32px 40px; border-radius: 14px; position: relative; box-shadow: 0 8px 40px rgba(0,0,0,0.25); display: flex; gap: 40px; align-items: flex-start;">
+            <button id="close-text-modal" style="position: absolute; right: 24px; top: 24px; background: none; border: none; font-size: 28px; cursor: pointer; color: #666;">×</button>
+            <!-- Left: Form Controls -->
+            <div style="flex: 2; min-width: 340px;">
+              <h3 style="margin-top: 0; margin-bottom: 24px; color: #2d1a45; font-size: 2rem;">Create Inspirational Text Card</h3>
+              <div style="margin-bottom: 24px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Your Text</label>
+                <textarea id="card-text" placeholder="Enter your inspirational text here..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; min-height: 90px; font-size: 1.1rem;"></textarea>
+              </div>
+              <div style="display: flex; gap: 18px; margin-bottom: 24px;">
+                <div style="flex: 1;">
+                  <label style="display: block; margin-bottom: 8px; font-weight: 500;">Font</label>
+                  <select id="card-font" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="Inter, sans-serif">Default</option>
+                    <option value="'Dancing Script', cursive">Script</option>
+                    <option value="'Merriweather', serif">Serif</option>
+                    <option value="'Oswald', sans-serif">Oswald</option>
+                    <option value="'Prilly Script', cursive">Prilly Script</option>
+                    <option value="'Helvetica', Arial, sans-serif">Helvetica</option>
+                  </select>
+                </div>
+                <div style="flex: 1;">
+                  <label style="display: block; margin-bottom: 8px; font-weight: 500;">Text Color</label>
+                  <select id="card-color" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="#ffffff">White</option>
+                    <option value="#000000">Black</option>
+                    <option value="#3a2259">Purple</option>
+                    <option value="#c8a2e8">Light Purple</option>
+                    <option value="#f1c40f">Gold</option>
+                    <option value="#e74c3c">Red</option>
+                    <option value="#27ae60">Green</option>
+                    <option value="#2980b9">Blue</option>
+                    <option value="#ff8c00">Orange</option>
+                    <option value="#ff69b4">Pink</option>
+                    <option value="#34495e">Dark Blue</option>
+                    <option value="#7f8c8d">Gray</option>
+                    <option value="#222222">Charcoal</option>
+                    <option value="#fffbe7">Cream</option>
+                  </select>
+                </div>
+                <div style="flex: 1;">
+                  <label style="display: block; margin-bottom: 8px; font-weight: 500;">Text Size</label>
+                  <select id="card-size" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="10px">10px</option>
+                    <option value="12px">12px</option>
+                    <option value="14px">14px</option>
+                    <option value="16px" selected>16px</option>
+                    <option value="18px">18px</option>
+                    <option value="20px">20px</option>
+                    <option value="24px">24px</option>
+                    <option value="28px">28px</option>
+                    <option value="32px">32px</option>
+                    <option value="36px">36px</option>
+                    <option value="40px">40px</option>
+                    <option value="48px">48px</option>
+                    <option value="54px">54px</option>
+                    <option value="60px">60px</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 12px; font-weight: 500;">Choose Background</label>
+                <div id="background-options" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-height: 320px; overflow-y: auto;">
+                  <!-- Move custom color and gradient pickers to the beginning -->
+                  <div class="bg-option" data-bg="custom-color" id="custom-color-bg-option" style="height: 80px; background: linear-gradient(135deg, #eee, #ccc); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative;">
+                    <input type="color" id="custom-bg-color-picker" title="Pick a background color" style="width: 40px; height: 40px; border: none; background: none; cursor: pointer; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+                    <span style="font-size: 12px; color: #888; margin-left: 10px;">Custom</span>
+                  </div>
+                  <div class="bg-option" data-bg="custom-gradient" id="custom-gradient-bg-option" style="height: 80px; background: linear-gradient(135deg, #eee, #ccc); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; gap: 8px;">
+                    <input type="color" id="custom-gradient-color1" title="Pick first gradient color" style="width: 32px; height: 32px; border: none; background: none; cursor: pointer; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+                    <span style="font-size: 12px; color: #888;">Gradient</span>
+                    <input type="color" id="custom-gradient-color2" title="Pick second gradient color" style="width: 32px; height: 32px; border: none; background: none; cursor: pointer; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+                  </div>
+                  <div class="bg-option" data-bg="textcard10" style="height: 80px; background-image: url('assets/textcard10.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  <div class="bg-option" data-bg="textcard11" style="height: 80px; background-image: url('assets/textcard11.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  <div class="bg-option" data-bg="textcard12" style="height: 80px; background-image: url('assets/textcard12.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  <div class="bg-option" data-bg="textcard13" style="height: 80px; background-image: url('assets/textcard13.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  
+                  <div class="bg-option" data-bg="textcard1" style="height: 80px; background-image: url('assets/textcard1.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  <div class="bg-option" data-bg="textcard2" style="height: 80px; background-image: url('assets/textcard2.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  <div class="bg-option" data-bg="textcard3" style="height: 80px; background-image: url('assets/textcard3.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  <div class="bg-option" data-bg="textcard4" style="height: 80px; background-image: url('assets/textcard4.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  <div class="bg-option" data-bg="textcard5" style="height: 80px; background-image: url('assets/textcard5.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  <div class="bg-option" data-bg="textcard6" style="height: 80px; background-image: url('assets/textcard6.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  <div class="bg-option" data-bg="textcard7" style="height: 80px; background-image: url('assets/textcard7.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  <div class="bg-option" data-bg="textcard8" style="height: 80px; background-image: url('assets/textcard8.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                  <div class="bg-option" data-bg="textcard9" style="height: 80px; background-image: url('assets/textcard9.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div style="margin-top: 32px; text-align: left;">
+                <button id="cancel-text-card" style="background: #f5f5f5; border: 1px solid #ddd; padding: 10px 22px; border-radius: 4px; margin-right: 16px; cursor: pointer; font-size: 1.1rem;">Cancel</button>
+                <button id="add-text-card" style="background: #2d1a45; color: white; border: none; padding: 10px 28px; border-radius: 4px; cursor: pointer; font-size: 1.1rem;">Add to Board</button>
+              </div>
+            </div>
+            <!-- Right: Live Preview -->
+            <div style="flex: 1.2; min-width: 320px; display: flex; flex-direction: column; align-items: center;">
+              <label style="display: block; margin-bottom: 14px; font-weight: 500; font-size: 1.1rem;">Preview</label>
+              <div id="text-card-preview" style="width: 320px; height: 320px; aspect-ratio: 1/1; background: linear-gradient(135deg, #3a2259, #8b5fb3); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 28px; text-align: center; margin: 0 auto; box-shadow: 0 2px 16px rgba(60,30,100,0.08);">
+                <div id="preview-text" style="color: white; font-size: 1.6rem; font-family: Inter, sans-serif; width: 100%; word-break: break-word; max-height: 100%; overflow: hidden;">Your inspirational text will appear here</div>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div class="search-container">
@@ -761,8 +927,324 @@
     }
 
     setTimeout(updatePreviewGrid, 0);
+    
+    // --- TEXT CARD CREATOR LOGIC ---
+    const createTextCardBtn = document.getElementById('create-text-card-button');
+    const textCardModal = document.getElementById('text-card-modal');
+    const closeTextModalBtn = document.getElementById('close-text-modal');
+    const cancelTextCardBtn = document.getElementById('cancel-text-card');
+    const addTextCardBtn = document.getElementById('add-text-card');
+    const cardTextInput = document.getElementById('card-text');
+    const cardFontSelect = document.getElementById('card-font');
+    const cardColorSelect = document.getElementById('card-color');
+    const cardSizeSelect = document.getElementById('card-size');
+    const textCardPreview = document.getElementById('text-card-preview');
+    const previewText = document.getElementById('preview-text');
+    const bgOptions = document.querySelectorAll('.bg-option');
+
+    // Track the currently selected background option
+    let selectedBgOption = null;
+
+    // Helper: Set preview background from a .bg-option element
+    function setPreviewBackgroundFromOption(option) {
+      if (!option) return;
+      selectedBgOption = option;
+      bgOptions.forEach(bg => bg.classList.remove('selected'));
+      option.classList.add('selected');
+      const dataBg = option.getAttribute('data-bg');
+      if (dataBg === 'custom-color') {
+        // Use the color picker's value
+        const color = customBgColorPicker.value || '#eee';
+        textCardPreview.style.background = color;
+        textCardPreview.style.backgroundImage = 'none';
+        textCardPreview.style.backgroundSize = '';
+        textCardPreview.style.backgroundPosition = '';
+      } else if (dataBg === 'custom-gradient') {
+        const color1 = customGradientColor1.value || '#eee';
+        const color2 = customGradientColor2.value || '#ccc';
+        textCardPreview.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
+        textCardPreview.style.backgroundImage = 'none';
+        textCardPreview.style.backgroundSize = '';
+        textCardPreview.style.backgroundPosition = '';
+      } else if (dataBg && dataBg.startsWith('textcard')) {
+        const bgImage = window.getComputedStyle(option).backgroundImage;
+        textCardPreview.style.background = '';
+        textCardPreview.style.backgroundImage = bgImage;
+        textCardPreview.style.backgroundSize = 'cover';
+        textCardPreview.style.backgroundPosition = 'center';
+      } else {
+        const background = window.getComputedStyle(option).background;
+        textCardPreview.style.background = background;
+        textCardPreview.style.backgroundImage = 'none';
+        textCardPreview.style.backgroundSize = '';
+        textCardPreview.style.backgroundPosition = '';
+      }
+    }
+
+    // Helper: Update preview text and style
+    function updatePreview() {
+      previewText.textContent = cardTextInput.value || 'Your inspirational text will appear here';
+      previewText.style.fontFamily = cardFontSelect.value;
+      previewText.style.color = cardColorSelect.value;
+      previewText.style.fontSize = cardSizeSelect.value;
+      // Only update background if a background is selected
+      if (selectedBgOption) setPreviewBackgroundFromOption(selectedBgOption);
+    }
+
+    if (createTextCardBtn) {
+      createTextCardBtn.addEventListener('click', function() {
+        textCardModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        // Always select the first background option on open
+        if (bgOptions.length) {
+          bgOptions.forEach(bg => bg.classList.remove('selected'));
+          bgOptions[0].classList.add('selected');
+          setPreviewBackgroundFromOption(bgOptions[0]);
+        }
+        updatePreview();
+      });
+    }
+
+    [closeTextModalBtn, cancelTextCardBtn].forEach(btn => {
+      if (btn) btn.addEventListener('click', function() {
+        textCardModal.style.display = 'none';
+        document.body.style.overflow = '';
+      });
+    });
+
+    [cardTextInput, cardFontSelect, cardColorSelect, cardSizeSelect].forEach(input => {
+      if (input) {
+        input.addEventListener('input', updatePreview);
+        input.addEventListener('change', updatePreview);
+      }
+    });
+
+    bgOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        bgOptions.forEach(bg => bg.classList.remove('selected'));
+        this.classList.add('selected');
+        setPreviewBackgroundFromOption(this);
+        updatePreview();
+      });
+    });
+
+    // Add text card to board (unchanged)
+    if (addTextCardBtn) {
+      addTextCardBtn.addEventListener('click', function() {
+        // Prepare canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = 600;
+        canvas.height = 600;
+        const ctx = canvas.getContext('2d');
+
+        // Draw background
+        const background = textCardPreview.style.background;
+        const backgroundImage = textCardPreview.style.backgroundImage;
+        function drawTextOnCanvas() {
+          // Draw text
+          ctx.fillStyle = cardColorSelect.value;
+          // Convert rem to px for canvas font
+          let pxSize = 32;
+          if (cardSizeSelect.value.endsWith('rem')) {
+            pxSize = parseFloat(cardSizeSelect.value) * 16;
+          } else if (cardSizeSelect.value.endsWith('px')) {
+            pxSize = parseInt(cardSizeSelect.value, 10);
+          }
+          ctx.font = `${pxSize}px ${cardFontSelect.value}`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          // Word wrap
+          const text = cardTextInput.value || 'Inspirational Text';
+          const words = text.split(' ');
+          const lines = [];
+          let currentLine = words[0];
+          for (let i = 1; i < words.length; i++) {
+            const testLine = currentLine + ' ' + words[i];
+            if (ctx.measureText(testLine).width > 500) {
+              lines.push(currentLine);
+              currentLine = words[i];
+            } else {
+              currentLine = testLine;
+            }
+          }
+          lines.push(currentLine);
+
+          const lineHeight = pxSize * 1.2;
+          const totalTextHeight = lines.length * lineHeight;
+          const startY = (600 - totalTextHeight) / 2 + lineHeight / 2;
+          lines.forEach((line, i) => {
+            ctx.fillText(line, 300, startY + i * lineHeight);
+          });
+        }
+
+        if (backgroundImage && backgroundImage !== 'none') {
+          // Draw image background
+          const img = new window.Image();
+          // Extract URL from backgroundImage: url("...")
+          const urlMatch = backgroundImage.match(/url\(["']?([^"')]+)["']?\)/);
+          img.crossOrigin = "anonymous";
+          img.onload = function() {
+            ctx.drawImage(img, 0, 0, 600, 600);
+            drawTextOnCanvas();
+            finish();
+          };
+          img.onerror = function() {
+            // fallback to solid color
+            ctx.fillStyle = '#3a2259';
+            ctx.fillRect(0, 0, 600, 600);
+            drawTextOnCanvas();
+            finish();
+          };
+          img.src = urlMatch ? urlMatch[1] : '';
+        } else {
+          // Gradient or solid color
+          ctx.fillStyle = background || '#3a2259';
+          ctx.fillRect(0, 0, 600, 600);
+          drawTextOnCanvas();
+          finish();
+        }
+
+        function finish() {
+          const cardImageUrl = canvas.toDataURL('image/png');
+          addImageToPreview(cardImageUrl, 'Inspirational Text Card');
+          textCardModal.style.display = 'none';
+          document.body.style.overflow = '';
+          cardTextInput.value = '';
+          updatePreview();
+        }
+      });
+    }
   });
   </script>
 
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // --- Custom Color Picker for Text Card Background ---
+    const customColorBgOption = document.getElementById('custom-color-bg-option');
+    const customBgColorPicker = document.getElementById('custom-bg-color-picker');
+    const customGradientBgOption = document.getElementById('custom-gradient-bg-option');
+    const customGradientColor1 = document.getElementById('custom-gradient-color1');
+    const customGradientColor2 = document.getElementById('custom-gradient-color2');
+    const textCardPreview = document.getElementById('text-card-preview');
+    const bgOptions = document.querySelectorAll('.bg-option');
+    let selectedBgOption = null;
+
+    // If user clicks the color picker, select the custom bg option
+    if (customBgColorPicker && customColorBgOption) {
+      customBgColorPicker.addEventListener('input', function(e) {
+        const color = e.target.value;
+        customColorBgOption.style.background = color;
+        bgOptions.forEach(bg => bg.classList.remove('selected'));
+        customColorBgOption.classList.add('selected');
+        selectedBgOption = customColorBgOption;
+        textCardPreview.style.background = color;
+        textCardPreview.style.backgroundImage = 'none';
+        textCardPreview.style.backgroundSize = '';
+        textCardPreview.style.backgroundPosition = '';
+      });
+
+      customColorBgOption.addEventListener('click', function(e) {
+        if (e.target !== customBgColorPicker) {
+          customBgColorPicker.click();
+        }
+      });
+    }
+
+    // --- Custom Gradient Picker for Text Card Background ---
+    if (customGradientBgOption && customGradientColor1 && customGradientColor2) {
+      function updateGradientBgOption() {
+        const color1 = customGradientColor1.value || '#eee';
+        const color2 = customGradientColor2.value || '#ccc';
+        customGradientBgOption.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
+        // If selected, also update preview
+        if (customGradientBgOption.classList.contains('selected')) {
+          textCardPreview.style.background = '';
+          textCardPreview.style.backgroundImage = `linear-gradient(135deg, ${color1}, ${color2})`;
+          textCardPreview.style.backgroundSize = 'cover';
+          textCardPreview.style.backgroundPosition = 'center';
+        }
+      }
+      customGradientColor1.addEventListener('input', updateGradientBgOption);
+      customGradientColor2.addEventListener('input', updateGradientBgOption);
+
+      customGradientBgOption.addEventListener('click', function(e) {
+        if (e.target === customGradientColor1 || e.target === customGradientColor2) return;
+        customGradientColor1.click();
+      });
+      [customGradientColor1, customGradientColor2].forEach(input => {
+        input.addEventListener('input', function() {
+          bgOptions.forEach(bg => bg.classList.remove('selected'));
+          customGradientBgOption.classList.add('selected');
+          selectedBgOption = customGradientBgOption;
+          updateGradientBgOption();
+        });
+      });
+      // Initialize with default colors
+      customGradientColor1.value = '#8b5fb3';
+      customGradientColor2.value = '#f1c40f';
+      updateGradientBgOption();
+    }
+
+    // Patch setPreviewBackgroundFromOption to handle custom color and gradient
+    function setPreviewBackgroundFromOption(option) {
+      if (!option) return;
+      selectedBgOption = option;
+      bgOptions.forEach(bg => bg.classList.remove('selected'));
+      option.classList.add('selected');
+      const dataBg = option.getAttribute('data-bg');
+      if (dataBg === 'custom-color') {
+        const color = customBgColorPicker.value || '#eee';
+        textCardPreview.style.background = color;
+        textCardPreview.style.backgroundImage = 'none';
+        textCardPreview.style.backgroundSize = '';
+        textCardPreview.style.backgroundPosition = '';
+      } else if (dataBg === 'custom-gradient') {
+        const color1 = customGradientColor1.value || '#eee';
+        const color2 = customGradientColor2.value || '#ccc';
+        textCardPreview.style.background = '';
+        textCardPreview.style.backgroundImage = `linear-gradient(135deg, ${color1}, ${color2})`;
+        textCardPreview.style.backgroundSize = 'cover';
+        textCardPreview.style.backgroundPosition = 'center';
+      } else if (dataBg && dataBg.startsWith('textcard')) {
+        const bgImage = window.getComputedStyle(option).backgroundImage;
+        textCardPreview.style.background = '';
+        textCardPreview.style.backgroundImage = bgImage;
+        textCardPreview.style.backgroundSize = 'cover';
+        textCardPreview.style.backgroundPosition = 'center';
+      } else {
+        const background = window.getComputedStyle(option).background;
+        textCardPreview.style.background = background;
+        textCardPreview.style.backgroundImage = 'none';
+        textCardPreview.style.backgroundSize = '';
+        textCardPreview.style.backgroundPosition = '';
+      }
+    }
+
+    // Patch updatePreview to use the above logic
+    function updatePreview() {
+      const previewText = document.getElementById('preview-text');
+      const cardTextInput = document.getElementById('card-text');
+      const cardFontSelect = document.getElementById('card-font');
+      const cardColorSelect = document.getElementById('card-color');
+      const cardSizeSelect = document.getElementById('card-size');
+      previewText.textContent = cardTextInput.value || 'Your inspirational text will appear here';
+      previewText.style.fontFamily = cardFontSelect.value;
+      previewText.style.color = cardColorSelect.value;
+      previewText.style.fontSize = cardSizeSelect.value;
+      if (selectedBgOption) setPreviewBackgroundFromOption(selectedBgOption);
+    }
+
+    // Re-bind bg-option click events to use the new setPreviewBackgroundFromOption
+    bgOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        bgOptions.forEach(bg => bg.classList.remove('selected'));
+        this.classList.add('selected');
+        setPreviewBackgroundFromOption(this);
+        updatePreview();
+      });
+    });
+  });
+  </script>
 </body>
 </html>
