@@ -5,48 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Achievements - Visionly</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="dark-mode-global.css">
   <link rel="stylesheet" href="achievement-badges.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
-  
+  <link rel="stylesheet" href="dark-mode-global.css">
   <style>
-    .achievement-section {
-        max-width: 1100px;
-        margin: 120px auto 50px;
-        padding: 0 20px;
-    }
-    
-    /* Light mode styling with darker purple zigzag pattern */
     body {
-        background-color: #ffffff;
-        position: relative;
-        z-index: 0;
+      background-color: #fff;
+      background-image: linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%),
+                        linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%),
+                        linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%),
+                        linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%);
+      background-size: 20px 20px;
+      background-position: 10px 0, 10px 0, 0 0, 0 0;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      transition: all 0.3s ease;
     }
     
-    /* Darker purple zigzag pattern */
+    /* Remove any custom body::before background for achievements page */
     body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        opacity: 0.06; /* Slightly increased opacity for better visibility */
-        background: linear-gradient(135deg, #6B46C1 25%, transparent 25%) -10px 0,
-                    linear-gradient(225deg, #6B46C1 25%, transparent 25%) -10px 0,
-                    linear-gradient(315deg, #6B46C1 25%, transparent 25%),
-                    linear-gradient(45deg, #6B46C1 25%, transparent 25%);
-        background-size: 20px 20px;
+      content: none !important;
+      background: none !important;
     }
-
+    
+    .achievement-section {
+      max-width: 1100px;
+      margin: 64px auto 32px; /* Match other pages: less top/bottom margin */
+      padding: 0 24px;
+    }
+    
     .section-title {
-        text-align: left;
-        margin-bottom: 40px;
-        font-size: 2rem;
-        color: #2d1a45;
-        font-weight: 700;
+      text-align: left;
+      margin-bottom: 18px; /* Match other pages */
+      font-size: 2rem;
+      color: #2d1a45;
+      font-weight: 700;
+    }
+    
+    /* Fix badge headings to match other pages */
+    .badges-column .left-heading {
+      margin: 15px 0 20px; /* Adjusted margin */
+      padding-bottom: 8px;
     }
     
     /* Layout modifications for side-by-side design */
@@ -70,21 +71,21 @@
       flex: 1;
     }
     
-    /* Change the streak box to light purple and make it smaller */
+    /* Change the streak display to purple */
     .streak-display {
-      background: linear-gradient(135deg, #7602FF 0%, #9537FF 100%);
-      border-radius: 16px;
-      padding: 30px;
+      background: linear-gradient(135deg, #6B46C1 0%, #9537FF 100%); /* Purple gradient */
+      border-radius: 18px;
+      padding: 35px;
       color: white;
       text-align: center;
       margin-bottom: 30px;
-      box-shadow: 0 10px 25px rgba(149, 55, 255, 0.25);
+      box-shadow: 0 10px 30px rgba(107, 70, 193, 0.25); /* Purple shadow */
       position: relative;
       overflow: hidden;
-      border: none;
-      width: 100%;
+      border: 2px solid rgba(255, 255, 255, 0.2);
     }
     
+    /* Update the glow effect for the purple box */
     .streak-display::before {
       content: '';
       position: absolute;
@@ -399,160 +400,37 @@
       font-weight: 500;
     }
     
-    /* More vibrant streak display with updated colors */
-    .streak-display {
-      background: linear-gradient(135deg, #FF5500 0%, #FF9000 100%); /* Vibrant orange gradient */
-      border-radius: 18px;
-      padding: 35px;
-      color: white;
-      text-align: center;
-      margin-bottom: 30px;
-      box-shadow: 0 10px 30px rgba(255, 85, 0, 0.25);
-      position: relative;
-      overflow: hidden;
-      border: 2px solid rgba(255, 255, 255, 0.2);
+    /* Make headings more visible with darker colors */
+    .left-heading {
+      font-size: 1.4rem;
+      color: #2d1a45; /* Dark purple color */
+      margin: 25px 0 15px;
+      font-weight: 700;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.05);
     }
     
-    .streak-display::before {
+    /* Darker color for section titles to improve visibility */
+    .section-title, 
+    .left-heading {
+      color: #1f0f35; /* Darker purple, almost black */
+    }
+    
+    /* Add subtle underline to the headings for better visibility */
+    .badges-column .left-heading {
+      position: relative;
+      display: inline-block;
+      padding-bottom: 6px;
+    }
+    
+    .badges-column .left-heading::after {
       content: '';
       position: absolute;
-      top: 0;
-      right: 0;
       bottom: 0;
       left: 0;
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(255, 165, 0, 0.3) 0%, transparent 50%);
-    }
-    
-    .streak-title {
-      font-size: 1.6rem;
-      margin-bottom: 20px;
-      font-weight: 600;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-    
-    .streak-days {
-      font-size: 4rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-      position: relative;
-    }
-    
-    /* Add flame icon to streak days */
-    .streak-days::after {
-      content: '🔥';
-      font-size: 1.8rem;
-      position: absolute;
-      margin-left: 8px;
-      bottom: 12px;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-    }
-    
-    .streak-subtitle {
-      font-size: 1.2rem;
-      opacity: 0.9;
-    }
-    
-    /* Profile dropdown styles */
-    .profile-dropdown {
-        position: relative;
-    }
-    
-    .dropdown-menu {
-        position: absolute;
-        right: 0;
-        top: 50px;
-        background-color: white;
-        border-radius: 8px;
-        width: 180px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-        z-index: 1010;
-        overflow: hidden;
-    }
-    
-    .dropdown-menu.show {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-    
-    body.dark-mode .dropdown-menu {
-        background-color: #140a22;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    
-    .dropdown-item {
-        display: flex;
-        align-items: center;
-        padding: 12px 16px;
-        color: #333;
-        text-decoration: none;
-        transition: background 0.2s ease;
-        border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .dropdown-item:last-child {
-      border-bottom: none;
-    }
-    
-    .dropdown-item:hover {
-        background-color: #f5f5f5;
-    }
-    
-    body.dark-mode .dropdown-item:hover {
-        background-color: #2d1549;
-    }
-    
-    .dropdown-item i {
-        margin-right: 10px;
-        width: 16px;
-        text-align: center;
-    }
-    
-    .dropdown-item.active {
-        position: relative;
-    }
-    
-    .dropdown-item.active::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 3px;
-        background-color: #6b46c1;
-    }
-    
-    body.dark-mode .dropdown-item.active::after {
-        background-color: #9d78c9;
-    }
-    
-    .profile-dropdown-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1000;
-        display: none;
-    }
-    
-    .profile-dropdown-overlay.show {
-        display: block;
-    }
-    
-    /* Remove or fix the purple rectangle box */
-    .dropdown-divider {
-      height: 1px;
-      margin: 0;
-      background-color: #f0f0f0;
-      border: none;
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(90deg, #7602FF, #9537FF);
+      border-radius: 2px;
     }
   </style>
 </head>
@@ -565,29 +443,24 @@
       <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
       <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
       <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
-      <a href="elevate.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Elevate</a>
-      <div class="profile-dropdown">
-        <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
-        <div class="dropdown-menu" id="profile-dropdown-menu">
-          <a href="profile.html" class="dropdown-item">
-            <i class="fas fa-user"></i> Profile
-          </a>
-          <a href="settings.html" class="dropdown-item">
-            <i class="fas fa-cog"></i> Settings
-          </a>
-          <a href="help.html" class="dropdown-item">
-            <i class="fas fa-question-circle"></i> Help
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="logout.html" class="dropdown-item">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </a>
-        </div>
-      </div>
+      <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+      <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
     </div>
   </nav>
 
-  <!-- Overlay for closing dropdown -->
+  <!-- Keep the profile dropdown functionality but make it simpler -->
+  <div class="dropdown-menu" id="profile-dropdown-menu">
+    <a href="profile.html" class="dropdown-item">
+      <i class="fas fa-user"></i> Profile
+    </a>
+    <a href="achievements.html" class="dropdown-item active">
+      <i class="fas fa-trophy"></i> Achievements
+    </a>
+    <a href="#" class="dropdown-item" id="logout-btn">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+  </div>
+
   <div class="profile-dropdown-overlay" id="profile-dropdown-overlay"></div>
 
   <main class="achievement-section">
@@ -646,10 +519,49 @@
   <script src="profile-dropdown.js"></script>
   <script src="shared-scripts.js"></script>
   <script src="achievement-badges.js"></script>
-  
+  <script src="dark-mode-toggle.js"></script>
   <script>
-    // Demo data - replace with actual user data in production
+    // Immediately apply dark mode class before DOMContentLoaded for no-flash
+    (function() {
+      if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+      }
+    })();
+
     document.addEventListener('DOMContentLoaded', function() {
+      // Fix streak display to ensure it's purple
+      document.querySelector('.streak-display').style.background = 'linear-gradient(135deg, #6B46C1 0%, #9537FF 100%)';
+      document.querySelector('.streak-display').style.boxShadow = '0 10px 30px rgba(107, 70, 193, 0.25)';
+      
+      // Force check dark mode from localStorage and apply immediately
+      const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        console.log('Dark mode applied on page load');
+        
+        // Force dark mode styles to take effect
+        document.documentElement.style.setProperty('--force-repaint', '1');
+        setTimeout(() => {
+          document.documentElement.style.removeProperty('--force-repaint');
+        }, 10);
+      }
+      
+      // Listen for dark mode changes from other tabs/pages
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'darkMode') {
+          if (e.newValue === 'enabled') {
+            document.body.classList.add('dark-mode');
+          } else {
+            document.body.classList.remove('dark-mode');
+          }
+        }
+      });
+
+      // Optionally, if your dark-mode-toggle.js exposes a function to sync UI, call it here:
+      if (window.syncDarkModeUI) {
+        window.syncDarkModeUI();
+      }
+
       // Initialize stats to 0
       document.getElementById('focus-hours').textContent = '0';
       document.getElementById('goals-completed').textContent = '0';
