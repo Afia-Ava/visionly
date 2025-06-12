@@ -1,0 +1,1010 @@
+<!-- A page to view all past journal entries with filters and search -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visionly - Past Journal Entries</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="journal.css">
+    <link rel="stylesheet" href="dark-mode-global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: auto !important;
+            overflow: visible !important;
+            overflow-y: auto !important;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+            background-image: 
+              linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+              linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+              linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+              linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+            background-size: 20px 20px;
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+        body.dark-mode {
+            background-color: #0a0612;
+            background-image: 
+              linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+              linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+              linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+              linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+            background-size: 20px 20px;
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            color: #e0e0e0;
+        }
+        body.dark-mode .navbar {
+            background-color: #0a0612 !important;
+            box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15) !important;
+        }
+        body.dark-mode .navbar a,
+        body.dark-mode .navbar .logo {
+            color: #e0e0e0 !important;
+        }
+        body.dark-mode h2 {
+            color: #e0e0e0 !important;
+        }
+        body.dark-mode p {
+            color: #b0b0b0 !important;
+        }
+        body.dark-mode .entries-container {
+            background: #1f0f35 !important;
+            box-shadow: 0 2px 4px rgba(139, 95, 179, 0.15) !important;
+        }
+        body.dark-mode input,
+        body.dark-mode select {
+            background-color: #2d1549 !important;
+            border-color: #3a2259 !important;
+            color: #e0e0e0 !important;
+        }
+        body.dark-mode input::placeholder {
+            color: #888 !important;
+        }
+        body.dark-mode .entry-card {
+            background: #2d1549 !important;
+        }
+        body.dark-mode .entry-title,
+        body.dark-mode .entry-content {
+            color: #e0e0e0 !important;
+        }
+        body.dark-mode .entry-meta {
+            color: #b0b0b0 !important;
+        }
+        body.dark-mode .entry-tags span {
+            background: #3a2259 !important;
+            color: #bfa6e0 !important;
+        }
+        
+        .entries-container {
+            max-width: 900px;
+            margin: 110px auto 0 auto;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(45,26,69,0.07);
+            padding: 32px 28px 32px 28px;
+        }
+        .entries-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .entries-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .entries-filters {
+            display: flex;
+            gap: 12px; /* Use consistent gap for all filter elements */
+            flex-wrap: wrap;
+        }
+        .entries-filters input[type="date"],
+        .entries-filters select {
+            padding: 7px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+        .entries-search {
+            margin-bottom: 18px;
+            width: 100%;
+            position: relative;
+        }
+        .entries-search input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border-radius: 10px;
+            border: 2px solid #eae6f7;
+            font-size: 15px;
+            background-color: #f8f5ff;
+            transition: all 0.2s ease;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(45,26,69,0.04);
+        }
+        .entries-search input:focus {
+            outline: none;
+            border-color: #8b5fbf;
+            box-shadow: 0 2px 12px rgba(139,95,179,0.12);
+        }
+        .entries-search i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8b5fbf;
+            font-size: 18px;
+        }
+        body.dark-mode .entries-search input {
+            background-color: #2d1549;
+            border-color: #3a2259;
+            color: #e0e0e0;
+        }
+        body.dark-mode .entries-search input::placeholder {
+            color: #9382a8;
+        }
+        body.dark-mode .entries-search input:focus {
+            border-color: #8b5fbf;
+            box-shadow: 0 2px 12px rgba(139,95,179,0.25);
+        }
+        body.dark-mode .entries-search i {
+            color: #c8a2e8;
+        }
+        
+        /* Modal styles for journal entry popup */
+        .journal-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .journal-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: #f5f0ff;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 25px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            border: 2px solid #8b5fbf;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .journal-modal.show .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            color: #666;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .edit-btn {
+            background: #8b5fbf;
+            color: white;
+        }
+        
+        .save-btn {
+            background: #2d1a45;
+            color: white;
+        }
+        
+        .cancel-btn {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .entry-edit-title {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        
+        .entry-edit-content {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            font-size: 16px;
+            line-height: 1.6;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            resize: vertical;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .entry-edit-tags {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        
+        /* Dark mode styles for modal */
+        body.dark-mode .modal-content {
+            background: #f5f0ff; /* Keep this light even in dark mode for better contrast */
+        }
+        
+        body.dark-mode .modal-close {
+            color: #888;
+        }
+        
+        body.dark-mode .cancel-btn {
+            background: #444;
+            color: #eee;
+        }
+        
+        body.dark-mode .entry-edit-title,
+        body.dark-mode .entry-edit-content,
+        body.dark-mode .entry-edit-tags {
+            background: #fff;
+            color: #333;
+            border-color: #aaa;
+        }
+        
+        /* Word cloud modal styles */
+        .word-cloud-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .word-cloud-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .word-cloud-content {
+            background: #f5f0ff;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 25px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            border: 2px solid #8b5fbf;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .word-cloud-modal.show .word-cloud-content {
+            transform: translateY(0);
+        }
+        
+        .word-cloud-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            color: #666;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .word-cloud-display {
+            min-height: 300px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+        
+        .word {
+            display: inline-block;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .word:hover {
+            transform: scale(1.1);
+        }
+        
+        .word-cloud-placeholder {
+            color: #8b5fbf;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        /* Favorite filter button and Word Cloud button styling */
+        .favorite-filter, .word-cloud-btn {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #8b5fbf;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 0; /* Remove left margin */
+        }
+
+        .favorite-filter:hover, .word-cloud-btn:hover {
+            background: #2d1a45;
+            transform: translateY(-2px);
+        }
+
+        .favorite-filter.active {
+            background: #2d1a45;
+            color: white;
+            box-shadow: 0 2px 8px rgba(45,26,69,0.2);
+        }
+
+        body.dark-mode .favorite-filter,
+        body.dark-mode .word-cloud-btn {
+            background-color: #8b5fbf;
+            color: white;
+        }
+
+        body.dark-mode .favorite-filter:hover,
+        body.dark-mode .word-cloud-btn:hover {
+            background-color: #2d1a45;
+        }
+
+        body.dark-mode .favorite-filter.active {
+            background-color: #2d1a45;
+        }
+        
+        /* Remove layout modification for side-by-side view */
+        @media (min-width: 992px) {
+            .entries-layout {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+        <div style="display: flex; align-items: center;">
+            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+            <a href="elevate.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Elevate</a>
+            <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+        </div>
+    </nav>
+    <div class="entries-container">
+        <div class="entries-header">
+            <h2>All Journal Entries</h2>
+            <div class="entries-filters">
+                <input type="date" id="filter-date" title="Filter by date">
+                <select id="filter-mood" title="Filter by mood">
+                    <option value="">All Moods</option>
+                    <option value="😊">😊 Happy</option>
+                    <option value="😌">😌 Calm</option>
+                    <option value="🤔">🤔 Thoughtful</option>
+                    <option value="😔">😔 Sad</option>
+                    <option value="😤">😤 Frustrated</option>
+                </select>
+                <!-- Add favorite filter button -->
+                <button id="filter-favorites" class="favorite-filter" title="Show favorites only">
+                    <i class="fas fa-star" style="margin-right: 5px; font-size: 12px;"></i> Favorites
+                </button>
+                <!-- Add Word Cloud button here -->
+                <button id="generate-word-cloud" class="word-cloud-btn" title="Generate Word Cloud">
+                    <i class="fas fa-cloud"></i> Word Cloud
+                </button>
+            </div>
+        </div>
+        <div class="entries-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-bar" placeholder="Search by title, content, or tag...">
+        </div>
+        
+        <!-- Simplified layout without sidebar -->
+        <div id="all-entries-list" class="entries-list"></div>
+        <div id="no-entries" class="no-entries" style="display:none;">No entries found.</div>
+    </div>
+
+    <!-- Add the Word Cloud Modal -->
+    <div id="word-cloud-modal" class="word-cloud-modal">
+        <div class="word-cloud-content">
+            <button class="word-cloud-close">&times;</button>
+            <h3 style="margin-top: 0; color: #333; font-size: 1.5rem; text-align: center;">Word Cloud Insights</h3>
+            <p class="word-cloud-placeholder">Analyzing your journal entries to discover recurring themes and thoughts...</p>
+            <div id="word-cloud" class="word-cloud-display">
+                <!-- Word cloud will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="journal-modal" class="journal-modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            
+            <!-- View mode -->
+            <div id="view-mode">
+                <h2 id="modal-title" style="margin-top: 0; color: #333; font-size: 1.5rem;"></h2>
+                
+                <div id="modal-tags" style="display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0;"></div>
+                
+                <div id="modal-meta" style="margin-bottom: 20px; font-size: 14px; color: #666;">
+                    <span id="modal-date"></span>
+                    <span id="modal-mood" style="margin-left: 10px;"></span>
+                </div>
+                
+                <div id="modal-content" style="white-space: pre-line; line-height: 1.6; color: #333; margin-bottom: 20px;"></div>
+                
+                <div class="modal-actions">
+                    <button id="edit-btn" class="modal-btn edit-btn">Edit Journal</button>
+                </div>
+            </div>
+            
+            <!-- Edit mode (hidden by default) -->
+            <div id="edit-mode" style="display: none;">
+                <input id="edit-title" class="entry-edit-title" type="text" placeholder="Entry Title">
+                
+                <input id="edit-tags" class="entry-edit-tags" type="text" placeholder="Tags (comma separated)">
+                
+                <textarea id="edit-content" class="entry-edit-content" placeholder="Write your journal entry here..."></textarea>
+                
+                <div class="modal-actions">
+                    <button id="cancel-btn" class="modal-btn cancel-btn">Cancel</button>
+                    <button id="save-btn" class="modal-btn save-btn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Load entries from localStorage
+        let allEntries = [];
+        function loadAllEntries() {
+            const saved = localStorage.getItem('journalEntries');
+            allEntries = saved ? JSON.parse(saved) : [];
+        }
+
+        function filterAndDisplayEntries() {
+            let filtered = [...allEntries];
+            const dateVal = document.getElementById('filter-date').value;
+            const moodVal = document.getElementById('filter-mood').value;
+            const searchVal = document.getElementById('search-bar').value.trim().toLowerCase();
+            const favoritesOnly = document.getElementById('filter-favorites').classList.contains('active');
+
+            // Filter by date (exact match)
+            if (dateVal) {
+                // Log for debugging
+                console.log("Filter date value:", dateVal);
+                console.log("First few entries dates:", allEntries.slice(0, 3).map(e => e.date));
+                
+                filtered = filtered.filter(e => {
+                    try {
+                        if (!e.date) return false;
+                        
+                        // Get the filter date components (from YYYY-MM-DD format)
+                        const filterParts = dateVal.split('-');
+                        const filterYear = parseInt(filterParts[0], 10);
+                        const filterMonth = parseInt(filterParts[1], 10); // Convert to number to remove leading zeros
+                        const filterDay = parseInt(filterParts[2], 10);   // Convert to number to remove leading zeros
+                        
+                        // Parse the entry date which could be in various formats
+                        let entryYear, entryMonth, entryDay;
+                        
+                        // Try to handle various date formats
+                        // Case 1: MM/DD/YYYY (e.g., "6/1/2023" or "06/01/2023")
+                        if (e.date.includes('/')) {
+                            const parts = e.date.split('/');
+                            if (parts.length === 3) {
+                                entryMonth = parseInt(parts[0], 10);
+                                entryDay = parseInt(parts[1], 10);
+                                entryYear = parseInt(parts[2], 10);
+                            }
+                        } 
+                        // Case 2: YYYY-MM-DD
+                        else if (e.date.includes('-')) {
+                            const parts = e.date.split('-');
+                            if (parts.length === 3) {
+                                entryYear = parseInt(parts[0], 10);
+                                entryMonth = parseInt(parts[1], 10);
+                                entryDay = parseInt(parts[2], 10);
+                            }
+                        }
+                        // Case 3: Other formats - try using Date object
+                        else {
+                            const dateObj = new Date(e.date);
+                            if (!isNaN(dateObj.getTime())) {
+                                entryYear = dateObj.getFullYear();
+                                entryMonth = dateObj.getMonth() + 1; // getMonth() is 0-based
+                                entryDay = dateObj.getDate();
+                            }
+                        }
+                        
+                        // Debug log the parsed values
+                        console.log("Entry date:", e.date, "→", `${entryYear}-${entryMonth}-${entryDay}`);
+                        console.log("Filter date:", dateVal, "→", `${filterYear}-${filterMonth}-${filterDay}`);
+                        
+                        // Check if all components are valid
+                        if (!entryYear || !entryMonth || !entryDay) return false;
+                        
+                        // Compare the components
+                        return entryYear === filterYear && 
+                               entryMonth === filterMonth && 
+                               entryDay === filterDay;
+                    } catch (err) {
+                        console.error('Date comparison error:', err, 'for entry date:', e.date);
+                        return false;
+                    }
+                });
+            }
+            // Filter by mood
+            if (moodVal) {
+                filtered = filtered.filter(e => e.mood === moodVal);
+            }
+            // Filter by search
+            if (searchVal) {
+                filtered = filtered.filter(e => {
+                    const inTitle = (e.title || '').toLowerCase().includes(searchVal);
+                    const inContent = (e.content || '').toLowerCase().includes(searchVal);
+                    const inTags = (e.tags || []).some(tag => tag.toLowerCase().includes(searchVal));
+                    return inTitle || inContent || inTags;
+                });
+            }
+            // Filter by favorites
+            if (favoritesOnly) {
+                filtered = filtered.filter(e => e.favorite === true);
+            }
+            
+            displayAllEntries(filtered);
+        }
+
+        function displayAllEntries(entries) {
+            const list = document.getElementById('all-entries-list');
+            const noEntries = document.getElementById('no-entries');
+            list.innerHTML = '';
+
+            if (!entries.length) {
+                noEntries.style.display = '';
+                return;
+            }
+            
+            noEntries.style.display = 'none';
+            
+            entries.forEach(entry => {
+                const card = document.createElement('div');
+                card.className = 'entry-card';
+                
+                // Update card styles to have light purple background with purple border
+                card.style.cssText = 'padding: 18px; background: #f5f0ff; border-radius: 8px; box-shadow: 0 1px 3px rgba(45,26,69,0.06); position: relative; transition: box-shadow 0.15s; margin-bottom: 16px; border: 2px solid #8b5fbf;';
+                
+                // Fix dark mode styles - keep light purple even in dark mode
+                if (document.body.classList.contains('dark-mode')) {
+                    card.style.backgroundColor = '#f5f0ff';
+                    card.style.borderColor = '#8b5fbf';
+                }
+
+                // Add favorite button if present
+                if (typeof entry.favorite !== 'undefined') {
+                    const favoriteBtn = document.createElement('span');
+                    favoriteBtn.className = 'favorite-btn' + (entry.favorite ? ' active' : '');
+                    favoriteBtn.innerHTML = '<i class="fas fa-star"></i>';
+                    favoriteBtn.title = entry.favorite ? 'Remove from favorites' : 'Add to favorites';
+                    favoriteBtn.style.cssText = 'cursor: pointer; position: absolute; top: 10px; right: 10px; font-size: 16px; color: #ddd; transition: color 0.2s ease;';
+                    
+                    if (entry.favorite) {
+                        favoriteBtn.style.color = 'gold';
+                    }
+                    
+                    favoriteBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        entry.favorite = !entry.favorite;
+                        this.className = 'favorite-btn' + (entry.favorite ? ' active' : '');
+                        this.style.color = entry.favorite ? 'gold' : '#ddd';
+                        localStorage.setItem('journalEntries', JSON.stringify(allEntries));
+                        
+                        if (document.getElementById('filter-favorites') && 
+                            document.getElementById('filter-favorites').classList.contains('active')) {
+                            filterAndDisplayEntries();
+                        }
+                    });
+                    card.appendChild(favoriteBtn);
+                }
+
+                const title = document.createElement('div');
+                title.className = 'entry-title';
+                title.textContent = entry.title || 'Untitled Entry';
+                title.style.color = '#333';  // Keep dark text for contrast
+                title.style.fontWeight = '600';
+                title.style.fontSize = '1.1rem';
+                title.style.marginBottom = '8px';
+
+                const meta = document.createElement('div');
+                meta.className = 'entry-meta';
+                meta.textContent = entry.date || '';
+                meta.style.fontSize = '13px';
+                meta.style.color = '#888';
+                meta.style.marginBottom = '10px';
+
+                // Tags
+                let tagsDiv = null;
+                if (entry.tags && entry.tags.length) {
+                    tagsDiv = document.createElement('div');
+                    tagsDiv.className = 'entry-tags';
+                    tagsDiv.style.display = 'flex';
+                    tagsDiv.style.gap = '6px';
+                    tagsDiv.style.flexWrap = 'wrap';
+                    tagsDiv.style.marginBottom = '10px';
+                    
+                    entry.tags.forEach(tag => {
+                        const tagSpan = document.createElement('span');
+                        tagSpan.textContent = '#' + tag;
+                        tagSpan.style.background = '#eae6f7';
+                        tagSpan.style.color = '#8b5fbf';
+                        tagSpan.style.borderRadius = '5px';
+                        tagSpan.style.padding = '2px 8px';
+                        tagSpan.style.fontSize = '12px';
+                        tagsDiv.appendChild(tagSpan);
+                    });
+                }
+
+                // Mood
+                let moodSpan = null;
+                if (entry.mood) {
+                    moodSpan = document.createElement('span');
+                    moodSpan.className = 'entry-mood';
+                    moodSpan.textContent = entry.mood;
+                    moodSpan.style.fontSize = '18px';
+                    moodSpan.style.marginLeft = '8px';
+                }
+
+                const content = document.createElement('div');
+                content.className = 'entry-content';
+                content.textContent = entry.content || '';
+                content.style.fontSize = '15px';
+                content.style.color = '#444';  // Always dark text on white background
+                content.style.marginBottom = '0';
+                content.style.whiteSpace = 'pre-line';
+                content.style.maxHeight = '100px';
+                content.style.overflow = 'hidden';
+                content.style.textOverflow = 'ellipsis';
+
+                card.appendChild(title);
+                if (tagsDiv) card.appendChild(tagsDiv);
+                card.appendChild(meta);
+                if (moodSpan) meta.appendChild(moodSpan);
+                card.appendChild(content);
+
+                // Add click event to the entire card to show the modal
+                card.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on the favorite button
+                    if (e.target.closest('.favorite-btn')) return;
+                    
+                    // Open the modal with this entry
+                    openEntryModal(entry);
+                });
+
+                list.appendChild(card);
+            });
+        }
+
+        // Function to open the entry modal
+        function openEntryModal(entry) {
+            const modal = document.getElementById('journal-modal');
+            const viewMode = document.getElementById('view-mode');
+            const editMode = document.getElementById('edit-mode');
+            
+            // Set current entry for reference when saving
+            modal.dataset.entryIndex = allEntries.indexOf(entry);
+            
+            // Populate view mode fields
+            document.getElementById('modal-title').textContent = entry.title || 'Untitled Entry';
+            document.getElementById('modal-date').textContent = entry.date || '';
+            document.getElementById('modal-content').textContent = entry.content || '';
+            
+            // Set mood if exists
+            const modalMood = document.getElementById('modal-mood');
+            if (entry.mood) {
+                modalMood.textContent = entry.mood;
+                modalMood.style.display = '';
+            } else {
+                modalMood.style.display = 'none';
+            }
+            
+            // Set tags if they exist
+            const tagsContainer = document.getElementById('modal-tags');
+            tagsContainer.innerHTML = '';
+            if (entry.tags && entry.tags.length) {
+                entry.tags.forEach(tag => {
+                    const tagSpan = document.createElement('span');
+                    tagSpan.textContent = '#' + tag;
+                    tagSpan.style.background = '#eae6f7';
+                    tagSpan.style.color = '#8b5fbf';
+                    tagSpan.style.borderRadius = '5px';
+                    tagSpan.style.padding = '2px 8px';
+                    tagSpan.style.fontSize = '12px';
+                    tagsContainer.appendChild(tagSpan);
+                });
+            }
+            
+            // Populate edit mode fields (hidden initially)
+            document.getElementById('edit-title').value = entry.title || '';
+            document.getElementById('edit-content').value = entry.content || '';
+            document.getElementById('edit-tags').value = (entry.tags || []).join(', ');
+            
+            // Show view mode, hide edit mode
+            viewMode.style.display = '';
+            editMode.style.display = 'none';
+            
+            // Show the modal
+            modal.classList.add('show');
+            
+            // Prevent page scrolling while modal is open
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Function to close the modal
+        function closeModal() {
+            const modal = document.getElementById('journal-modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        
+        // Function to switch to edit mode
+        function switchToEditMode() {
+            document.getElementById('view-mode').style.display = 'none';
+            document.getElementById('edit-mode').style.display = '';
+        }
+        
+        // Function to save edited entry
+        function saveEditedEntry() {
+            const modal = document.getElementById('journal-modal');
+            const entryIndex = parseInt(modal.dataset.entryIndex);
+            
+            if (isNaN(entryIndex) || entryIndex < 0 || entryIndex >= allEntries.length) {
+                console.error('Invalid entry index');
+                return;
+            }
+            
+            // Get edited values
+            const editedTitle = document.getElementById('edit-title').value.trim();
+            const editedContent = document.getElementById('edit-content').value.trim();
+            const editedTagsString = document.getElementById('edit-tags').value.trim();
+            const editedTags = editedTagsString ? editedTagsString.split(',').map(tag => tag.trim()).filter(Boolean) : [];
+            
+            // Update the entry in the array
+            allEntries[entryIndex].title = editedTitle || 'Untitled Entry';
+            allEntries[entryIndex].content = editedContent;
+            allEntries[entryIndex].tags = editedTags;
+            
+            // Save to localStorage
+            localStorage.setItem('journalEntries', JSON.stringify(allEntries));
+            
+            // Update the displayed entries
+            filterAndDisplayEntries();
+            
+            // Close the modal
+            closeModal();
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllEntries();
+            filterAndDisplayEntries();
+
+            document.getElementById('filter-date').addEventListener('change', filterAndDisplayEntries);
+            document.getElementById('filter-mood').addEventListener('change', filterAndDisplayEntries);
+            document.getElementById('search-bar').addEventListener('input', filterAndDisplayEntries);
+            
+            // Add event listener for favorite filter button
+            document.getElementById('filter-favorites').addEventListener('click', function() {
+                this.classList.toggle('active');
+                filterAndDisplayEntries();
+            });
+            
+            // Modal event listeners
+            document.querySelector('.modal-close').addEventListener('click', closeModal);
+            
+            // Close modal when clicking outside the content
+            document.getElementById('journal-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+            
+            // Edit button click
+            document.getElementById('edit-btn').addEventListener('click', switchToEditMode);
+            
+            // Cancel button click
+            document.getElementById('cancel-btn').addEventListener('click', function() {
+                // Switch back to view mode without saving
+                document.getElementById('edit-mode').style.display = 'none';
+                document.getElementById('view-mode').style.display = '';
+            });
+            
+            // Save button click
+            document.getElementById('save-btn').addEventListener('click', saveEditedEntry);
+            
+            // Word Cloud Modal
+            const wordCloudBtn = document.getElementById('generate-word-cloud');
+            const wordCloudModal = document.getElementById('word-cloud-modal');
+            const closeWordCloudBtn = document.querySelector('.word-cloud-close');
+            
+            // Open word cloud modal and generate word cloud
+            wordCloudBtn.addEventListener('click', function() {
+                wordCloudModal.classList.add('show');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+                generateWordCloud();
+            });
+            
+            // Close word cloud modal
+            closeWordCloudBtn.addEventListener('click', function() {
+                wordCloudModal.classList.remove('show');
+                document.body.style.overflow = ''; // Restore scrolling
+            });
+            
+            // Close modal when clicking outside content
+            wordCloudModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    wordCloudModal.classList.remove('show');
+                    document.body.style.overflow = ''; // Restore scrolling
+                }
+            });
+            
+            // Keep the existing generateWordCloud function
+            function generateWordCloud() {
+                // Clear previous word cloud
+                const wordCloudElement = document.getElementById('word-cloud');
+                wordCloudElement.innerHTML = '<div class="word-cloud-placeholder">Processing entries...</div>';
+                
+                // Get all journal entries
+                if (!allEntries || allEntries.length === 0) {
+                    wordCloudElement.innerHTML = '<div class="word-cloud-placeholder">No journal entries found. Write some entries first!</div>';
+                    return;
+                }
+                
+                // Combine all entry content
+                let allText = allEntries.map(entry => (entry.title || '') + ' ' + (entry.content || '')).join(' ');
+                
+                // Process the text
+                // Convert to lowercase and remove punctuation
+                allText = allText.toLowerCase().replace(/[^\w\s]/g, '');
+                
+                // Split into words
+                const words = allText.split(/\s+/);
+                
+                // Common words to exclude (stop words)
+                const stopWords = ['a', 'an', 'the', 'and', 'or', 'but', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 
+                                  'my', 'your', 'his', 'her', 'its', 'our', 'their', 'this', 'that', 'these', 'those',
+                                  'is', 'am', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do',
+                                  'does', 'did', 'can', 'could', 'will', 'would', 'shall', 'should', 'may', 'might',
+                                  'must', 'to', 'of', 'for', 'with', 'about', 'against', 'between', 'into', 'through',
+                                  'during', 'before', 'after', 'above', 'below', 'from', 'up', 'down', 'in', 'out',
+                                  'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there',
+                                  'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most',
+                                  'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than',
+                                  'too', 'very', 'just', 'dont', 'im', 'its', 'ill', 'youre', 'hes', 'shes', 'were',
+                                  'theyre', 'ive', 'youve', 'weve', 'theyve', 'cant', 'couldnt', 'wont', 'wouldnt'];
+                
+                // Count word frequencies, excluding stop words
+                const wordCounts = {};
+                words.forEach(word => {
+                    if (word.length > 2 && !stopWords.includes(word)) {
+                        wordCounts[word] = (wordCounts[word] || 0) + 1;
+                    }
+                });
+                
+                // Sort words by frequency
+                const sortedWords = Object.keys(wordCounts).sort((a, b) => wordCounts[b] - wordCounts[a]);
+                
+                // Take top 30 words or fewer if there aren't that many
+                const topWords = sortedWords.slice(0, Math.min(30, sortedWords.length));
+                
+                if (topWords.length === 0) {
+                    wordCloudElement.innerHTML = '<div class="word-cloud-placeholder">Not enough meaningful words found. Try adding more detailed journal entries.</div>';
+                    return;
+                }
+                
+                // Find max and min frequencies for scaling
+                const maxFreq = wordCounts[topWords[0]];
+                const minFreq = wordCounts[topWords[topWords.length - 1]];
+                
+                // Clear placeholder
+                wordCloudElement.innerHTML = '';
+                
+                // Generate word cloud
+                topWords.forEach(word => {
+                    const frequency = wordCounts[word];
+                    
+                    // Scale font size based on frequency (between 14px and 32px)
+                    const fontSize = 14 + ((frequency - minFreq) / (maxFreq - minFreq || 1)) * 18;
+                    
+                    // Create word element
+                    const wordElement = document.createElement('span');
+                    wordElement.textContent = word;
+                    wordElement.className = 'word';
+                    wordElement.style.fontSize = `${fontSize}px`;
+                    wordElement.style.color = getWordColor(frequency, minFreq, maxFreq);
+                    wordElement.style.fontWeight = fontSize > 24 ? 'bold' : 'normal';
+                    wordElement.title = `${word} (${frequency} occurrences)`;
+                    
+                    wordCloudElement.appendChild(wordElement);
+                });
+            }
+            
+            // Function to get a color based on word frequency
+            function getWordColor(frequency, minFreq, maxFreq) {
+                // Generate a color in the purple spectrum
+                const normalizedFreq = (frequency - minFreq) / (maxFreq - minFreq || 1);
+                const hue = 270; // Purple hue
+                const saturation = 70 + normalizedFreq * 30; // 70-100%
+                const lightness = 50 - normalizedFreq * 30; // 20-50%
+                
+                return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            }
+        });
+    </script>
+    <script src="dark-mode-toggle.js"></script>
+    <script src="profile-dropdown.js"></script>
+    
+    <!-- Import sprinkles effect from mouse-sprinkles -->
+    <script src="mouse-sprinkles-script.js"></script>
+</body>
+</html>

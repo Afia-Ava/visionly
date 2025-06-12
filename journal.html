@@ -153,7 +153,7 @@
     
     <!-- Centered Header -->
     <div style="text-align: center; margin-top: 100px; margin-bottom: 40px;">
-        <h1 style="font-size: 2rem; font-weight: bold; color: #333; margin-bottom: 5px;">Journal Entry</h1>
+        <h1 style="font-size: 2rem; font-weight: bold, color: #333; margin-bottom: 5px;">Journal Entry</h1>
         <p style="color: #666; margin-top: 0; margin-bottom: 0;">A canvas for your thoughts and intentions</p>
     </div>
     
@@ -183,7 +183,11 @@
             
             <!-- Previous Entries -->
             <div>
-                <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">Previous Entries</h3>
+                <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">Previous Entries
+                    <a href="past-entries.html" style="float:right; font-size:13px; color:#8b5fbf; text-decoration:none; font-weight:400; margin-top:2px;">
+                        See all <i class="fa fa-arrow-right" style="font-size:11px;"></i>
+                    </a>
+                </h3>
                 <!-- Search bar for journals -->
                 <input id="journal-search" type="text" placeholder="Search journals by title, tag, or content..." style="width: 100%; margin-bottom: 10px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
                 <div id="entries-list" style="display: flex; flex-direction: column; gap: 8px;">
@@ -369,9 +373,20 @@
                 return;
             }
 
-            entriesToShow.forEach((entry, index) => {
+            // Only show the most recent 4 entries in the sidebar
+            const limitedEntries = entriesToShow.slice(0, 4);
+            
+            limitedEntries.forEach((entry, index) => {
                 createEntryElement(entry, journalEntries.indexOf(entry));
             });
+            
+            // If there are more entries than we're showing, add a note
+            if (entriesToShow.length > 4 && !filtered) {
+                const moreEntriesNote = document.createElement('div');
+                moreEntriesNote.style.cssText = 'text-align: center; font-size: 13px; color: #8b5fbf; margin-top: 10px; font-style: italic;';
+                moreEntriesNote.textContent = `+ ${entriesToShow.length - 4} more entries`;
+                entriesList.appendChild(moreEntriesNote);
+            }
         }
 
         function createEntryElement(entry, index) {
@@ -953,7 +968,10 @@
             // Uncomment the line below to test
             // document.getElementById('prompt-modal').style.display = 'flex';
 
-            // Test: Pre-fill an entry (for debugging)
+            // REMOVED: Test entry creation code that was adding a new entry on every page load
+            
+            // If you need to create a test entry for development, uncomment this code temporarily
+            /*
             const testEntry = {
                 title: "Test Entry",
                 content: "This is a test journal entry.",
@@ -965,6 +983,7 @@
             journalEntries.push(testEntry);
             saveEntriesToStorage();
             displaySavedEntries();
+            */
         });
     </script>
 </body>
