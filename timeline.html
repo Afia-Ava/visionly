@@ -76,6 +76,14 @@
     </style>
 </head>
 <body style="font-family: 'Inter', sans-serif; background-color: #fff; background-image: linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%); background-size: 20px 20px; background-position: 10px 0, 10px 0, 0 0, 0 0; color: #333; margin: 0; padding: 0;">
+    <!-- Add background sound and toggle button -->
+    <audio id="background-sound" loop>
+        <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
+        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+    </button>
     <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
         <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
         <div style="display: flex; align-items: center;">
@@ -130,10 +138,8 @@
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
     <script src="dark-mode-toggle.js"></script>
-    
     <!-- Import sprinkles effect from mouse-sprinkles -->
     <script src="mouse-sprinkles-script.js"></script>
-    
     <script>
         function toggleTimeline(timelineId) {
             const arrow = document.getElementById('arrow' + timelineId.slice(-1));
@@ -684,6 +690,71 @@
                 origRenderMilestone.apply(this, arguments);
                 updateMilestoneGoalColors();
             };
+        });
+
+        // Background sound toggle logic (copied from index.html)
+        document.addEventListener('DOMContentLoaded', function() {
+          const audio = document.getElementById('background-sound');
+          const toggleBtn = document.getElementById('toggle-sound');
+          const soundIcon = document.getElementById('sound-icon');
+          let isPlaying = false;
+
+          audio.volume = 0.5;
+
+          function startAudio() {
+            audio.play().then(() => {
+              soundIcon.src = 'assets/speaker-on-icon.png';
+              soundIcon.alt = 'Sound On';
+              isPlaying = true;
+            }).catch(() => {
+              soundIcon.src = 'assets/speaker-off-icon.png';
+              soundIcon.alt = 'Sound Off';
+              isPlaying = false;
+            });
+          }
+
+          if (audio.paused) {
+            soundIcon.src = 'assets/speaker-off-icon.png';
+            soundIcon.alt = 'Sound Off';
+          }
+
+          startAudio();
+
+          const enableAudio = () => {
+            if (!isPlaying && audio.paused) {
+              startAudio();
+            }
+          };
+
+          document.addEventListener('click', enableAudio, { once: true });
+          document.addEventListener('touchstart', enableAudio, { once: true });
+          document.addEventListener('keydown', enableAudio, { once: true });
+
+          toggleBtn.addEventListener('click', function() {
+            if (audio.paused) {
+              audio.play().then(() => {
+                soundIcon.src = 'assets/speaker-on-icon.png';
+                soundIcon.alt = 'Sound On';
+                isPlaying = true;
+              });
+            } else {
+              audio.pause();
+              soundIcon.src = 'assets/speaker-off-icon.png';
+              soundIcon.alt = 'Sound Off';
+              isPlaying = false;
+            }
+          });
+
+          audio.addEventListener('play', function() {
+            soundIcon.src = 'assets/speaker-on-icon.png';
+            soundIcon.alt = 'Sound On';
+            isPlaying = true;
+          });
+          audio.addEventListener('pause', function() {
+            soundIcon.src = 'assets/speaker-off-icon.png';
+            soundIcon.alt = 'Sound Off';
+            isPlaying = false;
+          });
         });
     </script>
 </body>

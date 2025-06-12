@@ -249,6 +249,14 @@
     </style>
 </head>
 <body>
+    <!-- Add background sound and toggle button -->
+    <audio id="background-sound" loop>
+        <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
+        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+    </button>
     <nav class="navbar" style="position: fixed; top: 0; width: 100%; padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease;">
         <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; text-decoration: none; color: #333; transition: color 0.3s ease;">Visionly</a>
         <div style="display: flex; align-items: center;">
@@ -490,6 +498,71 @@
                 const reply = getZeniResponse(input);
                 appendMessage('ai', reply);
             }, Math.floor(Math.random() * 1000) + 1000); // Random delay between 1-2 seconds
+        });
+
+        // Background sound toggle logic (copied from index.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('background-sound');
+            const toggleBtn = document.getElementById('toggle-sound');
+            const soundIcon = document.getElementById('sound-icon');
+            let isPlaying = false;
+
+            audio.volume = 0.5;
+
+            function startAudio() {
+                audio.play().then(() => {
+                    soundIcon.src = 'assets/speaker-on-icon.png';
+                    soundIcon.alt = 'Sound On';
+                    isPlaying = true;
+                }).catch(() => {
+                    soundIcon.src = 'assets/speaker-off-icon.png';
+                    soundIcon.alt = 'Sound Off';
+                    isPlaying = false;
+                });
+            }
+
+            if (audio.paused) {
+                soundIcon.src = 'assets/speaker-off-icon.png';
+                soundIcon.alt = 'Sound Off';
+            }
+
+            startAudio();
+
+            const enableAudio = () => {
+                if (!isPlaying && audio.paused) {
+                    startAudio();
+                }
+            };
+
+            document.addEventListener('click', enableAudio, { once: true });
+            document.addEventListener('touchstart', enableAudio, { once: true });
+            document.addEventListener('keydown', enableAudio, { once: true });
+
+            toggleBtn.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play().then(() => {
+                        soundIcon.src = 'assets/speaker-on-icon.png';
+                        soundIcon.alt = 'Sound On';
+                        isPlaying = true;
+                    });
+                } else {
+                    audio.pause();
+                    soundIcon.src = 'assets/speaker-off-icon.png';
+                    soundIcon.alt = 'Sound Off';
+                    isPlaying = false;
+                }
+            });
+
+            audio.addEventListener('play', function() {
+                soundIcon.src = 'assets/speaker-on-icon.png';
+                soundIcon.alt = 'Sound On';
+                isPlaying = true;
+            });
+            audio.addEventListener('pause', function() {
+                soundIcon.src = 'assets/speaker-off-icon.png';
+                soundIcon.alt = 'Sound Off';
+                isPlaying = false;
+            });
         });
     </script>
     <script src="mouse-sprinkles-script.js"></script>

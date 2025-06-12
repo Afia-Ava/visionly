@@ -353,78 +353,93 @@
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
     <script src="dark-mode-toggle.js"></script>
-    
     <!-- Import sprinkles effect from mouse-sprinkles -->
     <script src="mouse-sprinkles-script.js"></script>
-    
     <script>
-        // Background music auto-play functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const audio = document.getElementById('background-sound');
-            const toggleBtn = document.getElementById('toggle-sound');
-            const soundIcon = document.getElementById('sound-icon');
-            let isPlaying = false;
+        // --- Robust background music logic (mirrors index.html) ---
+        (function() {
+            let audio, toggleBtn, soundIcon, isPlaying = false;
 
-            // Set volume and try to start automatically
-            audio.volume = 0.5;
-
-            // Function to start audio
-            function startAudio() {
-                audio.play().then(() => {
+            function setIcon(state) {
+                if (!soundIcon) return;
+                if (state === 'on') {
                     soundIcon.src = 'assets/speaker-on-icon.png';
                     soundIcon.alt = 'Sound On';
-                    isPlaying = true;
-                }).catch(() => {
-                    // Autoplay blocked - set icon to off state
+                } else {
                     soundIcon.src = 'assets/speaker-off-icon.png';
                     soundIcon.alt = 'Sound Off';
+                }
+            }
+
+            function tryPlay() {
+                if (!audio) return;
+                audio.volume = 0.5;
+                audio.play().then(() => {
+                    isPlaying = true;
+                    setIcon('on');
+                }).catch(() => {
                     isPlaying = false;
+                    setIcon('off');
                 });
             }
 
-            // Try to start audio immediately
-            startAudio();
-
-            // Also try to start on first user interaction
-            const enableAudio = () => {
-                if (!isPlaying && audio.paused) {
-                    startAudio();
-                }
-            };
-
-            // Listen for various user interactions
-            document.addEventListener('click', enableAudio, { once: true });
-            document.addEventListener('touchstart', enableAudio, { once: true });
-            document.addEventListener('keydown', enableAudio, { once: true });
-
-            // Toggle sound on button click
-            toggleBtn.addEventListener('click', function() {
-                if (audio.paused) {
-                    audio.play().then(() => {
-                        soundIcon.src = 'assets/speaker-on-icon.png';
-                        soundIcon.alt = 'Sound On';
-                        isPlaying = true;
-                    });
-                } else {
-                    audio.pause();
-                    soundIcon.src = 'assets/speaker-off-icon.png';
-                    soundIcon.alt = 'Sound Off';
-                    isPlaying = false;
-                }
-            });
-
-            // Update icon based on audio state
-            audio.addEventListener('play', function() {
-                soundIcon.src = 'assets/speaker-on-icon.png';
-                soundIcon.alt = 'Sound On';
-                isPlaying = true;
-            });
-            audio.addEventListener('pause', function() {
-                soundIcon.src = 'assets/speaker-off-icon.png';
-                soundIcon.alt = 'Sound Off';
+            function tryPause() {
+                if (!audio) return;
+                audio.pause();
                 isPlaying = false;
-            });
-        });
+                setIcon('off');
+            }
+
+            function setup() {
+                audio = document.getElementById('background-sound');
+                toggleBtn = document.getElementById('toggle-sound');
+                soundIcon = document.getElementById('sound-icon');
+                if (!audio || !toggleBtn || !soundIcon) return;
+
+                // Set initial icon state
+                setIcon(audio.paused ? 'off' : 'on');
+
+                // Try to play immediately (may be blocked)
+                tryPlay();
+
+                // Try again on first user interaction
+                let enabled = false;
+                const enableAudio = () => {
+                    if (!enabled) {
+                        tryPlay();
+                        enabled = true;
+                    }
+                };
+                document.addEventListener('pointerdown', enableAudio, { once: true });
+                document.addEventListener('keydown', enableAudio, { once: true });
+
+                // Toggle sound on button click
+                toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (audio.paused) {
+                        tryPlay();
+                    } else {
+                        tryPause();
+                    }
+                });
+
+                // Update icon based on audio state
+                audio.addEventListener('play', function() {
+                    isPlaying = true;
+                    setIcon('on');
+                });
+                audio.addEventListener('pause', function() {
+                    isPlaying = false;
+                    setIcon('off');
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setup);
+            } else {
+                setup();
+            }
+        })();
 
         // Quote rotation functionality
         document.addEventListener('DOMContentLoaded', function() {
@@ -480,7 +495,6 @@
             });
         });
     </script>
-    
     <!-- Extra spacing at bottom -->
     <div style="height: 80px;"></div>
 </body>

@@ -678,7 +678,7 @@
             <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
             <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
             <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
-            <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+            <a href="elevate.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Elevate</a>
             <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
         </div>
     </nav>
@@ -936,29 +936,41 @@
     </script>
     
     <script>
-        // Background music auto-play functionality
+        // --- Robust background music logic (mirrors index.html) ---
         document.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('background-sound');
             const toggleBtn = document.getElementById('toggle-sound');
             const soundIcon = document.getElementById('sound-icon');
             let isPlaying = false;
+
+            // Set volume
             audio.volume = 0.5;
+
+            // Set icon to off state if audio is paused on load
+            function updateIcon() {
+                if (audio.paused) {
+                    soundIcon.src = 'assets/speaker-off-icon.png';
+                    soundIcon.alt = 'Sound Off';
+                    isPlaying = false;
+                } else {
+                    soundIcon.src = 'assets/speaker-on-icon.png';
+                    soundIcon.alt = 'Sound On';
+                    isPlaying = true;
+                }
+            }
 
             // Function to start audio
             function startAudio() {
                 audio.play().then(() => {
-                    soundIcon.src = 'assets/speaker-on-icon.png';
-                    soundIcon.alt = 'Sound On';
-                    isPlaying = true;
+                    updateIcon();
                 }).catch(() => {
-                    // Autoplay blocked - set icon to off state
                     soundIcon.src = 'assets/speaker-off-icon.png';
                     soundIcon.alt = 'Sound Off';
                     isPlaying = false;
                 });
             }
 
-            // Try to start audio immediately
+            // Try to start audio immediately (may be blocked)
             startAudio();
 
             // Also try to start on first user interaction
@@ -967,47 +979,31 @@
                     startAudio();
                 }
             };
-
-            // Listen for various user interactions
             document.addEventListener('click', enableAudio, { once: true });
             document.addEventListener('touchstart', enableAudio, { once: true });
             document.addEventListener('keydown', enableAudio, { once: true });
 
             // Toggle sound on button click
-            toggleBtn.addEventListener('click', function() {
+            toggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
                 if (audio.paused) {
                     audio.play().then(() => {
-                        soundIcon.src = 'assets/speaker-on-icon.png';
-                        soundIcon.alt = 'Sound On';
-                        isPlaying = true;
+                        updateIcon();
                     });
                 } else {
                     audio.pause();
-                    soundIcon.src = 'assets/speaker-off-icon.png';
-                    soundIcon.alt = 'Sound Off';
-                    isPlaying = false;
+                    updateIcon();
                 }
             });
 
             // Update icon based on audio state
-            audio.addEventListener('play', function() {
-                soundIcon.src = 'assets/speaker-on-icon.png';
-                soundIcon.alt = 'Sound On';
-                isPlaying = true;
-            });
-            audio.addEventListener('pause', function() {
-                soundIcon.src = 'assets/speaker-off-icon.png';
-                soundIcon.alt = 'Sound Off';
-                isPlaying = false;
-            });
+            audio.addEventListener('play', updateIcon);
+            audio.addEventListener('pause', updateIcon);
 
-            // Load user data when page loads
-            loadUserData();
-            setupToggles();
-            setupSaveButton();
-            setupAvatarSelection();
+            // Set initial icon state
+            updateIcon();
         });
-        
+
         // Setup avatar selection functionality
         function setupAvatarSelection() {
             const avatarOptions = document.querySelectorAll('.avatar-option');
@@ -1263,16 +1259,23 @@
                     
                     // Apply theme with explicit dark mode handling
                     document.body.setAttribute('data-theme', theme);
-                    
-                    // Handle dark mode specifically
+
+                    // --- FIX: Always sync dark mode toggle with theme selection ---
+                    const darkModeToggle = document.getElementById('dark-mode-toggle');
                     if (theme === 'dark-purple') {
-                        console.log('Enabling dark mode');
-                        document.body.classList.add('dark-mode');
+                        if (!document.body.classList.contains('dark-mode')) {
+                            document.body.classList.add('dark-mode');
+                        }
                         localStorage.setItem('darkMode', 'enabled');
+                        if (darkModeToggle && !darkModeToggle.classList.contains('active')) {
+                            darkModeToggle.classList.add('active');
+                        }
                     } else {
-                        console.log('Disabling dark mode');
                         document.body.classList.remove('dark-mode');
                         localStorage.setItem('darkMode', 'disabled');
+                        if (darkModeToggle && darkModeToggle.classList.contains('active')) {
+                            darkModeToggle.classList.remove('active');
+                        }
                     }
                     
                     // Save preference
@@ -1285,13 +1288,11 @@
                 };
             });
         }
-        
+
         // Function to apply the theme
         function applyTheme(theme) {
-            // Set the theme attribute on body
             document.body.setAttribute('data-theme', theme);
-            
-            // Handle dark mode specifically
+            // Always enable dark mode for dark-purple, disable otherwise
             if (theme === 'dark-purple') {
                 document.body.classList.add('dark-mode');
                 localStorage.setItem('darkMode', 'enabled');
@@ -1299,30 +1300,34 @@
                 document.body.classList.remove('dark-mode');
                 localStorage.setItem('darkMode', 'disabled');
             }
-            
-            console.log('Theme applied:', theme, 'Dark mode:', document.body.classList.contains('dark-mode'));
         }
-        
+
         // Apply theme on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Setup the theme selector
             setupToggles();
-            
+
             // Apply the saved theme or default
             const savedTheme = localStorage.getItem('theme') || 'soft-white';
             applyTheme(savedTheme);
+
+            // Ensure dark mode toggle matches theme
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            if (savedTheme === 'dark-purple') {
+                document.body.classList.add('dark-mode');
+                if (darkModeToggle) darkModeToggle.classList.add('active');
+            } else {
+                document.body.classList.remove('dark-mode');
+                if (darkModeToggle) darkModeToggle.classList.remove('active');
+            }
         });
         
         // Direct implementation for theme switching
         document.addEventListener('DOMContentLoaded', function() {
-            // Simple direct theme switching implementation
             const themeOptions = document.querySelectorAll('.theme-option');
-            
             themeOptions.forEach(option => {
                 option.addEventListener('click', function() {
                     const theme = this.getAttribute('data-theme');
-                    console.log('Theme clicked:', theme);
-                    
                     // Remove selected class from all
                     themeOptions.forEach(opt => opt.classList.remove('selected'));
                     
@@ -1331,11 +1336,9 @@
                     
                     // Handle dark mode
                     if (theme === 'dark-purple') {
-                        console.log('Enabling dark mode');
                         document.body.classList.add('dark-mode');
                         localStorage.setItem('darkMode', 'enabled');
                     } else {
-                        console.log('Disabling dark mode');
                         document.body.classList.remove('dark-mode');
                         localStorage.setItem('darkMode', 'disabled');
                     }
@@ -1440,3 +1443,6 @@
                 }
             });
         }
+    </script>
+</body>
+</html>

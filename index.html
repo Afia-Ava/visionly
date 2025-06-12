@@ -852,6 +852,7 @@
 
     <!-- Footer similar to the screenshot, no social media -->
     <footer style="padding: 24px 0 12px 0;
+">
       <div style="max-width: 900px; margin: 0 auto; text-align: center;">
         <div style="display: flex; justify-content: center; gap: 28px; margin-bottom: 10px; flex-wrap: wrap;">
           <a href="about.html" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">About</a>
@@ -897,6 +898,8 @@
         });
     </script>
     
+    <!-- Remove this duplicate onboarding check -->
+    <!--
     <script>
         // Check if user needs onboarding
         document.addEventListener('DOMContentLoaded', function() {
@@ -905,7 +908,8 @@
             }
         });
     </script>
-    
+    -->
+
     <!-- Import sprinkles effect from mouse-sprinkles -->
     <script src="mouse-sprinkles-script.js"></script>
     
@@ -927,14 +931,22 @@
             isPlaying = true;
           }).catch(() => {
             // Autoplay blocked - set icon to off state
-            soundIcon.src = 'assets/speaker-off-icon
+            soundIcon.src = 'assets/speaker-off-icon.png';
+            soundIcon.alt = 'Sound Off';
+            isPlaying = false;
           });
         }
 
-        // Try to start audio immediately
+        // Set icon to off state if audio is paused on load
+        if (audio.paused) {
+          soundIcon.src = 'assets/speaker-off-icon.png';
+          soundIcon.alt = 'Sound Off';
+        }
+
+        // Try to start audio immediately (may be blocked)
+        startAudio();
 
         // Also try to start on first user interaction
-       
         const enableAudio = () => {
           if (!isPlaying && audio.paused) {
             startAudio();
