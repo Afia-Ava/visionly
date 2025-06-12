@@ -510,56 +510,122 @@
               </div>
               <div>
                 <label style="display: block; margin-bottom: 12px; font-weight: 500;">Choose Background</label>
-                <div id="background-options" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-height: 320px; overflow-y: auto;">
-                  <!-- Move custom color and gradient pickers to the beginning -->
-                  <div class="bg-option" data-bg="custom-color" id="custom-color-bg-option" style="height: 80px; background: linear-gradient(135deg, #eee, #ccc); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative;">
-                    <input type="color" id="custom-bg-color-picker" title="Pick a background color" style="width: 40px; height: 40px; border: none; background: none; cursor: pointer; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
-                    <span style="font-size: 12px; color: #888; margin-left: 10px;">Custom</span>
+                <div style="margin-bottom: 18px;">
+                  <!-- Tabs for Background/Pattern -->
+                  <div id="bg-pattern-tabs" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <button type="button" id="tab-bg" class="tab-btn active" style="padding: 6px 18px; border: none; border-radius: 4px 4px 0 0; background: #ede7f6; color: #3a2259; font-weight: 500; cursor: pointer;">Background</button>
+                    <button type="button" id="tab-pattern" class="tab-btn" style="padding: 6px 18px; border: none; border-radius: 4px 4px 0 0; background: #f5f5f5; color: #3a2259; font-weight: 500; cursor: pointer;">Pattern</button>
                   </div>
-                  <div class="bg-option" data-bg="custom-gradient" id="custom-gradient-bg-option" style="height: 80px; background: linear-gradient(135deg, #eee, #ccc); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; gap: 8px;">
-                    <input type="color" id="custom-gradient-color1" title="Pick first gradient color" style="width: 32px; height: 32px; border: none; background: none; cursor: pointer; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
-                    <span style="font-size: 12px; color: #888;">Gradient</span>
-                    <input type="color" id="custom-gradient-color2" title="Pick second gradient color" style="width: 32px; height: 32px; border: none; background: none; cursor: pointer; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+                  <!-- Background options grid (default visible) -->
+                  <div id="background-options" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-height: 320px; overflow-y: auto;">
+                    <!-- Move custom color and gradient pickers to the beginning -->
+                    <div class="bg-option" data-bg="custom-color" id="custom-color-bg-option" style="height: 80px; background: linear-gradient(135deg, #eee, #ccc); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative;">
+                      <input type="color" id="custom-bg-color-picker" title="Pick a background color" style="width: 40px; height: 40px; border: none; background: none; cursor: pointer; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+                      <span style="font-size: 12px; color: #888; margin-left: 10px;">Custom</span>
+                    </div>
+                    <div class="bg-option" data-bg="custom-gradient" id="custom-gradient-bg-option" style="height: 80px; background: linear-gradient(135deg, #eee, #ccc); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; gap: 8px;">
+                      <input type="color" id="custom-gradient-color1" title="Pick first gradient color" style="width: 32px; height: 32px; border: none; background: none; cursor: pointer; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+                      <span style="font-size: 12px; color: #888;">Gradient</span>
+                      <input type="color" id="custom-gradient-color2" title="Pick second gradient color" style="width: 32px; height: 32px; border: none; background: none; cursor: pointer; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+                    </div>
+                    <div class="bg-option" data-bg="textcard10" style="height: 80px; background-image: url('assets/textcard10.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    <div class="bg-option" data-bg="textcard11" style="height: 80px; background-image: url('assets/textcard11.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    <div class="bg-option" data-bg="textcard12" style="height: 80px; background-image: url('assets/textcard12.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    <div class="bg-option" data-bg="textcard13" style="height: 80px; background-image: url('assets/textcard13.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    
+                    <div class="bg-option" data-bg="textcard1" style="height: 80px; background-image: url('assets/textcard1.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    <div class="bg-option" data-bg="textcard2" style="height: 80px; background-image: url('assets/textcard2.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    <div class="bg-option" data-bg="textcard3" style="height: 80px; background-image: url('assets/textcard3.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    <div class="bg-option" data-bg="textcard4" style="height: 80px; background-image: url('assets/textcard4.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    <div class="bg-option" data-bg="textcard5" style="height: 80px; background-image: url('assets/textcard5.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    <div class="bg-option" data-bg="textcard6" style="height: 80px; background-image: url('assets/textcard6.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    <div class="bg-option" data-bg="textcard7" style="height: 80px; background-image: url('assets/textcard7.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    <div class="bg-option" data-bg="textcard8" style="height: 80px; background-image: url('assets/textcard8.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
+                    <div class="bg-option" data-bg="textcard9" style="height: 80px; background-image: url('assets/textcard9.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
+                      <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                    </div>
                   </div>
-                  <div class="bg-option" data-bg="textcard10" style="height: 80px; background-image: url('assets/textcard10.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  <div class="bg-option" data-bg="textcard11" style="height: 80px; background-image: url('assets/textcard11.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  <div class="bg-option" data-bg="textcard12" style="height: 80px; background-image: url('assets/textcard12.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  <div class="bg-option" data-bg="textcard13" style="height: 80px; background-image: url('assets/textcard13.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  
-                  <div class="bg-option" data-bg="textcard1" style="height: 80px; background-image: url('assets/textcard1.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  <div class="bg-option" data-bg="textcard2" style="height: 80px; background-image: url('assets/textcard2.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  <div class="bg-option" data-bg="textcard3" style="height: 80px; background-image: url('assets/textcard3.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  <div class="bg-option" data-bg="textcard4" style="height: 80px; background-image: url('assets/textcard4.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  <div class="bg-option" data-bg="textcard5" style="height: 80px; background-image: url('assets/textcard5.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  <div class="bg-option" data-bg="textcard6" style="height: 80px; background-image: url('assets/textcard6.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  <div class="bg-option" data-bg="textcard7" style="height: 80px; background-image: url('assets/textcard7.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  <div class="bg-option" data-bg="textcard8" style="height: 80px; background-image: url('assets/textcard8.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
-                  </div>
-                  <div class="bg-option" data-bg="textcard9" style="height: 80px; background-image: url('assets/textcard9.png'), linear-gradient(135deg, #eee, #ccc); background-size: cover; background-position: center; border-radius: 4px; cursor: pointer;">
-                    <span style="display: none; color: #888; font-size: 12px; position: absolute; left: 8px; top: 8px;">No Img</span>
+                  <!-- Pattern options grid (hidden by default) -->
+                  <div id="pattern-options" style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px; max-height: 120px; overflow-y: auto; margin-top: 10px;">
+                    <div class="pattern-option" data-pattern="none" style="height: 60px; background: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; border: 2px solid #eee;">
+                      <span style="font-size: 13px; color: #888;">No Pattern</span>
+                    </div>
+                    <div class="pattern-option" data-pattern="dots" style="height: 60px; background: none; border-radius: 4px; cursor: pointer; border: 2px solid #eee; position: relative;">
+                      <!-- SVG Dots Pattern (dense) -->
+                      <svg width="60" height="60" style="position: absolute; inset: 0;" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="10" r="2" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="30" cy="10" r="2" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="50" cy="10" r="2" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="10" cy="30" r="2" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="30" cy="30" r="2" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="50" cy="30" r="2" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="10" cy="50" r="2" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="30" cy="50" r="2" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="50" cy="50" r="2" fill="#bbb" fill-opacity="0.5"/>
+                      </svg>
+                    </div>
+                    <div class="pattern-option" data-pattern="waves" style="height: 60px; background: none; border-radius: 4px; cursor: pointer; border: 2px solid #eee; position: relative;">
+                      <!-- SVG Wavy Lines -->
+                      <svg width="60" height="60" style="position: absolute; inset: 0;" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 20 Q15 10 30 20 T60 20" stroke="#bbb" stroke-width="2" fill="none" stroke-opacity="0.5"/>
+                        <path d="M0 40 Q15 30 30 40 T60 40" stroke="#bbb" stroke-width="2" fill="none" stroke-opacity="0.5"/>
+                        <path d="M0 60 Q15 50 30 60 T60 60" stroke="#bbb" stroke-width="2" fill="none" stroke-opacity="0.5"/>
+                      </svg>
+                    </div>
+                    <div class="pattern-option" data-pattern="stars" style="height: 60px; background: none; border-radius: 4px; cursor: pointer; border: 2px solid #eee; position: relative;">
+                      <!-- SVG Star Sparkles -->
+                      <svg width="60" height="60" style="position: absolute; inset: 0;" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="10,20 12,26 18,26 13,30 15,36 10,32 5,36 7,30 2,26 8,26" fill="#bbb" fill-opacity="0.5"/>
+                        <polygon points="50,10 51,13 54,13 52,15 53,18 50,16 47,18 48,15 46,13 49,13" fill="#bbb" fill-opacity="0.5"/>
+                        <polygon points="40,40 41,44 45,44 42,46 43,50 40,48 37,50 38,46 35,44 39,44" fill="#bbb" fill-opacity="0.5"/>
+                      </svg>
+                    </div>
+                    <div class="pattern-option" data-pattern="grid" style="height: 60px; background: none; border-radius: 4px; cursor: pointer; border: 2px solid #eee; position: relative;">
+                      <!-- SVG Grid -->
+                      <svg width="60" height="60" style="position: absolute; inset: 0;" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0" y="0" width="60" height="60" fill="none"/>
+                        <line x1="20" y1="0" x2="20" y2="60" stroke="#bbb" stroke-width="1" stroke-opacity="0.5"/>
+                        <line x1="40" y1="0" x2="40" y2="60" stroke="#bbb" stroke-width="1" stroke-opacity="0.5"/>
+                        <line x1="0" y1="20" x2="60" y2="20" stroke="#bbb" stroke-width="1" stroke-opacity="0.5"/>
+                        <line x1="0" y1="40" x2="60" y2="40" stroke="#bbb" stroke-width="1" stroke-opacity="0.5"/>
+                      </svg>
+                    </div>
+                    <div class="pattern-option" data-pattern="confetti" style="height: 60px; background: none; border-radius: 4px; cursor: pointer; border: 2px solid #eee; position: relative;">
+                      <!-- SVG Confetti Dots -->
+                      <svg width="60" height="60" style="position: absolute; inset: 0;" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="10" r="2" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="20" cy="40" r="1.5" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="40" cy="20" r="2" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="50" cy="50" r="1.5" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="30" cy="30" r="1.5" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="50" cy="10" r="1.5" fill="#bbb" fill-opacity="0.5"/>
+                        <circle cx="10" cy="50" r="1.5" fill="#bbb" fill-opacity="0.5"/>
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -941,6 +1007,10 @@
     const textCardPreview = document.getElementById('text-card-preview');
     const previewText = document.getElementById('preview-text');
     const bgOptions = document.querySelectorAll('.bg-option');
+    // Custom color/gradient pickers
+    const customBgColorPicker = document.getElementById('custom-bg-color-picker');
+    const customGradientColor1 = document.getElementById('custom-gradient-color1');
+    const customGradientColor2 = document.getElementById('custom-gradient-color2');
 
     // Track the currently selected background option
     let selectedBgOption = null;
@@ -953,7 +1023,6 @@
       option.classList.add('selected');
       const dataBg = option.getAttribute('data-bg');
       if (dataBg === 'custom-color') {
-        // Use the color picker's value
         const color = customBgColorPicker.value || '#eee';
         textCardPreview.style.background = color;
         textCardPreview.style.backgroundImage = 'none';
@@ -962,10 +1031,10 @@
       } else if (dataBg === 'custom-gradient') {
         const color1 = customGradientColor1.value || '#eee';
         const color2 = customGradientColor2.value || '#ccc';
-        textCardPreview.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
-        textCardPreview.style.backgroundImage = 'none';
-        textCardPreview.style.backgroundSize = '';
-        textCardPreview.style.backgroundPosition = '';
+        textCardPreview.style.background = '';
+        textCardPreview.style.backgroundImage = `linear-gradient(135deg, ${color1}, ${color2})`;
+        textCardPreview.style.backgroundSize = 'cover';
+        textCardPreview.style.backgroundPosition = 'center';
       } else if (dataBg && dataBg.startsWith('textcard')) {
         const bgImage = window.getComputedStyle(option).backgroundImage;
         textCardPreview.style.background = '';
@@ -987,10 +1056,10 @@
       previewText.style.fontFamily = cardFontSelect.value;
       previewText.style.color = cardColorSelect.value;
       previewText.style.fontSize = cardSizeSelect.value;
-      // Only update background if a background is selected
       if (selectedBgOption) setPreviewBackgroundFromOption(selectedBgOption);
     }
 
+    // Open modal
     if (createTextCardBtn) {
       createTextCardBtn.addEventListener('click', function() {
         textCardModal.style.display = 'block';
@@ -1001,10 +1070,16 @@
           bgOptions[0].classList.add('selected');
           setPreviewBackgroundFromOption(bgOptions[0]);
         }
+        // Reset form fields
+        cardTextInput.value = '';
+        cardFontSelect.value = "Inter, sans-serif";
+        cardColorSelect.value = "#ffffff";
+        cardSizeSelect.value = "16px";
         updatePreview();
       });
     }
 
+    // Close modal (Cancel/X)
     [closeTextModalBtn, cancelTextCardBtn].forEach(btn => {
       if (btn) btn.addEventListener('click', function() {
         textCardModal.style.display = 'none';
@@ -1012,6 +1087,7 @@
       });
     });
 
+    // Live preview updates
     [cardTextInput, cardFontSelect, cardColorSelect, cardSizeSelect].forEach(input => {
       if (input) {
         input.addEventListener('input', updatePreview);
@@ -1028,7 +1104,7 @@
       });
     });
 
-    // Add text card to board (unchanged)
+    // --- Add Text Card to Board and Close Modal ---
     if (addTextCardBtn) {
       addTextCardBtn.addEventListener('click', function() {
         // Prepare canvas
@@ -1040,10 +1116,10 @@
         // Draw background
         const background = textCardPreview.style.background;
         const backgroundImage = textCardPreview.style.backgroundImage;
+        const dataBg = selectedBgOption ? selectedBgOption.getAttribute('data-bg') : null;
+
         function drawTextOnCanvas() {
-          // Draw text
           ctx.fillStyle = cardColorSelect.value;
-          // Convert rem to px for canvas font
           let pxSize = 32;
           if (cardSizeSelect.value.endsWith('rem')) {
             pxSize = parseFloat(cardSizeSelect.value) * 16;
@@ -1053,8 +1129,6 @@
           ctx.font = `${pxSize}px ${cardFontSelect.value}`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-
-          // Word wrap
           const text = cardTextInput.value || 'Inspirational Text';
           const words = text.split(' ');
           const lines = [];
@@ -1078,10 +1152,33 @@
           });
         }
 
-        if (backgroundImage && backgroundImage !== 'none') {
-          // Draw image background
+        function finish() {
+          const cardImageUrl = canvas.toDataURL('image/png');
+          addImageToPreview(cardImageUrl, 'Inspirational Text Card');
+          textCardModal.style.display = 'none';
+          document.body.style.overflow = '';
+          cardTextInput.value = '';
+          updatePreview();
+        }
+
+        // Draw background and text, then finish
+        if (dataBg === 'custom-color') {
+          ctx.fillStyle = customBgColorPicker.value || '#eee';
+          ctx.fillRect(0, 0, 600, 600);
+          drawTextOnCanvas();
+          finish();
+        } else if (dataBg === 'custom-gradient') {
+          const color1 = customGradientColor1.value || '#eee';
+          const color2 = customGradientColor2.value || '#ccc';
+          const grad = ctx.createLinearGradient(0, 0, 600, 600);
+          grad.addColorStop(0, color1);
+          grad.addColorStop(1, color2);
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, 600, 600);
+          drawTextOnCanvas();
+          finish();
+        } else if (backgroundImage && backgroundImage !== 'none') {
           const img = new window.Image();
-          // Extract URL from backgroundImage: url("...")
           const urlMatch = backgroundImage.match(/url\(["']?([^"')]+)["']?\)/);
           img.crossOrigin = "anonymous";
           img.onload = function() {
@@ -1090,7 +1187,6 @@
             finish();
           };
           img.onerror = function() {
-            // fallback to solid color
             ctx.fillStyle = '#3a2259';
             ctx.fillRect(0, 0, 600, 600);
             drawTextOnCanvas();
@@ -1098,20 +1194,10 @@
           };
           img.src = urlMatch ? urlMatch[1] : '';
         } else {
-          // Gradient or solid color
           ctx.fillStyle = background || '#3a2259';
           ctx.fillRect(0, 0, 600, 600);
           drawTextOnCanvas();
           finish();
-        }
-
-        function finish() {
-          const cardImageUrl = canvas.toDataURL('image/png');
-          addImageToPreview(cardImageUrl, 'Inspirational Text Card');
-          textCardModal.style.display = 'none';
-          document.body.style.overflow = '';
-          cardTextInput.value = '';
-          updatePreview();
         }
       });
     }
@@ -1244,6 +1330,85 @@
         updatePreview();
       });
     });
+  });
+  </script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Pattern tab logic
+    const tabBg = document.getElementById('tab-bg');
+    const tabPattern = document.getElementById('tab-pattern');
+    const bgOptionsDiv = document.getElementById('background-options');
+    const patternOptionsDiv = document.getElementById('pattern-options');
+    let selectedPattern = 'none';
+
+    if (tabBg && tabPattern && bgOptionsDiv && patternOptionsDiv) {
+      tabBg.addEventListener('click', function() {
+        tabBg.classList.add('active');
+        tabPattern.classList.remove('active');
+        bgOptionsDiv.style.display = 'grid';
+        patternOptionsDiv.style.display = 'none';
+      });
+      tabPattern.addEventListener('click', function() {
+        tabPattern.classList.add('active');
+        tabBg.classList.remove('active');
+        bgOptionsDiv.style.display = 'none';
+        patternOptionsDiv.style.display = 'grid';
+      });
+    }
+
+    // Pattern selection logic
+    const patternOptions = document.querySelectorAll('.pattern-option');
+    patternOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        patternOptions.forEach(opt => opt.classList.remove('selected'));
+        this.classList.add('selected');
+        selectedPattern = this.getAttribute('data-pattern');
+        updatePreview();
+      });
+    });
+
+    // --- Patch updatePreview to overlay pattern ---
+    function updatePreview() {
+      previewText.textContent = cardTextInput.value || 'Your inspirational text will appear here';
+      previewText.style.fontFamily = cardFontSelect.value;
+      previewText.style.color = cardColorSelect.value;
+      previewText.style.fontSize = cardSizeSelect.value;
+      if (selectedBgOption) setPreviewBackgroundFromOption(selectedBgOption);
+
+      // --- Pattern overlay logic ---
+      // Remove any previous pattern overlay
+      let bgImg = textCardPreview.style.backgroundImage || '';
+      // Remove previous pattern SVGs
+      bgImg = bgImg
+        .split(',')
+        .filter(img => img.indexOf('data:image/svg+xml') === -1)
+        .map(s => s.trim())
+        .filter(Boolean)
+        .join(', ');
+
+      // Pattern SVGs
+      const patternSVGs = {
+        'dots': 'url("data:image/svg+xml;utf8,<svg width=\'60\' height=\'60\' xmlns=\'http://www.w3.org/2000/svg\'><circle cx=\'10\' cy=\'10\' r=\'2\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'30\' cy=\'10\' r=\'2\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'50\' cy=\'10\' r=\'2\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'10\' cy=\'30\' r=\'2\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'30\' cy=\'30\' r=\'2\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'50\' cy=\'30\' r=\'2\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'10\' cy=\'50\' r=\'2\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'30\' cy=\'50\' r=\'2\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'50\' cy=\'50\' r=\'2\' fill=\'%23fff\' fill-opacity=\'0.18\'/></svg>")',
+        'waves': 'url("data:image/svg+xml;utf8,<svg width=\'60\' height=\'60\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M0 20 Q15 10 30 20 T60 20\' stroke=\'%23fff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.18\'/><path d=\'M0 40 Q15 30 30 40 T60 40\' stroke=\'%23fff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.18\'/><path d=\'M0 60 Q15 50 30 60 T60 60\' stroke=\'%23fff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.18\'/></svg>")',
+        'stars': 'url("data:image/svg+xml;utf8,<svg width=\'60\' height=\'60\' xmlns=\'http://www.w3.org/2000/svg\'><polygon points=\'10,20 12,26 18,26 13,30 15,36 10,32 5,36 7,30 2,26 8,26\' fill=\'%23fff\' fill-opacity=\'0.18\'/><polygon points=\'50,10 51,13 54,13 52,15 53,18 50,16 47,18 48,15 46,13 49,13\' fill=\'%23fff\' fill-opacity=\'0.18\'/><polygon points=\'40,40 41,44 45,44 42,46 43,50 40,48 37,50 38,46 35,44 39,44\' fill=\'%23fff\' fill-opacity=\'0.18\'/></svg>")',
+        'grid': 'url("data:image/svg+xml;utf8,<svg width=\'60\' height=\'60\' xmlns=\'http://www.w3.org/2000/svg\'><rect x=\'0\' y=\'0\' width=\'60\' height=\'60\' fill=\'none\'/><line x1=\'20\' y1=\'0\' x2=\'20\' y2=\'60\' stroke=\'%23fff\' stroke-width=\'1\' stroke-opacity=\'0.13\'/><line x1=\'40\' y1=\'0\' x2=\'40\' y2=\'60\' stroke=\'%23fff\' stroke-width=\'1\' stroke-opacity=\'0.13\'/><line x1=\'0\' y1=\'20\' x2=\'60\' y2=\'20\' stroke=\'%23fff\' stroke-width=\'1\' stroke-opacity=\'0.13\'/><line x1=\'0\' y1=\'40\' x2=\'60\' y2=\'40\' stroke=\'%23fff\' stroke-width=\'1\' stroke-opacity=\'0.13\'/></svg>")',
+        'confetti': 'url("data:image/svg+xml;utf8,<svg width=\'60\' height=\'60\' xmlns=\'http://www.w3.org/2000/svg\'><circle cx=\'10\' cy=\'10\' r=\'2\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'20\' cy=\'40\' r=\'1.5\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'40\' cy=\'20\' r=\'2\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'50\' cy=\'50\' r=\'1.5\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'30\' cy=\'30\' r=\'1.5\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'50\' cy=\'10\' r=\'1.5\' fill=\'%23fff\' fill-opacity=\'0.18\'/><circle cx=\'10\' cy=\'50\' r=\'1.5\' fill=\'%23fff\' fill-opacity=\'0.18\'/></svg>")'
+      };
+
+      if (selectedPattern && selectedPattern !== 'none' && patternSVGs[selectedPattern]) {
+        // Compose new backgroundImage string
+        textCardPreview.style.backgroundImage = bgImg
+          ? `${bgImg}, ${patternSVGs[selectedPattern]}`
+          : patternSVGs[selectedPattern];
+        textCardPreview.style.backgroundRepeat = 'repeat';
+        textCardPreview.style.backgroundSize = 'cover, auto';
+      } else {
+        textCardPreview.style.backgroundImage = bgImg;
+        textCardPreview.style.backgroundRepeat = '';
+        textCardPreview.style.backgroundSize = '';
+      }
+    }
   });
   </script>
 </body>
