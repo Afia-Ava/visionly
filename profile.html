@@ -456,6 +456,218 @@
                 margin-top: 10px;
             }
         }
+        
+        /* Achievement section styles */
+        .achievements-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        body.dark-mode .achievements-section {
+            border-top: 1px solid #2d1549;
+        }
+        
+        .achievements-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .view-all-btn {
+            background: #1f0f35;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .view-all-btn:hover {
+            background: #2d1549;
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .achievement-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+        
+        .achievement-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        body.dark-mode .achievement-item {
+            background: #1f0f35;
+            box-shadow: 0 2px 4px rgba(139, 95, 179, 0.1);
+        }
+        
+        body.dark-mode .achievement-item:hover {
+            box-shadow: 0 4px 8px rgba(139, 95, 179, 0.2);
+        }
+        
+        .achievement-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: #eaeaea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        body.dark-mode .achievement-icon {
+            background: #2d1549;
+        }
+        
+        .achievement-icon i {
+            font-size: 24px;
+            color: #6b46c1;
+        }
+        
+        body.dark-mode .achievement-icon i {
+            color: #c9a9ff;
+        }
+        
+        .achievement-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 5px;
+            color: #333;
+        }
+        
+        body.dark-mode .achievement-title {
+            color: #e0e0e0;
+        }
+        
+        .achievement-date {
+            font-size: 14px;
+            color: #777;
+        }
+        
+        body.dark-mode .achievement-date {
+            color: #999;
+        }
+        
+        @media (max-width: 768px) {
+            .achievements-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .achievements-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Profile dropdown styles */
+        .profile-dropdown {
+            position: relative;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background-color: white;
+            border-radius: 8px;
+            width: 180px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1010;
+            overflow: hidden;
+        }
+        
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        body.dark-mode .dropdown-menu {
+            background-color: #140a22;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+        
+        body.dark-mode .dropdown-item {
+            color: #e0e0e0;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        body.dark-mode .dropdown-item:hover {
+            background-color: #2d1549;
+        }
+        
+        .dropdown-item i {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+        
+        .dropdown-item.active {
+            position: relative;
+        }
+        
+        .dropdown-item.active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background-color: #6b46c1;
+        }
+        
+        body.dark-mode .dropdown-item.active::after {
+            background-color: #9d78c9;
+        }
+        
+        .profile-dropdown-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .profile-dropdown-overlay.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -467,9 +679,25 @@
             <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
             <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
             <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
-            <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+            <div class="profile-dropdown">
+                <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+                <div class="dropdown-menu" id="profile-dropdown-menu">
+                    <a href="profile.html" class="dropdown-item active">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                    <a href="achievements.html" class="dropdown-item">
+                        <i class="fas fa-trophy"></i> Achievements
+                    </a>
+                    <a href="#" class="dropdown-item" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
         </div>
     </nav>
+    
+    <!-- Overlay to close dropdown when clicking outside -->
+    <div class="profile-dropdown-overlay" id="profile-dropdown-overlay"></div>
 
     <div class="profile-content">
         <div class="profile-header">
@@ -594,6 +822,39 @@
                     </div>
                     
                     <button class="save-btn" id="save-changes">Save Changes</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="achievements-section">
+            <div class="achievements-header">
+                <h3>Achievements</h3>
+                <a href="achievements.html" class="view-all-btn">View All</a>
+            </div>
+            
+            <div class="achievements-grid">
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4 class="achievement-title">First Vision Board</h4>
+                    <div class="achievement-date">Earned on Jan 15, 2024</div>
+                </div>
+                
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h4 class="achievement-title">Journal Master</h4>
+                    <div class="achievement-date">Earned on Feb 3, 2024</div>
+                </div>
+                
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h4 class="achievement-title">Goal Crusher</h4>
+                    <div class="achievement-date">Earned on Mar 7, 2024</div>
                 </div>
             </div>
         </div>
@@ -836,8 +1097,9 @@
                         
                         // Load user statistics
                         loadUserStatistics(user.uid);
-                        console.log('Profile updated with:', userName, userEmail);
                         
+                        // Load user achievements if available
+                        loadUserAchievements(user.uid);
                     } else {
                         console.log('No user found');
                         setDefaultUserData();

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Achievements - Visionly</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="dark-mode-global.css">
+  <link rel="stylesheet" href="achievement-badges.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  
+  <style>
+    .achievement-section {
+        max-width: 1100px;
+        margin: 120px auto 50px;
+        padding: 0 20px;
+    }
+    
+    /* Light mode styling with darker purple zigzag pattern */
+    body {
+        background-color: #ffffff;
+        position: relative;
+        z-index: 0;
+    }
+    
+    /* Darker purple zigzag pattern */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.06; /* Slightly increased opacity for better visibility */
+        background: linear-gradient(135deg, #6B46C1 25%, transparent 25%) -10px 0,
+                    linear-gradient(225deg, #6B46C1 25%, transparent 25%) -10px 0,
+                    linear-gradient(315deg, #6B46C1 25%, transparent 25%),
+                    linear-gradient(45deg, #6B46C1 25%, transparent 25%);
+        background-size: 20px 20px;
+    }
+
+    .section-title {
+        text-align: left;
+        margin-bottom: 40px;
+        font-size: 2rem;
+        color: #2d1a45;
+        font-weight: 700;
+    }
+    
+    /* Layout modifications for side-by-side design */
+    .achievement-content {
+      display: flex;
+      flex-direction: row;
+      gap: 32px;
+      margin-top: 40px;
+      align-items: flex-start;
+    }
+    
+    /* Left side styling - stats column */
+    .stats-column {
+      flex: 0 0 320px;
+      position: sticky;
+      top: 100px;
+    }
+    
+    /* Right side styling - badges column */
+    .badges-column {
+      flex: 1;
+    }
+    
+    /* Change the streak box to light purple and make it smaller */
+    .streak-display {
+      background: linear-gradient(135deg, #7602FF 0%, #9537FF 100%);
+      border-radius: 16px;
+      padding: 30px;
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 25px rgba(149, 55, 255, 0.25);
+      position: relative;
+      overflow: hidden;
+      border: none;
+      width: 100%;
+    }
+    
+    .streak-display::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(219, 193, 255, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(187, 158, 255, 0.3) 0%, transparent 50%);
+    }
+    
+    .streak-title {
+      font-size: 1.2rem; /* Smaller title */
+      margin-bottom: 12px; /* Less space */
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    
+    .streak-days {
+      font-size: 3rem; /* Smaller number */
+      font-weight: 700;
+      margin-bottom: 5px; /* Less space */
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      position: relative;
+    }
+    
+    /* Make flame icon smaller */
+    .streak-days::after {
+      content: '🔥';
+      font-size: 1.4rem; /* Smaller flame */
+      position: absolute;
+      margin-left: 5px;
+      bottom: 8px;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    }
+    
+    .streak-subtitle {
+      font-size: 0.95rem; /* Smaller text */
+      opacity: 0.9;
+    }
+    
+    /* Stack stat cards vertically */
+    .achievement-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      width: 100%;
+      margin: 0;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+    }
+    
+    .stat-card-content {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .stat-number {
+      font-size: 2.4rem;
+      line-height: 1;
+      margin-bottom: 0;
+      text-align: right;
+    }
+    
+    /* VIBRANT Badge Design - Enhanced Colors */
+    .badge-outer {
+      width: 110px;
+      height: 110px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 15px;
+      cursor: pointer;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #9537FF 0%, #5B02C1 100%); /* More vibrant purple */
+      box-shadow: 0 6px 20px rgba(149, 55, 255, 0.4);
+      transition: all 0.3s ease;
+      overflow: visible;
+    }
+    
+    /* Vibrant ribbon design */
+    .badge-outer::before {
+      content: '';
+      position: absolute;
+      width: 130%;
+      height: 130%;
+      background: conic-gradient(
+        from 0deg, 
+        rgba(149, 55, 255, 0) 0deg, 
+        rgba(187, 96, 255, 0.2) 70deg,
+        rgba(187, 96, 255, 0.5) 90deg,
+        rgba(187, 96, 255, 0.2) 110deg,
+        rgba(149, 55, 255, 0) 180deg,
+        rgba(149, 55, 255, 0) 0deg
+      );
+      border-radius: 50%;
+      z-index: -1;
+      animation: rotateSlow 12s linear infinite;
+    }
+    
+    .badge-inner {
+      width: 85px;
+      height: 85px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #4A01C1 0%, #7602FF 100%); /* More vibrant inner gradient */
+      border-radius: 50%;
+      border: 3px solid rgba(221, 175, 255, 0.5); /* Brighter border */
+      box-shadow: inset 0 2px 12px rgba(0,0,0,0.5), 0 0 15px rgba(149, 55, 255, 0.3);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+    
+    /* Improved pattern overlay with more glow */
+    .badge-inner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 50% 80%, transparent 20%, rgba(0,0,0,0.25) 100%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2) 0%, transparent 100%);
+      z-index: -1;
+    }
+    
+    /* Enhanced metallic rim effect */
+    .badge-rim {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 4px solid #DD9FFF; /* Brighter border color */
+      border-radius: 50%;
+      box-sizing: border-box;
+      opacity: 0.7;
+      background: linear-gradient(145deg, rgba(255,255,255,0.5) 0%, transparent 50%, rgba(0,0,0,0.2) 100%);
+    }
+    
+    .badge-outer:hover {
+      transform: scale(1.12) rotate(5deg); /* Bigger scale effect */
+      box-shadow: 0 8px 30px rgba(149, 55, 255, 0.6); /* More pronounced glow */
+    }
+    
+    .badge-outer:hover .badge-rim {
+      opacity: 1;
+      border-color: #F1C6FF; /* Even brighter on hover */
+    }
+    
+    /* Badge icon styling - Brighter colors */
+    .badge-icon {
+      color: #FFFFFF; /* Pure white for better contrast */
+      font-size: 38px; /* Slightly larger */
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      position: relative;
+      z-index: 2;
+      filter: drop-shadow(0 0 5px rgba(255,255,255,0.7)); /* Glow effect */
+    }
+    
+    /* New badge description subheading - Bolder */
+    .badge-description {
+      text-align: center;
+      font-size: 0.85rem; /* Slightly larger */
+      color: #2d1a45;
+      margin-top: 10px;
+      font-weight: 600; /* Bolder text */
+      max-width: 120px; /* Slightly wider */
+      line-height: 1.3;
+      transition: color 0.3s ease;
+    }
+    
+    .badge-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px 15px 25px;
+    }
+    
+    .badge-wrapper:hover .badge-description {
+      color: #7602FF; /* More vibrant on hover */
+    }
+    
+    /* Locked badge description style */
+    .badge-locked + .badge-description {
+      color: #888;
+      font-style: italic;
+    }
+    
+    /* Category headings */
+    .badge-category-title {
+      text-align: center;
+      margin: 40px 0 20px;
+      color: transparent;
+      background: linear-gradient(90deg, #7602FF 10%, #5B02C1 90%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      position: relative;
+    }
+    
+    .badge-category-title::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -8px;
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, #7602FF, #9537FF);
+      transform: translateX(-50%);
+      border-radius: 3px;
+    }
+    
+    .badge-category-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+    
+    /* Badge shine animation */
+    .badge-shine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.4) 50%, /* Brighter shine */
+        rgba(255, 255, 255, 0) 100%
+      );
+      z-index: 3;
+      opacity: 0;
+      border-radius: 50%;
+      transition: opacity 0.3s ease;
+    }
+    
+    .badge-outer:hover .badge-shine {
+      opacity: 1;
+      animation: badgeShine 1.2s ease-in-out; /* Slightly faster */
+    }
+    
+    /* Badge unlock animation */
+    .badge-new {
+      animation: unlockPulse 1.5s ease infinite;
+    }
+    
+    .badge-new::after {
+      content: '';
+      position: absolute;
+      inset: -15px;
+      border-radius: 50%;
+      background: radial-gradient(rgba(149, 55, 255, 0.4) 0%, transparent 70%);
+      animation: glowPulse 1.5s ease-in-out infinite alternate;
+      z-index: -1;
+    }
+    
+    @keyframes glowPulse {
+      0% { opacity: 0.3; transform: scale(0.95); }
+      100% { opacity: 0.7; transform: scale(1.05); }
+    }
+    
+    @keyframes unlockPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Improved stats cards */
+    .stat-card {
+      background: linear-gradient(145deg, #f5f0ff, #eee6fa);
+      padding: 25px;
+      border-radius: 16px;
+      width: 180px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(45, 26, 69, 0.15);
+      margin: 10px;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 28px rgba(45, 26, 69, 0.2);
+    }
+    
+    .stat-number {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #7602FF, #9537FF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 1.1rem;
+      color: #444;
+      font-weight: 500;
+    }
+    
+    /* More vibrant streak display with updated colors */
+    .streak-display {
+      background: linear-gradient(135deg, #FF5500 0%, #FF9000 100%); /* Vibrant orange gradient */
+      border-radius: 18px;
+      padding: 35px;
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(255, 85, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .streak-display::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 165, 0, 0.3) 0%, transparent 50%);
+    }
+    
+    .streak-title {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .streak-days {
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+      position: relative;
+    }
+    
+    /* Add flame icon to streak days */
+    .streak-days::after {
+      content: '🔥';
+      font-size: 1.8rem;
+      position: absolute;
+      margin-left: 8px;
+      bottom: 12px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+    
+    .streak-subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+    
+    /* Profile dropdown styles */
+    .profile-dropdown {
+        position: relative;
+    }
+    
+    .dropdown-menu {
+        position: absolute;
+        right: 0;
+        top: 50px;
+        background-color: white;
+        border-radius: 8px;
+        width: 180px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 1010;
+        overflow: hidden;
+    }
+    
+    .dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    body.dark-mode .dropdown-menu {
+        background-color: #140a22;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        color: #333;
+        text-decoration: none;
+        transition: background 0.2s ease;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    
+    .dropdown-item:hover {
+        background-color: #f5f5f5;
+    }
+    
+    body.dark-mode .dropdown-item:hover {
+        background-color: #2d1549;
+    }
+    
+    .dropdown-item i {
+        margin-right: 10px;
+        width: 16px;
+        text-align: center;
+    }
+    
+    .dropdown-item.active {
+        position: relative;
+    }
+    
+    .dropdown-item.active::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 3px;
+        background-color: #6b46c1;
+    }
+    
+    body.dark-mode .dropdown-item.active::after {
+        background-color: #9d78c9;
+    }
+    
+    .profile-dropdown-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1000;
+        display: none;
+    }
+    
+    .profile-dropdown-overlay.show {
+        display: block;
+    }
+    
+    /* Remove or fix the purple rectangle box */
+    .dropdown-divider {
+      height: 1px;
+      margin: 0;
+      background-color: #f0f0f0;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar copied from index.html -->
+  <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+    <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+    <div style="display: flex; align-items: center;">
+      <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+      <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+      <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+      <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+      <a href="elevate.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Elevate</a>
+      <div class="profile-dropdown">
+        <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+        <div class="dropdown-menu" id="profile-dropdown-menu">
+          <a href="profile.html" class="dropdown-item">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="settings.html" class="dropdown-item">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a href="help.html" class="dropdown-item">
+            <i class="fas fa-question-circle"></i> Help
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="logout.html" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Overlay for closing dropdown -->
+  <div class="profile-dropdown-overlay" id="profile-dropdown-overlay"></div>
+
+  <main class="achievement-section">
+    <h1 class="section-title">Your Achievements</h1>
+    
+    <!-- New side-by-side layout -->
+    <div class="achievement-content">
+      <!-- Left column - Stats -->
+      <div class="stats-column">
+        <div class="streak-display">
+          <h2 class="streak-title">Current Streak</h2>
+          <div class="streak-days" id="streak-count">0</div>
+          <div class="streak-subtitle">days in a row</div>
+        </div>
+        
+        <h3 class="left-heading">Your Stats</h3>
+        <div class="achievement-stats">
+          <div class="stat-card">
+            <div class="stat-card-content">
+              <div class="stat-label">Focus Hours</div>
+            </div>
+            <div class="stat-number" id="focus-hours">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-content">
+              <div class="stat-label">Goals Completed</div>
+            </div>
+            <div class="stat-number" id="goals-completed">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-content">
+              <div class="stat-label">Badges Earned</div>
+            </div>
+            <div class="stat-number" id="badges-earned">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-content">
+              <div class="stat-label">Longest Streak</div>
+            </div>
+            <div class="stat-number" id="longest-streak">0</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right column - Badges -->
+      <div class="badges-column">
+        <h2 class="left-heading">Achievement Badges</h2>
+        <div id="achievement-badges-container" class="achievement-container">
+          <!-- Badges will be dynamically inserted here -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="firebase-config.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="shared-scripts.js"></script>
+  <script src="achievement-badges.js"></script>
+  
+  <script>
+    // Demo data - replace with actual user data in production
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize stats to 0
+      document.getElementById('focus-hours').textContent = '0';
+      document.getElementById('goals-completed').textContent = '0';
+      document.getElementById('badges-earned').textContent = '0';
+      document.getElementById('longest-streak').textContent = '0';
+      document.getElementById('streak-count').textContent = '0';
+      
+      // Fetch actual user data from server/localStorage when available
+      function fetchUserStats() {
+        // This function would normally fetch data from your backend
+        // For demo purposes, we'll just simulate loading some stats after a delay
+        setTimeout(() => {
+          // Update with real values from the server/localStorage when user is authenticated
+          // Only update if user is logged in and has stats
+          if (window.isUserLoggedIn) {
+            document.getElementById('focus-hours').textContent = '12';
+            document.getElementById('goals-completed').textContent = '3';
+            document.getElementById('badges-earned').textContent = '4';
+            document.getElementById('longest-streak').textContent = '7';
+            document.getElementById('streak-count').textContent = '3';
+          }
+        }, 1000);
+      }
+      
+      // For demo, unlock some badges
+      window.achievementBadges.unlockBadge('streak3');
+      window.achievementBadges.unlockBadge('firstGoal');
+      window.achievementBadges.unlockBadge('journalEntries');
+      window.achievementBadges.unlockBadge('focusHours');
+      
+      // Render badges
+      window.achievementBadges.renderBadges('achievement-badges-container');
+      
+      // Try to fetch user stats if they exist
+      fetchUserStats();
+      
+      // For demo purposes - show an achievement unlock after 3 seconds
+      setTimeout(() => {
+        if (!window.achievementBadges.hasBadge('futureMessage')) {
+          window.achievementBadges.unlockBadge('futureMessage');
+          window.achievementBadges.renderBadges('achievement-badges-container');
+        }
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
