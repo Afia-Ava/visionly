@@ -223,40 +223,43 @@
             <div class="focus-right" style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
                 <div class="background-music" style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <h3 style="font-weight: 600; color: #333;">Focus Sounds</h3>
-                    
-                    <!-- Music options grid -->
                     <div class="music-options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
                         <div class="music-option" data-src="assets/calming-rain.mp3" style="background-color: #f8f9fa; border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s; text-align: center;">
                             <div style="font-size: 28px; margin-bottom: 8px;">🌧️</div>
                             <p style="margin: 0; font-weight: 600; font-size: 0.85rem; color: #333;">Calm Rain</p>
                         </div>
-                        
                         <div class="music-option" data-src="assets/lofi-beats.mp3" style="background-color: #f8f9fa; border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s; text-align: center;">
                             <div style="font-size: 28px; margin-bottom: 8px;">🎵</div>
                             <p style="margin: 0; font-weight: 600; font-size: 0.85rem; color: #333;">Lo-Fi Beats</p>
                         </div>
-                        
                         <div class="music-option" data-src="assets/brown-noise.mp3" style="background-color: #f8f9fa; border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s; text-align: center;">
                             <div style="font-size: 28px; margin-bottom: 8px;">📻</div>
                             <p style="margin: 0; font-weight: 600; font-size: 0.85rem; color: #333;">Brown Noise</p>
                         </div>
-                        
                         <div class="music-option" data-src="assets/piano-ambient.mp3" style="background-color: #f8f9fa; border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s; text-align: center;">
                             <div style="font-size: 28px; margin-bottom: 8px;">🎹</div>
                             <p style="margin: 0; font-weight: 600; font-size: 0.85rem; color: #333;">Piano Ambient</p>
                         </div>
                     </div>
-                    
-                    <!-- Music player controls -->
-                    <div class="music-player" style="display: flex; align-items: center; gap: 10px; margin-top: 15px; padding: 10px; background-color: #f0f2f5; border-radius: 8px;">
-                        <button id="play-button" style="background-color: #2d1a45; color: white; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer;">▶</button>
-                        <div style="flex: 1;">
-                            <p id="track-name" style="margin: 0; font-weight: bold; font-size: 14px;">Select a sound</p>
-                        </div>
+                    <div class="music-player" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                        <button id="play-button" style="
+                            width: 36px; height: 36px; 
+                            background: #2d1a45; 
+                            border: none; 
+                            border-radius: 50%; 
+                            color: white; 
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 18px;
+                            transition: background 0.3s ease;
+                        ">
+                            ▶
+                        </button>
+                        <span id="track-name" style="color: #333; font-weight: 500;">Select a track</span>
+                        <audio id="audio-player" loop style="display:none;"></audio>
                     </div>
-                    
-                    <!-- Hidden audio element -->
-                    <audio id="audio-player" loop style="display: none;"></audio>
                 </div>
 
                 <div class="tips-for-focus" style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
@@ -265,6 +268,34 @@
                 </div>
             </div>
         </div>
+
+        <!-- Built Section (below tracker, full width, single line, only emojis) -->
+        <div id="built-section" style="background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(139,95,179,0.08); padding:18px 20px 12px 20px; margin:40px auto 0 auto; max-width:600px;">
+            <h3 style="margin:0 0 12px 0; font-weight:600; color:#2d1a45; font-size:1.1rem; letter-spacing:0.2px;">Built</h3>
+            <div id="built-items" style="display:flex; flex-direction:row; flex-wrap:wrap; gap:32px; align-items:center; justify-content:center;"></div>
+        </div>
+
+        <!-- Lego Empire Visual Progress Area (below built section) -->
+        <div id="lego-empire-container" style="background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(139,95,179,0.08); padding:28px 24px 18px 24px; width:100%; max-width:540px; margin:40px auto 0 auto; display:flex; flex-direction:column; align-items:center;">
+            <h3 style="margin:0 0 10px 0; font-weight:700; color:#8b5fbf; font-size:1.25rem; letter-spacing:0.5px;">
+                <span style="font-size:1.5em; vertical-align:middle;">🧱</span> Build Your Epic Lego Empire
+            </h3>
+            <div id="lego-empire-choice" style="margin-bottom:18px; width:100%; text-align:center;">
+                <label for="lego-structure-select" style="font-weight:600; color:#333; font-size:1.05em;">What do you want to build?</label>
+                <select id="lego-structure-select" style="margin-left:10px; padding:6px 12px; border-radius:6px; border:1px solid #e0e0e0; font-size:1em;">
+                    <option value="house">🏠 Cozy House (7 days)</option>
+                    <option value="tower">🏯 Tower (14 days)</option>
+                    <option value="castle">🏰 Castle (21 days)</option>
+                    <option value="pyramid">🔺 Pyramid (28 days)</option>
+                    <option value="spaceship">🚀 Spaceship (30 days)</option>
+                    <option value="empire">🌆 Empire (50 days)</option>
+                </select>
+            </div>
+            <div id="lego-blocks" style="display:flex; align-items:flex-end; gap:6px; min-height:60px; margin-bottom:8px;"></div>
+            <div id="lego-empire-message" style="margin-top:4px; color:#666; font-size:0.98rem; text-align:center;"></div>
+        </div>
+        <!-- Extra empty space at the end -->
+        <div style="height: 80px;"></div>
     </main>
 
     <!-- Background Sound -->
@@ -355,8 +386,8 @@
             });
         });
 
-        // Music player functionality
         document.addEventListener('DOMContentLoaded', function() {
+            // --- Focus Sounds Playable Logic ---
             const musicOptions = document.querySelectorAll('.music-option');
             const playButton = document.getElementById('play-button');
             const audioPlayer = document.getElementById('audio-player');
@@ -370,31 +401,31 @@
                 option.addEventListener('click', function() {
                     const trackSrc = this.dataset.src;
                     const trackTitle = this.querySelector('p').textContent;
-                    
+
                     // If clicking the same track that's playing, toggle pause
                     if (currentTrack === trackSrc && isPlaying) {
                         pauseAudio();
                         // Remove active state
                         this.style.backgroundColor = '#f8f9fa';
                         // Resume background music
-                        backgroundSound.play();
+                        backgroundSound && backgroundSound.play();
                         return;
                     }
-                    
+
                     // Remove active state from all options
                     musicOptions.forEach(opt => opt.style.backgroundColor = '#f8f9fa');
-                    
+
                     // Set current track
                     currentTrack = trackSrc;
                     trackName.textContent = trackTitle;
                     audioPlayer.src = currentTrack;
-                    
+
                     // Add active state to clicked option
                     this.style.backgroundColor = '#e3f2fd';
-                    
+
                     // Pause background music when focus sound starts
-                    backgroundSound.pause();
-                    
+                    backgroundSound && backgroundSound.pause();
+
                     // Play the track
                     playAudio();
                 });
@@ -408,7 +439,7 @@
                         // Remove active state from all options
                         musicOptions.forEach(opt => opt.style.backgroundColor = '#f8f9fa');
                         // Resume background music
-                        backgroundSound.play();
+                        backgroundSound && backgroundSound.play();
                     } else {
                         playAudio();
                         // Add active state to current track
@@ -418,7 +449,7 @@
                             }
                         });
                         // Pause background music
-                        backgroundSound.pause();
+                        backgroundSound && backgroundSound.pause();
                     }
                 }
             });
@@ -429,12 +460,11 @@
                         isPlaying = true;
                         playButton.innerHTML = '⏸';
                     }).catch(error => {
-                        console.log('Audio play failed:', error);
                         trackName.textContent = 'Click to start audio';
                         isPlaying = false;
                         playButton.innerHTML = '▶';
                         // Resume background music on error
-                        backgroundSound.play();
+                        backgroundSound && backgroundSound.play();
                     });
                 }
             }
@@ -452,7 +482,7 @@
                 // Remove active state from all options
                 musicOptions.forEach(opt => opt.style.backgroundColor = '#f8f9fa');
                 // Resume background music when focus sound ends
-                backgroundSound.play();
+                backgroundSound && backgroundSound.play();
             });
 
             // Handle audio errors
@@ -463,7 +493,7 @@
                 // Remove active state from all options
                 musicOptions.forEach(opt => opt.style.backgroundColor = '#f8f9fa');
                 // Resume background music on error
-                backgroundSound.play();
+                backgroundSound && backgroundSound.play();
             });
         });
 
@@ -637,13 +667,195 @@
             goalsList.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-goal')) {
                     e.target.closest('.goal-item').remove();
-                    updateProgress(); // Changed from updateProgressAndChart to just updateProgress
+                    updateProgress(); 
                 }
             });
             
             // Initial progress calculation
             updateProgress();
             updateStreak();
+        });
+
+        // --- Lego Empire Progress Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const legoBlocksDiv = document.getElementById('lego-blocks');
+            const legoMsg = document.getElementById('lego-empire-message');
+            const structureSelect = document.getElementById('lego-structure-select');
+            const LEGO_KEY = 'legoEmpireBlocks';
+            const STRUCTURE_KEY = 'legoEmpireStructure';
+
+            // Structure definitions: name, emoji, days required, fun message
+            const structures = {
+                house:    { label: "Cozy House", emoji: "🏠", days: 7,    msg: "A cozy house is almost ready!" },
+                tower:    { label: "Tower",      emoji: "🏯", days: 14,   msg: "Your tower is rising high!" },
+                castle:   { label: "Castle",     emoji: "🏰", days: 21,   msg: "A majestic castle is taking shape!" },
+                spaceship:{ label: "Spaceship",  emoji: "🚀", days: 30,   msg: "Your spaceship is almost ready for launch!" },
+                pyramid:  { label: "Pyramid",    emoji: "🔺", days: 28,   msg: "A mysterious pyramid is forming!" },
+                empire:   { label: "Empire",     emoji: "🌆", days: 50,   msg: "You're building a legendary empire!" }
+            };
+
+            // Colors for variety
+            const blockColors = [
+                '#f7d51d', '#e94f37', '#4f8cff', '#8b5fbf', '#43b581', '#ff7e79', '#ffb347', '#6b46c1'
+            ];
+
+            // Load blocks from localStorage
+            function loadLegoBlocks() {
+                let blocks = [];
+                try {
+                    blocks = JSON.parse(localStorage.getItem(LEGO_KEY)) || [];
+                } catch { blocks = []; }
+                return blocks;
+            }
+
+            // Save blocks to localStorage
+            function saveLegoBlocks(blocks) {
+                localStorage.setItem(LEGO_KEY, JSON.stringify(blocks));
+            }
+
+            // Load structure choice
+            function loadStructure() {
+                return localStorage.getItem(STRUCTURE_KEY) || 'house';
+            }
+
+            // Save structure choice
+            function saveStructure(val) {
+                localStorage.setItem(STRUCTURE_KEY, val);
+            }
+
+            // Render blocks visually
+            function renderLegoEmpire() {
+                const blocks = loadLegoBlocks();
+                const structure = loadStructure();
+                const s = structures[structure];
+                legoBlocksDiv.innerHTML = '';
+
+                // Draw blocks as a row (or pyramid for pyramid)
+                if (blocks.length === 0) {
+                    legoMsg.textContent = "Complete all your daily goals to start building your " + s.label + "!";
+                    return;
+                }
+
+                // Pyramid: stack blocks in rows
+                if (structure === 'pyramid') {
+                    let html = '';
+                    let total = Math.min(blocks.length, s.days);
+                    let row = 1, used = 0;
+                    while (used < total) {
+                        let blocksInRow = Math.min(row, total - used);
+                        html += `<div style="display:flex; justify-content:center; margin-bottom:2px;">`;
+                        for (let i = 0; i < blocksInRow; i++) {
+                            html += `<div title="Day ${used+1}" style="
+                                width: 32px; height: 22px; 
+                                background:${blockColors[(used) % blockColors.length]};
+                                border-radius: 6px 6px 4px 4px;
+                                margin:0 2px;
+                                box-shadow:0 2px 6px rgba(0,0,0,0.08);
+                                border:2px solid #e0e0e0;
+                                display:flex;align-items:center;justify-content:center;
+                                font-size:1.1em;
+                                ">
+                                <span style="opacity:0.18;">&#x25A0;</span>
+                            </div>`;
+                            used++;
+                        }
+                        html += `</div>`;
+                        row++;
+                    }
+                    legoBlocksDiv.innerHTML = html;
+                } else {
+                    // Normal: stack blocks in a row
+                    let html = '';
+                    for (let i = 0; i < Math.min(blocks.length, s.days); i++) {
+                        html += `<div title="Day ${i+1}" style="
+                            width: 38px; height: 28px; 
+                            background:${blockColors[i % blockColors.length]};
+                            border-radius: 6px 6px 4px 4px;
+                            margin-bottom:2px;
+                            box-shadow:0 2px 6px rgba(0,0,0,0.08);
+                            border:2px solid #e0e0e0;
+                            display:flex;align-items:center;justify-content:center;
+                            font-size:1.2em;
+                            ">
+                            <span style="opacity:0.18;">&#x25A0;</span>
+                        </div>`;
+                    }
+                    legoBlocksDiv.innerHTML = html;
+                }
+
+                // Fun message and completion
+                if (blocks.length < s.days) {
+                    legoMsg.innerHTML = `${s.emoji} <b>${blocks.length}/${s.days}</b> blocks<br>${s.msg}`;
+                } else {
+                    legoMsg.innerHTML = `<span style="font-size:1.3em;">🎉</span> <b>You finished your ${s.label}!</b> <br>Keep going to build more or pick a new challenge!`;
+                }
+            }
+
+            // Add a block for today if 100% goals complete and not already added
+            function tryAddLegoBlock() {
+                const blocks = loadLegoBlocks();
+                const structure = loadStructure();
+                const s = structures[structure];
+                const today = new Date().toDateString();
+                if (blocks.length > 0 && blocks[blocks.length-1].date === today) return; // Already added today
+
+                // Only add if 100% complete and not already maxed for this structure
+                const progress = document.getElementById('progress-percentage');
+                if (progress && progress.textContent.trim() === '100%' && blocks.length < s.days) {
+                    blocks.push({ date: today });
+                    saveLegoBlocks(blocks);
+                    renderLegoEmpire();
+                }
+            }
+
+            // Listen for progress changes
+            const observer = new MutationObserver(tryAddLegoBlock);
+            const progressNode = document.getElementById('progress-percentage');
+            if (progressNode) {
+                observer.observe(progressNode, { childList: true });
+            }
+
+            // Structure select change
+            structureSelect.value = loadStructure();
+            structureSelect.addEventListener('change', function() {
+                saveStructure(this.value);
+                // Reset blocks for new structure
+                saveLegoBlocks([]);
+                renderLegoEmpire();
+            });
+
+            // Initial render
+            renderLegoEmpire();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Built Section Logic ---
+            const builtItemsDiv = document.getElementById('built-items');
+            const GIFT_KEY = 'legoEmpireGiftClaimed';
+            const structures = [
+                { key: "gift", label: "Gift", emoji: "🎁", days: 1 },
+                { key: "house", label: "House", emoji: "🏠", days: 7 },
+                { key: "tower", label: "Tower", emoji: "🏯", days: 14 },
+                { key: "castle", label: "Castle", emoji: "🏰", days: 21 },
+                { key: "pyramid", label: "Pyramid", emoji: "🔺", days: 28 },
+                { key: "spaceship", label: "Spaceship", emoji: "🚀", days: 30 },
+                { key: "empire", label: "Empire", emoji: "🌆", days: 50 }
+            ];
+            function renderBuiltItems() {
+                let html = '';
+                // Gift
+                let claimed = !!localStorage.getItem(GIFT_KEY);
+                html += `<span title="Gift" style="font-size:2em; opacity:${claimed ? 1 : 0.2}; cursor:default;">🎁</span>`;
+                // Structures (just emojis, one line)
+                const LEGO_KEY = 'legoEmpireBlocks_';
+                for (const s of structures.slice(1)) {
+                    const blocks = JSON.parse(localStorage.getItem(LEGO_KEY + s.key) || '[]');
+                    const achieved = blocks.length >= s.days;
+                    html += `<span title="${s.label}" style="font-size:2em; opacity:${achieved ? 1 : 0.2}; cursor:default;">${s.emoji}</span>`;
+                }
+                builtItemsDiv.innerHTML = html;
+            }
+            renderBuiltItems();
         });
     </script>
 </body>
