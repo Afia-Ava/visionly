@@ -215,270 +215,28 @@
                 milestoneForm.style.display = '';
                 renderAllMilestones(user.uid);
 
-                // Add milestone
-                milestoneForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const mainGoal = mainGoalInput.value.trim();
-                    const subgoals = Array.from(subgoalsContainer.querySelectorAll('.subgoal-input'))
-                        .map(input => input.value.trim())
-                        .filter(val => val.length > 0);
-
-                    if (!mainGoal) {
-                        alert('Please enter a main goal.');
-                        return;
-                    }
-
-                    // Save to localStorage for this user
-                    const uid = getCurrentUserId();
-                    if (!uid) {
-                        alert('You must be logged in to save milestones.');
-                        return;
-                    }
-                    const milestones = loadMilestonesForUser(uid);
-                    milestones.push({ mainGoal, subgoals });
-                    saveMilestonesForUser(uid, milestones);
-
-                    // Render all milestones
-                    renderAllMilestones(uid);
-
-                    // Reset form
-                    mainGoalInput.value = '';
-                    const allSubgoals = subgoalsContainer.querySelectorAll('.subgoal-item');
-                    allSubgoals.forEach((item, idx) => {
-                        if (idx === 0) {
-                            item.querySelector('.subgoal-input').value = '';
-                        } else {
-                            item.remove();
-                        }
-                    });
-                    updateRemoveSubgoalBtns();
-                });
-
-                // On page load, render milestones for logged-in user (if any)
-                firebase.auth().onAuthStateChanged(function(user) {
-                    if (!user) {
-                        milestoneList.innerHTML = '<div style="color:#b00; text-align:center; margin:30px 0;">Please log in to save your milestones.</div>';
-                        timelineEmpty.style.display = 'none';
-                        milestoneForm.style.display = 'none';
-                        return;
-                    }
-                    milestoneForm.style.display = '';
-                    renderAllMilestones(user.uid);
-                });
-
-                // Modified renderMilestone to support delete/edit with storage
-                function renderMilestone(mainGoal, subgoals, attachToList = true) {
-                    timelineEmpty.style.display = 'none';
-                    const milestoneDiv = document.createElement('div');
-                    milestoneDiv.style.background = '#f8f9fa';
-                    milestoneDiv.style.borderRadius = '8px';
-                    milestoneDiv.style.padding = '18px';
-                    milestoneDiv.style.marginBottom = '18px';
-                    milestoneDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)';
-                    milestoneDiv.innerHTML = `
-                        <div style="display: flex; align-items: flex-start; justify-content: space-between;">
-                            <div class="milestone-content">
-                                <h3 class="milestone-main-goal" style="margin: 0 0 4px 0; font-size: 1.15rem; font-weight: 700; color: #231942 !important; text-shadow: none !important;">${mainGoal}</h3>
-                                ${subgoals.length > 0 ? `
-                                    <ul style="margin: 8px 0 0 18px; padding: 0; color: #231942; font-size: 0.97rem; list-style-type: disc; list-style-position: inside;">
-                                        ${subgoals.map(sg => `<li style="margin-bottom: 2px; color: #231942; font-weight: 600;">${sg}</li>`).join('')}
-                                    </ul>
-                                ` : ''}
-                            </div>
-                            <div style="display: flex; flex-direction: column; gap: 6px;">
-                                <button type="button" class="edit-milestone-btn" style="background: #f8c146; color: #333; border: none; border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer; height: 28px;">Edit</button>
-                                <button type="button" class="remove-milestone-btn" style="background: #dc3545; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer; height: 28px;">Remove</button>
-                            </div>
-                        </div>
-                    `;
-                    // Remove logic
-                    milestoneDiv.querySelector('.remove-milestone-btn').addEventListener('click', function() {
-                        // Remove from storage
-                        let milestones = loadMilestonesForUser(user.uid);
-                        milestones = milestones.filter(m => !(m.mainGoal === mainGoal && JSON.stringify(m.subgoals) === JSON.stringify(subgoals)));
-                        saveMilestonesForUser(user.uid, milestones);
-                        renderAllMilestones(user.uid);
-                    });
-
-                    // Edit logic
-                    milestoneDiv.querySelector('.edit-milestone-btn').addEventListener('click', function() {
-                        const contentDiv = milestoneDiv.querySelector('.milestone-content');
-                        // Get current values
-                        const currentMainGoal = contentDiv.querySelector('h3').textContent;
-                        const currentSubgoals = Array.from(contentDiv.querySelectorAll('ul li')).map(li => li.textContent);
-
-                        // Replace content with editable fields
-                        contentDiv.innerHTML = `
-                            <input type="text" class="edit-main-goal" value="${currentMainGoal.replace(/"/g, '&quot;')}" style="width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 4px; font-size: 1rem; margin-bottom: 8px; color: #231942; font-weight: 600;">
-                            <div class="edit-subgoals-list" style="margin-bottom: 8px;">
-                                ${currentSubgoals.map((sg, idx) => `
-                                    <div class="edit-subgoal-item" style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-                                        <input type="text" class="edit-subgoal-input" value="${sg.replace(/"/g, '&quot;')}" style="flex: 1; padding: 7px; border: 1px solid #bbb; border-radius: 4px;">
-                                        <button type="button" class="remove-edit-subgoal-btn" style="background: #dc3545; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; cursor: pointer;">×</button>
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <button type="button" class="add-edit-subgoal-btn" style="background: #f8f9fa; color: #666; border: 1px solid #bbb; border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer;">+ Add Subgoal</button>
-                            <div style="margin-top: 10px;">
-                                <button type="button" class="save-edit-milestone-btn" style="background: #2d1a45; color: #fff; border: none; border-radius: 4px; padding: 6px 16px; font-size: 13px; font-weight: 500; cursor: pointer;">Save</button>
-                                <button type="button" class="cancel-edit-milestone-btn" style="background: #bbb; color: #333; border: none; border-radius: 4px; padding: 6px 16px; font-size: 13px; font-weight: 500; cursor: pointer; margin-left: 8px;">Cancel</button>
-                            </div>
-                        `;
-
-                        // Remove subgoal logic in edit mode
-                        function updateEditRemoveBtns() {
-                            const items = contentDiv.querySelectorAll('.edit-subgoal-item');
-                            items.forEach((item, idx) => {
-                                const btn = item.querySelector('.remove-edit-subgoal-btn');
-                                btn.style.display = (items.length > 1) ? 'inline-block' : 'none';
-                            });
-                        }
-                        updateEditRemoveBtns();
-
-                        contentDiv.querySelectorAll('.remove-edit-subgoal-btn').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                btn.parentElement.remove();
-                                updateEditRemoveBtns();
-                            });
-                        });
-
-                        // Add subgoal in edit mode
-                        contentDiv.querySelector('.add-edit-subgoal-btn').addEventListener('click', function() {
-                            const editList = contentDiv.querySelector('.edit-subgoals-list');
-                            const div = document.createElement('div');
-                            div.className = 'edit-subgoal-item';
-                            div.style.display = 'flex';
-                            div.style.alignItems = 'center';
-                            div.style.gap = '6px';
-                            div.style.marginBottom = '6px';
-                            div.innerHTML = `
-                                <input type="text" class="edit-subgoal-input" placeholder="Enter a subgoal..." style="flex: 1; padding: 7px; border: 1px solid #bbb; border-radius: 4px;">
-                                <button type="button" class="remove-edit-subgoal-btn" style="background: #dc3545; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; cursor: pointer;">×</button>
-                            `;
-                            div.querySelector('.remove-edit-subgoal-btn').addEventListener('click', function() {
-                                div.remove();
-                                updateEditRemoveBtns();
-                            });
-                            editList.appendChild(div);
-                            updateEditRemoveBtns();
-                            div.querySelector('.edit-subgoal-input').focus();
-                        });
-
-                        // Add subgoal on Enter key in edit mode
-                        contentDiv.querySelector('.edit-subgoals-list').addEventListener('keydown', function(e) {
-                            if (
-                              e.target.classList.contains('edit-subgoal-input') &&
-                              e.key === 'Enter'
-                            ) {
-                              e.preventDefault();
-                              contentDiv.querySelector('.add-edit-subgoal-btn').click();
-                            }
-                        });
-
-                        // Save edit
-                        contentDiv.querySelector('.save-edit-milestone-btn').addEventListener('click', function() {
-                            const newMainGoal = contentDiv.querySelector('.edit-main-goal').value.trim();
-                            const newSubgoals = Array.from(contentDiv.querySelectorAll('.edit-subgoal-input'))
-                                .map(input => input.value.trim())
-                                .filter(val => val.length > 0);
-
-                            if (!newMainGoal) {
-                                alert('Please enter a main goal.');
-                                return;
-                            }
-
-                            // Replace with updated milestone
-                            contentDiv.innerHTML = `
-                                <h3 style="margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: #231942;">${newMainGoal}</h3>
-                                ${newSubgoals.length > 0 ? `
-                                    <ul style="margin: 8px 0 0 18px; padding: 0; color: #666; font-size: 0.97rem;">
-                                        ${newSubgoals.map(sg => `<li style="margin-bottom: 2px;">${sg}</li>`).join('')}
-                                    </ul>
-                                ` : ''}
-                            `;
-                        });
-
-                        // Cancel edit
-                        contentDiv.querySelector('.cancel-edit-milestone-btn').addEventListener('click', function() {
-                            // Restore previous milestone view
-                            contentDiv.innerHTML = `
-                                <h3 style="margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: #231942;">${currentMainGoal}</h3>
-                                ${currentSubgoals.length > 0 ? `
-                                    <ul style="margin: 8px 0 0 18px; padding: 0; color: #666; font-size: 0.97rem;">
-                                        ${currentSubgoals.map(sg => `<li style="margin-bottom: 2px;">${sg}</li>`).join('')}
-                                    </ul>
-                                ` : ''}
-                            `;
-                        });
-                    });
-
-                    if (attachToList) milestoneList.appendChild(milestoneDiv);
-                }
-                // Expose for renderAllMilestones
-                window.renderMilestone = renderMilestone;
-            });
-            // --- END PROFILE-BASED STORAGE LOGIC ---
-
-            // Add subgoal input
-            addSubgoalBtn.addEventListener('click', function() {
-                addSubgoalInput();
+                // Move milestoneForm.addEventListener('submit', ...) OUTSIDE this callback!
             });
 
-            // Add subgoal input on Enter key in any subgoal input
-            subgoalsContainer.addEventListener('keydown', function(e) {
-                if (
-                  e.target.classList.contains('subgoal-input') &&
-                  e.key === 'Enter'
-                ) {
-                  e.preventDefault();
-                  addSubgoalInput();
-                  // Focus the new input
-                  const allInputs = subgoalsContainer.querySelectorAll('.subgoal-input');
-                  allInputs[allInputs.length - 1].focus();
-                }
-            });
-
-            function addSubgoalInput() {
-                const subgoalDiv = document.createElement('div');
-                subgoalDiv.className = 'subgoal-item';
-                subgoalDiv.style.display = 'flex';
-                subgoalDiv.style.alignItems = 'center';
-                subgoalDiv.style.gap = '8px';
-                subgoalDiv.style.marginTop = '8px';
-                subgoalDiv.innerHTML = `
-                    <input type="text" class="subgoal-input" placeholder="Enter a subgoal..." style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                    <button type="button" class="remove-subgoal-btn" style="display: none; background: #dc3545; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; cursor: pointer;">×</button>
-                `;
-                subgoalDiv.querySelector('.remove-subgoal-btn').addEventListener('click', function() {
-                    subgoalDiv.remove();
-                    updateRemoveSubgoalBtns();
-                });
-                subgoalsContainer.appendChild(subgoalDiv);
-                updateRemoveSubgoalBtns();
-            }
-
-            // Remove subgoal button logic
-            function updateRemoveSubgoalBtns() {
-                const subgoalItems = subgoalsContainer.querySelectorAll('.subgoal-item');
-                subgoalItems.forEach((item, idx) => {
-                    const btn = item.querySelector('.remove-subgoal-btn');
-                    btn.style.display = (subgoalItems.length > 1) ? 'inline-block' : 'none';
-                });
-            }
-            updateRemoveSubgoalBtns();
-
-            // Add milestone
+            // Add milestone (move this outside of onAuthStateChanged so it only attaches once)
             milestoneForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const mainGoal = mainGoalInput.value.trim();
+                // Do NOT filter out empty subgoals here, just collect all values
                 const subgoals = Array.from(subgoalsContainer.querySelectorAll('.subgoal-input'))
-                    .map(input => input.value.trim())
-                    .filter(val => val.length > 0);
+                    .map(input => input.value);
 
-                if (!mainGoal) {
-                    alert('Please enter a main goal.');
+                // Only require at least one non-empty mainGoal or subgoal
+                const hasMainGoal = !!mainGoal;
+                const hasSubgoal = subgoals.some(sg => sg && sg.trim().length > 0);
+
+                if (!hasMainGoal && !hasSubgoal) {
+                    alert('Please enter a main goal or at least one subgoal.');
                     return;
                 }
+
+                // Save only non-empty subgoals
+                const filteredSubgoals = subgoals.filter(sg => sg && sg.trim().length > 0);
 
                 // Save to localStorage for this user
                 const uid = getCurrentUserId();
@@ -487,7 +245,7 @@
                     return;
                 }
                 const milestones = loadMilestonesForUser(uid);
-                milestones.push({ mainGoal, subgoals });
+                milestones.push({ mainGoal, subgoals: filteredSubgoals });
                 saveMilestonesForUser(uid, milestones);
 
                 // Render all milestones
@@ -518,6 +276,51 @@
                 renderAllMilestones(user.uid);
             });
 
+            // --- Add subgoal input logic (restore to simple append) ---
+            addSubgoalBtn.onclick = function() {
+                addSubgoalInput();
+            };
+
+            function addSubgoalInput() {
+                const subgoalDiv = document.createElement('div');
+                subgoalDiv.className = 'subgoal-item';
+                subgoalDiv.style.display = 'flex';
+                subgoalDiv.style.alignItems = 'center';
+                subgoalDiv.style.gap = '8px';
+                subgoalDiv.style.marginTop = '8px';
+                subgoalDiv.innerHTML = `
+                    <input type="text" class="subgoal-input" placeholder="Enter a subgoal..." style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <button type="button" class="remove-subgoal-btn" style="display: none; background: #dc3545; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; cursor: pointer;">×</button>
+                `;
+                subgoalDiv.querySelector('.remove-subgoal-btn').addEventListener('click', function() {
+                    subgoalDiv.remove();
+                    updateRemoveSubgoalBtns();
+                });
+                subgoalsContainer.appendChild(subgoalDiv);
+                updateRemoveSubgoalBtns();
+                subgoalDiv.querySelector('.subgoal-input').focus();
+            }
+
+            // Add subgoal input on Enter key in any subgoal input
+            subgoalsContainer.addEventListener('keydown', function(e) {
+                if (
+                  e.target.classList.contains('subgoal-input') &&
+                  e.key === 'Enter'
+                ) {
+                  e.preventDefault();
+                  addSubgoalInput();
+                }
+            });
+
+            function updateRemoveSubgoalBtns() {
+                const subgoalItems = subgoalsContainer.querySelectorAll('.subgoal-item');
+                subgoalItems.forEach((item, idx) => {
+                    const btn = item.querySelector('.remove-subgoal-btn');
+                    btn.style.display = (subgoalItems.length > 1) ? 'inline-block' : 'none';
+                });
+            }
+            updateRemoveSubgoalBtns();
+
             // Modified renderMilestone to support delete/edit with storage
             function renderMilestone(mainGoal, subgoals, attachToList = true) {
                 timelineEmpty.style.display = 'none';
@@ -527,15 +330,72 @@
                 milestoneDiv.style.padding = '18px';
                 milestoneDiv.style.marginBottom = '18px';
                 milestoneDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)';
+                // --- Progress for subgoals ---
+                const uid = getCurrentUserId();
+                let progressData = {};
+                if (uid && mainGoal) {
+                    try {
+                        progressData = JSON.parse(localStorage.getItem('visionly_subgoal_progress_' + uid) || '{}');
+                    } catch { progressData = {}; }
+                }
+                function progressKey(mainGoal, subgoal) {
+                    return encodeURIComponent(mainGoal) + '|' + encodeURIComponent(subgoal);
+                }
+                function progressEmoji(val) {
+                    if (val >= 100) return "🏆";
+                    if (val >= 80) return "😃";
+                    if (val >= 50) return "🙂";
+                    if (val >= 20) return "😐";
+                    if (val > 0) return "🕓";
+                    return "⏳";
+                }
+                // --- Calculate average progress ---
+                let avgProgress = 0;
+                let subgoalCount = subgoals.length;
+                let progressSum = 0;
+                let subgoalsHtml = '';
+                if (subgoals.length > 0) {
+                    subgoalsHtml = `<ul style="margin: 8px 0 0 18px; padding: 0; color: #231942; font-size: 0.97rem; list-style-type: disc; list-style-position: outside;">` +
+                        subgoals.map((sg, idx) => {
+                            const key = progressKey(mainGoal, sg);
+                            const val = progressData[key] !== undefined ? progressData[key] : 0;
+                            // Bullet color changed to black
+                            return `<li style="margin-bottom: 12px; color: #231942; font-weight: 600; list-style-type: none; display: flex; align-items: flex-start;">
+                                <span style="display:inline-block; margin-right:8px; margin-top:7px; font-size:1.1em; color:#000;">•</span>
+                                <div style="flex:1;">
+                                    <div style="display:flex; align-items:center; gap:10px;">
+                                        <span>${sg}</span>
+                                        <span class="subgoal-emoji" data-key="${key}" style="font-size:1.2em; margin-left:4px;">${progressEmoji(val)}</span>
+                                    </div>
+                                    <div style="margin-top:4px; display:flex; align-items:center; gap:8px;">
+                                        <input type="range" min="0" max="100" value="${val}" class="subgoal-progress-slider" data-key="${key}" style="flex:1; accent-color:#8b5fbf;">
+                                        <span class="subgoal-progress-label" style="font-size:0.95em; min-width:32px; text-align:right; margin-left:8px;">${val}%</span>
+                                    </div>
+                                </div>
+                            </li>`;
+                        }).join('') +
+                        `</ul>`;
+                    avgProgress = Math.round(progressSum / subgoalCount);
+                }
+                // --- Total goal progress bar ---
+                let totalProgressHtml = '';
+                if (subgoals.length > 0) {
+                    totalProgressHtml = `
+                        <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 12px;">
+                            <span style="font-weight: 600; color: #8b5fbf;">Total Progress</span>
+                            <div style="flex:1; max-width:220px; height:14px; background:#e0e0e0; border-radius:7px; overflow:hidden; position:relative;">
+                                <div style="height:100%; width:${avgProgress}%; background:#8b5fbf; border-radius:7px; transition:width 0.4s cubic-bezier(.4,2,.6,1);"></div>
+                            </div>
+                            <span style="font-size:1.1em; font-weight:600; color:#231942; min-width:38px; text-align:right;">${avgProgress}%</span>
+                        </div>
+                    `;
+                }
                 milestoneDiv.innerHTML = `
                     <div style="display: flex; align-items: flex-start; justify-content: space-between;">
-                        <div class="milestone-content">
+                        <div class="milestone-content" style="flex:1;">
                             <h3 class="milestone-main-goal" style="margin: 0 0 4px 0; font-size: 1.15rem; font-weight: 700; color: #231942 !important; text-shadow: none !important;">${mainGoal}</h3>
-                            ${subgoals.length > 0 ? `
-                                <ul style="margin: 8px 0 0 18px; padding: 0; color: #666; font-size: 0.97rem;">
-                                    ${subgoals.map(sg => `<li style="margin-bottom: 2px;">${sg}</li>`).join('')}
-                                </ul>
-                            ` : ''}
+                            ${totalProgressHtml}
+                            ${subgoalsHtml}
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 6px;">
                             <button type="button" class="edit-milestone-btn" style="background: #f8c146; color: #333; border: none; border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer; height: 28px;">Edit</button>
@@ -543,12 +403,44 @@
                         </div>
                     </div>
                 `;
+                // --- Progress slider logic ---
+                milestoneDiv.querySelectorAll('.subgoal-progress-slider').forEach(slider => {
+                    slider.addEventListener('input', function() {
+                        const key = this.getAttribute('data-key');
+                        const val = parseInt(this.value, 10);
+                        // Save progress
+                        progressData[key] = val;
+                        localStorage.setItem('visionly_subgoal_progress_' + uid, JSON.stringify(progressData));
+                        // Animate bar
+                        const bar = this.parentElement.querySelector('.subgoal-progress-fill');
+                        if (bar) {
+                            bar.style.width = val + '%';
+                        }
+                        // Update label
+                        const label = this.parentElement.querySelector('.subgoal-progress-label');
+                        if (label) label.textContent = val + '%';
+                        // Update emoji
+                        const emoji = this.closest('li').querySelector(`.subgoal-emoji[data-key="${key}"]`);
+                        if (emoji) emoji.textContent = progressEmoji(val);
+                        // --- Update total progress bar ---
+                        // Recalculate average
+                        const allSliders = milestoneDiv.querySelectorAll('.subgoal-progress-slider');
+                        let sum = 0;
+                        allSliders.forEach(s => sum += parseInt(s.value, 10));
+                        const avg = Math.round(sum / allSliders.length);
+                        const totalBar = milestoneDiv.querySelector('div[style*="max-width:220px"] > div');
+                        const totalLabel = milestoneDiv.querySelector('span[style*="font-size:1.1em"]');
+                        if (totalBar) totalBar.style.width = avg + '%';
+                        if (totalLabel) totalLabel.textContent = avg + '%';
+                    });
+                });
                 // Remove logic
                 milestoneDiv.querySelector('.remove-milestone-btn').addEventListener('click', function() {
-                    milestoneDiv.remove();
-                    if (milestoneList.children.length === 0) {
-                        timelineEmpty.style.display = '';
-                    }
+                    // Remove from storage (permanently)
+                    let milestones = loadMilestonesForUser(getCurrentUserId());
+                    milestones = milestones.filter(m => !(m.mainGoal === mainGoal && JSON.stringify(m.subgoals) === JSON.stringify(subgoals)));
+                    saveMilestonesForUser(getCurrentUserId(), milestones);
+                    renderAllMilestones(getCurrentUserId());
                 });
 
                 // Edit logic
