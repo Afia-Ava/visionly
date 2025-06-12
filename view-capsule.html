@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Time Capsule - Visionly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dark-mode-global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0612;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+        }
+        .capsule-container {
+            max-width: 600px;
+            margin: 100px auto 0;
+            background: rgba(45,21,73,0.85);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .capsule-title {
+            font-size: 2rem;
+            color: #b990ff;
+            margin-bottom: 10px;
+            font-family: 'Dancing Script', cursive;
+        }
+        .capsule-date {
+            color: #a47dd4;
+            margin-bottom: 18px;
+            font-size: 1.1rem;
+        }
+        .capsule-message {
+            background: rgba(139,95,179,0.08);
+            border-radius: 12px;
+            padding: 28px 18px;
+            font-size: 1.15rem;
+            color: #e0e0e0;
+            margin-bottom: 30px;
+            white-space: pre-line;
+            box-shadow: 0 2px 8px rgba(139,95,179,0.07);
+        }
+        .locked-message {
+            color: #ffb347;
+            font-size: 1.1rem;
+            margin: 30px 0;
+        }
+        .back-btn {
+            background: transparent;
+            border: 1px solid #b990ff;
+            color: #b990ff;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: rgba(185,144,255,0.08);
+        }
+        .error-message {
+            color: #ff6b6b;
+            margin: 30px 0;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="capsule-container" id="capsule-content">
+        <div style="text-align:center;">
+            <svg width="60" height="60" viewBox="0 0 100 100" fill="none">
+                <path d="M30 10H70V30C70 40 60 40 50 50C40 60 30 60 30 70V90H70V70C70 60 60 60 50 50C40 40 30 40 30 30V10Z" stroke="#C9A9FF" stroke-width="3" fill="rgba(201,169,255,0.3)"/>
+            </svg>
+        </div>
+        <div class="capsule-title">Your Time Capsule</div>
+        <div id="capsule-status" class="capsule-date"></div>
+        <div id="capsule-message" class="capsule-message" style="display:none;"></div>
+        <div id="locked-message" class="locked-message" style="display:none;"></div>
+        <div id="error-message" class="error-message" style="display:none;"></div>
+        <button class="back-btn" onclick="window.location.href='time-capsule.html'">Back to Capsules</button>
+    </div>
+    <script src="firebase-config.js"></script>
+    <script>
+        // Helper to get query param
+        function getQueryParam(name) {
+            const url = new URL(window.location.href);
+            return url.searchParams.get(name);
+        }
+
+        function showError(msg) {
+            document.getElementById('error-message').textContent = msg;
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('capsule-message').style.display = 'none';
+            document.getElementById('locked-message').style.display = 'none';
+        }
+
+        firebase.auth().onAuthStateChanged(async function(user) {
+            const capsuleId = getQueryParam('id');
+            if (!user) {
+                showError('You must be logged in to view your time capsule.');
+                return;
+            }
+            if (!capsuleId) {
+                showError('No capsule ID provided.');
+                return;
+            }
+            const db = firebase.firestore();
+            try {
+                const doc = await db.collection('timeCapsules').doc(capsuleId).get();
+                if (!doc.exists) {
+                    showError('Time capsule not found.');
+                    return;
+                }
+                const data = doc.data();
+                if (data.userId !== user.uid) {
+                    showError('You do not have permission to view this time capsule.');
+                    return;
+                }
+                // Check if capsule is ready to open
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                const deliveryDate = new Date(data.deliveryDate);
+                deliveryDate.setHours(0,0,0,0);
+                const isDelivered = today >= deliveryDate;
+
+                const dateStr = deliveryDate.toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+                document.getElementById('capsule-status').textContent = `Delivery Date: ${dateStr}`;
+
+                if (isDelivered) {
+                    document.getElementById('capsule-message').textContent = data.message;
+                    document.getElementById('capsule-message').style.display = 'block';
+                    document.getElementById('locked-message').style.display = 'none';
+                } else {
+                    document.getElementById('locked-message').textContent = "This time capsule is locked until " + dateStr + ".";
+                    document.getElementById('locked-message').style.display = 'block';
+                    document.getElementById('capsule-message').style.display = 'none';
+                }
+            } catch (err) {
+                showError('Error loading time capsule.');
+            }
+        });
+    </script>
+</body>
+</html>

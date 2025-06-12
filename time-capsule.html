@@ -671,6 +671,34 @@
         </div>
     </div>
     
+    <!-- Account Verification Instructions -->
+    <div id="account-verification-instructions" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
+        <div style="background-color: #2d1549; width: 100%; max-width: 600px; border-radius: 16px; padding: 30px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" class="instructions-content">
+            <div style="position: absolute; top: 15px; right: 15px; cursor: pointer;" onclick="document.getElementById('account-verification-instructions').style.display = 'none';">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+            <h2 style="color: #e0e0e0; text-align: center; margin-bottom: 20px;">Verify Your Account</h2>
+            <p style="color: #b0b0b0; line-height: 1.6; margin-bottom: 20px; text-align: center;">
+                To verify your profile so you can send a time capsule:
+            </p>
+            <ol style="color: #b0b0b0; margin-bottom: 20px; padding-left: 20px; text-align: left;">
+                <li style="margin-bottom: 10px;">When you try to submit a capsule, if your account is not verified, a modal will appear.</li>
+                <li style="margin-bottom: 10px;">In the modal, you have two options:
+                    <ul style="color: #b0b0b0; margin-top: 5px; padding-left: 20px;">
+                        <li><strong>Verify Email:</strong> Click "Verify Email" to send a verification email to your inbox. Open your email and click the verification link, then refresh this page.</li>
+                        <li><strong>Complete Profile:</strong> Click "Complete Profile" to go to your profile page. There, set your display name (and any other required info), then return here and refresh the page.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p style="color: #b0b0b0; line-height: 1.6; text-align: center;">
+                Both your email must be verified and your profile (display name) must be set to send a time capsule.
+            </p>
+        </div>
+    </div>
+    
     <main style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px;">
         <header style="margin: 100px 0 40px; text-align: left;">
             <h1 style="font-size: 2rem; font-weight: bold; color: #333; margin-bottom: 5px;">Future Note</h1>
@@ -943,25 +971,28 @@
             }
             
             // Handle form submission
-            document.getElementById('time-capsule-form').addEventListener('submit', function(e) {
+            document.getElementById('time-capsule-form').addEventListener('submit', async function(e) {
                 e.preventDefault();
-                
-                // Add loading state to button
+                if (!authReady) {
+                    alert('Please wait, authentication is loading...');
+                    return;
+                }
+                if (!currentUser) {
+                    alert('Please log in to send a message to your future self.');
+                    return;
+                }
+                const user = currentUser;
                 const submitButton = document.getElementById('send-capsule');
                 const originalButtonText = submitButton.innerHTML;
                 submitButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>';
                 submitButton.disabled = true;
-                
-                // Add spinning animation
-                const style = document.createElement('style');
-                style.innerHTML = `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`;
-                document.head.appendChild(style);
-                
+
+                // Get form values
                 const message = document.getElementById('message').value;
                 const deliveryDate = document.getElementById('delivery-date').value;
                 const deliveryMethod = document.querySelector('.delivery-option.selected').dataset.option;
                 const email = document.getElementById('email').value;
-                
+
                 // Validate inputs
                 if (!message.trim()) {
                     showToast('Please enter a message to send to your future self.', 'error');
@@ -969,42 +1000,32 @@
                     submitButton.disabled = false;
                     return;
                 }
-                
                 if (!deliveryDate) {
                     showToast('Please select a delivery date.', 'error');
                     submitButton.innerHTML = originalButtonText;
                     submitButton.disabled = false;
                     return;
                 }
-                
                 if (deliveryMethod === 'email' && !email) {
                     showToast('Please enter your email address.', 'error');
                     submitButton.innerHTML = originalButtonText;
                     submitButton.disabled = false;
                     return;
                 }
-                
-                // Get current user
-                const user = firebase.auth().currentUser;
-                
-                if (user) {
-                    // Check account verification status before proceeding
-                    const verificationStatus = checkAccountVerification();
-                    
-                    if (!verificationStatus.verified) {
-                        // Reset button
-                        submitButton.innerHTML = originalButtonText;
-                        submitButton.disabled = false;
-                        
-                        // Show verification modal
-                        document.getElementById('account-verification-modal').style.display = 'flex';
-                        handleVerification();
-                        return;
-                    }
-                    
-                    // Save to Firestore
+
+                // Check account verification status before proceeding
+                if (!user.emailVerified || !user.displayName) {
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                    document.getElementById('account-verification-modal').style.display = 'flex';
+                    handleVerification();
+                    return;
+                }
+
+                // Save to Firestore
+                try {
                     const db = firebase.firestore();
-                    db.collection('timeCapsules').add({
+                    await db.collection('timeCapsules').add({
                         userId: user.uid,
                         userEmail: user.email,
                         userName: user.displayName || '',
@@ -1016,46 +1037,32 @@
                         delivered: false,
                         deliveryStatus: 'scheduled',
                         scheduleId: Date.now().toString(36) + Math.random().toString(36).substr(2)
-                    })
-                    .then((docRef) => {
-                        // Reset button
-                        submitButton.innerHTML = originalButtonText;
-                        submitButton.disabled = false;
-                        
-                        // Show confirmation modal with delivery details
-                        showConfirmationModal(
-                            "Your message has been safely stored in a time capsule and will be delivered to you on the scheduled date.",
-                            deliveryDate,
-                            deliveryMethod,
-                            email || user.email
-                        );
-                        
-                        // Reset form
-                        document.getElementById('reset-form').click();
-                        
-                        // Reload capsules list
-                        loadCapsules();
-                        
-                        console.log("Time capsule created with ID: ", docRef.id);
-                    })
-                    .catch(error => {
-                        console.error("Error saving time capsule: ", error);
-                        showToast('Error saving your message. Please try again.', 'error');
-                        
-                        // Reset button
-                        submitButton.innerHTML = originalButtonText;
-                        submitButton.disabled = false;
                     });
-                } else {
-                    // Handle user not logged in
-                    showToast('Please log in to send a message to your future self.', 'error');
+
+                    // Reset button
                     submitButton.innerHTML = originalButtonText;
                     submitButton.disabled = false;
-                    
-                    // Could redirect to login page or show login modal
-                    setTimeout(() => {
-                        window.location.href = 'login.html'; 
-                    }, 2000);
+
+                    // Show confirmation modal with delivery details
+                    showToast('Your time capsule has been scheduled! You will receive it in-app or by email on the selected date.', 'success');
+                    showConfirmationModal(
+                        "Your message has been safely stored in a time capsule and will be delivered to you on the scheduled date.",
+                        deliveryDate,
+                        deliveryMethod,
+                        email || user.email
+                    );
+
+                    // Reset form
+                    document.getElementById('reset-form').click();
+
+                    // Reload capsules list
+                    loadCapsules();
+
+                } catch (error) {
+                    console.error("Error saving time capsule: ", error);
+                    showToast('Error saving your message. Please try again.', 'error');
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
                 }
             });
             
@@ -1090,20 +1097,25 @@
                                 
                                 // Check if the capsule is delivered based on date
                                 const today = new Date();
+                                today.setHours(0,0,0,0);
                                 const deliveryDate = new Date(data.deliveryDate);
+                                deliveryDate.setHours(0,0,0,0);
                                 const isDelivered = today >= deliveryDate;
-                                
-                                const capsuleHtml = `
+                                const capsuleId = doc.id;
+
+                                let capsuleHtml = `
                                     <div class="capsule-card">
                                         <div class="capsule-date">${capsuleDate}</div>
                                         <div class="capsule-snippet">${data.message.substring(0, 100)}${data.message.length > 100 ? '...' : ''}</div>
                                         <div class="capsule-status">
                                             <span class="status-indicator" style="background-color: ${isDelivered ? '#4CAF50' : '#8b5fbf'}"></span>
-                                            ${isDelivered ? 'Delivered' : 'Waiting'}
+                                            ${isDelivered 
+                                                ? `<a href="view-capsule.html?id=${capsuleId}" style="color:#4CAF50; text-decoration:underline; font-weight:500;">Open Capsule</a>`
+                                                : 'Waiting'
+                                            }
                                         </div>
                                     </div>
                                 `;
-                                
                                 capsulesList.innerHTML += capsuleHtml;
                             });
                         })
@@ -1253,5 +1265,535 @@
         });
       });
     </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fix: Ensure Firebase Auth is initialized before using currentUser
+        // Wait for onAuthStateChanged before allowing form submission
+        let authReady = false;
+        let currentUser = null;
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            authReady = true;
+            currentUser = user;
+            if (user) {
+                // Enable form fields and buttons
+                document.getElementById('message').disabled = false;
+                document.getElementById('delivery-date').disabled = false;
+                document.getElementById('send-capsule').disabled = false;
+                document.getElementById('reset-form').disabled = false;
+                loadCapsules();
+            } else {
+                // Disable form fields and buttons if not logged in
+                document.getElementById('message').disabled = true;
+                document.getElementById('delivery-date').disabled = true;
+                document.getElementById('send-capsule').disabled = true;
+                document.getElementById('reset-form').disabled = true;
+                document.getElementById('capsules-list').innerHTML = '<div class="empty-state">Please log in to view your time capsules.</div>';
+            }
+        });
+
+        // Patch form submission to wait for authReady and use currentUser
+        document.getElementById('time-capsule-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!authReady) {
+                alert('Please wait, authentication is loading...');
+                return;
+            }
+            if (!currentUser) {
+                alert('Please log in to send a message to your future self.');
+                return;
+            }
+            const user = currentUser;
+            const submitButton = document.getElementById('send-capsule');
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>';
+            submitButton.disabled = true;
+
+            // Get form values
+            const message = document.getElementById('message').value;
+            const deliveryDate = document.getElementById('delivery-date').value;
+            const deliveryMethod = document.querySelector('.delivery-option.selected').dataset.option;
+            const email = document.getElementById('email').value;
+
+            // Validate inputs
+            if (!message.trim()) {
+                showToast('Please enter a message to send to your future self.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+            if (!deliveryDate) {
+                showToast('Please select a delivery date.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+            if (deliveryMethod === 'email' && !email) {
+                showToast('Please enter your email address.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+
+            // Check account verification status before proceeding
+            if (!user.emailVerified || !user.displayName) {
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                document.getElementById('account-verification-modal').style.display = 'flex';
+                handleVerification();
+                return;
+            }
+
+            // Save to Firestore
+            try {
+                const db = firebase.firestore();
+                await db.collection('timeCapsules').add({
+                    userId: user.uid,
+                    userEmail: user.email,
+                    userName: user.displayName || '',
+                    message: message,
+                    deliveryDate: deliveryDate,
+                    deliveryMethod: deliveryMethod,
+                    email: deliveryMethod === 'email' ? email : user.email,
+                    created: firebase.firestore.FieldValue.serverTimestamp(),
+                    delivered: false,
+                    deliveryStatus: 'scheduled',
+                    scheduleId: Date.now().toString(36) + Math.random().toString(36).substr(2)
+                });
+
+                // Reset button
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+
+                // Show confirmation modal with delivery details
+                showToast('Your time capsule has been scheduled! You will receive it in-app or by email on the selected date.', 'success');
+                showConfirmationModal(
+                    "Your message has been safely stored in a time capsule and will be delivered to you on the scheduled date.",
+                    deliveryDate,
+                    deliveryMethod,
+                    email || user.email
+                );
+
+                // Reset form
+                document.getElementById('reset-form').click();
+
+                // Reload capsules list
+                loadCapsules();
+
+            } catch (error) {
+                console.error("Error saving time capsule: ", error);
+                showToast('Error saving your message. Please try again.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+            }
+        });
+        
+        // Patch loadCapsules to use currentUser
+        function loadCapsules() {
+            const user = currentUser;
+            const capsulesList = document.getElementById('capsules-list');
+            
+            if (user) {
+                const db = firebase.firestore();
+                capsulesList.innerHTML = '<div style="text-align: center; width: 100%;"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg></div>'; // Loading indicator
+                
+                db.collection('timeCapsules')
+                    .where('userId', '==', user.uid)
+                    .orderBy('deliveryDate', 'asc')
+                    .get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.empty) {
+                            capsulesList.innerHTML = '<div class="empty-state">You haven\'t created any time capsules yet.</div>';
+                            return;
+                        }
+                        
+                        capsulesList.innerHTML = ''; // Clear loading indicator
+                        
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const capsuleDate = new Date(data.deliveryDate).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                            });
+                            
+                            // Check if the capsule is delivered based on date
+                            const today = new Date();
+                            today.setHours(0,0,0,0);
+                            const deliveryDate = new Date(data.deliveryDate);
+                            deliveryDate.setHours(0,0,0,0);
+                            const isDelivered = today >= deliveryDate;
+                            const capsuleId = doc.id;
+
+                            let capsuleHtml = `
+                                <div class="capsule-card">
+                                    <div class="capsule-date">${capsuleDate}</div>
+                                    <div class="capsule-snippet">${data.message.substring(0, 100)}${data.message.length > 100 ? '...' : ''}</div>
+                                    <div class="capsule-status">
+                                        <span class="status-indicator" style="background-color: ${isDelivered ? '#4CAF50' : '#8b5fbf'}"></span>
+                                        ${isDelivered 
+                                            ? `<a href="view-capsule.html?id=${capsuleId}" style="color:#4CAF50; text-decoration:underline; font-weight:500;">Open Capsule</a>`
+                                            : 'Waiting'
+                                        }
+                                    </div>
+                                </div>
+                            `;
+                            capsulesList.innerHTML += capsuleHtml;
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error getting time capsules: ", error);
+                        capsulesList.innerHTML = '<div class="empty-state">There was an error loading your time capsules.</div>';
+                    });
+            } else {
+                capsulesList.innerHTML = '<div class="empty-state">Please log in to view your time capsules.</div>';
+            }
+        }
+    });
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ...existing code...
+
+        // Patch form submission to wait for authReady and use currentUser
+        document.getElementById('time-capsule-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!authReady) {
+                alert('Please wait, authentication is loading...');
+                return;
+            }
+            if (!currentUser) {
+                alert('Please log in to send a message to your future self.');
+                return;
+            }
+            const user = currentUser;
+            const submitButton = document.getElementById('send-capsule');
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>';
+            submitButton.disabled = true;
+
+            // Get form values
+            const message = document.getElementById('message').value;
+            const deliveryDate = document.getElementById('delivery-date').value;
+            const deliveryMethod = document.querySelector('.delivery-option.selected').dataset.option;
+            const email = document.getElementById('email').value;
+
+            // Validate
+
+            // Validate inputs
+            if (!message.trim()) {
+                showToast('Please enter a message to send to your future self.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+            if (!deliveryDate) {
+                showToast('Please select a delivery date.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+            if (deliveryMethod === 'email' && !email) {
+                showToast('Please enter your email address.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+
+            // Check account verification status before proceeding
+            if (!user.emailVerified || !user.displayName) {
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                document.getElementById('account-verification-modal').style.display = 'flex';
+                handleVerification();
+                return;
+            }
+
+            // Save to Firestore
+            try {
+                const db = firebase.firestore();
+                await db.collection('timeCapsules').add({
+                    userId: user.uid,
+                    userEmail: user.email,
+                    userName: user.displayName || '',
+                    message: message,
+                    deliveryDate: deliveryDate,
+                    deliveryMethod: deliveryMethod,
+                    email: deliveryMethod === 'email' ? email : user.email,
+                    created: firebase.firestore.FieldValue.serverTimestamp(),
+                    delivered: false,
+                    deliveryStatus: 'scheduled',
+                    scheduleId: Date.now().toString(36) + Math.random().toString(36).substr(2)
+                });
+
+                // Reset button
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+
+                // Show confirmation modal with delivery details
+                showToast('Your time capsule has been scheduled! You will receive it in-app or by email on the selected date.', 'success');
+                showConfirmationModal(
+                    "Your message has been safely stored in a time capsule and will be delivered to you on the scheduled date.",
+                    deliveryDate,
+                    deliveryMethod,
+                    email || user.email
+                );
+
+                // Reset form
+                document.getElementById('reset-form').click();
+
+                // Reload capsules list
+                loadCapsules();
+
+            } catch (error) {
+                console.error("Error saving time capsule: ", error);
+                showToast('Error saving your message. Please try again.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+            }
+        });
+        
+        // Patch loadCapsules to use currentUser
+        function loadCapsules() {
+            const user = currentUser;
+            const capsulesList = document.getElementById('capsules-list');
+            
+            if (user) {
+                const db = firebase.firestore();
+                capsulesList.innerHTML = '<div style="text-align: center; width: 100%;"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg></div>'; // Loading indicator
+                
+                db.collection('timeCapsules')
+                    .where('userId', '==', user.uid)
+                    .orderBy('deliveryDate', 'asc')
+                    .get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.empty) {
+                            capsulesList.innerHTML = '<div class="empty-state">You haven\'t created any time capsules yet.</div>';
+                            return;
+                        }
+                        
+                        capsulesList.innerHTML = ''; // Clear loading indicator
+                        
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const capsuleDate = new Date(data.deliveryDate).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                            });
+                            
+                            // Check if the capsule is delivered based on date
+                            const today = new Date();
+                            today.setHours(0,0,0,0);
+                            const deliveryDate = new Date(data.deliveryDate);
+                            deliveryDate.setHours(0,0,0,0);
+                            const isDelivered = today >= deliveryDate;
+                            const capsuleId = doc.id;
+
+                            let capsuleHtml = `
+                                <div class="capsule-card">
+                                    <div class="capsule-date">${capsuleDate}</div>
+                                    <div class="capsule-snippet">${data.message.substring(0, 100)}${data.message.length > 100 ? '...' : ''}</div>
+                                    <div class="capsule-status">
+                                        <span class="status-indicator" style="background-color: ${isDelivered ? '#4CAF50' : '#8b5fbf'}"></span>
+                                        ${isDelivered 
+                                            ? `<a href="view-capsule.html?id=${capsuleId}" style="color:#4CAF50; text-decoration:underline; font-weight:500;">Open Capsule</a>`
+                                            : 'Waiting'
+                                        }
+                                    </div>
+                                </div>
+                            `;
+                            capsulesList.innerHTML += capsuleHtml;
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error getting time capsules: ", error);
+                        capsulesList.innerHTML = '<div class="empty-state">There was an error loading your time capsules.</div>';
+                    });
+            } else {
+                capsulesList.innerHTML = '<div class="empty-state">Please log in to view your time capsules.</div>';
+            }
+        }
+    });
+    // ...existing code...
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ...existing code...
+
+        // Patch form submission to wait for authReady and use currentUser
+        document.getElementById('time-capsule-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!authReady) {
+                alert('Please wait, authentication is loading...');
+                return;
+            }
+            if (!currentUser) {
+                alert('Please log in to send a message to your future self.');
+                return;
+            }
+            const user = currentUser;
+            const submitButton = document.getElementById('send-capsule');
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>';
+            submitButton.disabled = true;
+
+            // Get form values
+            const message = document.getElementById('message').value;
+            const deliveryDate = document.getElementById('delivery-date').value;
+            const deliveryMethod = document.querySelector('.delivery-option.selected').dataset.option;
+            const email = document.getElementById('email').value;
+
+            // Validate inputs
+            if (!message.trim()) {
+                showToast('Please enter a message to send to your future self.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+            if (!deliveryDate) {
+                showToast('Please select a delivery date.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+            if (deliveryMethod === 'email' && !email) {
+                showToast('Please enter your email address.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+
+            // Check account verification status before proceeding
+            if (!user.emailVerified || !user.displayName) {
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                document.getElementById('account-verification-modal').style.display = 'flex';
+                handleVerification();
+                return;
+            }
+
+            // Save to Firestore
+            try {
+                const db = firebase.firestore();
+                await db.collection('timeCapsules').add({
+                    userId: user.uid,
+                    userEmail: user.email,
+                    userName: user.displayName || '',
+                    message: message,
+                    deliveryDate: deliveryDate,
+                    deliveryMethod: deliveryMethod,
+                    email: deliveryMethod === 'email' ? email : user.email,
+                    created: firebase.firestore.FieldValue.serverTimestamp(),
+                    delivered: false,
+                    deliveryStatus: 'scheduled',
+                    scheduleId: Date.now().toString(36) + Math.random().toString(36).substr(2)
+                });
+
+                // Reset button
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+
+                // Show confirmation modal with delivery details
+                showToast('Your time capsule has been scheduled! You will receive it in-app or by email on the selected date.', 'success');
+                showConfirmationModal(
+                    "Your message has been safely stored in a time capsule and will be delivered to you on the scheduled date.",
+                    deliveryDate,
+                    deliveryMethod,
+                    email || user.email
+                );
+
+                // Reset form
+                document.getElementById('reset-form').click();
+
+                // Reload capsules list
+                loadCapsules();
+
+            } catch (error) {
+                console.error("Error saving time capsule: ", error);
+                showToast('Error saving your message. Please try again.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+            }
+        });
+        
+        // Load user's time capsules
+        function loadCapsules() {
+            const user = firebase.auth().currentUser;
+            const capsulesList = document.getElementById('capsules-list');
+            
+            if (user) {
+                const db = firebase.firestore();
+                capsulesList.innerHTML = '<div style="text-align: center; width: 100%;"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg></div>'; // Loading indicator
+                
+                db.collection('timeCapsules')
+                    .where('userId', '==', user.uid)
+                    .orderBy('deliveryDate', 'asc')
+                    .get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.empty) {
+                            capsulesList.innerHTML = '<div class="empty-state">You haven\'t created any time capsules yet.</div>';
+                            return;
+                        }
+                        
+                        capsulesList.innerHTML = ''; // Clear loading indicator
+                        
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const capsuleDate = new Date(data.deliveryDate).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                            });
+                            
+                            // Check if the capsule is delivered based on date
+                            const today = new Date();
+                            today.setHours(0,0,0,0);
+                            const deliveryDate = new Date(data.deliveryDate);
+                            deliveryDate.setHours(0,0,0,0);
+                            const isDelivered = today >= deliveryDate;
+                            const capsuleId = doc.id;
+
+                            let capsuleHtml = `
+                                <div class="capsule-card">
+                                    <div class="capsule-date">${capsuleDate}</div>
+                                    <div class="capsule-snippet">${data.message.substring(0, 100)}${data.message.length > 100 ? '...' : ''}</div>
+                                    <div class="capsule-status">
+                                        <span class="status-indicator" style="background-color: ${isDelivered ? '#4CAF50' : '#8b5fbf'}"></span>
+                                        ${isDelivered 
+                                            ? `<a href="view-capsule.html?id=${capsuleId}" style="color:#4CAF50; text-decoration:underline; font-weight:500;">Open Capsule</a>`
+                                            : 'Waiting'
+                                        }
+                                    </div>
+                                </div>
+                            `;
+                            capsulesList.innerHTML += capsuleHtml;
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error getting time capsules: ", error);
+                        capsulesList.innerHTML = '<div class="empty-state">There was an error loading your time capsules.</div>';
+                    });
+            } else {
+                capsulesList.innerHTML = '<div class="empty-state">Please log in to view your time capsules.</div>';
+            }
+        }
+
+        // Add a note for the user about delivery
+        // This is only a UI note; actual delivery is handled by backend scheduled jobs (not by this page)
+        const deliveryInfo = document.createElement('div');
+        deliveryInfo.style.textAlign = 'center';
+        deliveryInfo.style.margin = '30px 0 0 0';
+        deliveryInfo.style.color = '#b0b0b0';
+        deliveryInfo.style.fontSize = '1rem';
+        deliveryInfo.innerHTML = `
+            <strong>Note:</strong> Your time capsule will be delivered automatically by our system on the date you selected.<br>
+            <span style="font-size:0.95em;">If you chose "In App", you will see an "Open Capsule" button here on or after that date.<br>
+            If you chose "Email", you will receive an email on the delivery date.<br>
+            <em>(Actual delivery is handled by our backend service, not instantly by this page.)</em></span>
+        `;
+        document.querySelector('.time-capsules-header').insertAdjacentElement('afterend', deliveryInfo);
+    });
+    // ...existing code...
+</script>
 </body>
 </html>
