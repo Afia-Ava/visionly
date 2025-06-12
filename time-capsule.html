@@ -775,9 +775,148 @@
         <div class="capsules-grid" id="capsules-list">
             <!-- Capsules will be loaded here -->
         </div>
-        <div style="text-align:center; color:#888; margin-top:16px; font-size:1rem;">
-            <b>Note:</b> Your time capsule will be delivered automatically by our system on the date you selected.<br>
-            If you chose "In App", you will see an "Open Capsule" button here on or after that date.<br>
-            If you chose "Email", you will receive an email on the delivery date.<br>
-            <span style="font-size:0.95em; font-style:italic;">
-                (Actual delivery is handled by our backend service, not instantly by this page.
+        <!-- Add extra space at the end of the page -->
+        <div style="height: 80px;"></div>
+    </main>
+    <script>
+        // Sound management
+        const soundButton = document.getElementById('toggle-sound');
+        const soundIcon = document.getElementById('sound-icon');
+        const backgroundSound = document.getElementById('background-sound');
+        
+        soundButton.addEventListener('click', () => {
+            if (backgroundSound.paused) {
+                backgroundSound.play();
+                soundIcon.src = 'assets/speaker-off-icon.png';
+            } else {
+                backgroundSound.pause();
+                soundIcon.src = 'assets/speaker-on-icon.png';
+            }
+        });
+        
+        // Form submission and time capsule creation
+        document.getElementById('time-capsule-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const message = document.getElementById('message').value;
+            const deliveryDate = document.getElementById('delivery-date').value;
+            const deliveryMethod = document.querySelector('input[name="delivery-method"]:checked').value;
+            const email = document.getElementById('email').value;
+            
+            // Basic validation
+            if (!message || !deliveryDate || (deliveryMethod === 'email' && !email)) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // TODO: Add actual time capsule creation logic here
+            console.log('Time Capsule Created:', { message, deliveryDate, deliveryMethod, email });
+            
+            // Show confirmation modal
+            document.getElementById('capsule-confirmation-message').innerText = message;
+            document.getElementById('confirm-delivery-date').innerText = deliveryDate;
+            document.getElementById('confirm-delivery-method').innerText = deliveryMethod === 'app' ? 'In App' : 'Email';
+            document.getElementById('confirm-email').innerText = email;
+            document.getElementById('confirm-account-connected').innerText = 'Yes'; // TODO: Check actual account connection
+            document.getElementById('capsule-confirmation-modal').style.display = 'flex';
+            
+            // Reset form
+            this.reset();
+            document.querySelector('.delivery-option.selected').classList.remove('selected');
+            document.querySelector('.delivery-option[data-option="app"]').classList.add('selected');
+            document.getElementById('email').closest('.option-group').style.display = 'none';
+        });
+        
+        // Delivery method selection
+        document.querySelectorAll('.delivery-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.delivery-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                const selectedMethod = this.getAttribute('data-option');
+                const emailField = document.getElementById('email').closest('.option-group');
+                
+                if (selectedMethod === 'email') {
+                    emailField.style.display = 'block';
+                    emailField.querySelector('input').setAttribute('required', 'required');
+                } else {
+                    emailField.style.display = 'none';
+                    emailField.querySelector('input').removeAttribute('required');
+                }
+            });
+        });
+        
+        // Reset form button
+        document.getElementById('reset-form').addEventListener('click', function() {
+            document.getElementById('time-capsule-form').reset();
+            document.querySelector('.delivery-option.selected').classList.remove('selected');
+            document.querySelector('.delivery-option[data-option="app"]').classList.add('selected');
+            document.getElementById('email').closest('.option-group').style.display = 'none';
+        });
+        
+        const mockCapsules = [
+            { date: '2023-10-01', method: 'app', email: 'example@email.com', message: 'Happy New Month!', status: 'delivered' },
+            { date: '2023-11-15', method: 'email', email: 'example@email.com', message: 'Reminder: Doctor\'s Appointment', status: 'pending' },
+            { date: '2024-01-01', method: 'app', email: 'example@email.com', message: 'New Year Resolutions', status: 'pending' }
+        ];
+
+        function loadCapsules(capsules) {
+            const container = document.getElementById('capsules-list');
+            container.innerHTML = '';
+
+            const visionlyCapsule = capsules[0]; 
+            if (visionlyCapsule && visionlyCapsule.status === 'delivered') {
+                container.innerHTML = `
+                    <div class="capsule-card future-note-card" style="
+                        cursor:pointer;
+                        max-width: 320px;
+                        min-height: 180px;
+                        margin: 32px auto 0 auto;
+                        font-size: 1.08rem;
+                        box-shadow: 0 6px 18px rgba(139,95,179,0.14);
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                    " onclick="window.location.href='view-capsule.html?id=mock-id-1'">
+                        <div class="capsule-date" style="font-size:1rem; margin-bottom:12px;">${new Date().toLocaleDateString()}</div>
+                        <div class="capsule-title" style="font-weight:700; color:#8b5fbf; margin-bottom:12px; font-size:1.15rem;">A note from Visionly</div>
+                        <div class="capsule-snippet" style="font-size:1rem; min-height:24px;"></div>
+                        <div class="capsule-status" style="margin-top:18px;">
+                            <span class="status-indicator" style="background-color: #4CAF50; width:10px; height:10px;"></span>
+                            <span style="color:#4CAF50; font-weight:600; font-size:1rem; margin-left:8px;">Open now</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state" style="font-size:1.1rem; padding:40px 0;">
+                        No time capsules found.
+                    </div>
+                `;
+            }
+        }
+
+        loadCapsules(mockCapsules);
+        
+        // Firebase initialization (mockup)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-EXAMPLEKEY",
+            authDomain: "visionly-app.firebaseapp.com",
+            projectId: "visionly-app",
+            storageBucket: "visionly-app.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Auth and Firestore references
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // TODO: Implement actual authentication and data fetching/saving logic
+    </script>
+</body>
+</html>

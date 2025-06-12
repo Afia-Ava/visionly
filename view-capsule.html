@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="dark-mode-global.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- Handwritten font for the letter -->
+    <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -19,13 +21,126 @@
             padding: 0;
         }
         .capsule-container {
-            max-width: 600px;
-            margin: 100px auto 0;
-            background: rgba(45,21,73,0.85);
-            border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-            padding: 40px 30px;
+            max-width: 800px;
+            margin: 60px auto 0;
+            background: rgba(45,21,73,0.92);
+            border-radius: 28px;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.22);
+            padding: 70px 40px 60px 40px;
             text-align: center;
+            position: relative;
+            min-height: 400px;
+        }
+        /* Envelope styles */
+        .envelope-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 320px;
+            margin-bottom: 30px;
+        }
+        .envelope {
+            width: 260px;
+            height: 160px;
+            position: relative;
+            perspective: 800px;
+            margin: 0 auto;
+            background: #e3d3b6;
+            border-radius: 10px 10px 18px 18px;
+            border: 2.5px solid #bfa77a;
+            box-shadow: 0 8px 32px rgba(120,90,40,0.13), 0 2px 8px rgba(120,90,40,0.10), 0 0 0 8px #bfa77a22;
+            overflow: visible;
+            background-image:
+                url('https://www.transparenttextures.com/patterns/old-paper.png'),
+                repeating-linear-gradient(135deg, #e3d3b6 0px, #e3d3b6 12px, #d6c2a1 14px, #e3d3b6 24px);
+            background-blend-mode: multiply;
+        }
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 80px;
+            background: linear-gradient(180deg, #e3d3b6 80%, #d6c2a1 100%);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            border-bottom: 2px solid #bfa77a;
+            z-index: 2;
+            transform-origin: top center;
+            transition: transform 0.7s cubic-bezier(.77,0,.18,1.01);
+            box-shadow: 0 2px 8px rgba(120,90,40,0.08);
+        }
+        .envelope.opened .envelope-flap {
+            transform: rotateX(-120deg);
+        }
+        .envelope-body {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 260px;
+            height: 120px;
+            background: #e3d3b6;
+            border-radius: 0 0 12px 12px;
+            border: 2px solid #bfa77a;
+            z-index: 1;
+            box-shadow: 0 4px 16px rgba(120,90,40,0.10);
+            background-image:
+                url('https://www.transparenttextures.com/patterns/old-paper.png'),
+                repeating-linear-gradient(135deg, #e3d3b6 0px, #e3d3b6 12px, #d6c2a1 14px, #e3d3b6 24px);
+            background-blend-mode: multiply;
+        }
+        .envelope-seal {
+            position: absolute;
+            top: 62px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 48px;
+            background: radial-gradient(circle at 60% 40%, #8b2323 70%, #4a1010 100%);
+            border-radius: 50%;
+            border: 3px solid #4a1010;
+            box-shadow: 0 2px 8px rgba(120,90,40,0.13);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 3;
+            transition: box-shadow 0.2s;
+        }
+        .envelope-seal:hover {
+            box-shadow: 0 0 0 4px #e3d3b6, 0 2px 8px rgba(120,90,40,0.13);
+        }
+        .envelope-seal svg {
+            width: 28px;
+            height: 28px;
+            fill: #fff;
+        }
+        /* Letter styles */
+        .letter-paper {
+            display: none;
+            margin: 0 auto 30px auto;
+            background: #fffbe9;
+            border-radius: 10px;
+            border: 2px solid #b990ff;
+            box-shadow: 0 4px 16px rgba(139,95,179,0.10);
+            padding: 36px 28px 36px 28px;
+            max-width: 420px;
+            min-height: 220px;
+            text-align: left;
+            position: relative;
+            animation: fadeInLetter 0.7s;
+        }
+        @keyframes fadeInLetter {
+            from { opacity: 0; transform: translateY(40px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .handwritten {
+            font-family: 'Homemade Apple', 'Dancing Script', cursive;
+            font-size: 1.25rem;
+            color: #4a2f6b;
+            line-height: 1.8;
+            white-space: pre-line;
         }
         .capsule-title {
             font-size: 2rem;
@@ -37,16 +152,6 @@
             color: #a47dd4;
             margin-bottom: 18px;
             font-size: 1.1rem;
-        }
-        .capsule-message {
-            background: rgba(139,95,179,0.08);
-            border-radius: 12px;
-            padding: 28px 18px;
-            font-size: 1.15rem;
-            color: #e0e0e0;
-            margin-bottom: 30px;
-            white-space: pre-line;
-            box-shadow: 0 2px 8px rgba(139,95,179,0.07);
         }
         .locked-message {
             color: #ffb347;
@@ -71,19 +176,132 @@
             margin: 30px 0;
             font-size: 1.1rem;
         }
+        .open-letter-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(30, 20, 10, 0.92);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInLetter 0.5s;
+        }
+        .open-letter-content {
+            background: #f7ecd3;
+            border-radius: 18px;
+            box-shadow: 0 8px 48px rgba(80,60,30,0.22);
+            border: 2.5px solid #bfa77a;
+            padding: 12px 8px;
+            max-width: 550px;
+            width: 95vw;
+            min-height: 0;
+            max-height: 90vh;
+            margin: 15px auto;
+            border-radius: 18px;
+            justify-content: flex-start;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        @media (max-width: 700px) {
+            .open-letter-content {
+                padding: 8px 2vw;
+                max-width: 99vw;
+                width: 99vw;
+            }
+        }
+        .open-letter-content .close-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #bfa77a;
+            cursor: pointer;
+            z-index: 2;
+            transition: color 0.2s;
+        }
+        .open-letter-content .close-btn:hover {
+            color: #8b2323;
+        }
+        .open-letter-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #bfa77a;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .open-letter-body {
+            font-family: 'Homemade Apple', 'Dancing Script', cursive;
+            font-size: 0.95rem;
+            color: #5a4322;
+            line-height: 1.8;
+            white-space: pre-line;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        .open-letter-sign {
+            font-family: 'Dancing Script', cursive;
+            color: #8b2323;
+            font-size: 0.95rem;
+            margin-top: 10px;
+            text-align: right;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
     <div class="capsule-container" id="capsule-content">
-        <div style="text-align:center;">
-            <svg width="60" height="60" viewBox="0 0 100 100" fill="none">
-                <path d="M30 10H70V30C70 40 60 40 50 50C40 60 30 60 30 70V90H70V70C70 60 60 60 50 50C40 40 30 40 30 30V10Z" stroke="#C9A9FF" stroke-width="3" fill="rgba(201,169,255,0.3)"/>
-            </svg>
+        <div id="envelopes-list">
+            <!-- Always show the Visionly envelope -->
+            <div class="envelope-multi-wrapper" style="margin-bottom:32px; display:flex; flex-direction:column; align-items:center;">
+                <div class="envelope envelope-openable" style="width:320px; height:180px; position:relative; margin-bottom:8px; perspective:800px; cursor:pointer;"
+                    onclick="showOpenLetter()">
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-body"></div>
+                    <div class="envelope-seal" title="Click to open"></div>
+                </div>
+                <div style="font-family:'Dancing Script',cursive;font-size:1.3rem;color:#bfa77a;margin-bottom:2px;">
+                    A note from Visionly
+                </div>
+                <div style="color:#bfa77a;font-size:1.05rem;">
+                    <script>document.write(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));</script>
+                </div>
+                <div style="color:#4CAF50;font-weight:600;font-size:1.05rem;">Open now</div>
+            </div>
         </div>
-        <div class="capsule-title">Your Time Capsule</div>
-        <div id="capsule-status" class="capsule-date"></div>
-        <div id="capsule-message" class="capsule-message" style="display:none;"></div>
-        <div id="locked-message" class="locked-message" style="display:none;"></div>
+        <div id="open-letter-modal" class="open-letter-modal" style="display:none;">
+            <div class="open-letter-content">
+                <button class="close-btn" onclick="closeOpenLetter()" aria-label="Close">&times;</button>
+                <div class="open-letter-title">A note from Visionly</div>
+                <div class="open-letter-body">
+Hey you,
+
+We just wanted to say — we're proud of you. Seriously.
+
+We see how hard you're trying. We know the late nights, the overthinking, the moments where you question if you’re doing enough. The truth is… you’re doing more than enough. And we’re here to walk beside you through every step, every setback, every breakthrough.
+
+Visionly isn’t just a tool — it’s your quiet cheerleader, your thoughtful coach, and your safe space to dream big and grow strong. We built this with love, for people like you — ambitious, thoughtful, maybe a little overwhelmed, but never giving up.
+
+If you ever feel stuck, discouraged, or just need someone to listen — we’re here. For feedback, for support, for a “you got this” when you need it most.
+
+So take a deep breath. You’ve already come so far. And you’re not alone.
+
+We believe in you — fully, completely, no matter what.
+                </div>
+                <div class="open-letter-sign">
+With all our support,<br>
+– Your Visionly Team
+                </div>
+            </div>
+        </div>
         <div id="error-message" class="error-message" style="display:none;"></div>
         <button class="back-btn" onclick="window.location.href='time-capsule.html'">Back to Capsules</button>
     </div>
@@ -98,57 +316,112 @@
         function showError(msg) {
             document.getElementById('error-message').textContent = msg;
             document.getElementById('error-message').style.display = 'block';
-            document.getElementById('capsule-message').style.display = 'none';
-            document.getElementById('locked-message').style.display = 'none';
+            document.getElementById('envelopes-list').innerHTML = '';
         }
 
-        firebase.auth().onAuthStateChanged(async function(user) {
-            const capsuleId = getQueryParam('id');
-            if (!user) {
-                showError('You must be logged in to view your time capsule.');
-                return;
-            }
-            if (!capsuleId) {
-                showError('No capsule ID provided.');
-                return;
-            }
+        // Render multiple envelopes
+        async function renderEnvelopes(user) {
+            const envelopesList = document.getElementById('envelopes-list');
+            envelopesList.innerHTML = '<div style="text-align:center; color:#b0b0b0;">Loading...</div>';
             const db = firebase.firestore();
             try {
-                const doc = await db.collection('timeCapsules').doc(capsuleId).get();
-                if (!doc.exists) {
-                    showError('Time capsule not found.');
+                // Get all capsules for this user
+                const querySnapshot = await db.collection('timeCapsules')
+                    .where('userId', '==', user.uid)
+                    .where('type', '==', 'future-note')
+                    .orderBy('deliveryDate', 'asc')
+                    .get();
+
+                if (querySnapshot.empty) {
+                    envelopesList.innerHTML = '<div style="text-align:center; color:#b0b0b0;">No time capsules found.</div>';
                     return;
                 }
-                const data = doc.data();
-                if (data.userId !== user.uid) {
-                    showError('You do not have permission to view this time capsule.');
-                    return;
-                }
-                // Check if capsule is ready to open
+
+                envelopesList.innerHTML = '';
                 const today = new Date();
                 today.setHours(0,0,0,0);
-                const deliveryDate = new Date(data.deliveryDate);
-                deliveryDate.setHours(0,0,0,0);
-                const isDelivered = today >= deliveryDate;
 
-                const dateStr = deliveryDate.toLocaleDateString('en-US', {
-                    year: 'numeric', month: 'long', day: 'numeric'
+                querySnapshot.forEach((doc, idx) => {
+                    const data = doc.data();
+                    const deliveryDate = new Date(data.deliveryDate);
+                    deliveryDate.setHours(0,0,0,0);
+                    const isDelivered = today >= deliveryDate;
+                    const dateStr = deliveryDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+                    // Envelope color changes if openable
+                    const envelopeClass = isDelivered ? 'envelope-openable' : 'envelope-locked';
+
+                    envelopesList.innerHTML += `
+                        <div class="envelope-multi-wrapper" style="margin-bottom:32px; display:flex; flex-direction:column; align-items:center;">
+                            <div class="envelope ${envelopeClass}" style="width:220px; height:140px; position:relative; margin-bottom:8px; perspective:800px;">
+                                <div class="envelope-flap" style="position:absolute;top:0;left:0;width:220px;height:70px;background:#e9d8fd;border-top-left-radius:12px;border-top-right-radius:12px;border-bottom:2px solid #b990ff;z-index:2;transition:transform 0.7s;box-shadow:0 2px 8px rgba(139,95,179,0.08);"></div>
+                                <div class="envelope-body" style="position:absolute;top:35px;left:0;width:220px;height:100px;background:#fff;border-radius:0 0 12px 12px;border:2px solid #b990ff;z-index:1;box-shadow:0 4px 16px rgba(139,95,179,0.10);"></div>
+                                <div class="envelope-seal" style="position:absolute;top:50px;left:50%;transform:translateX(-50%);width:38px;height:38px;background:#b990ff;border-radius:50%;border:3px solid #8b5fbf;box-shadow:0 2px 8px rgba(139,95,179,0.13);display:flex;align-items:center;justify-content:center;z-index:3;${isDelivered ? 'cursor:pointer;' : 'opacity:0.5;cursor:not-allowed;'}"
+                                    ${isDelivered ? `onclick="openEnvelope('${doc.id}', ${idx})"` : ''}
+                                    title="${isDelivered ? 'Click to open' : 'Locked until ' + dateStr}">
+                                    <svg viewBox="0 0 32 32" width="22" height="22">
+                                        <circle cx="16" cy="16" r="13" fill="#b990ff"/>
+                                        <text x="16" y="21" text-anchor="middle" font-size="14" font-family="Dancing Script, cursive" fill="#fff">✉️</text>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div style="font-family:'Dancing Script',cursive;font-size:1.1rem;color:#8b5fbf;margin-bottom:2px;">
+                                ${data.message && data.message.trim() === '' ? 'A note from Visionly' : (data.title || 'A note from Visionly')}
+                            </div>
+                            <div style="color:#a47dd4;font-size:0.95rem;">${dateStr}</div>
+                            <div style="color:${isDelivered ? '#4CAF50' : '#b0b0b0'};font-weight:600;font-size:0.95rem;">
+                                ${isDelivered ? 'Open now' : 'Locked'}
+                            </div>
+                            <div id="letter-paper-${idx}" class="letter-paper" style="display:none;margin-top:18px;background:#fffbe9;border-radius:10px;border:2px solid #b990ff;box-shadow:0 4px 16px rgba(139,95,179,0.10);padding:24px 18px;max-width:340px;min-height:120px;text-align:left;position:relative;">
+                                <div style="font-family:'Dancing Script',cursive;font-size:1.3rem;color:#b990ff;margin-bottom:8px;">A note from Visionly</div>
+                                <div style="color:#a47dd4;font-size:0.98rem;margin-bottom:8px;">${dateStr}</div>
+                                <div class="handwritten" style="font-family:'Homemade Apple','Dancing Script',cursive;font-size:1.1rem;color:#4a2f6b;line-height:1.7;white-space:pre-line;">${data.message || ''}</div>
+                            </div>
+                        </div>
+                    `;
                 });
-                document.getElementById('capsule-status').textContent = `Delivery Date: ${dateStr}`;
-
-                if (isDelivered) {
-                    document.getElementById('capsule-message').textContent = data.message;
-                    document.getElementById('capsule-message').style.display = 'block';
-                    document.getElementById('locked-message').style.display = 'none';
-                } else {
-                    document.getElementById('locked-message').textContent = "This time capsule is locked until " + dateStr + ".";
-                    document.getElementById('locked-message').style.display = 'block';
-                    document.getElementById('capsule-message').style.display = 'none';
-                }
             } catch (err) {
-                showError('Error loading time capsule.');
+                showError('Error loading time capsules.');
             }
+        }
+
+        // Envelope open logic
+        window.openEnvelope = function(docId, idx) {
+            document.getElementById('letter-paper-' + idx).style.display = 'block';
+        };
+
+        // Show/hide open letter modal
+        function showOpenLetter() {
+            document.getElementById('open-letter-modal').style.display = 'flex';
+        }
+        function closeOpenLetter() {
+            document.getElementById('open-letter-modal').style.display = 'none';
+        }
+
+        // On page load, always render at least one envelope
+        renderAtLeastOneEnvelope();
+
+        firebase.auth().onAuthStateChanged(async function(user) {
+            if (!user) {
+                showError('You must be logged in to view your time capsules.');
+                return;
+            }
+            renderEnvelopes(user);
         });
     </script>
+    <style>
+        /* Add a little spacing between envelopes */
+        .envelope-multi-wrapper + .envelope-multi-wrapper {
+            margin-top: 32px;
+        }
+        /* Optional: style for opened envelope/letter */
+        .letter-paper {
+            animation: fadeInLetter 0.7s;
+        }
+        @keyframes fadeInLetter {
+            from { opacity: 0; transform: translateY(40px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+    </style>
 </body>
 </html>
