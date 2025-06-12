@@ -71,89 +71,131 @@
       box-shadow: 0 6px 20px rgba(45, 26, 69, 0.15) !important;
     }
 
-    /* 3D and Animation Effects */
-    .floating {
-      animation: float 6s ease-in-out infinite;
+    /* Enhanced 3D and Animation Effects */
+    :root {
+      --perspective: 1000px;
+      --transition-duration: 0.4s;
     }
     
-    .floating-slow {
-      animation: float 8s ease-in-out infinite;
+    /* Parallax container for 3D depth */
+    .parallax-container {
+      transform-style: preserve-3d;
+      perspective: var(--perspective);
+      overflow: hidden;
+      position: relative;
     }
     
-    .floating-fast {
-      animation: float 4s ease-in-out infinite;
+    .parallax-element {
+      will-change: transform;
+      transition: transform var(--transition-duration) cubic-bezier(0.17, 0.67, 0.83, 0.67);
     }
     
-    @keyframes float {
-      0% {
-        transform: translateY(0px);
-      }
-      50% {
-        transform: translateY(-15px);
-      }
-      100% {
-        transform: translateY(0px);
-      }
-    }
-    
-    .rotate-3d {
-      transition: transform 0.8s ease;
+    /* Enhanced floating animations with 3D rotation */
+    .floating-3d {
+      animation: float3d 8s ease-in-out infinite;
       transform-style: preserve-3d;
     }
     
-    .rotate-3d:hover {
-      transform: rotateY(10deg) rotateX(5deg);
-    }
-
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
+    @keyframes float3d {
       0% {
-        transform: scale(1);
+        transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+      }
+      25% {
+        transform: translateY(-15px) rotateX(2deg) rotateY(3deg);
       }
       50% {
-        transform: scale(1.05);
+        transform: translateY(-7px) rotateX(-1deg) rotateY(-2deg);
+      }
+      75% {
+        transform: translateY(-20px) rotateX(3deg) rotateY(2deg);
       }
       100% {
-        transform: scale(1);
+        transform: translateY(0px) rotateX(0deg) rotateY(0deg);
       }
     }
     
-    .shimmer {
-      background: linear-gradient(
-        to right,
-        rgba(255,255,255,0) 0%,
-        rgba(255,255,255,0.2) 50%,
-        rgba(255,255,255,0) 100%
-      );
-      background-size: 200% 100%;
-      animation: shimmer 3s infinite;
+    /* Advanced Rotating 3D effect */
+    .rotate-3d-advanced {
+      transition: transform 0.8s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
     
-    @keyframes shimmer {
+    .rotate-3d-advanced:hover {
+      transform: perspective(1000px) rotateY(15deg) rotateX(5deg) translateZ(20px);
+      box-shadow: -10px 10px 32px rgba(45, 26, 69, 0.2);
+    }
+    
+    /* Enhanced pulse with 3D depth */
+    .pulse-3d {
+      animation: pulse3d 3s infinite;
+      transform-style: preserve-3d;
+    }
+    
+    @keyframes pulse3d {
       0% {
-        background-position: -100% 0;
+        transform: scale3d(1, 1, 1);
+      }
+      50% {
+        transform: scale3d(1.05, 1.05, 1.2) translateZ(10px);
       }
       100% {
-        background-position: 100% 0;
+        transform: scale3d(1, 1, 1);
       }
     }
     
-    .scale-in {
-      animation: scaleIn 0.5s ease-out forwards;
+    /* 3D flip card effect */
+    .flip-card {
+      perspective: 1000px;
+      transform-style: preserve-3d;
+      height: 220px;
+    }
+    
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+    
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(45, 26, 69, 0.2);
+    }
+    
+    .flip-card-back {
+      transform: rotateY(180deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px;
+      background: #3a2259;
+      color: white;
+    }
+    
+    /* Scroll reveal animations */
+    .reveal-on-scroll {
       opacity: 0;
-      transform: scale(0.8);
+      transform: translateY(50px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
     
-    @keyframes scaleIn {
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+    .reveal-on-scroll.active {
+      opacity: 1;
+      transform: translateY(0);
     }
-
+    
     /* Particle background */
     .particle-container {
       position: fixed;
@@ -221,11 +263,57 @@
       opacity: 0;
       pointer-events: none;
     }
+    
+    /* Card button hover effect */
+    .card-button {
+      display: block; 
+      width: 100%; 
+      background: #3a2259; 
+      border: none; 
+      color: white; 
+      border-radius: 6px; 
+      padding: 8px 0; 
+      text-align: center; 
+      text-decoration: none; 
+      font-size: 0.9rem; 
+      font-weight: 500; 
+      transition: all 0.3s ease;
+    }
+    
+    .card-button:hover {
+      transform: translateY(-4px);
+      background-color: #4a2889;
+      box-shadow: 0 6px 12px rgba(45, 26, 69, 0.15);
+    }
+
+    /* Staggered animation for feature sections */
+    .feature-section {
+      opacity: 1; /* Change to visible by default */
+      transform: translateY(0);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    /* Only apply initial hidden state when JS is loaded properly */
+    .js-loaded .feature-section {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .feature-section.animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Different animation delays for staggered effect */
+    .feature-section:nth-child(1) { transition-delay: 0.1s; }
+    .feature-section:nth-child(2) { transition-delay: 0.3s; }
+    .feature-section:nth-child(3) { transition-delay: 0.5s; }
+    .feature-section:nth-child(4) { transition-delay: 0.7s; }
+    .feature-section:nth-child(5) { transition-delay: 0.9s; }
   </style>
 </head>
-<body style="font-family: 'Inter', sans-serif; background-color: #fff; color: #333; margin: 0; padding: 0;">
-    
-    <!-- Particle background container -->
+<body style="font-family: 'Inter', sans-serif; background-color: #fff; color: #333; margin: 0; padding: 0; overflow-x: hidden;">
+    <!-- Add animated background particles with depth -->
     <div class="particle-container" id="particle-container"></div>
     
     <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
@@ -242,22 +330,27 @@
 
     <div id="navbar-container"></div>
 
-    <!-- Hero Section with animation effects -->
-    <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 110px; margin-bottom: 32px;">
-      <div class="tilt-card" style="width: 98vw; max-width: 1100px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(80,40,120,0.07); position: relative; min-height: 280px;">
-        <div style="position: absolute; inset: 0; z-index: 1; background: url('assets/inspiration3.png') center center / cover no-repeat;"></div>
-        <div style="position: absolute; inset: 0; z-index: 2; background: linear-gradient(120deg, rgba(76, 36, 131, 0.72) 0%, rgba(60, 30, 100, 0.82) 100%);"></div>
-        <div class="tilt-card-inner" style="padding: 80px 24px 72px 24px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 3;">
-          <h1 class="scale-in" style="color: #fff; font-size: 2.3rem; font-weight: 700; margin-bottom: 12px; text-align: center; letter-spacing: -1px; animation-delay: 0.2s;">Vision Boards And Track Progress</h1>
-          <p class="scale-in" style="color: #f3eaff; font-size: 1.08rem; margin-bottom: 32px; text-align: center; animation-delay: 0.4s;">Visualize your goals and turn them into reality</p>
-          <a href="create-board.html" class="confetti-button scale-in" style="background: #3b207a; color: #fff; font-weight: 600; border-radius: 6px; padding: 12px 32px; font-size: 1rem; text-decoration: none; box-shadow: 0 2px 8px rgba(80,40,120,0.08); transition: all 0.3s ease; border: 1px solid #8b5fb3; animation-delay: 0.6s;" onmouseover="this.style.transform='translateY(-4px) scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(80,40,120,0.25)'; this.style.background='#4a2889';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 2px 8px rgba(80,40,120,0.08)'; this.style.background='#3b207a';">Create</a>
+    <!-- Enhanced Hero Section with 3D parallax effect - SMALLER BUT CENTERED -->
+    <div class="hero-3d" style="display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 140px; margin-bottom: 48px;">
+      <div class="tilt-card parallax-container" style="width: 90vw; max-width: 1000px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(80,40,120,0.07); position: relative; min-height: 360px;">
+        <div class="hero-3d-layer parallax-element" data-depth="0.2" style="position: absolute; inset: 0; z-index: 1; background: url('assets/inspiration3.png') center center / cover no-repeat; transform-style: preserve-3d;"></div>
+        <div class="hero-3d-layer parallax-element" data-depth="0.5" style="position: absolute; inset: 0; z-index: 2; background: linear-gradient(120deg, rgba(76, 36, 131, 0.72) 0%, rgba(60, 30, 100, 0.82) 100%); transform-style: preserve-3d;"></div>
+        
+        <!-- Floating 3D Elements -->
+        <div class="hero-3d-layer parallax-element" data-depth="0.8" style="position: absolute; z-index: 3; width: 80px; height: 80px; top: 20%; left: 15%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; transform-style: preserve-3d;" class="floating-3d"></div>
+        <div class="hero-3d-layer parallax-element" data-depth="0.4" style="position: absolute; z-index: 3; width: 120px; height: 120px; bottom: 10%; right: 20%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; transform-style: preserve-3d;" class="floating-3d"></div>
+        
+        <div class="tilt-card-inner hero-3d-layer parallax-element" data-depth="0.9" style="padding: 90px 24px 90px 24px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 4; transform-style: preserve-3d;">
+          <h1 class="scale-in hero-3d-layer" data-depth="1.1" style="color: #fff; font-size: 2.4rem; font-weight: 700; margin-bottom: 16px; text-align: center; letter-spacing: -0.5px; animation-delay: 0.2s; transform: translateZ(40px); text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;">Vision Boards And Track Progress</h1>
+          <p class="scale-in hero-3d-layer" data-depth="1.0" style="color: #f3eaff; font-size: 1.1rem; margin-bottom: 32px; text-align: center; animation-delay: 0.4s; transform: translateZ(30px); text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;">Visualize your goals and turn them into reality</p>
+          <a href="create-board.html" class="confetti-button scale-in hero-3d-layer ripple-effect" data-depth="1.2" style="background: #3b207a; color: #fff; font-weight: 600; border-radius: 6px; padding: 14px 36px; font-size: 1.1rem; text-decoration: none; box-shadow: 0 8px 20px rgba(80,40,120,0.2); transition: all 0.3s ease; border: 1px solid #8b5fb3; animation-delay: 0.6s; transform: translateZ(50px);" onmouseover="this.style.transform='translateY(-4px) scale(1.05) translateZ(50px)'; this.style.boxShadow='0 12px 30px rgba(80,40,120,0.35)'; this.style.background='#4a2889';" onmouseout="this.style.transform='translateY(0) scale(1) translateZ(50px)'; this.style.boxShadow='0 8px 20px rgba(80,40,120,0.2)'; this.style.background='#3b207a';">Create Now</a>
         </div>
         <div class="tilt-card-shine"></div>
       </div>
     </div>
 
-    <!-- Features Section with floating animations -->
-    <section style="padding: 0 0 56px 0;">
+    <!-- Add reveal-on-scroll class to feature sections -->
+    <section class="reveal-on-scroll" style="padding: 0 0 56px 0;">
       <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
         <!-- Add more spacing before the headline -->
         <div style="height: 40px;"></div>
@@ -265,7 +358,7 @@
         <p style="color: #444; margin-bottom: 38px; max-width: none; line-height: 1.6; white-space: nowrap;">Visionly empowers you to visualize your goals, maintain focus, and track your progress, transforming your aspirations into reality.</p>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
           <!-- Feature 1 -->
-          <div class="feature-card floating" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0;">
+          <div class="feature-card floating feature-section" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0;">
             <div style="margin-bottom: 12px;">
               <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #2d1549; border-radius: 50%;">
                 <svg width="20" height="20" fill="none" stroke="#c8a2e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -280,7 +373,7 @@
             </div>
           </div>
           <!-- Feature 2 -->
-          <div class="feature-card floating-slow" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0; animation-delay: 0.2s;">
+          <div class="feature-card floating-slow feature-section" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0; animation-delay: 0.2s;">
             <div style="margin-bottom: 12px;">
               <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #2d1549; border-radius: 50%;">
                 <svg width="20" height="20" fill="none" stroke="#c8a2e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -295,7 +388,7 @@
             </div>
           </div>
           <!-- Feature 3 -->
-          <div class="feature-card floating-fast" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0; animation-delay: 0.4s;">
+          <div class="feature-card floating-fast feature-section" style="background: #1f0f35; border: 2px solid #2d1a45; border-radius: 8px; padding: 24px; min-width: 0; animation-delay: 0.4s;">
             <div style="margin-bottom: 12px;">
               <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #2d1549; border-radius: 50%;">
                 <svg width="20" height="20" fill="none" stroke="#c8a2e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -323,45 +416,48 @@
     <!-- Add space after Features section -->
     <div style="height: 48px;"></div>
     
-    <!-- Inspiration Gallery Section (new design) - MOVED HERE -->
+    <!-- Inspiration Gallery Section (original design) -->
     <section class="gallery" id="gallery" style="padding: 0 0 56px 0; background: transparent !important;">
       <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
         <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 28px; color: #181818;">Inspiration Gallery</h2>
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
-          <!-- Card 1 -->
-          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
+          <!-- Card 1 (original style) -->
+          <div class="gallery-card" style="width: 100%; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
             <img src="assets/card1.jpg" alt="Productive Workspace" style="width: 100%; height: 140px; object-fit: cover;">
-            <div style="padding: 20px 18px 16px 18px; flex: 1;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Productive Workspace</div>
-              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Design a workspace that fosters creativity and efficiency.</div>
-              <a href="workspace.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Design a workspace that fosters creativity and efficiency.</div>
+              <a href="workspace.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
             </div>
           </div>
-          <!-- Card 2 -->
-          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
+          
+          <!-- Card 2 (original style) -->
+          <div class="gallery-card" style="width: 100%; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
             <img src="assets/card2.jpeg" alt="Healthy Habits" style="width: 100%; height: 140px; object-fit: cover;">
-            <div style="padding: 20px 18px 16px 18px; flex: 1;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Healthy Habits</div>
-              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Inspire your wellness journey with visuals that motivate daily healthy choices.</div>
-              <a href="healthy-habits-board.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Inspire your wellness journey with visuals that motivate daily healthy choices.</div>
+              <a href="healthy-habits-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
             </div>
           </div>
-          <!-- Card 3 -->
-          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
+          
+          <!-- Card 3 (original style) -->
+          <div class="gallery-card" style="width: 100%; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
             <img src="assets/card3.jpeg" alt="Travel Dreams" style="width: 100%; height: 140px; object-fit: cover;">
-            <div style="padding: 20px 18px 16px 18px; flex: 1;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Travel Dreams</div>
-              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Visualize your next adventure and keep your travel goals top of mind.</div>
-              <a href="travel-board.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Visualize your next adventure and keep your travel goals top of mind.</div>
+              <a href="travel-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
             </div>
           </div>
-          <!-- Card 4 -->
-          <div class="gallery-card" style="background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
+          
+          <!-- Card 4 (original style) -->
+          <div class="gallery-card" style="width: 100%; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
             <img src="assets/card4.jpg" alt="Creative Pursuits" style="width: 100%; height: 140px; object-fit: cover;">
-            <div style="padding: 20px 18px 16px 18px; flex: 1;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
               <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Creative Pursuits</div>
-              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left;">Fuel your artistic side with boards dedicated to your creative passions.</div>
-              <a href="creative-board.html" class="card-button" style="display: block; width: 100%; background: #2d1549; border: 1px solid #3a2259; color: #e0e0e0; border-radius: 8px; padding: 10px 0; text-align: center; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.01)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.08)'; this.style.background='#3a2259';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'; this.style.background='#2d1549';">View</a>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Fuel your artistic side with boards dedicated to your creative passions.</div>
+              <a href="creative-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
             </div>
           </div>
         </div>
@@ -372,7 +468,7 @@
     <div style="height: 48px;"></div>
     
     <!-- Create Board Feature Highlight Section - NOW AFTER GALLERY -->
-    <section style="padding: 0 0 56px 0;">
+    <section class="feature-section" style="padding: 0 0 56px 0;">
       <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
         <div style="display: flex; flex-direction: column; align-items: flex-end; text-align: right;">
           <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #181818;">Create Your Vision Board</h2>
@@ -436,7 +532,7 @@
             Maximize productivity and achieve your goals through dedicated focus time.
           </p>
           
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f0f8ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden; align-self: flex-start;">
+          <div class="feature-section" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f0f8ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden; align-self: flex-start;">
             <!-- Left: Pomodoro Timer Visualization -->
             <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
               <div style="position: relative; z-index: 3; text-align: center;">
@@ -488,7 +584,7 @@
             Track your progress visually and celebrate achievements along your path.
           </p>
           
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f2f0ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
+          <div class="feature-section" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f2f0ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
             <!-- Right Text Content -->
             <div style="width: 50%; text-align: right;">
               <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #2d1a45;">Track Your Progress</h3>
@@ -562,7 +658,7 @@
             Understand patterns and optimize your journey to achieve goals faster.
           </p>
           
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f5f0ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden; align-self: flex-start;">
+          <div class="feature-section" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f5f0ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden; align-self: flex-start;">
             <!-- Left: Analytics Visualization -->
             <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
               <div style="position: relative; z-index: 3; text-align: center; width: 100%;">
@@ -638,10 +734,10 @@
             Get no-nonsense advice and motivation to chase your goals.
           </p>
           
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #1f0f35; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
+          <div class="feature-section" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #1f0f35; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
             <!-- Right Text Content -->
             <div style="width: 50%; text-align: right;">
-              <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #e0e0e0;">Tough Love for Real Results</h3>
+              <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #e0e0e0;">Tough Love for Real Results</h3
               
               <!-- Chat Preview -->
               <div style="background: #2d1a45; border-radius: 8px; padding: 12px; margin-bottom: 15px; text-align: left;">
@@ -705,7 +801,7 @@
             Process your experiences and gain deeper understanding of your progress.
           </p>
           
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #faf6ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden; align-self: flex-start;">
+          <div class="feature-section" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #faf6ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden; align-self: flex-start;">
             <!-- Left: Journal Visualization -->
             <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
               <div style="position: relative; z-index: 3; text-align: center; width: 100%;">
@@ -722,7 +818,6 @@
                   <div style="position: absolute; width: 170px; height: 170px; background: white; border-radius: 4px; right: 20px; top: 5px; box-shadow: 1px 3px 8px rgba(0,0,0,0.2);">
                     <!-- Page Lines -->
                     <div style="padding: 20px;">
-                      <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
                       <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
                       <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
                       <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
@@ -768,7 +863,7 @@
             Write a message to your future self. Set a date and receive it when you need it most.
           </p>
           
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f8f0ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
+          <div class="feature-section" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f8f0ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
             <!-- Left: Future Note Visualization -->
             <div style="width: 45%; position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
               <div style="position: relative; z-index: 3; text-align: center; width: 100%;">
@@ -792,7 +887,7 @@
                       <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
                       <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
                       <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 15px;"></div>
-                      <div style="width: 80%; height: 1px; background: #ddd;"></div>
+                      <div style="width: 80%; height:  1px; background: #ddd;"></div>
                     </div>
                   </div>
                 </div>
@@ -851,8 +946,7 @@
     </div>
 
     <!-- Footer similar to the screenshot, no social media -->
-    <footer style="padding: 24px 0 12px 0;
-">
+    <footer style="padding: 24px 0 12px 0;">
       <div style="max-width: 900px; margin: 0 auto; text-align: center;">
         <div style="display: flex; justify-content: center; gap: 28px; margin-bottom: 10px; flex-wrap: wrap;">
           <a href="about.html" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">About</a>
@@ -883,110 +977,107 @@
     <script src="dark-mode-toggle.js"></script>
     <script src="email-service.js"></script>
     
-    <script>
-        // Check if user needs onboarding
-        document.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('isNewUser') === 'true') {
-                window.location.href = 'onboarding.html';
-            }
-            
-            // Initialize email service and setup weekly scheduler
-            if (typeof emailService !== 'undefined') {
-                emailService.init();
-                emailService.setupWeeklyScheduler();
-            }
-        });
-    </script>
-    
-    <!-- Remove this duplicate onboarding check -->
-    <!--
-    <script>
-        // Check if user needs onboarding
-        document.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('isNewUser') === 'true') {
-                window.location.href = 'onboarding.html';
-            }
-        });
-    </script>
-    -->
-
-    <!-- Import sprinkles effect from mouse-sprinkles -->
-    <script src="mouse-sprinkles-script.js"></script>
-    
+    <!-- Add new scripts for the enhanced 3D effects -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        const audio = document.getElementById('background-sound');
-        const toggleBtn = document.getElementById('toggle-sound');
-        const soundIcon = document.getElementById('sound-icon');
-        let isPlaying = false;
-
-        // Set volume and try to start automatically
-        audio.volume = 0.5;
-
-        // Function to start audio
-        function startAudio() {
-          audio.play().then(() => {
-            soundIcon.src = 'assets/speaker-on-icon.png';
-            soundIcon.alt = 'Sound On';
-            isPlaying = true;
-          }).catch(() => {
-            // Autoplay blocked - set icon to off state
-            soundIcon.src = 'assets/speaker-off-icon.png';
-            soundIcon.alt = 'Sound Off';
-            isPlaying = false;
+        // Parallax effect for hero section
+        const hero = document.querySelector('.hero-3d');
+        const layers = document.querySelectorAll('.parallax-element');
+        
+        hero.addEventListener('mousemove', (e) => {
+          const xPos = (window.innerWidth / 2 - e.clientX) / 25;
+          const yPos = (window.innerHeight / 2 - e.clientY) / 25;
+          layers.forEach(layer => {
+            const depth = layer.getAttribute('data-depth') || 0.5;
+            const moveX = xPos * depth;
+            const moveY = yPos * depth;
+            layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0) translateZ(0)`;
+          });
+        });
+        
+        // Reset position when mouse leaves
+        hero.addEventListener('mouseleave', () => {
+          layers.forEach(layer => {
+            layer.style.transform = 'translate3d(0, 0, 0) translateZ(0)';
+          });
+        });
+        
+        // Enhanced particle background
+        const particleContainer = document.getElementById('particle-container');
+        const particleCount = 50;
+        
+        // Create particles with 3D depth
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          // Random size between 3 and 8 pixels
+          const size = Math.random() * 5 + 3;
+          
+          // Random depth (z-index and opacity based on depth)
+          const depth = Math.random();
+          const opacity = 0.1 + (depth * 0.3);
+          
+          // Style the particle
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+          particle.style.left = `${Math.random() * 100}vw`;
+          particle.style.top = `${Math.random() * 100}vh`;
+          particle.style.opacity = opacity;
+          particle.style.backgroundColor = '#8b5fbf';
+          particle.style.zIndex = Math.floor(depth * 10);
+          particle.style.boxShadow = `0 0 ${Math.floor(size)}px rgba(139, 95, 179, ${opacity})`;
+          // Add 3D floating animation with different speeds
+          particle.style.animation = `float3d ${5 + Math.random() * 10}s ease-in-out infinite`;
+          particle.style.animationDelay = `${Math.random() * 5}s`;
+          particleContainer.appendChild(particle);
+        }
+        
+        // Scroll reveal animation
+        const revealElements = document.querySelectorAll('.reveal-on-scroll');
+        
+        function checkReveal() {
+          const windowHeight = window.innerHeight;
+          const revealPoint = 150; // Trigger when element is 150px in view
+          
+          revealElements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            if (elementTop < windowHeight - revealPoint) {
+              element.classList.add('active');
+            } else {
+              element.classList.remove('active');
+            }
           });
         }
-
-        // Set icon to off state if audio is paused on load
-        if (audio.paused) {
-          soundIcon.src = 'assets/speaker-off-icon.png';
-          soundIcon.alt = 'Sound Off';
+        
+        // Check on load and scroll
+        setTimeout(checkReveal, 100); // Add small delay to ensure rendering
+        window.addEventListener('scroll', checkReveal);
+        
+        // Add js-loaded class to body after checking document is fully loaded
+        document.body.classList.add('js-loaded');
+        
+        // Feature sections staggered animation
+        const featureSections = document.querySelectorAll('.feature-section');
+        
+        function checkFeatures() {
+          const triggerPosition = window.innerHeight * 0.85;
+          
+          featureSections.forEach(section => {
+            const sectionTop = section.getBoundingClientRect().top;
+            
+            if (sectionTop < triggerPosition) {
+              section.classList.add('animate');
+            }
+          });
         }
-
-        // Try to start audio immediately (may be blocked)
-        startAudio();
-
-        // Also try to start on first user interaction
-        const enableAudio = () => {
-          if (!isPlaying && audio.paused) {
-            startAudio();
-          }
-        };
-
-        // Listen for various user interactions
-        document.addEventListener('click', enableAudio, { once: true });
-        document.addEventListener('touchstart', enableAudio, { once: true });
-        document.addEventListener('keydown', enableAudio, { once: true });
-
-        // Toggle sound on button click
-        toggleBtn.addEventListener('click', function() {
-          if (audio.paused) {
-            audio.play().then(() => {
-              soundIcon.src = 'assets/speaker-on-icon.png';
-              soundIcon.alt = 'Sound On';
-              isPlaying = true;
-            });
-          } else {
-            audio.pause();
-            soundIcon.src = 'assets/speaker-off-icon.png';
-            soundIcon.alt = 'Sound Off';
-            isPlaying = false;
-          }
-        });
-
-        // Update icon based on audio state
-        audio.addEventListener('play', function() {
-          soundIcon.src = 'assets/speaker-on-icon.png';
-          soundIcon.alt = 'Sound On';
-          isPlaying = true;
-        });
-        audio.addEventListener('pause', function() {
-          soundIcon.src = 'assets/speaker-off-icon.png';
-          soundIcon.alt = 'Sound Off';
-          isPlaying = false;
-        });
+        
+        // Check on load and scroll
+        setTimeout(checkFeatures, 100); // Add small delay to ensure rendering
+        window.addEventListener('scroll', checkFeatures);
       });
     </script>
+    <!-- Import sprinkles effect from mouse-sprinkles -->
+    <script src="mouse-sprinkles-script.js"></script>
     <script>
       // Gallery carousel functionality
       document.addEventListener('DOMContentLoaded', function() {
@@ -999,7 +1090,6 @@
         function showImage(index) {
           // Hide all images
           images.forEach(img => img.classList.remove('active'));
-
           dots.forEach(dot => dot.classList.remove('active'));
           
           // Show selected image
@@ -1014,7 +1104,6 @@
           if (newIndex < 0) newIndex = images.length - 1;
           showImage(newIndex);
         });
-        
         nextBtn.addEventListener('click', function() {
           let newIndex = currentIndex + 1;
           if (newIndex >= images.length) newIndex = 0;
@@ -1035,9 +1124,10 @@
           showImage(newIndex);
         }, 5000);
       });
-      
-    // Rotating quotes functionality
-    document.addEventListener('DOMContentLoaded', function() {
+    </script>
+    <script>
+      // Rotating quotes functionality
+      document.addEventListener('DOMContentLoaded', function() {
         const quotes = [
             {quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt"},
             {quote: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar"},
@@ -1045,56 +1135,20 @@
             {quote: "Vision without action is merely a dream. Action without vision just passes the time. Vision with action can change the world.", author: "Joel A. Barker"},
             {quote: "The only limit to the height of your achievements is the reach of your dreams and your willingness to work for them.", author: "Michelle Obama"}
         ];
-        
         const quoteElement = document.getElementById('rotating-quote');
         const authorElement = document.getElementById('quote-author');
         let currentQuoteIndex = 0;
         
         function showQuote(index) {
-            // Fade out
-            quoteElement.style.opacity = 0;
-            authorElement.style.opacity = 0;
-            
-            setTimeout(() => {
+          // Fade out
+          quoteElement.style.opacity = 0;
+          authorElement.style.opacity = 0;
+          
+          setTimeout(() => {
                 // Get the quote text
                 const quoteText = quotes[index].quote;
                 
-                // Clear previous content
-                quoteElement.innerHTML = '';
-                
-                // Check if quote is long (more than ~60 characters)
-                if (quoteText.length > 60) {
-                    // Find the middle of the text for even splitting
-                    const totalWords = quoteText.split(' ');
-                    const halfWordCount = Math.ceil(totalWords.length / 2);
-                    
-                    // Create first half with words 0 to halfway point
-                    const firstHalf = totalWords.slice(0, halfWordCount).join(' ');
-                    
-                    // Create second half with remaining words
-                    const secondHalf = totalWords.slice(halfWordCount).join(' ');
-                    
-                    // Create two span elements for the two lines
-                    const span1 = document.createElement('span');
-                    span1.textContent = firstHalf;
-                    span1.className = 'quote-line';
-                    
-                    const span2 = document.createElement('span');
-                    span2.textContent = secondHalf;
-                    span2.className = 'quote-line';
-                    
-                    // Append them to the quote element
-                    quoteElement.appendChild(span1);
-                    quoteElement.appendChild(span2);
-                } else {
-                    // Short quote - keep on one line
-                    const span = document.createElement('span');
-                    span.textContent = quoteText;
-                    span.className = 'quote-text';
-                    quoteElement.appendChild(span);
-                }
-                
-                // Update author
+                // Update authors content
                 authorElement.textContent = "― " + quotes[index].author;
                 
                 // Fade in
@@ -1106,31 +1160,15 @@
             }, 500);
         }
         
-        // Add CSS for quote lines
-        const style = document.createElement('style');
-        style.textContent = `
-            .quote-line {
-                display: block;
-                width: 100%;
-                text-align: center;
-            }
-            .quote-text {
-                display: inline-block;
-                text-align: center;
-            }
-        `;
-        document.head.appendChild(style);
+        // Show first quote immediately
+        showQuote(currentQuoteIndex);
         
-        // Add CSS transitions for the fade effect
-        quoteElement.style.transition = "opacity 0.5s ease";
-        authorElement.style.transition = "opacity 0.5s ease";
-        
-        // Change rotation interval to 30 secondss
+        // Change rotation interval to 30 seconds
         setInterval(() => {
             let nextIndex = (currentQuoteIndex + 1) % quotes.length;
             showQuote(nextIndex);
-        }, 30000);;
-    });
+        }, 30000);
+      });
     </script>
   </body>
 </html>
