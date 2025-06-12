@@ -107,7 +107,7 @@
         <!-- Progress Chart Section -->
         <div style="display: flex; gap: 30px; margin-bottom: 30px;">
             <!-- Chart Container -->
-            <div class="progress-chart" style="background-color: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex: 2;">
+            <div class="progress-chart" style="background-color: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex: 2; min-width: 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h3 style="font-weight: 600; color: #333; margin: 0; font-size: 1.2rem;">Goal Completion Progress</h3>
                     <select id="chart-filter" style="padding: 6px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 13px; cursor: pointer;">
@@ -116,8 +116,8 @@
                         <option value="quarterly">Quarterly</option>
                     </select>
                 </div>
-                <div style="position: relative; height: 300px;">
-                    <canvas id="progressChart" width="400" height="300" style="width: 100%; height: 100%;"></canvas>
+                <div style="position: relative; width: 100%; height: 300px; min-height: 300px;">
+                    <canvas id="progressChart" width="800" height="300" style="width: 100%; height: 100%; display: block;"></canvas>
                 </div>
                 <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px; font-size: 13px; color: #666;">
                     <div style="display: flex; align-items: center; gap: 6px;">
@@ -125,10 +125,36 @@
                         <span>Goal Completion %</span>
                     </div>
                 </div>
+                <!-- Calendar Contribution Graph -->
+                <div style="margin-top: 36px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
+                        <h3 style="font-weight: 600; color: #333; margin: 0; font-size: 1.1rem;">Focus Calendar</h3>
+                        <select id="calendar-range" style="padding: 4px 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 13px; background: #faf8ff; color: #333;">
+                            <option value="90">Last 3 Months</option>
+                            <option value="180">Last 6 Months</option>
+                            <option value="365">Last 12 Months</option>
+                            <option value="Q1">Q1</option>
+                            <option value="Q2">Q2</option>
+                            <option value="Q3">Q3</option>
+                            <option value="Q4">Q4</option>
+                        </select>
+                    </div>
+                    <div id="calendar-graph" style="padding-bottom: 8px; min-width:0; width:100%;"></div>
+                    <div style="font-size:12px; color:#888; margin-top:6px;">Darker = more time focused that day</div>
+                </div>
             </div>
-
-            <!-- Analytics Cards Container -->
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+            <!-- Right Side: Pie Chart + Weekly/Monthly Cards -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 260px;">
+                <!-- Combined Pie Chart Card -->
+                <div style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <h3 style="font-weight: 600; color: #333; margin: 0 0 12px 0; font-size: 1.1rem;">Goals by Category</h3>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <canvas id="categoryPieChart" width="180" height="180" style="margin-bottom: 10px; background: #fff; border:1px solid #eee; border-radius: 90px; display: block;"></canvas>
+                        <div id="category-pie-legend" style="display: flex; flex-direction: column; gap: 4px; font-size: 13px; margin-top: 8px;">
+                            <!-- Legend will be filled by JS -->
+                        </div>
+                    </div>
+                </div>
                 <!-- Weekly Summary Card -->
                 <div style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <h3 style="font-weight: 600; color: #333; margin: 0 0 12px 0; font-size: 1.1rem;">Weekly Summary</h3>
@@ -147,7 +173,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Monthly Trends Card -->
                 <div style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <h3 style="font-weight: 600; color: #333; margin: 0 0 12px 0; font-size: 1.1rem;">Monthly Trends</h3>
@@ -166,7 +191,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Productivity Insights Card -->
                 <div style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <h3 style="font-weight: 600; color: #333; margin: 0 0 12px 0; font-size: 1.1rem;">Productivity Insights</h3>
@@ -507,6 +531,403 @@
             const initialData = getProgressData();
             drawChart(initialData);
             updateSummaryStats(initialData);
+        });
+
+        // --- Focus Pie Chart by Category ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const pieCanvas = document.getElementById('focusPieChart');
+            const pieLegend = document.getElementById('focus-pie-legend');
+            if (!pieCanvas || !pieLegend) return;
+            const pieCtx = pieCanvas.getContext('2d');
+
+            // Example: get focus time by category from localStorage
+            // Structure: { "Work": 120, "Study": 60, "Health": 30 }
+            function getFocusCategoryData() {
+                // Try to get from localStorage, else use sample
+                let data = {};
+                try {
+                    data = JSON.parse(localStorage.getItem('focusCategoryTime') || '{}');
+                } catch { data = {}; }
+                // If empty, provide sample
+                if (!Object.keys(data).length) {
+                    data = {
+                        "Work": 120,
+                        "Study": 60,
+                        "Health": 30,
+                        "Personal": 45
+                    };
+                }
+                return data;
+            }
+
+            function drawPieChart(data) {
+                pieCtx.clearRect(0, 0, pieCanvas.width, pieCanvas.height);
+                const total = Object.values(data).reduce((a, b) => a + b, 0);
+                if (total === 0) {
+                    // Draw empty circle
+                    pieCtx.beginPath();
+                    pieCtx.arc(90, 90, 80, 0, 2 * Math.PI);
+                    pieCtx.fillStyle = "#eae6f7";
+                    pieCtx.fill();
+                    // Show sample data as "yet to be logged"
+                    pieLegend.innerHTML = `
+                        <span style="color:#888;">Yet to be logged</span>
+                        <div style="margin-top:8px;">
+                            <div style="display:flex;align-items:center;gap:7px;">
+                                <span style="display:inline-block;width:14px;height:14px;background:#8b5fbf;border-radius:3px;"></span>
+                                <span>Work: <b>120 min</b></span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:7px;">
+                                <span style="display:inline-block;width:14px;height:14px;background:#f8c146;border-radius:3px;"></span>
+                                <span>Study: <b>60 min</b></span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:7px;">
+                                <span style="display:inline-block;width:14px;height:14px;background:#ff6b6b;border-radius:3px;"></span>
+                                <span>Health: <b>30 min</b></span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:7px;">
+                                <span style="display:inline-block;width:14px;height:14px;background:#3ec6e0;border-radius:3px;"></span>
+                                <span>Personal: <b>45 min</b></span>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                // Pie colors
+                const colors = [
+                    "#8b5fbf", "#f8c146", "#ff6b6b", "#3ec6e0", "#6dd47e", "#f672a7", "#b8b5ff", "#ffb26b"
+                ];
+                let startAngle = -Math.PI / 2;
+                let idx = 0;
+                pieLegend.innerHTML = '';
+                Object.entries(data).forEach(([cat, val]) => {
+                    const angle = (val / total) * 2 * Math.PI;
+                    // Draw slice
+                    pieCtx.beginPath();
+                    pieCtx.moveTo(90, 90);
+                    pieCtx.arc(90, 90, 80, startAngle, startAngle + angle);
+                    pieCtx.closePath();
+                    pieCtx.fillStyle = colors[idx % colors.length];
+                    pieCtx.fill();
+                    // Legend
+                    pieLegend.innerHTML += `<div style="display:flex;align-items:center;gap:7px;">
+                        <span style="display:inline-block;width:14px;height:14px;background:${colors[idx % colors.length]};border-radius:3px;"></span>
+                        <span>${cat}: <b>${val} min</b></span>
+                    </div>`;
+                    startAngle += angle;
+                    idx++;
+                });
+            }
+
+            // Initial draw
+            drawPieChart(getFocusCategoryData());
+        });
+
+        // --- Combined Pie Chart (Goals by Category) ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const catCanvas = document.getElementById('categoryPieChart');
+            const catLegend = document.getElementById('category-pie-legend');
+            if (!catCanvas || !catLegend) return;
+            const catCtx = catCanvas.getContext('2d');
+
+            // Use generic categories for demo
+            function getCategoryData() {
+                let data = {};
+                try {
+                    data = JSON.parse(localStorage.getItem('goalsByCategory') || '{}');
+                } catch { data = {}; }
+                // Use generic categories if empty
+                if (!Object.keys(data).length) {
+                    data = {
+                        "Category 1": 5,
+                        "Category 2": 3,
+                        "Category 3": 7,
+                        "Category 4": 2,
+                        "Category 5": 4
+                    };
+                }
+                return data;
+            }
+
+            function drawCategoryPieChart(data) {
+                catCtx.clearRect(0, 0, catCanvas.width, catCanvas.height);
+                const total = Object.values(data).reduce((a, b) => a + b, 0);
+                if (total === 0) {
+                    // Draw empty circle
+                    catCtx.beginPath();
+                    catCtx.arc(90, 90, 80, 0, 2 * Math.PI);
+                    catCtx.fillStyle = "#eae6f7";
+                    catCtx.fill();
+                    catLegend.innerHTML = `<span style="color:#888;">Yet to be logged</span>`;
+                    return;
+                }
+                // Pie colors
+                const colors = [
+                    "#8b5fbf", "#f8c146", "#ff6b6b", "#3ec6e0", "#6dd47e", "#f672a7", "#b8b5ff", "#ffb26b"
+                ];
+                let startAngle = -Math.PI / 2;
+                let idx = 0;
+                catLegend.innerHTML = '';
+                Object.entries(data).forEach(([cat, val]) => {
+                    const angle = (val / total) * 2 * Math.PI;
+                    // Draw slice
+                    catCtx.beginPath();
+                    catCtx.moveTo(90, 90);
+                    catCtx.arc(90, 90, 80, startAngle, startAngle + angle);
+                    catCtx.closePath();
+                    catCtx.fillStyle = colors[idx % colors.length];
+                    catCtx.fill();
+                    // Legend
+                    catLegend.innerHTML += `<div style="display:flex;align-items:center;gap:7px;">
+                        <span style="display:inline-block;width:14px;height:14px;background:${colors[idx % colors.length]};border-radius:3px;"></span>
+                        <span>${cat}: <b>${val}</b></span>
+                    </div>`;
+                    startAngle += angle;
+                    idx++;
+                });
+            }
+
+            // Initial draw
+            drawCategoryPieChart(getCategoryData());
+        });
+
+        // --- Goal Time Pie Chart & Bar Graph ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const pieCanvas = document.getElementById('goalTimePieChart');
+            const pieLegend = document.getElementById('goal-time-legend');
+            const barDiv = document.getElementById('goal-time-bar');
+            if (!pieCanvas || !pieLegend || !barDiv) return;
+            const pieCtx = pieCanvas.getContext('2d');
+
+            // Example: get time spent per goal category from localStorage
+            // Structure: { "🎓 College Apps": 12, "📖 SAT Prep": 8, "👩‍💻 Coding": 15 }
+            function getGoalTimeData() {
+                let data = {};
+                try {
+                    data = JSON.parse(localStorage.getItem('goalTimeByCategory') || '{}');
+                } catch { data = {}; }
+                // If empty, provide sample
+                if (!Object.keys(data).length) {
+                    data = {
+                        "🎓 College Apps": 12,
+                        "📖 SAT Prep": 8,
+                        "👩‍💻 Coding": 15
+                    };
+                }
+                return data;
+            }
+
+            function drawGoalTimePieChart(data) {
+                pieCtx.clearRect(0, 0, pieCanvas.width, pieCanvas.height);
+                const total = Object.values(data).reduce((a, b) => a + b, 0);
+                if (total === 0) {
+                    // Draw empty circle
+                    pieCtx.beginPath();
+                    pieCtx.arc(90, 90, 80, 0, 2 * Math.PI);
+                    pieCtx.fillStyle = "#eae6f7";
+                    pieCtx.fill();
+                    pieLegend.innerHTML = `<span style="color:#888;">Yet to be logged</span>`;
+                    barDiv.innerHTML = '';
+                    return;
+                }
+                // Pie colors
+                const colors = [
+                    "#8b5fbf", "#f8c146", "#ff6b6b", "#3ec6e0", "#6dd47e", "#f672a7", "#b8b5ff", "#ffb26b"
+                ];
+                let startAngle = -Math.PI / 2;
+                let idx = 0;
+                pieLegend.innerHTML = '';
+                Object.entries(data).forEach(([cat, val]) => {
+                    const angle = (val / total) * 2 * Math.PI;
+                    // Draw slice
+                    pieCtx.beginPath();
+                    pieCtx.moveTo(90, 90);
+                    pieCtx.arc(90, 90, 80, startAngle, startAngle + angle);
+                    pieCtx.closePath();
+                    pieCtx.fillStyle = colors[idx % colors.length];
+                    pieCtx.fill();
+                    // Legend
+                    pieLegend.innerHTML += `<div style="display:flex;align-items:center;gap:7px;">
+                        <span style="display:inline-block;width:14px;height:14px;background:${colors[idx % colors.length]};border-radius:3px;"></span>
+                        <span>${cat} – <b>${val}h</b></span>
+                    </div>`;
+                    startAngle += angle;
+                    idx++;
+                });
+
+                // Bar graph
+                // Find max for scaling
+                const maxVal = Math.max(...Object.values(data));
+                barDiv.innerHTML = Object.entries(data).map(([cat, val], i) => {
+                    const percent = maxVal ? (val / maxVal) * 100 : 0;
+                    return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+                        <span style="font-size:1.1em;">${cat}</span>
+                        <div style="flex:1; background:#eae6f7; border-radius:6px; height:14px; position:relative;">
+                            <div style="background:${colors[i % colors.length]}; width:${percent}%; height:100%; border-radius:6px;"></div>
+                        </div>
+                        <span style="min-width:38px; text-align:right; font-weight:600;">${val}h</span>
+                    </div>`;
+                }).join('');
+            }
+
+            // Initial draw
+            drawGoalTimePieChart(getGoalTimeData());
+        });
+
+        // --- Calendar Contribution Graph (GitHub-style) ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const calDiv = document.getElementById('calendar-graph');
+            const calRange = document.getElementById('calendar-range');
+            if (!calDiv || !calRange) return;
+
+            function getCalendarData() {
+                let data = {};
+                try {
+                    data = JSON.parse(localStorage.getItem('focusMinutesByDay') || '{}');
+                } catch { data = {}; }
+                // If empty, provide sample for 365 days
+                if (!Object.keys(data).length) {
+                    const today = new Date();
+                    for (let i = 364; i >= 0; i--) {
+                        const d = new Date(today);
+                        d.setDate(today.getDate() - i);
+                        const key = d.toISOString().slice(0, 10);
+                        // Simulate some random focus minutes
+                        data[key] = Math.floor(Math.random() * 120);
+                    }
+                }
+                return data;
+            }
+
+            function getQuarterRange(year, quarter) {
+                // Returns [startDate, endDate] for Q1-Q4
+                const q = {
+                    Q1: [new Date(year, 0, 1), new Date(year, 2, 31)],
+                    Q2: [new Date(year, 3, 1), new Date(year, 5, 30)],
+                    Q3: [new Date(year, 6, 1), new Date(year, 8, 30)],
+                    Q4: [new Date(year, 9, 1), new Date(year, 11, 31)]
+                };
+                return q[quarter];
+            }
+
+            function renderCalendarGraph(data, rangeValue) {
+                let days = [];
+                const today = new Date();
+                let startDate, endDate;
+
+                if (["Q1", "Q2", "Q3", "Q4"].includes(rangeValue)) {
+                    const year = today.getFullYear();
+                    [startDate, endDate] = getQuarterRange(year, rangeValue);
+                } else {
+                    // Numeric: last N days
+                    const numDays = parseInt(rangeValue, 10) || 90;
+                    endDate = new Date(today);
+                    startDate = new Date(today);
+                    startDate.setDate(today.getDate() - numDays + 1);
+                }
+
+                // Build days array from startDate to endDate
+                let d = new Date(startDate);
+                while (d <= endDate) {
+                    days.push(new Date(d));
+                    d.setDate(d.getDate() + 1);
+                }
+
+                // Use full width, smaller boxes, fill to the right edge
+                const parent = calDiv.parentElement;
+                let availableWidth = parent ? parent.offsetWidth : 900;
+                // Each box: 10px + 2px gap (smaller than before)
+                const boxSize = 10, gap = 2;
+                // Calculate max columns per row (weeks)
+                let maxCols = Math.floor((availableWidth + gap) / (boxSize + gap));
+                if (maxCols < 20) maxCols = 20;
+
+                // For 12 months, split into enough rows to fill width
+                let weeks = [];
+                if (rangeValue === "365") {
+                    // 365 days, group into enough rows to fill width
+                    const daysPerRow = maxCols * 7;
+                    const numRows = Math.ceil(days.length / daysPerRow);
+                    for (let i = 0; i < days.length; i += daysPerRow) {
+                        let rowDays = days.slice(i, i + daysPerRow);
+                        // group rowDays by week (start on Sunday)
+                        let rowWeeks = [];
+                        let week = [];
+                        rowDays.forEach(date => {
+                            if (date.getDay() === 0 && week.length) {
+                                rowWeeks.push(week);
+                                week = [];
+                            }
+                            week.push(date);
+                        });
+                        if (week.length) rowWeeks.push(week);
+                        weeks.push(rowWeeks);
+                    }
+                } else {
+                    // Group by week (start on Sunday)
+                    let w = [];
+                    let week = [];
+                    days.forEach(date => {
+                        if (date.getDay() === 0 && week.length) {
+                            w.push(week);
+                            week = [];
+                        }
+                        week.push(date);
+                    });
+                    if (week.length) w.push(week);
+                    weeks = [w];
+                }
+
+                // Find max minutes for color scaling
+                const max = Math.max(1, ...days.map(date => data[date.toISOString().slice(0, 10)] || 0));
+
+                // Colors: light to dark
+                const colors = [
+                    "#f3f0ff", "#e0d7fa", "#c2b6f7", "#a18cf0", "#8b5fbf", "#5a338b"
+                ];
+
+                // Build HTML table
+                let html = '';
+                weeks.forEach((weekRows, rowIdx) => {
+                    html += `<div style="display:flex;gap:${gap}px;margin-bottom:${gap}px;">`;
+                    weekRows.forEach(weekArr => {
+                        html += `<div style="display:flex;flex-direction:column;gap:${gap}px;">`;
+                        for (let d = 0; d < 7; d++) {
+                            const date = weekArr[d];
+                            if (!date) {
+                                html += `<div style="width:${boxSize}px;height:${boxSize}px;"></div>`;
+                                continue;
+                            }
+                            const key = date.toISOString().slice(0, 10);
+                            const min = data[key] || 0;
+                            // Color index
+                            let colorIdx = 0;
+                            if (min > 0) {
+                                colorIdx = Math.min(Math.floor((min / max) * (colors.length - 1)), colors.length - 1);
+                            }
+                            const bgColor = colors[colorIdx];
+                            html += `<div style="width:${boxSize}px;height:${boxSize}px;background:${bgColor};border-radius:2px;" title="${date.toLocaleDateString()}: ${min} min"></div>`;
+                        }
+                        html += `</div>`;
+                    });
+                    html += `</div>`;
+                });
+
+                calDiv.innerHTML = html;
+            }
+
+            // Initial render
+            const calendarData = getCalendarData();
+            renderCalendarGraph(calendarData, calRange.value);
+
+            calRange.addEventListener('change', function() {
+                renderCalendarGraph(calendarData, calRange.value);
+            });
+
+            // Re-render on window resize for responsiveness
+            window.addEventListener('resize', function() {
+                renderCalendarGraph(calendarData, calRange.value);
+            });
         });
     </script>
 </body>
