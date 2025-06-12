@@ -184,6 +184,8 @@
             <!-- Previous Entries -->
             <div>
                 <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">Previous Entries</h3>
+                <!-- Search bar for journals -->
+                <input id="journal-search" type="text" placeholder="Search journals by title, tag, or content..." style="width: 100%; margin-bottom: 10px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
                 <div id="entries-list" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="padding: 15px; text-align: center; color: #666; font-style: italic; font-size: 14px;">
                         You do not have any journal yet. Write your first journal!
@@ -224,14 +226,29 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- Tag input row -->
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                    <input type="text" id="tag-input" placeholder="Add tags (comma separated, e.g. gratitude, goals)" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                </div>
                 <textarea placeholder="Write your journal entry here..." style="width: 100%; height: 400px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; line-height: 1.6; resize: vertical; font-family: 'Inter', sans-serif; box-sizing: border-box;"></textarea>
+                
+                <!-- Voice Journal Controls (moved to end, now records audio) -->
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 12px; margin-bottom: 10px;">
+                    <button id="start-voice" style="background: #2d1a45; color: #fff; border: none; border-radius: 6px; padding: 8px 14px; font-size: 14px; cursor: pointer;">
+                        <i class="fa fa-microphone"></i> Start Voice Journal
+                    </button>
+                    <button id="stop-voice" style="background: #dc3545; color: #fff; border: none; border-radius: 6px; padding: 8px 14px; font-size: 14px; cursor: pointer; display: none;">
+                        <i class="fa fa-stop"></i> Stop
+                    </button>
+                    <span id="voice-status" style="font-size: 13px; color: #666;"></span>
+                    <audio id="voice-playback" controls style="display:none; margin-left:10px; height:28px;"></audio>
+                </div>
                 
                 <!-- Footer with Save Status -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
                     <span style="color: #666; font-size: 14px;">All changes saved</span>
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        <button style="background: #dc3545; color: white; border: none; border-radius: 6px; padding: 8px 12px; font-size: 14px; cursor: pointer;">Delete</button>
+                        <button id="clear-entry" style="background: #dc3545; color: white; border: none; border-radius: 6px; padding: 8px 12px; font-size: 14px; cursor: pointer;">Delete</button>
                     </div>
                 </div>
             </div>
@@ -248,6 +265,24 @@
     <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
         <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
     </button>
+
+    <!-- Prompt Modal (hidden by default) -->
+    <div id="prompt-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(30,20,40,0.35); z-index:2000; align-items:center; justify-content:center;">
+        <div style="background:white; border-radius:14px; max-width:400px; width:90%; margin:auto; box-shadow:0 8px 32px rgba(45,26,69,0.18); padding:32px 24px 24px 24px; position:relative;">
+            <button id="close-prompt-modal" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:20px; color:#888; cursor:pointer;">&times;</button>
+            <h2 style="margin-top:0; font-size:1.3rem; text-align:center;">Choose a Prompt Category</h2>
+            <div id="prompt-categories" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:18px 0 22px 0;">
+                <button class="prompt-cat-btn" data-cat="growth" style="flex:1 1 40%; min-width:120px; background:#f3f0ff; border:none; border-radius:8px; padding:12px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; gap:8px; justify-content:center;">🌱 Growth</button>
+                <button class="prompt-cat-btn" data-cat="motivation" style="flex:1 1 40%; min-width:120px; background:#f3f0ff; border:none; border-radius:8px; padding:12px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; gap:8px; justify-content:center;">💪 Motivation</button>
+                <button class="prompt-cat-btn" data-cat="stress" style="flex:1 1 40%; min-width:120px; background:#f3f0ff; border:none; border-radius:8px; padding:12px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; gap:8px; justify-content:center;">😰 Stress</button>
+                <button class="prompt-cat-btn" data-cat="dreams" style="flex:1 1 40%; min-width:120px; background:#f3f0ff; border:none; border-radius:8px; padding:12px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; gap:8px; justify-content:center;">✨ Dreams</button>
+            </div>
+            <div id="prompt-list" style="display:none; flex-direction:column; gap:10px;">
+                <button id="back-to-categories" style="background:none; border:none; color:#8b5fbf; font-size:14px; margin-bottom:10px; cursor:pointer; text-align:left;">← Back to categories</button>
+                <div id="prompt-items"></div>
+            </div>
+        </div>
+    </div>
 
     <script src="nav-auth.js"></script>
     <script src="journal.js"></script>
@@ -319,11 +354,14 @@
             localStorage.setItem('journalEntries', JSON.stringify(journalEntries));
         }
 
-        function displaySavedEntries() {
+        function displaySavedEntries(filtered) {
             const entriesList = document.getElementById('entries-list');
             entriesList.innerHTML = '';
 
-            if (journalEntries.length === 0) {
+            // Use filtered if provided, else all
+            const entriesToShow = filtered || journalEntries;
+
+            if (entriesToShow.length === 0) {
                 const noEntriesDiv = document.createElement('div');
                 noEntriesDiv.style.cssText = 'padding: 15px; text-align: center; color: #666; font-style: italic; font-size: 14px;';
                 noEntriesDiv.textContent = 'You do not have any journal yet. Write your first journal!';
@@ -331,8 +369,8 @@
                 return;
             }
 
-            journalEntries.forEach((entry, index) => {
-                createEntryElement(entry, index);
+            entriesToShow.forEach((entry, index) => {
+                createEntryElement(entry, journalEntries.indexOf(entry));
             });
         }
 
@@ -356,6 +394,19 @@
             const entryDate = document.createElement('div');
             entryDate.style.cssText = 'font-size: 12px; color: #666;';
             entryDate.textContent = entry.date;
+            
+            // Tag display
+            let tagDiv = null;
+            if (entry.tags && entry.tags.length) {
+                tagDiv = document.createElement('div');
+                tagDiv.style.cssText = 'margin-top: 2px; margin-bottom: 2px; display: flex; flex-wrap: wrap; gap: 5px;';
+                entry.tags.forEach(tag => {
+                    const tagSpan = document.createElement('span');
+                    tagSpan.textContent = '#' + tag;
+                    tagSpan.style.cssText = 'background: #eae6f7; color: #8b5fbf; border-radius: 5px; padding: 2px 8px; font-size: 12px;';
+                    tagDiv.appendChild(tagSpan);
+                });
+            }
             
             if (entry.mood) {
                 const moodSpan = document.createElement('span');
@@ -404,9 +455,11 @@
             entryElement.addEventListener('click', function() {
                 const entryTitle = document.querySelector('input[placeholder="Entry Title"]');
                 const entryTextarea = document.querySelector('textarea');
+                const tagInput = document.getElementById('tag-input');
                 
                 entryTitle.value = entry.title;
                 entryTextarea.value = entry.content;
+                if (tagInput) tagInput.value = (entry.tags || []).join(', ');
                 
                 // Reset mood selection
                 document.querySelectorAll('.mood-btn').forEach(b => {
@@ -431,6 +484,7 @@
             });
             
             entryElement.appendChild(entryTitleDiv);
+            if (tagDiv) entryElement.appendChild(tagDiv);
             entryElement.appendChild(entryDate);
             entryElement.appendChild(deleteBtn);
             
@@ -442,6 +496,26 @@
             // Load entries from storage first
             loadEntriesFromStorage();
 
+            // --- Journal search functionality ---
+            const searchInput = document.getElementById('journal-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const q = this.value.trim().toLowerCase();
+                    if (!q) {
+                        displaySavedEntries();
+                        return;
+                    }
+                    const filtered = journalEntries.filter(entry => {
+                        // Search in title, content, tags
+                        const inTitle = (entry.title || '').toLowerCase().includes(q);
+                        const inContent = (entry.content || '').toLowerCase().includes(q);
+                        const inTags = (entry.tags || []).some(tag => tag.toLowerCase().includes(q));
+                        return inTitle || inContent || inTags;
+                    });
+                    displaySavedEntries(filtered);
+                });
+            }
+
             const monthYear = document.getElementById('month-year');
             const calendarDays = document.getElementById('calendar-days');
             const prevMonth = document.getElementById('prev-month');
@@ -452,53 +526,74 @@
             function generateCalendar(year, month) {
                 const firstDay = new Date(year, month, 1);
                 const lastDay = new Date(year, month + 1, 0);
-                const startDate = new Date(firstDay);
-                startDate.setDate(startDate.getDate() - firstDay.getDay());
-                
+                const startDayOfWeek = firstDay.getDay();
+                const daysInMonth = lastDay.getDate();
+
                 const monthNames = ["January", "February", "March", "April", "May", "June",
                     "July", "August", "September", "October", "November", "December"];
-                
+
                 monthYear.textContent = `${monthNames[month]} ${year}`;
                 calendarDays.innerHTML = '';
-                
+
                 // Get current date for highlighting
                 const today = new Date();
                 const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
-                const currentDate = today.getDate();
-                
-                for (let i = 0; i < 42; i++) {
-                    const date = new Date(startDate);
-                    date.setDate(startDate.getDate() + i);
-                    
+                const currentDateNum = today.getDate();
+
+                // Fill in empty cells before the first day of the month
+                for (let i = 0; i < startDayOfWeek; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.style.cssText = 'padding: 8px;';
+                    calendarDays.appendChild(emptyCell);
+                }
+
+                // Fill in days of the current month only
+                for (let day = 1; day <= daysInMonth; day++) {
                     const dayElement = document.createElement('div');
-                    dayElement.textContent = date.getDate();
-                    
+                    dayElement.textContent = day;
+
                     // Check if this is today's date
-                    const isToday = isCurrentMonth && date.getDate() === currentDate && date.getMonth() === month;
-                    
+                    const isToday = isCurrentMonth && day === currentDateNum;
+
                     dayElement.style.cssText = `
                         text-align: center; 
                         padding: 8px; 
                         cursor: pointer; 
                         border-radius: 4px;
                         font-size: 14px;
-                        ${date.getMonth() === month ? 'color: #333;' : 'color: #ccc;'}
+                        color: #333;
                         ${isToday ? 'background: #2d1a45; color: white; font-weight: 600;' : ''}
+                        transition: box-shadow 0.15s;
                     `;
-                    
+
+                    // Add a class for today for easier re-highlighting
+                    if (isToday) {
+                        dayElement.classList.add('calendar-today');
+                    }
+
                     dayElement.addEventListener('click', function() {
+                        // Remove highlight from all except today
                         document.querySelectorAll('#calendar-days div').forEach(d => {
-                            d.style.background = '';
-                            d.style.color = d.style.color.includes('#ccc') ? '#ccc' : '#333';
-                            d.style.fontWeight = '';
+                            if (d.classList.contains('calendar-today')) {
+                                d.style.background = '#2d1a45';
+                                d.style.color = 'white';
+                                d.style.fontWeight = '600';
+                            } else {
+                                d.style.background = '';
+                                d.style.color = '#333';
+                                d.style.fontWeight = '';
+                            }
+                            d.style.boxShadow = '';
                         });
-                        this.style.background = '#2d1a45';
-                        this.style.color = 'white';
-                        this.style.fontWeight = '600';
+                        // Add a subtle outline to the selected date (but don't change color)
+                        if (!this.classList.contains('calendar-today')) {
+                            this.style.boxShadow = '0 0 0 2px #8b5fbf inset';
+                        }
                     });
-                    
+
                     calendarDays.appendChild(dayElement);
                 }
+                // No trailing days from next month
             }
             
             prevMonth.addEventListener('click', function() {
@@ -581,13 +676,19 @@
                     const title = entryTitle.value.trim();
                     const content = entryTextarea.value.trim();
                     const selectedMood = document.querySelector('.mood-btn[style*="#2d1a45"]');
-                    
+                    const tagInput = document.getElementById('tag-input');
+                    let tags = [];
+                    if (tagInput && tagInput.value.trim()) {
+                        tags = tagInput.value.split(',').map(t => t.trim()).filter(Boolean);
+                    }
+
                     if (title || content) {
                         // Create new entry object
                         const newEntry = {
                             title: title || 'Untitled Entry',
                             content: content,
                             mood: selectedMood ? selectedMood.getAttribute('data-mood') : '',
+                            tags: tags,
                             date: new Date().toLocaleDateString(),
                             timestamp: Date.now()
                         };
@@ -605,6 +706,7 @@
                     // Clear form for new entry
                     entryTitle.value = '';
                     entryTextarea.value = '';
+                    if (tagInput) tagInput.value = '';
                     
                     // Reset mood selection
                     document.querySelectorAll('.mood-btn').forEach(b => {
@@ -627,6 +729,65 @@
             generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
         });
         
+        // --- Voice Journal functionality (audio recording) ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // ...existing code...
+            const startVoiceBtn = document.getElementById('start-voice');
+            const stopVoiceBtn = document.getElementById('stop-voice');
+            const voiceStatus = document.getElementById('voice-status');
+            const voicePlayback = document.getElementById('voice-playback');
+            let mediaRecorder, audioChunks = [], audioBlobUrl = null;
+            let isRecording = false;
+
+            // Audio recording using MediaRecorder API
+            if (navigator.mediaDevices && window.MediaRecorder) {
+                startVoiceBtn.addEventListener('click', async function() {
+                    if (isRecording) return;
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        mediaRecorder = new MediaRecorder(stream);
+                        audioChunks = [];
+                        mediaRecorder.ondataavailable = function(e) {
+                            if (e.data.size > 0) audioChunks.push(e.data);
+                        };
+                        mediaRecorder.onstop = function() {
+                            if (audioChunks.length) {
+                                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                                if (audioBlobUrl) URL.revokeObjectURL(audioBlobUrl);
+                                audioBlobUrl = URL.createObjectURL(audioBlob);
+                                voicePlayback.src = audioBlobUrl;
+                                voicePlayback.style.display = '';
+                                voiceStatus.textContent = 'Voice journal recorded. You can play it back below.';
+                            }
+                        };
+                        mediaRecorder.start();
+                        isRecording = true;
+                        startVoiceBtn.style.display = 'none';
+                        stopVoiceBtn.style.display = '';
+                        voiceStatus.textContent = 'Recording... Speak your journal entry.';
+                        voicePlayback.style.display = 'none';
+                        voicePlayback.src = '';
+                    } catch (err) {
+                        voiceStatus.textContent = 'Microphone access denied or unavailable.';
+                    }
+                });
+
+                stopVoiceBtn.addEventListener('click', function() {
+                    if (!isRecording || !mediaRecorder) return;
+                    mediaRecorder.stop();
+                    isRecording = false;
+                    startVoiceBtn.style.display = '';
+                    stopVoiceBtn.style.display = 'none';
+                });
+            } else {
+                startVoiceBtn.disabled = true;
+                startVoiceBtn.textContent = 'Voice Journal Not Supported';
+                voiceStatus.textContent = 'Your browser does not support audio recording.';
+            }
+
+            // ...existing code...
+        });
+
         // Debug scrolling issue
         document.addEventListener('DOMContentLoaded', function() {
             // Check if there are any CSS rules preventing scrolling
@@ -639,6 +800,171 @@
             document.documentElement.style.overflow = 'visible';
             document.body.style.height = 'auto';
             document.documentElement.style.height = 'auto';
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // ...existing code...
+
+            // Fix: Ensure Delete button clears all fields and audio
+            const clearBtn = document.getElementById('clear-entry');
+            const entryTitle = document.querySelector('input[placeholder="Entry Title"]');
+            const entryTextarea = document.querySelector('textarea');
+            const tagInput = document.getElementById('tag-input');
+            const voicePlayback = document.getElementById('voice-playback');
+            const voiceStatus = document.getElementById('voice-status');
+            const startVoiceBtn = document.getElementById('start-voice');
+            const stopVoiceBtn = document.getElementById('stop-voice');
+            let isRecording = false;
+            let mediaRecorder = null;
+            let stream = null;
+
+            // If you have a global isRecording/mediaRecorder/stream, remove these lines above and use the global ones.
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function() {
+                    // Clear text fields
+                    if (entryTitle) entryTitle.value = '';
+                    if (entryTextarea) entryTextarea.value = '';
+                    if (tagInput) tagInput.value = '';
+                    // Reset mood selection
+                    document.querySelectorAll('.mood-btn').forEach(b => {
+                        b.style.borderColor = '#ddd';
+                        b.style.background = 'white';
+                    });
+                    // Remove audio playback and revoke blob URL if any
+                    if (voicePlayback) {
+                        if (voicePlayback.src && voicePlayback.src.startsWith('blob:')) {
+                            try { URL.revokeObjectURL(voicePlayback.src); } catch {}
+                        }
+                        voicePlayback.removeAttribute('src');
+                        voicePlayback.load();
+                        voicePlayback.style.display = 'none';
+                    }
+                    if (voiceStatus) voiceStatus.textContent = '';
+                    // Stop recording if in progress
+                    if (typeof isRecording !== "undefined" && isRecording && mediaRecorder) {
+                        try { mediaRecorder.stop(); } catch {}
+                        isRecording = false;
+                        if (startVoiceBtn) startVoiceBtn.style.display = '';
+                        if (stopVoiceBtn) stopVoiceBtn.style.display = 'none';
+                    }
+                    if (typeof stream !== "undefined" && stream) {
+                        try { stream.getTracks().forEach(track => track.stop()); } catch {}
+                        stream = null;
+                    }
+                });
+            }
+
+            // ...existing code...
+        });
+
+        // Prompt categories and prompts
+        const promptCategories = {
+            growth: [
+                "What's something you've learned about yourself in the past month?",
+                "Describe a moment when you felt truly proud of who you are.",
+                "What's one habit you want to develop, and why is it important to you?",
+                "What's one way you've grown or changed in the past six months?",
+                "Describe a mistake you made that taught you something valuable."
+            ],
+            motivation: [
+                "What does success mean to you personally, beyond what others expect?",
+                "What's a dream you've been putting off? What's one small step you could take toward it today?",
+                "Write about a person who inspires you. What qualities do they have that you admire?",
+                "What's something you're excited about in the near future?",
+                "If you could master any skill instantly, what would it be and how would you use it?"
+            ],
+            stress: [
+                "Describe a challenge you're facing. What strengths do you have to overcome it?",
+                "What's something you've been avoiding, and what's the first step to facing it?",
+                "Describe a time when you surprised yourself with your own strength or resilience.",
+                "If you could give advice to someone going through what you went through last year, what would you say?",
+                "What's one fear you've overcome recently, and how did it change you?"
+            ],
+            dreams: [
+                "Describe your biggest dream. What would achieving it feel like?",
+                "Describe your ideal day from morning to night. What would make it perfect?",
+                "If you could have a conversation with your future self, what would you want to know?",
+                "Write about a tradition or ritual that's meaningful to you and why.",
+                "What would you do if you knew you couldn't fail?"
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // ...existing code...
+
+            // Modal logic for Get Prompt
+            const getPromptBtn = Array.from(document.querySelectorAll('button')).find(btn => btn.textContent.trim() === 'Get Prompt');
+            const promptModal = document.getElementById('prompt-modal');
+            const closePromptModal = document.getElementById('close-prompt-modal');
+            const promptCategoriesDiv = document.getElementById('prompt-categories');
+            // Remove promptListDiv, promptItemsDiv, backToCategoriesBtn (not needed)
+            const entryTitle = document.querySelector('input[placeholder="Entry Title"]');
+            const entryTextarea = document.querySelector('textarea');
+
+            if (getPromptBtn && promptModal) {
+                getPromptBtn.addEventListener('click', function() {
+                    promptModal.style.display = 'flex';
+                    promptCategoriesDiv.style.display = 'flex';
+                });
+            }
+            if (closePromptModal) {
+                closePromptModal.addEventListener('click', function() {
+                    promptModal.style.display = 'none';
+                });
+            }
+            if (promptModal) {
+                promptModal.addEventListener('click', function(e) {
+                    if (e.target === promptModal) promptModal.style.display = 'none';
+                });
+            }
+            // Category button click: show prompt after a short delay for feedback
+            document.querySelectorAll('.prompt-cat-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const cat = btn.getAttribute('data-cat');
+                    const prompts = promptCategories[cat] || [];
+                    if (prompts.length > 0) {
+                        promptCategoriesDiv.style.display = 'none';
+                        setTimeout(() => {
+                            const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+                            if (entryTextarea) {
+                                entryTextarea.value = `💭 Today's Journal Prompt:\n"${prompt}"\n\n`;
+                                entryTextarea.focus();
+                                entryTextarea.setSelectionRange(entryTextarea.value.length, entryTextarea.value.length);
+                            }
+                            if (entryTitle) {
+                                entryTitle.value = `Reflection - ${new Date().toLocaleDateString()}`;
+                            }
+                            promptModal.style.display = 'none';
+                        }, 250); // 250ms delay for smoothness
+                    }
+                });
+            });
+            // Remove/ignore the prompt-list and prompt-items logic since we don't show a list anymore
+            // ...existing code...
+        });
+
+        // --- Debugging and testing code ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // Debugging: Log journalEntries on load
+            console.log('Loaded journalEntries:', JSON.parse(localStorage.getItem('journalEntries')));
+
+            // Test: Force open the prompt modal on load (for debugging)
+            // Uncomment the line below to test
+            // document.getElementById('prompt-modal').style.display = 'flex';
+
+            // Test: Pre-fill an entry (for debugging)
+            const testEntry = {
+                title: "Test Entry",
+                content: "This is a test journal entry.",
+                mood: "😊",
+                tags: ["test", "journal"],
+                date: new Date().toLocaleDateString(),
+                timestamp: Date.now()
+            };
+            journalEntries.push(testEntry);
+            saveEntriesToStorage();
+            displaySavedEntries();
         });
     </script>
 </body>
