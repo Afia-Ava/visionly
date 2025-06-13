@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Garden - Visionly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dark-mode-global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+            background-image: 
+                linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%);
+            background-size: 20px 20px;
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .caption {
+            background-color: transparent;
+            color: #2a6b40;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 2.5rem;
+            font-family: 'Dancing Script', cursive;
+            margin-bottom: 20px;
+            position: absolute;
+            top: 30px;
+            left: 0;
+            right: 0;
+        }
+        
+        .rules-panel {
+            position: absolute;
+            top: 70px; /* Position directly below the Rules button */
+            left: 20px; /* Align with the Rules button */
+            background-color: #fff;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 280px;
+            z-index: 10;
+            display: none; /* Hide rules panel by default */
+        }
+        
+        .rules-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: #2a6b40;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .rules-list {
+            line-height: 1.6;
+        }
+        
+        .rules-list ol, .rules-list ul {
+            padding-left: 20px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .rules-list li {
+            margin-bottom: 8px;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #2a6b40;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #1e5230;
+            transform: scale(1.05);
+        }
+        
+        /* Garden levels container */
+        .garden-levels-container {
+            display: flex;
+            justify-content: center; /* Changed to center */
+            gap: 25px; /* Adjusted gap */
+            max-width: 1000px;
+            width: 95%;
+            margin: 0 auto;
+            padding: 0; /* Removed padding */
+            margin-left: auto; /* Reset margin */
+        }
+        
+        .garden-level-box {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            width: 240px; /* Increased from 190px */
+            height: 270px; /* Increased from 210px */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .garden-level-image {
+            height: 190px; /* Increased from 140px */
+            background-color: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .garden-level-image img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .garden-level-label {
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2a6b40;
+        }
+        
+        .locked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .locked-text {
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .rules-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #2a6b40;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+            z-index: 20;
+        }
+
+        .rules-button:hover {
+            background-color: #1e5230;
+            transform: scale(1.05);
+        }
+
+        /* Add a media query to ensure responsiveness */
+        @media (max-width: 900px) {
+            .garden-levels-container {
+                flex-wrap: wrap;
+            }
+            
+            .garden-level-box {
+                width: 220px;
+                height: 250px;
+            }
+            
+            .garden-level-image {
+                height: 170px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Rules button -->
+    <button class="rules-button" onclick="toggleRules()">Rules</button>
+    
+    <!-- Rules panel -->
+    <div class="rules-panel">
+        <div class="rules-title">Garden Rules</div>
+        <div class="rules-list">
+            <ol>
+                <li>Complete goals in your timeline to 100%</li>
+                <li>Plant achievements as flowers in your garden</li>
+                <li>Unlock garden levels:
+                    <ul>
+                        <li><strong>Level 1:</strong> 1-5 flowers</li>
+                        <li><strong>Level 2:</strong> 6-15 flowers</li>
+                        <li><strong>Level 3:</strong> 16+ flowers</li>
+                    </ul>
+                </li>                </li>
+            </ol>            </ol>
+        </div>        </div>
+    </div>    </div>
+
+    <div class="caption">
+        Garden
+    </div>
+    
+    <!-- Green cross button in top right -->    <button class="back-button">&lt;</button>
+    <a href="timeline.html" class="back-button" title="Back to Timeline">×</a>
+    
+    <div class="garden-levels-container">
+        <!-- Level 1 - Active -->
+        <div class="garden-level-box">
+            <div class="garden-level-image">
+                <img src="assets/garden1.png" alt="Garden Level 1">
+            </div>
+            <div class="garden-level-label">Level 1</div>
+        </div>
+        
+        <!-- Level 2 - Locked -->
+        <div class="garden-level-box">
+            <div class="garden-level-image">
+                <img src="assets/garden2.png" alt="Garden Level 2">
+            </div>
+            <div class="garden-level-label">Level 2</div>
+            <div class="locked-overlay">
+                <div class="locked-text">LOCKED</div>
+            </div>
+        </div>
+        
+        <!-- Level 3 - Locked -->
+        <div class="garden-level-box">
+            <div class="garden-level-image">
+                <img src="assets/garden3.png" alt="Garden Level 3">
+            </div>
+            <div class="garden-level-label">Level 3</div>
+            <div class="locked-overlay">
+                <div class="locked-text">LOCKED</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this script at the end of the body -->
+    <script>
+        // Function to toggle rules panel visibility
+        function toggleRules() {
+            const rulesPanel = document.querySelector('.rules-panel');
+            if (rulesPanel.style.display === 'block') {
+                rulesPanel.style.display = 'none';
+            } else {
+                rulesPanel.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
