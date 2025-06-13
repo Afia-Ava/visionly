@@ -317,546 +317,112 @@
     <!-- Import sprinkles effect from mouse-sprinkles -->
     <script src="mouse-sprinkles-script.js"></script>
     
+    <!-- Add more space before footer -->
+    <div style="height: 100px;"></div>
+    
+    <!-- Footer -->
+    <footer style="padding: 24px 0 12px 0; background-color: #0a0612;">
+      <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+        <div style="display: flex; justify-content: center; gap: 28px; margin-bottom: 10px; flex-wrap: wrap;">
+          <a href="#" id="about-link" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">About</a>
+          <a href="#" id="terms-link" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">Terms</a>
+          <a href="#" id="privacy-link" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">Privacy</a>
+          <a href="https://tally.so/r/3jq4px" id="feedback-link" target="_blank" rel="noopener" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">Feedback</a>
+          <a href="#" id="contact-link" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">Contact</a>
+        </div>
+        <div style="color: #8a94a6; font-size: 0.95rem; font-family: 'Inter', sans-serif;">
+          © 2025 Visionly. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <!-- Contact Modal -->
+    <div id="contact-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.7); z-index: 2000; align-items: flex-start; justify-content: center; overflow-y: auto;">
+      <div style="position: relative; width: 98vw; max-width: 500px; background-color: white; border-radius: 16px; padding: 32px 36px 32px 36px; margin: 40px auto; box-shadow: 0 2px 16px rgba(0,0,0,0.13); font-size: 1.08rem; min-height: unset; min-width: 0;">
+        <button id="close-contact" style="position: absolute; top: 18px; right: 18px; background: #3a2259; color: #fff; border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;">✕</button>
+        <h2 style="color: #2d1a45; font-size: 1.35rem; margin-bottom: 18px; margin-top: 2px; display: flex; align-items: center;">
+          <span style="margin-right: 12px;">📬</span> Contact Us
+        </h2>
+        <form id="contact-form" style="display: flex; flex-direction: column; gap: 14px;">
+          <input type="text" name="name" placeholder="Your Name" required style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;">
+          <input type="email" name="email" placeholder="Your Email" required style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;">
+          <input type="text" name="subject" placeholder="Subject" required style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;">
+          <textarea name="details" placeholder="How can we help you?" rows="4" required style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; resize: vertical;"></textarea>
+          <button type="submit" style="margin-top: 8px; background: #3a2259; color: #fff; border: none; border-radius: 6px; padding: 12px 0; font-size: 1.08rem; font-weight: 600; cursor: pointer;">Send Message</button>
+        </form>
+        <div id="contact-success" style="display:none; margin-top: 18px; color: #2d8a4d; font-weight: 600; text-align: center;">
+          Thank you! We received your message and will get back to you within 3 business days.
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Modal Functionality -->
     <script>
-        // Background music auto-play functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const audio = document.getElementById('background-sound');
-            const toggleBtn = document.getElementById('toggle-sound');
-            const soundIcon = document.getElementById('sound-icon');
-            let isPlaying = false;
-
-            // Set volume and try to start automatically
-            audio.volume = 0.5;
-
-            // Function to start audio
-            function startAudio() {
-                audio.play().then(() => {
-                    soundIcon.src = 'assets/speaker-on-icon.png';
-                    soundIcon.alt = 'Sound On';
-                    isPlaying = true;
-                }).catch(() => {
-                    // Autoplay blocked - set icon to off state
-                    soundIcon.src = 'assets/speaker-off-icon.png';
-                    soundIcon.alt = 'Sound Off';
-                    isPlaying = false;
-                });
+      // Contact modal functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const contactLink = document.getElementById('contact-link');
+        const contactModal = document.getElementById('contact-modal');
+        const closeContact = document.getElementById('close-contact');
+        const contactForm = document.getElementById('contact-form');
+        const contactSuccess = document.getElementById('contact-success');
+        if (contactLink && contactModal && closeContact && contactForm && contactSuccess) {
+          contactLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            contactModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            contactForm.style.display = 'flex';
+            contactSuccess.style.display = 'none';
+            contactForm.reset();
+          });
+          closeContact.addEventListener('click', function() {
+            contactModal.style.display = 'none';
+            document.body.style.overflow = '';
+          });
+          contactModal.addEventListener('click', function(e) {
+            if (e.target === contactModal) {
+              contactModal.style.display = 'none';
+              document.body.style.overflow = '';
             }
-
-            // Try to start audio immediately
-            startAudio();
-
-            // Also try to start on first user interaction
-            const enableAudio = () => {
-                if (!isPlaying && audio.paused) {
-                    startAudio();
-                }
-            };
-
-            // Listen for various user interactions
-            document.addEventListener('click', enableAudio, { once: true });
-            document.addEventListener('touchstart', enableAudio, { once: true });
-            document.addEventListener('keydown', enableAudio, { once: true });
-
-            // Toggle sound on button click
-            toggleBtn.addEventListener('click', function() {
-                if (audio.paused) {
-                    audio.play().then(() => {
-                        soundIcon.src = 'assets/speaker-on-icon.png';
-                        soundIcon.alt = 'Sound On';
-                        isPlaying = true;
-                    });
-                } else {
-                    audio.pause();
-                    soundIcon.src = 'assets/speaker-off-icon.png';
-                    soundIcon.alt = 'Sound Off';
-                    isPlaying = false;
-                }
-            });
-
-            // Update icon based on audio state
-            audio.addEventListener('play', function() {
-                soundIcon.src = 'assets/speaker-on-icon.png';
-                soundIcon.alt = 'Sound On';
-                isPlaying = true;
-            });
-            audio.addEventListener('pause', function() {
-                soundIcon.src = 'assets/speaker-off-icon.png';
-                soundIcon.alt = 'Sound Off';
-                isPlaying = false;
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- Focus Sounds Playable Logic ---
-            const musicOptions = document.querySelectorAll('.music-option');
-            const playButton = document.getElementById('play-button');
-            const audioPlayer = document.getElementById('audio-player');
-            const trackName = document.getElementById('track-name');
-            const backgroundSound = document.getElementById('background-sound');
-            let currentTrack = null;
-            let isPlaying = false;
-
-            // Music option selection
-            musicOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    const trackSrc = this.dataset.src;
-                    const trackTitle = this.querySelector('p').textContent;
-
-                    // If clicking the same track that's playing, toggle pause
-                    if (currentTrack === trackSrc && isPlaying) {
-                        pauseAudio();
-                        // Remove active state
-                        this.style.backgroundColor = '#f8f9fa';
-                        // Resume background music
-                        backgroundSound && backgroundSound.play();
-                        return;
-                    }
-
-                    // Remove active state from all options
-                    musicOptions.forEach(opt => opt.style.backgroundColor = '#f8f9fa');
-
-                    // Set current track
-                    currentTrack = trackSrc;
-                    trackName.textContent = trackTitle;
-                    audioPlayer.src = currentTrack;
-
-                    // Add active state to clicked option
-                    this.style.backgroundColor = '#e3f2fd';
-
-                    // Pause background music when focus sound starts
-                    backgroundSound && backgroundSound.pause();
-
-                    // Play the track
-                    playAudio();
-                });
-            });
-
-            // Play/pause button functionality
-            playButton.addEventListener('click', function() {
-                if (currentTrack) {
-                    if (isPlaying) {
-                        pauseAudio();
-                        // Remove active state from all options
-                        musicOptions.forEach(opt => opt.style.backgroundColor = '#f8f9fa');
-                        // Resume background music
-                        backgroundSound && backgroundSound.play();
-                    } else {
-                        playAudio();
-                        // Add active state to current track
-                        musicOptions.forEach(opt => {
-                            if (opt.dataset.src === currentTrack) {
-                                opt.style.backgroundColor = '#e3f2fd';
-                            }
-                        });
-                        // Pause background music
-                        backgroundSound && backgroundSound.pause();
-                    }
-                }
-            });
-
-            function playAudio() {
-                if (currentTrack) {
-                    audioPlayer.play().then(() => {
-                        isPlaying = true;
-                        playButton.innerHTML = '⏸';
-                    }).catch(error => {
-                        trackName.textContent = 'Click to start audio';
-                        isPlaying = false;
-                        playButton.innerHTML = '▶';
-                        // Resume background music on error
-                        backgroundSound && backgroundSound.play();
-                    });
-                }
-            }
-
-            function pauseAudio() {
-                audioPlayer.pause();
-                isPlaying = false;
-                playButton.innerHTML = '▶';
-            }
-
-            // Handle audio ended
-            audioPlayer.addEventListener('ended', function() {
-                isPlaying = false;
-                playButton.innerHTML = '▶';
-                // Remove active state from all options
-                musicOptions.forEach(opt => opt.style.backgroundColor = '#f8f9fa');
-                // Resume background music when focus sound ends
-                backgroundSound && backgroundSound.play();
-            });
-
-            // Handle audio errors
-            audioPlayer.addEventListener('error', function() {
-                trackName.textContent = 'Audio not available';
-                isPlaying = false;
-                playButton.innerHTML = '▶';
-                // Remove active state from all options
-                musicOptions.forEach(opt => opt.style.backgroundColor = '#f8f9fa');
-                // Resume background music on error
-                backgroundSound && backgroundSound.play();
-            });
-        });
-
-        // Start session button functionality
-        document.getElementById('start-session-btn').addEventListener('click', function() {
-            // Get the focus duration value
-            const focusDuration = document.getElementById('focus-duration').value;
-            const breakDuration = document.getElementById('break-duration').value;
-            
-            // Store the values in session storage to use in the focus session page
-            sessionStorage.setItem('focusDuration', focusDuration);
-            sessionStorage.setItem('breakDuration', breakDuration);
-            
-            // Store selected music if any is playing
-            const musicOptions = document.querySelectorAll('.music-option');
-            let selectedMusic = null;
-            let selectedMusicSrc = null;
-            
-            musicOptions.forEach(option => {
-                if (option.style.backgroundColor === 'rgb(227, 242, 253)') { // Active selection
-                    selectedMusic = option.querySelector('p').textContent;
-                    selectedMusicSrc = option.dataset.src;
-                }
-            });
-            
-            if (selectedMusic && selectedMusicSrc) {
-                sessionStorage.setItem('selectedMusic', selectedMusic);
-                sessionStorage.setItem('selectedMusicSrc', selectedMusicSrc);
-                console.log('Saving selected music:', selectedMusic, selectedMusicSrc);
-            } else {
-                sessionStorage.removeItem('selectedMusic');
-                sessionStorage.removeItem('selectedMusicSrc');
-                console.log('No music selected');
-            }
-            
-            // Navigate to the focus session page
-            window.location.href = 'focus-session.html';
-        });
+          });
+          contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Optionally, send data to backend/email service here
+            contactForm.style.display = 'none';
+            contactSuccess.style.display = 'block';
+          });
+        }
+      });
+      document.addEventListener('DOMContentLoaded', function() {
+    // --- Built Section Logic ---
+    const builtItemsDiv = document.getElementById('built-items');
+    const GIFT_KEY = 'legoEmpireGiftClaimed';
+    const structures = [
+        { key: "gift", label: "Gift", emoji: "🎁", days: 1 },
+        { key: "house", label: "House", emoji: "🏠", days: 7 },
+        { key: "tower", label: "Tower", emoji: "🏯", days: 14 },
+        { key: "castle", label: "Castle", emoji: "🏰", days: 21 },
+        { key: "pyramid", label: "Pyramid", emoji: "🔺", days: 28 },
+        { key: "spaceship", label: "Spaceship", emoji: "🚀", days: 30 },
+        { key: "empire", label: "Empire", emoji: "🌆", days: 50 }
+    ];
+    function renderBuiltItems() {
+        let html = '';
+        // Gift - Always visible
+        let claimed = true; // Set to true to make it visible
+        html += `<span title="Gift" style="font-size:2em; opacity:${claimed ? 1 : 0.2}; cursor:default;">🎁</span>`;
         
-        // Goal management and progress tracking
-        document.addEventListener('DOMContentLoaded', function() {
-            const newGoalInput = document.getElementById('new-goal');
-            const goalsList = document.querySelector('.goals-list');
-            const progressPercentage = document.getElementById('progress-percentage');
-            const progressBarFill = document.getElementById('progress-bar-fill');
-            let goalCounter = 1; // Start from 1 since we have no default goals
-            
-            // Function to calculate and update progress
-            function updateProgress() {
-                const allGoals = goalsList.querySelectorAll('.goal-item input[type="checkbox"]');
-                const completedGoals = goalsList.querySelectorAll('.goal-item input[type="checkbox"]:checked');
-                
-                if (allGoals.length === 0) {
-                    progressPercentage.textContent = '0%';
-                    progressBarFill.style.width = '0%';
-                    return;
-                }
-                
-                const percentage = Math.round((completedGoals.length / allGoals.length) * 100);
-                progressPercentage.textContent = percentage + '%';
-                progressBarFill.style.width = percentage + '%';
-                
-                // Update streak when progress changes
-                updateStreak();
-            }
-            
-            // Function to calculate and update streak
-            function updateStreak() {
-                const streakData = localStorage.getItem('userStreak');
-                const today = new Date().toDateString();
-                
-                if (!streakData) {
-                    // New user - start with 1 day streak if they have progress
-                    const currentProgress = parseInt(document.getElementById('progress-percentage').textContent.replace('%', '')) || 0;
-                    const streak = currentProgress > 0 ? 1 : 0;
-                    
-                    localStorage.setItem('userStreak', JSON.stringify({
-                        count: streak,
-                        lastActiveDate: currentProgress > 0 ? today : null
-                    }));
-                    
-                    document.getElementById('streak-count').textContent = streak;
-                    return;
-                }
-                
-                const streak = JSON.parse(streakData);
-                const currentProgress = parseInt(document.getElementById('progress-percentage').textContent.replace('%', '')) || 0;
-                
-                if (currentProgress > 0) {
-                    const lastDate = new Date(streak.lastActiveDate || '');
-                    const todayDate = new Date(today);
-                    const daysDiff = Math.floor((todayDate - lastDate) / (1000 * 60 * 60 * 24));
-                    
-                    if (streak.lastActiveDate === today) {
-                        // Same day, keep current streak
-                        document.getElementById('streak-count').textContent = streak.count;
-                    } else if (daysDiff === 1) {
-                        // Consecutive day, increment streak
-                        streak.count += 1;
-                        streak.lastActiveDate = today;
-                        localStorage.setItem('userStreak', JSON.stringify(streak));
-                        document.getElementById('streak-count').textContent = streak.count;
-                    } else if (daysDiff > 1) {
-                        // Missed days, reset streak to 1
-                        streak.count = 1;
-                        streak.lastActiveDate = today;
-                        localStorage.setItem('userStreak', JSON.stringify(streak));
-                        document.getElementById('streak-count').textContent = 1;
-                    } else {
-                        // Same or future date, keep current
-                        document.getElementById('streak-count').textContent = streak.count;
-                    }
-                } else {
-                    // No progress today, show current streak but don't update
-                    document.getElementById('streak-count').textContent = streak.count || 0;
-                }
-            }
-            
-            // Add event listeners to checkboxes (using event delegation)
-            goalsList.addEventListener('change', function(e) {
-                if (e.target.type === 'checkbox') {
-                    const label = e.target.nextElementSibling;
-                    if (e.target.checked) {
-                        label.style.textDecoration = 'line-through';
-                        label.style.opacity = '0.7';
-                    } else {
-                        label.style.textDecoration = 'none';
-                        label.style.opacity = '1';
-                    }
-                    updateProgress();
-                }
-            });
-            
-            // Add new goal functionality
-            newGoalInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && this.value.trim()) {
-                    addNewGoal();
-                }
-            });
-            
-            // Function to add new goal
-            function addNewGoal() {
-                const goalText = newGoalInput.value.trim();
-                if (!goalText) return;
-                
-                const goalId = 'goal' + goalCounter++;
-                
-                const goalItem = document.createElement('div');
-                goalItem.className = 'goal-item';
-                goalItem.style.cssText = 'display: flex; align-items: center; gap: 10px;';
-                goalItem.innerHTML = `
-                    <input type="checkbox" id="${goalId}" style="width: 16px; height: 16px;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <label for="${goalId}" style="color: #333;">${goalText}</label>
-                        <button class="remove-goal" style="background: none; border: none; color: #999; cursor: pointer; font-size: 16px; padding: 0; width: 20px; height: 20px;">×</button>
-                    </div>
-                `;
-                
-                goalsList.appendChild(goalItem);
-                newGoalInput.value = '';
-                updateProgress();
-            }
-            
-            // Add button click functionality for adding goals
-            const addGoalBtn = document.getElementById('add-goal-btn');
-            addGoalBtn.addEventListener('click', function() {
-                addNewGoal();
-            });
-            
-            // Remove goal functionality (using event delegation)
-            goalsList.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-goal')) {
-                    e.target.closest('.goal-item').remove();
-                    updateProgress(); 
-                }
-            });
-            
-            // Initial progress calculation
-            updateProgress();
-            updateStreak();
-        });
-
-        // --- Lego Empire Progress Logic ---
-        document.addEventListener('DOMContentLoaded', function() {
-            const legoBlocksDiv = document.getElementById('lego-blocks');
-            const legoMsg = document.getElementById('lego-empire-message');
-            const structureSelect = document.getElementById('lego-structure-select');
-            const LEGO_KEY = 'legoEmpireBlocks';
-            const STRUCTURE_KEY = 'legoEmpireStructure';
-
-            // Structure definitions: name, emoji, days required, fun message
-            const structures = {
-                house:    { label: "Cozy House", emoji: "🏠", days: 7,    msg: "A cozy house is almost ready!" },
-                tower:    { label: "Tower",      emoji: "🏯", days: 14,   msg: "Your tower is rising high!" },
-                castle:   { label: "Castle",     emoji: "🏰", days: 21,   msg: "A majestic castle is taking shape!" },
-                spaceship:{ label: "Spaceship",  emoji: "🚀", days: 30,   msg: "Your spaceship is almost ready for launch!" },
-                pyramid:  { label: "Pyramid",    emoji: "🔺", days: 28,   msg: "A mysterious pyramid is forming!" },
-                empire:   { label: "Empire",     emoji: "🌆", days: 50,   msg: "You're building a legendary empire!" }
-            };
-
-            // Colors for variety
-            const blockColors = [
-                '#f7d51d', '#e94f37', '#4f8cff', '#8b5fbf', '#43b581', '#ff7e79', '#ffb347', '#6b46c1'
-            ];
-
-            // Load blocks from localStorage
-            function loadLegoBlocks() {
-                let blocks = [];
-                try {
-                    blocks = JSON.parse(localStorage.getItem(LEGO_KEY)) || [];
-                } catch { blocks = []; }
-                return blocks;
-            }
-
-            // Save blocks to localStorage
-            function saveLegoBlocks(blocks) {
-                localStorage.setItem(LEGO_KEY, JSON.stringify(blocks));
-            }
-
-            // Load structure choice
-            function loadStructure() {
-                return localStorage.getItem(STRUCTURE_KEY) || 'house';
-            }
-
-            // Save structure choice
-            function saveStructure(val) {
-                localStorage.setItem(STRUCTURE_KEY, val);
-            }
-
-            // Render blocks visually
-            function renderLegoEmpire() {
-                const blocks = loadLegoBlocks();
-                const structure = loadStructure();
-                const s = structures[structure];
-                legoBlocksDiv.innerHTML = '';
-
-                // Draw blocks as a row (or pyramid for pyramid)
-                if (blocks.length === 0) {
-                    legoMsg.textContent = "Complete all your daily goals to start building your " + s.label + "!";
-                    return;
-                }
-
-                // Pyramid: stack blocks in rows
-                if (structure === 'pyramid') {
-                    let html = '';
-                    let total = Math.min(blocks.length, s.days);
-                    let row = 1, used = 0;
-                    while (used < total) {
-                        let blocksInRow = Math.min(row, total - used);
-                        html += `<div style="display:flex; justify-content:center; margin-bottom:2px;">`;
-                        for (let i = 0; i < blocksInRow; i++) {
-                            html += `<div title="Day ${used+1}" style="
-                                width: 32px; height: 22px; 
-                                background:${blockColors[(used) % blockColors.length]};
-                                border-radius: 6px 6px 4px 4px;
-                                margin:0 2px;
-                                box-shadow:0 2px 6px rgba(0,0,0,0.08);
-                                border:2px solid #e0e0e0;
-                                display:flex;align-items:center;justify-content:center;
-                                font-size:1.1em;
-                                ">
-                                <span style="opacity:0.18;">&#x25A0;</span>
-                            </div>`;
-                            used++;
-                        }
-                        html += `</div>`;
-                        row++;
-                    }
-                    legoBlocksDiv.innerHTML = html;
-                } else {
-                    // Normal: stack blocks in a row
-                    let html = '';
-                    for (let i = 0; i < Math.min(blocks.length, s.days); i++) {
-                        html += `<div title="Day ${i+1}" style="
-                            width: 38px; height: 28px; 
-                            background:${blockColors[i % blockColors.length]};
-                            border-radius: 6px 6px 4px 4px;
-                            margin-bottom:2px;
-                            box-shadow:0 2px 6px rgba(0,0,0,0.08);
-                            border:2px solid #e0e0e0;
-                            display:flex;align-items:center;justify-content:center;
-                            font-size:1.2em;
-                            ">
-                            <span style="opacity:0.18;">&#x25A0;</span>
-                        </div>`;
-                    }
-                    legoBlocksDiv.innerHTML = html;
-                }
-
-                // Fun message and completion
-                if (blocks.length < s.days) {
-                    legoMsg.innerHTML = `${s.emoji} <b>${blocks.length}/${s.days}</b> blocks<br>${s.msg}`;
-                } else {
-                    legoMsg.innerHTML = `<span style="font-size:1.3em;">🎉</span> <b>You finished your ${s.label}!</b> <br>Keep going to build more or pick a new challenge!`;
-                }
-            }
-
-            // Add a block for today if 100% goals complete and not already added
-            function tryAddLegoBlock() {
-                const blocks = loadLegoBlocks();
-                const structure = loadStructure();
-                const s = structures[structure];
-                const today = new Date().toDateString();
-                if (blocks.length > 0 && blocks[blocks.length-1].date === today) return; // Already added today
-
-                // Only add if 100% complete and not already maxed for this structure
-                const progress = document.getElementById('progress-percentage');
-                if (progress && progress.textContent.trim() === '100%' && blocks.length < s.days) {
-                    blocks.push({ date: today });
-                    saveLegoBlocks(blocks);
-                    renderLegoEmpire();
-                }
-            }
-
-            // Listen for progress changes
-            const observer = new MutationObserver(tryAddLegoBlock);
-            const progressNode = document.getElementById('progress-percentage');
-            if (progressNode) {
-                observer.observe(progressNode, { childList: true });
-            }
-
-            // Structure select change
-            structureSelect.value = loadStructure();
-            structureSelect.addEventListener('change', function() {
-                saveStructure(this.value);
-                // Reset blocks for new structure
-                saveLegoBlocks([]);
-                renderLegoEmpire();
-            });
-
-            // Initial render
-            renderLegoEmpire();
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- Built Section Logic ---
-            const builtItemsDiv = document.getElementById('built-items');
-            const GIFT_KEY = 'legoEmpireGiftClaimed';
-            const structures = [
-                { key: "gift", label: "Gift", emoji: "🎁", days: 1 },
-                { key: "house", label: "House", emoji: "🏠", days: 7 },
-                { key: "tower", label: "Tower", emoji: "🏯", days: 14 },
-                { key: "castle", label: "Castle", emoji: "🏰", days: 21 },
-                { key: "pyramid", label: "Pyramid", emoji: "🔺", days: 28 },
-                { key: "spaceship", label: "Spaceship", emoji: "🚀", days: 30 },
-                { key: "empire", label: "Empire", emoji: "🌆", days: 50 }
-            ];
-            function renderBuiltItems() {
-                let html = '';
-                // Gift
-                let claimed = !!localStorage.getItem(GIFT_KEY);
-                html += `<span title="Gift" style="font-size:2em; opacity:${claimed ? 1 : 0.2}; cursor:default;">🎁</span>`;
-                // Structures (just emojis, one line)
-                const LEGO_KEY = 'legoEmpireBlocks_';
-                for (const s of structures.slice(1)) {
-                    const blocks = JSON.parse(localStorage.getItem(LEGO_KEY + s.key) || '[]');
-                    const achieved = blocks.length >= s.days;
-                    html += `<span title="${s.label}" style="font-size:2em; opacity:${achieved ? 1 : 0.2}; cursor:default;">${s.emoji}</span>`;
-                }
-                builtItemsDiv.innerHTML = html;
-            }
-            renderBuiltItems();
-        });
+        // Structures (just emojis, one line) - All transparent except gift
+        const LEGO_KEY = 'legoEmpireBlocks_';
+        for (const s of structures.slice(1)) {
+            // All structures should be transparent
+            const blocks = JSON.parse(localStorage.getItem(LEGO_KEY + s.key) || '[]');
+            // Set opacity to 0.2 for all structures
+            html += `<span title="${s.label}" style="font-size:2em; opacity:0.2; cursor:default;">${s.emoji}</span>`;
+        }
+        builtItemsDiv.innerHTML = html;
+    }
+    renderBuiltItems();
+});
     </script>
 </body>
 </html>
