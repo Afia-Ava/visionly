@@ -412,54 +412,136 @@
     </section>
     
     <div style="height: 48px;"></div>    
-    <section class="gallery" id="gallery" style="padding: 0 0 56px 0; background: transparent !important;">
-      <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+    <section class="gallery" id="gallery" style="padding: 0 0 56px 0; background: transparent !important; position: relative;">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative;">
         <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 28px; color: #181818;">Inspiration Gallery</h2>
-        
-        <!-- Changed from grid to scrollable container with overflow -->
-        <div class="gallery-container" style="overflow-x: auto; scroll-behavior: smooth; position: relative; padding: 10px 0; -ms-overflow-style: none; scrollbar-width: none;">
-          <div class="gallery-scroll" style="display: flex; gap: 24px; width: max-content; transition: transform 0.5s ease;">
-            <!-- Card 1 -->
-            <div class="gallery-card" style="width: 280px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
-              <img src="assets/card1.jpg" alt="Productive Workspace" style="width: 100%; height: 140px; object-fit: cover;">
-              <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
-                <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Productive Workspace</div>
-                <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Design a workspace that fosters creativity and efficiency.</div>
-                <a href="workspace.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
-              </div>
+        <!-- Gallery Scroll Container -->
+        <div id="gallery-scroll-container" style="overflow-x: hidden; white-space: nowrap; scroll-behavior: smooth; position: relative;">
+          <!-- Card 1 -->
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card1.jpg" alt="Productive Workspace" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Productive Workspace</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Design a workspace that fosters creativity and efficiency.</div>
+              <a href="workspace.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
             </div>
-            
-            <!-- Card 2 -->
-            <div class="gallery-card" style="width: 280px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
-              <img src="assets/card2.jpeg" alt="Healthy Habits" style="width: 100%; height: 140px; object-fit: cover;">
-              <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
-                <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Healthy Habits</div>
-                <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Inspire your wellness journey with visuals that motivate daily healthy choices.</div>
-                <a href="healthy-habits-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
-              </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card2.jpeg" alt="Healthy Habits" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Healthy Habits</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Inspire your wellness journey with visuals that motivate daily healthy choices.</div>
+              <a href="healthy-habits-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
             </div>
-            
-            <!-- Card 3 -->
-            <div class="gallery-card" style="width: 280px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
-              <img src="assets/card3.jpeg" alt="Travel Dreams" style="width: 100%; height: 140px; object-fit: cover;">
-              <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
-                <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Travel Dreams</div>
-                <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Visualize your next adventure and keep your travel goals top of mind.</div>
-                <a href="travel-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
-              </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card3.jpeg" alt="Travel Dreams" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Travel Dreams</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Visualize your next adventure and keep your travel goals top of mind.</div>
+              <a href="travel-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
             </div>
-            
-            <!-- Card 4 -->
-            <div class="gallery-card" style="width: 280px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; display: flex; flex-direction: column;">
-              <img src="assets/card4.jpg" alt="Creative Pursuits" style="width: 100%; height: 140px; object-fit: cover;">
-              <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
-                <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Creative Pursuits</div>
-                <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Fuel your artistic side with boards dedicated to your creative passions.</div>
-                <a href="creative-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
-              </div>
+          </div>
+          <!-- Card 4 -->
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card4.jpg" alt="Creative Pursuits" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Creative Pursuits</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Fuel your artistic side with boards dedicated to your creative passions.</div>
+              <a href="creative-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
             </div>
-            
-            <!-- New Card 5: Career Aspirations -->
+          </div>
+          <!-- Card 5 (for demonstration, duplicate or add your own) -->
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card5.jpg" alt="Career Aspirations" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Career Aspirations</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Turn your career dreams into reality by visualizing your ideal job, workplace, or future accomplishments.</div>
+              <a href="career-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
+            </div>
+          </div>
+          <!-- Card 6 -->
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card6.jpg" alt="Financial Freedom" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Financial Freedom</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Inspire smart money habits by visualizing your savings goals, dream lifestyle, or financial milestones.</div>
+              <a href="financial-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
+            </div>
+          </div>
+          <!-- Card 7 -->
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card7.jpg" alt="Relationships & Self-Love" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Relationships & Self-Love</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Celebrate meaningful relationships and build a positive self-image with this board full of love, support, and self-care.</div>
+              <a href="relationships-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
+            </div>
+          </div>
+          <!-- Duplicate the 7 cards for infinite effect -->
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card1.jpg" alt="Productive Workspace" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Productive Workspace</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Design a workspace that fosters creativity and efficiency.</div>
+              <a href="workspace.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
+            </div>
+          </div>
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card2.jpeg" alt="Healthy Habits" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Healthy Habits</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Inspire your wellness journey with visuals that motivate daily healthy choices.</div>
+              <a href="healthy-habits-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
+            </div>
+          </div>
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card3.jpeg" alt="Travel Dreams" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Travel Dreams</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Visualize your next adventure and keep your travel goals top of mind.</div>
+              <a href="travel-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
+            </div>
+          </div>
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card4.jpg" alt="Creative Pursuits" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Creative Pursuits</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Fuel your artistic side with boards dedicated to your creative passions.</div>
+              <a href="creative-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
+            </div>
+          </div>
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card5.jpg" alt="Career Aspirations" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Career Aspirations</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Turn your career dreams into reality by visualizing your ideal job, workplace, or future accomplishments.</div>
+              <a href="career-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
+            </div>
+          </div>
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card6.jpg" alt="Financial Freedom" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Financial Freedom</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Inspire smart money habits by visualizing your savings goals, dream lifestyle, or financial milestones.</div>
+              <a href="financial-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
+            </div>
+          </div>
+          <div class="gallery-card" style="display: inline-block; vertical-align: top; width: 270px; height: 100%; background: #1f0f35; border-radius: 16px; box-shadow: 0 2px 12px rgba(30,34,40,0.06); border: 2px solid #000; overflow: hidden; margin-right: 24px; flex-direction: column;">
+            <img src="assets/card7.jpg" alt="Relationships & Self-Love" style="width: 100%; height: 140px; object-fit: cover;">
+            <div style="padding: 20px 18px 16px 18px; flex: 1; display: flex; flex-direction: column;">
+              <div style="font-weight: 600; font-size: 1.08rem; margin-bottom: 7px; color: #e0e0e0;">Relationships & Self-Love</div>
+              <div style="color: #b0b0b0; font-size: 0.98rem; margin-bottom: 18px; text-align: left; flex-grow: 1;">Celebrate meaningful relationships and build a positive self-image with this board full of love, support, and self-care.</div>
+              <a href="relationships-board.html" class="card-button" style="display: block; width: 100%; background: #3a2259; border: none; color: white; border-radius: 6px; padding: 8px 0; text-align: center; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">View Board</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <div style="height: 48px;"></div>
 
     <section class="feature-section" style="padding: 0 0 56px 0;">
       <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
@@ -698,7 +780,7 @@
                 <li style="color: #333;">Generate detailed visual reports of your achievements</li>
               </ul>
               <div style="margin-top: 24px;">
-                <a href="analytics.html" class="cta-button" style="display: inline-block;">Explore</a>
+                               <a href="analytics.html" class="cta-button" style="display: inline-block;">Explore</a>
               </div>
             </div>
           </div>
@@ -823,12 +905,12 @@
               <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #2d1a45;">Journal Your Growth</h3>
               <ul style="text-align: left; padding-left: 24px; list-style-position: outside;">
                 <li style="margin-bottom: 12px; color: #333;">Capture thoughts and insights about your progress</li>
-                <li style="margin-bottom: 12px; color: #333;">Document breakthroughs and learning moments</li>
-                <li style="margin-bottom: 12px; color: #333;">Review past entries to see your evolution</li>
-                <li style="color: #333;">Link journal entries to specific goals and milestones</li>
+                <li style="margin-bottom: 12px; color: #333;">Document challenges and how you overcame them</li>
+                <li style="margin-bottom: 12px; color: #333;">Reflect on lessons learned and future aspirations</li>
+                <li style="color: #333;">Keep your memories and insights secure and private</li>
               </ul>
               <div style="margin-top: 24px;">
-                <a href="journal.html" class="cta-button" style="display: inline-block;">Journal</a>
+                <a href="journal.html" class="cta-button" style="display: inline-block;">Start Journaling</a>
               </div>
             </div>
           </div>
@@ -859,7 +941,7 @@
                     <div style="border-top: 60px solid #2d1a45; border-left: 90px solid transparent; border-right: 90px solid transparent; position: absolute; top: 0; left: 0;"></div>
                     <div style="position: absolute; top: 20px; width: 100%; text-align: center;">
                       <div style="font-size: 0.8rem; color: white; font-weight: bold; margin-bottom: 5px;">TO: FUTURE ME</div>
-                      <div style="width: 40%; height: 1px; background: #c8a2e8; margin: 0 auto;"></div>
+                      <div style="width: 40%; height: 1px; background: white; margin-bottom: 15px;"></div>
                       <div style="font-size: 0.7rem; color: #c8a2e8; margin-top: 5px;">OPEN ON: DEC 31, 2025</div>
                     </div>
                   </div>
@@ -880,7 +962,7 @@
               
               <!-- Decorative elements -->
               <div style="position: absolute; top: 20%; right: 15%; width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.1) 0%, rgba(139, 95, 179, 0.05) 100%); z-index: 0;"></div>
-              <div style="position: absolute; bottom: 10%; left: 15%; width: 50px; height:  50px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.15) 0%, rgba(139, 95, 179, 0.08) 100%); z-index: 0;"></div>
+              <div style="position: absolute; bottom: 10%; left: 15%; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, rgba(139, 95, 179, 0.15) 0%, rgba(139, 95, 179, 0.08) 100%); z-index: 0;"></div>
             </div>
             
             <!-- Right Text Content -->
@@ -1442,6 +1524,47 @@
         feedbackForm.style.display = 'none';
         feedbackSuccess.style.display = 'block';
       });
+    }
+  });
+</script>
+<script>
+  // Gallery scroll right button functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    var scrollBtn = document.getElementById('gallery-scroll-right');
+    var scrollContainer = document.getElementById('gallery-scroll-container');
+    if (scrollBtn && scrollContainer) {
+      scrollBtn.addEventListener('click', function() {
+        // Scroll by one card width (270px + 24px margin)
+        scrollContainer.scrollBy({ left: 294, behavior: 'smooth' });
+      });
+    }
+  });
+</script>
+<script>
+  // Auto-scroll the gallery horizontally, looping back to start with smooth continuous scroll
+  document.addEventListener('DOMContentLoaded', function() {
+    var scrollContainer = document.getElementById('gallery-scroll-container');
+    if (scrollContainer) {
+      let cardWidth = 294; // 270px + 24px margin
+      let totalCards = scrollContainer.querySelectorAll('.gallery-card').length;
+      let visibleCards = 4;
+      let maxScroll = cardWidth * (totalCards/2 - visibleCards); // Only scroll through the first set
+      let currentScroll = 0;
+      let lastTimestamp = null;
+      let speed = 30; // pixels per second, adjust for desired speed
+
+      function step(timestamp) {
+        if (!lastTimestamp) lastTimestamp = timestamp;
+        let elapsed = (timestamp - lastTimestamp) / 1000; // seconds
+        lastTimestamp = timestamp;
+        currentScroll += speed * elapsed;
+        if (currentScroll > maxScroll) {
+          currentScroll = 0;
+        }
+        scrollContainer.scrollTo({ left: currentScroll, behavior: 'auto' });
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
     }
   });
 </script>

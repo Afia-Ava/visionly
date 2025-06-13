@@ -1,0 +1,134 @@
+.carousel-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background: #2d1b54;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.carousel-arrow:hover {
+  background-color: rgba(45, 27, 84, 1);
+}
+
+.prev-arrow {
+  left: 0;
+}
+
+.next-arrow {
+  right: 0;
+}
+
+.gallery-navigation {
+  position: relative;
+  width: 100%;
+}
+
+.gallery-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.gallery-cards {
+  overflow: hidden;
+  width: 100%;
+}
+
+.cards-slider {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(.77,0,.18,1);
+  width: calc(100% * 5); /* 5 cards total */
+}
+
+.nav-button {
+  background: rgba(45, 27, 84, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  margin: 0 10px;
+  transition: background 0.3s;
+}
+
+.nav-button:hover {
+  background: rgba(45, 27, 84, 1);
+}
+
+.nav-button.prev {
+  margin-left: -20px;
+}
+
+.nav-button.next {
+  margin-right: -20px;
+}
+
+.gallery-card {
+  flex: 0 0 25%; /* Show 4 cards at a time */
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .gallery-card {
+    flex: 0 0 50%; /* Show 2 cards at a time on medium screens */
+  }
+
+  .cards-slider {
+    width: calc(100% * (5 / 2)); /* Adjusted for 5 cards showing 2 at a time */
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-card {
+    flex: 0 0 100%; /* Show 1 card at a time on small screens */
+  }
+
+  .cards-slider {
+    width: 500%; /* 5 cards at 100% width each */
+  }
+}
+
+.gallery-right-arrow {
+  position: absolute;
+  top: 50%;
+  right: -30px; /* Move outside the card area, adjust as needed */
+  transform: translateY(-50%);
+  background: #2d1b54;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(30,34,40,0.12);
+  z-index: 10;
+  opacity: 0.9;
+  transition: background 0.2s;
+}
+
+.gallery-right-arrow:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

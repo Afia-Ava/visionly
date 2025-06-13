@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dream Travel Vision Board - Visionly</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="dark-mode-global.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #fff;
+        background-image: 
+          linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+          linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+          linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+          linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%);
+        background-size: 20px 20px;
+        background-position: 10px 0, 10px 0, 0 0, 0 0;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+    
+    /* Dark Mode Styles */
+    body.dark-mode {
+      background-color: #0a0612;
+      background-image: 
+        linear-gradient(135deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+        linear-gradient(225deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+        linear-gradient(45deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%), 
+        linear-gradient(315deg, rgba(139, 95, 179, 0.06) 25%, transparent 25%);
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode nav.navbar {
+      background-color: #140a22 !important;
+      box-shadow: 0 1px 3px rgba(139, 95, 179, 0.15) !important;
+    }
+    
+    body.dark-mode nav.navbar a,
+    body.dark-mode nav.navbar .logo {
+      color: #e0e0e0 !important;
+    }
+    
+    body.dark-mode .board-header-left h1 {
+      color: #c8a2e8;
+    }
+    
+    body.dark-mode .board-subtitle {
+      color: #b0b0b0;
+    }
+    
+    body.dark-mode .board-details {
+      background: #140a22;
+      box-shadow: 0 2px 8px rgba(139, 95, 179, 0.15);
+    }
+    
+    body.dark-mode .board-details h3 {
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .detail-label {
+      color: #b0b0b0;
+    }
+    
+    body.dark-mode .detail-value {
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .detail-row {
+      border-bottom: 1px solid #2d1549;
+    }
+    
+    body.dark-mode .btn-secondary {
+      background: #1f0f35;
+      color: #e0e0e0;
+      border: 2px solid #2d1549;
+    }
+    
+    body.dark-mode .btn-secondary:hover {
+      background: #2d1549;
+    }
+    
+    body.dark-mode .vision-item {
+      box-shadow: 0 3px 12px rgba(139, 95, 179, 0.15);
+    }
+    
+    /* Goal items dark mode */
+    body.dark-mode div[style*="background: #f8f9fa"] {
+      background: #1f0f35 !important;
+      border-left: 3px solid #6b4897 !important;
+    }
+    
+    body.dark-mode div[style*="color: #333"] {
+      color: #e0e0e0 !important;
+    }
+    
+    .vision-board-container {
+      max-width: 1200px;
+      margin: 90px auto 40px auto;
+      padding: 0 24px;
+    }
+    
+    .board-content {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+    }
+    
+    .board-main {
+      flex: 1;
+    }
+    
+    .board-sidebar {
+      width: 300px;
+      flex-shrink: 0;
+    }
+    
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 32px;
+      padding: 24px 24px 24px 0px;
+      border-radius: 12px;
+    }
+    
+    .board-header-left h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #2d1a45;
+      margin-bottom: 8px;
+    }
+    
+    .board-subtitle {
+      color: #666;
+      font-size: 0.95rem;
+      margin: 0;
+      line-height: 1.4;
+    }
+    
+    .header-buttons {
+      display: flex;
+      gap: 12px;
+      margin-right: 20px;
+    }
+    
+    .header-buttons .btn {
+      flex: 1;
+      min-width: 90px;
+    }
+    
+    .vision-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .vision-item {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .vision-item:hover {
+      transform: scale(1.03);
+    }
+    
+    .vision-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .vision-item.wide {
+      grid-column: span 2;
+      aspect-ratio: 2/1;
+    }
+    
+    .vision-item.tall {
+      grid-row: span 2;
+      aspect-ratio: 1/2;
+    }
+    
+    .vision-item.text-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      padding: 16px;
+    }
+    
+    .board-details {
+      background: white;
+      border-radius: 12px;
+      padding: 24px 24px 24px 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+    }
+    
+    .detail-row {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 12px;
+    }
+    
+    .detail-label {
+      color: #666;
+      font-weight: 500;
+      min-width: 80px;
+    }
+    
+    .detail-value {
+      color: #333;
+      font-weight: 600;
+    }
+    
+    .btn {
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      font-size: 0.95rem;
+      text-align: center;
+      white-space: nowrap;
+      min-width: 80px;
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: #2d1a45;
+      border: 2px solid #2d1a45;
+    }
+    
+    .btn-secondary:hover {
+      background: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+        <div style="display: flex; align-items: center;">
+            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+            <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+            <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+        </div>
+    </nav>
+
+    <div class="vision-board-container">
+        <div class="board-header">
+            <div class="board-header-left">
+                <h1>Space Career</h1>
+                <p class="board-subtitle">Created May 15, 2025 | Last Edited June 5, 2025<br>Privacy: Private</p>
+            </div>
+            <div class="header-buttons">
+                <button class="btn btn-secondary" onclick="window.location.href='index.html#gallery'">← Back</button>
+                <button class="btn btn-secondary">Edit</button>
+            </div>
+        </div>
+
+        <div class="board-content">
+            <div class="board-main">
+                <div class="vision-grid">
+                    <!-- Row 1 -->
+                    <div class="vision-item">
+                        <img src="assets/career1.jpg" alt="Space career">
+                    </div>
+                    <div class="vision-item tall">
+                        <img src="assets/career2.jpg" alt="Space career">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/career3.jpg" alt="Space career">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/career4.jpg" alt="Space career">
+                    </div>
+                    
+                    <!-- Row 2 -->
+                    <div class="vision-item text-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);">
+                        Work Hard
+                    </div>
+                    <!-- Tall item continues here -->
+                    <div class="vision-item">
+                        <img src="assets/career5.jpg" alt="Space career">
+                    </div>
+                    <div class="vision-item text-card" style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);">
+                        Wanderlust
+                    </div>
+                    
+                    <!-- Row 3 -->
+                    <div class="vision-item wide">
+                        <img src="assets/career6.jpg" alt="Space career">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/career7.jpeg" alt="Space career">
+                    </div>
+                    <div class="vision-item">
+                        <img src="assets/career8.jpg" alt="Space career">
+                    </div>
+                </div>
+            </div>
+
+            <div class="board-sidebar">
+                <div class="board-details">
+                    <h3 style="margin: 0 0 16px 0; color: #2d1a45;">Career Goals</h3>
+                    
+                    <div style="margin-bottom: 24px;">
+                        <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #2d1a45;">
+                            <div style="font-size: 0.9rem; color: #333;">Become an astronaut</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #2d1a45;">
+                            <div style="font-size: 0.9rem; color: #333;">Attend a Space Industry Conference</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #2d1a45;">
+                            <div style="font-size: 0.9rem; color: #333;">Network with atleast 10 astronauts</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #2d1a45;">
+                            <div style="font-size: 0.9rem; color: #333;">Master Orbital Mechanics & Aerospace Design Tools</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="board-details">
+                    <h3 style="margin: 0 0 16px 0; color: #2d1a45;">Board Details</h3>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Theme</span>
+                        <span class="detail-value">Space Exploration</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Privacy</span>
+                        <span class="detail-value">Private</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Items</span>
+                        <span class="detail-value">8 images, 2 text cards</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Sound -->
+    <audio id="background-sound" loop>
+        <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Toggle Sound Button -->
+    <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
+        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+    </button>
+
+    <!-- Add more space before footer -->
+    <div style="height: 100px;"></div>
+    
+    <!-- Footer -->
+    <footer style="padding: 24px 0 12px 0; background-color: #0a0612;">
+      <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+        <div style="display: flex; justify-content: center; gap: 28px; margin-bottom: 10px; flex-wrap: wrap;">
+          <a href="#" id="about-link" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">About</a>
+          <a href="#" id="terms-link" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">Terms</a>
+          <a href="#" id="privacy-link" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">Privacy</a>
+          <a href="https://tally.so/r/3jq4px" id="feedback-link" target="_blank" rel="noopener" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">Feedback</a>
+          <a href="#" id="contact-link" style="color: #8a94a6; text-decoration: none; font-size: 0.98rem; font-family: 'Inter', sans-serif;">Contact</a>
+        </div>
+        <div style="color: #8a94a6; font-size: 0.95rem; font-family: 'Inter', sans-serif;">
+          © 2025 Visionly. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <!-- Contact Modal -->
+    <div id="contact-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.7); z-index: 2000; align-items: flex-start; justify-content: center; overflow-y: auto;">
+      <div style="position: relative; width: 98vw; max-width: 500px; background-color: white; border-radius: 16px; padding: 32px 36px 32px 36px; margin: 40px auto; box-shadow: 0 2px 16px rgba(0,0,0,0.13); font-size: 1.08rem; min-height: unset; min-width: 0;">
+        <button id="close-contact" style="position: absolute; top: 18px; right: 18px; background: #3a2259; color: #fff; border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;">✕</button>
+        <h2 style="color: #2d1a45; font-size: 1.35rem; margin-bottom: 18px; margin-top: 2px; display: flex; align-items: center;">
+          <span style="margin-right: 12px;">📬</span> Contact Us
+        </h2>
+        <form id="contact-form" style="display: flex; flex-direction: column; gap: 14px;">
+          <input type="text" name="name" placeholder="Your Name" required style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;">
+          <input type="email" name="email" placeholder="Your Email" required style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;">
+          <input type="text" name="subject" placeholder="Subject" required style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;">
+          <textarea name="details" placeholder="How can we help you?" rows="4" required style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; resize: vertical;"></textarea>
+          <button type="submit" style="margin-top: 8px; background: #3a2259; color: #fff; border: none; border-radius: 6px; padding: 12px 0; font-size: 1.08rem; font-weight: 600; cursor: pointer;">Send Message</button>
+        </form>
+        <div id="contact-success" style="display:none; margin-top: 18px; color: #2d8a4d; font-weight: 600; text-align: center;">
+          Thank you! We received your message and will get back to you within 3 business days.
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Modal Functionality -->
+    <script>
+      // Contact modal functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const contactLink = document.getElementById('contact-link');
+        const contactModal = document.getElementById('contact-modal');
+        const closeContact = document.getElementById('close-contact');
+        const contactForm = document.getElementById('contact-form');
+        const contactSuccess = document.getElementById('contact-success');
+        if (contactLink && contactModal && closeContact && contactForm && contactSuccess) {
+          contactLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            contactModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            contactForm.style.display = 'flex';
+            contactSuccess.style.display = 'none';
+            contactForm.reset();
+          });
+          closeContact.addEventListener('click', function() {
+            contactModal.style.display = 'none';
+            document.body.style.overflow = '';
+          });
+          contactModal.addEventListener('click', function(e) {
+            if (e.target === contactModal) {
+              contactModal.style.display = 'none';
+              document.body.style.overflow = '';
+            }
+          });
+          contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Optionally, send data to backend/email service here
+            contactForm.style.display = 'none';
+            contactSuccess.style.display = 'block';
+          });
+        }
+      });
+    </script>
+
+    <script src="firebase-config.js"></script>
+    <script src="shared-scripts.js"></script>
+    <script src="profile-dropdown.js"></script>
+    
+    <!-- Import sprinkles effect from mouse-sprinkles -->
+    <script src="mouse-sprinkles-script.js"></script>
+    
+    <script>
+        // Background music auto-play functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('background-sound');
+            const toggleBtn = document.getElementById('toggle-sound');
+            const soundIcon = document.getElementById('sound-icon');
+            let isPlaying = false;
+
+            // Set volume and try to start automatically
+            audio.volume = 0.5;
+
+            // Function to start audio
+            function startAudio() {
+                audio.play().then(() => {
+                    soundIcon.src = 'assets/speaker-on-icon.png';
+                    soundIcon.alt = 'Sound On';
+                    isPlaying = true;
+                }).catch(() => {
+                    // Autoplay blocked - set icon to off state
+                    soundIcon.src = 'assets/speaker-off-icon.png';
+                    soundIcon.alt = 'Sound Off';
+                    isPlaying = false;
+                });
+            }
+
+            // Try to start audio immediately
+            startAudio();
+
+            // Also try to start on first user interaction
+            const enableAudio = () => {
+                if (!isPlaying && audio.paused) {
+                    startAudio();
+                }
+            };
+
+            // Listen for various user interactions
+            document.addEventListener('click', enableAudio, { once: true });
+            document.addEventListener('touchstart', enableAudio, { once: true });
+            document.addEventListener('keydown', enableAudio, { once: true });
+
+            // Toggle sound on button click
+            toggleBtn.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play().then(() => {
+                        soundIcon.src = 'assets/speaker-on-icon.png';
+                        soundIcon.alt = 'Sound On';
+                        isPlaying = true;
+                    });
+                } else {
+                    audio.pause();
+                    soundIcon.src = 'assets/speaker-off-icon.png';
+                    soundIcon.alt = 'Sound Off';
+                    isPlaying = false;
+                }
+            });
+
+            // Update icon based on audio state
+            audio.addEventListener('play', function() {
+                soundIcon.src = 'assets/speaker-on-icon.png';
+                soundIcon.alt = 'Sound On';
+                isPlaying = true;
+            });
+            audio.addEventListener('pause', function() {
+                soundIcon.src = 'assets/speaker-off-icon.png';
+                soundIcon.alt = 'Sound Off';
+                isPlaying = false;
+            });
+        });
+    </script>
+    <script src="dark-mode-toggle.js"></script>
+</body>
+</html>
