@@ -191,6 +191,64 @@
             transform: scale(1.05);
         }
 
+        .flower-item {
+            width: 50px;
+            height: 50px;
+            cursor: grab;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            background-color: #fffbe7;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            margin-bottom: 5px;
+            /* fallback for missing image */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #e0a800;
+        }
+        
+        /* overlay for achieved level card */
+        .achieved-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(42,107,64,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .achieved-text {
+            background-color: rgba(42,107,64,0.9);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            border: 2px solid gold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* drop-complete message */
+        .level-complete-text {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2a6b40;
+            background: rgba(255,255,255,0.9);
+            padding: 12px 24px;
+            border-radius: 12px;
+            z-index: 3000;
+        }
+
         /* Add a media query to ensure responsiveness */
         @media (max-width: 900px) {
             .garden-levels-container {
@@ -239,15 +297,15 @@
     
     <div class="garden-levels-container">
         <!-- Level 1 - Active -->
-        <div class="garden-level-box">
+        <div class="garden-level-box" onclick="openGardenWorkspace(1)">
             <div class="garden-level-image">
                 <img src="assets/garden1.png" alt="Garden Level 1">
             </div>
             <div class="garden-level-label">Level 1</div>
         </div>
         
-        <!-- Level 2 - Locked -->
-        <div class="garden-level-box">
+        <!-- Level 2 -->
+        <div class="garden-level-box" onclick="openGardenWorkspace(2)">
             <div class="garden-level-image">
                 <img src="assets/garden2.png" alt="Garden Level 2">
             </div>
@@ -257,8 +315,8 @@
             </div>
         </div>
         
-        <!-- Level 3 - Locked -->
-        <div class="garden-level-box">
+        <!-- Level 3 -->
+        <div class="garden-level-box" onclick="openGardenWorkspace(3)">
             <div class="garden-level-image">
                 <img src="assets/garden3.png" alt="Garden Level 3">
             </div>
@@ -266,6 +324,30 @@
             <div class="locked-overlay">
                 <div class="locked-text">LOCKED</div>
             </div>
+        </div>
+    </div>
+
+    <!-- Garden Workspace Overlay -->
+    <div id="garden-workspace-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
+        <div id="garden-workspace" style="position: relative; width: 85%; height: 85%; background-color: white; border-radius: 15px; display: flex; overflow: hidden; box-shadow: 0 5px 25px rgba(0,0,0,0.2);">
+            <!-- Flowers Panel -->
+            <div class="flowers-panel" style="width: 120px; background-color: #f8f8f8; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px; border-right: 1px solid #eee;">
+                <h3 style="margin: 0 0 10px 0; color: #2a6b40; font-size: 1.1rem; text-align: center;">Flowers</h3>
+                <div class="flower-item" draggable="true" data-flower="1" style="background-image: url('assets/flower1.png');">🌸</div>
+                <div class="flower-item" draggable="true" data-flower="2" style="background-image: url('assets/flower2.png');">🌼</div>
+                <div class="flower-item" draggable="true" data-flower="3" style="background-image: url('assets/flower3.png');">🌻</div>
+                <div class="flower-item" draggable="true" data-flower="4" style="background-image: url('assets/flower4.png');">🌷</div>
+                <div class="flower-item" draggable="true" data-flower="5" style="background-image: url('assets/flower5.png');">🌺</div>
+            </div>
+            
+            <!-- Garden Canvas -->
+            <div id="garden-canvas" style="flex: 1; position: relative; overflow: hidden;">
+                <img id="garden-background" src="assets/garden1.png" alt="Garden Background" style="width: 100%; height: 100%; object-fit: cover;">
+                <div id="planted-flowers-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+            </div>
+            
+            <!-- Close Button -->
+            <button onclick="closeGardenWorkspace()" style="position: absolute; top: 15px; right: 15px; background-color: #2a6b40; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>
         </div>
     </div>
 
@@ -278,6 +360,398 @@
                 rulesPanel.style.display = 'none';
             } else {
                 rulesPanel.style.display = 'block';
+            }
+        }
+        
+        // Function to open garden workspace
+        function openGardenWorkspace(level) {
+            const uid = getCurrentUserId();
+            const all = JSON.parse(localStorage.getItem('visionly_garden_' + uid) || '[]').length;
+            const lvl1Done = localStorage.getItem('visionly_level1_achieved_' + uid) === 'true';
+
+            // guard unlocks
+            if (level === 2 && !lvl1Done && all < 5) {
+                alert('Unlock Level 2 by planting 5 flowers in Level 1');
+                return;
+            }
+            if (level === 3 && all < 16) {
+                alert('Unlock Level 3 by planting 16 flowers');
+                return;
+            }
+            
+            // ...existing open logic...
+            currentLevel = level;
+            const overlay = document.getElementById('garden-workspace-overlay');
+            document.getElementById('garden-background').src = `assets/garden${level}.png`;
+            overlay.style.display = 'flex';
+            // ...rest of openGardenWorkspace...
+        }
+        
+        // Function to close garden workspace
+        function closeGardenWorkspace() {
+            const overlay = document.getElementById('garden-workspace-overlay');
+            overlay.style.display = 'none';
+        }
+        
+        // Function to load planted flowers from localStorage
+        function loadPlantedFlowers(level) {
+            const container = document.getElementById('planted-flowers-container');
+            container.innerHTML = '';
+            
+            // Check if user is logged in
+            const userId = getCurrentUserId();
+            if (!userId) return;
+            
+            // Load garden data
+            try {
+                const gardenData = JSON.parse(localStorage.getItem('visionly_garden_' + userId) || '[]');
+                
+                // Filter flowers for the current level
+                const flowers = gardenData.filter(flower => {
+                    // Simple level assignment logic based on flower count
+                    const totalFlowers = gardenData.length;
+                    if (level === 1 && totalFlowers <= 5) return true;
+                    if (level === 2 && totalFlowers > 5 && totalFlowers <= 15) return true;
+                    if (level === 3 && totalFlowers > 15) return true;
+                    return false;
+                });
+                
+                // Create flower elements
+                flowers.forEach(flower => {
+                    const flowerEl = document.createElement('div');
+                    flowerEl.className = 'planted-flower';
+                    flowerEl.style.position = 'absolute';
+                    flowerEl.style.left = flower.positionX + '%';
+                    flowerEl.style.top = flower.positionY + '%';
+                    flowerEl.style.width = '50px';
+                    flowerEl.style.height = '50px';
+                    flowerEl.style.backgroundImage = `url('assets/flower${flower.flowerType}.png')`;
+                    flowerEl.style.backgroundSize = 'contain';
+                    flowerEl.style.backgroundRepeat = 'no-repeat';
+                    flowerEl.style.backgroundPosition = 'center';
+                    flowerEl.style.cursor = 'move';
+                    flowerEl.setAttribute('data-goal', flower.goal);
+                    
+                    // Add tooltip with goal text
+                    flowerEl.title = flower.goal;
+                    
+                    // Make the flower draggable
+                    flowerEl.draggable = true;
+                    
+                    container.appendChild(flowerEl);
+                });
+            } catch (e) {
+                console.error('Error loading garden data', e);
+            }
+        }
+        
+        // Helper function to get current user ID - Fixed to always return a value for demo
+        function getCurrentUserId() {
+            // For demo purposes, always return a user ID so flowers can be saved/loaded
+            return localStorage.getItem('visionly_current_user') || 'demo_user';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const userId = getCurrentUserId();
+            // restore Level 1 achieved state
+            if (localStorage.getItem('visionly_level1_achieved_' + userId) === 'true') {
+                const lvl1 = document.querySelector('.garden-level-box:nth-child(1)');
+                lvl1.style.pointerEvents = 'none';
+                if (!lvl1.querySelector('.achieved-overlay')) {
+                    const ov = document.createElement('div');
+                    ov.className = 'achieved-overlay';
+                    ov.innerHTML = '<div class="achieved-text">ACHIEVED 🏆</div>';
+                    lvl1.appendChild(ov);
+                }
+                // disable flowers panel
+                document.querySelectorAll('.flowers-panel .flower-item').forEach(item => {
+                    item.style.filter = 'grayscale(1) brightness(0.4)';
+                    item.style.pointerEvents = 'none';
+                    item.style.opacity = '0.5';
+                });
+
+                // unlock Level 2 permanently
+                const overlays = document.querySelectorAll('.locked-overlay');
+                if (overlays[0]) overlays[0].style.display = 'none';
+            }
+
+            // ensure Level 2/3 lock state
+            updateLevelLocks();
+
+            // Setup drag and drop for flower items
+            const flowerItems = document.querySelectorAll('.flower-item');
+            const gardenCanvas = document.getElementById('garden-canvas');
+            const plantedContainer = document.getElementById('planted-flowers-container');
+            
+            let currentLevel = 1;
+            let plantedCount = 0;
+
+            function updateLevelLocks() {
+                const uid = getCurrentUserId();
+                const lvl1Done = localStorage.getItem('visionly_level1_achieved_' + uid) === 'true';
+                const overlays = document.querySelectorAll('.locked-overlay');
+
+                // Level 2 unlock if Level 1 done or plantedCount ≥ 5
+                if (lvl1Done || plantedCount >= 5) {
+                    if (overlays[0]) overlays[0].style.display = 'none';
+                } else {
+                    if (overlays[0]) overlays[0].style.display = '';
+                }
+
+                // Level 3 only unlocks at ≥ 16
+                if (plantedCount >= 16) {
+                    if (overlays[1]) overlays[1].style.display = 'none';
+                } else {
+                    if (overlays[1]) overlays[1].style.display = '';
+                }
+
+                // Block Level 1 card once done
+                const lvl1Box = document.querySelector('.garden-level-box:nth-child(1)');
+                if (lvl1Done || plantedCount >= 5) {
+                    lvl1Box.style.pointerEvents = 'none';
+                    if (!lvl1Box.querySelector('.achieved-overlay')) {
+                        const ov = document.createElement('div');
+                        ov.className = 'achieved-overlay';
+                        ov.innerHTML = '<div class="achieved-text">ACHIEVED 🏆</div>';
+                        lvl1Box.appendChild(ov);
+                    }
+                } else {
+                    lvl1Box.style.pointerEvents = '';
+                    const oldOv = lvl1Box.querySelector('.achieved-overlay');
+                    if (oldOv) oldOv.remove();
+                }
+
+                // Black out panel items when Level 1 complete
+                document.querySelectorAll('.flower-item').forEach(item => {
+                    if (lvl1Done || plantedCount >= 5) {
+                        item.style.filter = 'grayscale(1) brightness(0.4)';
+                        item.style.pointerEvents = 'none';
+                        item.style.opacity = '0.5';
+                    } else {
+                        item.style.filter = '';
+                        item.style.pointerEvents = '';
+                        item.style.opacity = '';
+                    }
+                });
+            }
+
+            function getPlantedCountForLevel(level) {
+                // Count flowers for this level in the DOM
+                const planted = document.querySelectorAll('#planted-flowers-container .planted-flower-wrapper[data-level="' + level + '"]');
+                return planted.length;
+            }
+
+            flowerItems.forEach(item => {
+                // Add hover effect
+                item.addEventListener('mouseover', function() {
+                    this.style.transform = 'scale(1.1)';
+                    this.style.boxShadow = '0 0 8px rgba(42,107,64,0.5)';
+                });
+                
+                item.addEventListener('mouseout', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                });
+                
+                item.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', this.getAttribute('data-flower'));
+                    this.style.opacity = '0.7';
+                });
+                
+                item.addEventListener('dragend', function() {
+                    this.style.opacity = '1';
+                });
+            });
+            
+            gardenCanvas.addEventListener('dragover', function(e) {
+                e.preventDefault();
+            });
+            
+            gardenCanvas.addEventListener('drop', function(e) {
+                e.preventDefault();
+                const flowerType = e.dataTransfer.getData('text/plain');
+
+                // Calculate position relative to the garden canvas
+                const rect = gardenCanvas.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+                // Make the flower much bigger
+                const flowerSize = 120; // px
+
+                // Create a wrapper for flower + stem
+                const wrapper = document.createElement('div');
+                wrapper.style.position = 'absolute';
+                wrapper.style.left = `calc(${x}% - ${flowerSize/2}px)`;
+                wrapper.style.top = `calc(${y}% - ${flowerSize/2}px)`;
+                wrapper.style.width = flowerSize + 'px';
+                wrapper.style.height = '100%';
+                wrapper.style.pointerEvents = 'none';
+
+                // Calculate pixel positions for SVG
+                const canvasHeight = gardenCanvas.offsetHeight;
+                const dropY = (y / 100) * canvasHeight;
+                const stemHeight = canvasHeight - dropY - flowerSize/2;
+
+                // SVG flexible stem with leaves
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('width', flowerSize);
+                svg.setAttribute('height', stemHeight > 0 ? stemHeight : 0);
+                svg.style.position = 'absolute';
+                svg.style.left = '0';
+                svg.style.top = flowerSize/2 + 'px';
+                svg.style.pointerEvents = 'none';
+
+                // Flexible stem using a cubic Bezier curve
+                const xMid = flowerSize/2;
+                const yStart = 0;
+                const yEnd = stemHeight > 0 ? stemHeight : 0;
+                const curveOffset = Math.random() * 40 - 20; // random left/right curve
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d',
+                    `M${xMid},${yStart} C${xMid+curveOffset},${yStart+stemHeight/3} ${xMid-curveOffset},${yStart+2*stemHeight/3} ${xMid},${yEnd}`
+                );
+                path.setAttribute('stroke', '#2a6b40');
+                path.setAttribute('stroke-width', '8');
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke-linecap', 'round');
+                svg.appendChild(path);
+
+                // Add small leaves along the stem (2-3 leaves)
+                for (let i = 1; i <= 3; i++) {
+                    const t = i / 4;
+                    // Calculate point on Bezier curve
+                    function bezier(t, p0, p1, p2, p3) {
+                        return (
+                            Math.pow(1-t,3)*p0 +
+                            3*Math.pow(1-t,2)*t*p1 +
+                            3*(1-t)*Math.pow(t,2)*p2 +
+                            Math.pow(t,3)*p3
+                        );
+                    }
+                    const px = bezier(t, xMid, xMid+curveOffset, xMid-curveOffset, xMid);
+                    const py = bezier(t, yStart, yStart+stemHeight/3, yStart+2*stemHeight/3, yEnd);
+
+                    // Draw a small leaf (ellipse)
+                    const leaf = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+                    leaf.setAttribute('cx', px + (i%2===0 ? 18 : -18));
+                    leaf.setAttribute('cy', py);
+                    leaf.setAttribute('rx', 14);
+                    leaf.setAttribute('ry', 6);
+                    leaf.setAttribute('fill', '#4caf50');
+                    leaf.setAttribute('opacity', '0.8');
+                    leaf.setAttribute('transform', `rotate(${i%2===0 ? 25 : -25} ${px + (i%2===0 ? 18 : -18)} ${py})`);
+                    svg.appendChild(leaf);
+                }
+
+                // Create the flower element
+                const flower = document.createElement('div');
+                flower.className = 'planted-flower';
+                flower.style.position = 'absolute';
+                flower.style.left = '0';
+                flower.style.top = '0';
+                flower.style.width = flowerSize + 'px';
+                flower.style.height = flowerSize + 'px';
+                flower.style.backgroundImage = `url('assets/flower${flowerType}.png')`;
+                flower.style.backgroundSize = 'contain';
+                flower.style.backgroundRepeat = 'no-repeat';
+                flower.style.backgroundPosition = 'center';
+                flower.style.cursor = 'pointer';
+                flower.style.pointerEvents = 'auto';
+                flower.style.display = 'flex';
+                flower.style.alignItems = 'center';
+                flower.style.justifyContent = 'center';
+                flower.style.fontSize = '4rem';
+
+                // Fallback emoji if image is missing
+                flower.innerHTML = getFlowerEmoji(flowerType);
+
+                // Add SVG and flower to wrapper
+                wrapper.appendChild(svg);
+                wrapper.appendChild(flower);
+
+                // Mark wrapper with data-level for counting
+                wrapper.className = 'planted-flower-wrapper';
+                wrapper.setAttribute('data-level', currentLevel);
+
+                plantedContainer.appendChild(wrapper);
+
+                // Update count
+                plantedCount = getPlantedCountForLevel(currentLevel);
+
+                // Lock panel & celebrate on 5th flower of Level 1
+                if (currentLevel === 1 && plantedCount === 5) {
+                    const uid = getCurrentUserId();
+                    localStorage.setItem('visionly_level1_achieved_' + uid, 'true');   // persist
+
+                    // only fire once
+                    if (!document.querySelector('.level-complete-text')) {
+                        launchConfetti();
+                        // show popup
+                        const workspace = document.getElementById('garden-workspace');
+                        const txt = document.createElement('div');
+                        txt.className = 'level-complete-text';
+                        txt.textContent = '🎉 Level 1 Completed! 🎉';
+                        workspace.appendChild(txt);
+                        setTimeout(() => txt.remove(), 3000);
+
+                        // block Level 1 card and show achieved overlay
+                        const lvl1 = document.querySelector('.garden-level-box:nth-child(1)');
+                        lvl1.style.pointerEvents = 'none';
+                        if (!lvl1.querySelector('.achieved-overlay')) {
+                            const ov = document.createElement('div');
+                            ov.className = 'achieved-overlay';
+                            ov.innerHTML = '<div class="achieved-text">ACHIEVED 🏆</div>';
+                            lvl1.appendChild(ov);
+                        }
+                        // disable remaining flower-items
+                        document.querySelectorAll('.flowers-panel .flower-item').forEach(item => {
+                            item.style.filter = 'grayscale(1) brightness(0.4)';
+                            item.style.pointerEvents = 'none';
+                            item.style.opacity = '0.5';
+                        });
+                    }
+                }
+
+                updateLevelLocks();
+            });
+
+            // Helper for fallback emoji
+            function getFlowerEmoji(type) {
+                switch (type) {
+                    case "1": return "🌸";
+                    case "2": return "🌼";
+                    case "3": return "🌻";
+                    case "4": return "🌷";
+                    case "5": return "🌺";
+                    default: return "🌸";
+                }
+            }
+        });
+        
+        // Confetti function
+        function launchConfetti() {
+            // Simple confetti using emojis
+            const workspace = document.getElementById('garden-workspace');
+            for (let i = 0; i < 36; i++) {
+                const conf = document.createElement('div');
+                conf.textContent = ['🎉','🌸','🌼','🌷','🌺','✨','💚'][Math.floor(Math.random()*7)];
+                conf.style.position = 'absolute';
+                conf.style.left = Math.random() * 90 + '%';
+                conf.style.top = '-40px';
+                conf.style.fontSize = (Math.random() * 1.2 + 1.2) + 'rem';
+                conf.style.opacity = '0.85';
+                conf.style.pointerEvents = 'none';
+                conf.style.transition = 'top 2.2s cubic-bezier(.2,.8,.3,1), opacity 2.2s';
+                workspace.appendChild(conf);
+                setTimeout(() => {
+                    conf.style.top = (Math.random() * 60 + 30) + '%';
+                    conf.style.opacity = '0';
+                }, 10);
+                setTimeout(() => {
+                    if (conf.parentNode) conf.parentNode.removeChild(conf);
+                }, 2300);
             }
         }
     </script>

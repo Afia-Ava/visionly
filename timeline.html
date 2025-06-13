@@ -361,26 +361,28 @@
                 let avgProgress = 0;
                 let subgoalCount = subgoals.length;
                 let progressSum = 0;
+                let allComplete = true; // Track if all subgoals are 100% complete
                 let subgoalsHtml = '';
+
                 if (subgoals.length > 0) {
                     subgoalsHtml = `<ul style="margin: 8px 0 0 18px; padding: 0; color: #231942; font-size: 0.97rem; list-style-type: disc; list-style-position: outside;">` +
                         subgoals.map((sg, idx) => {
                             const key = progressKey(mainGoal, sg);
                             const val = progressData[key] !== undefined ? progressData[key] : 0;
-                            // Add plant garden button for 100% complete goals
-                            const plantButton = val >= 100 ? 
-                                `<button class="plant-garden-btn" data-goal="${encodeURIComponent(sg)}" style="margin-left:10px; background:#2a6b40; color:#fff; border:none; border-radius:4px; padding:3px 8px; font-size:0.8em; cursor:pointer; display:flex; align-items:center;">
-                                    <span style="margin-right:4px;">🌷</span> Plant in Garden
-                                </button>` : '';
+                            progressSum += val;
                             
-                            // Bullet color changed to black
+                            // Check if this subgoal is complete (for main goal plant button)
+                            if (val < 100) {
+                                allComplete = false;
+                            }
+                            
+                            // No plant button for individual subgoals anymore
                             return `<li style="margin-bottom: 12px; color: #231942; font-weight: 600; list-style-type: none; display: flex; align-items: flex-start;">
                                 <span style="display:inline-block; margin-right:8px; margin-top:7px; font-size:1.1em; color:#000;">•</span>
                                 <div style="flex:1;">
                                     <div style="display:flex; align-items:center; gap:10px;">
                                         <span>${sg}</span>
                                         <span class="subgoal-emoji" data-key="${key}" style="font-size:1.2em; margin-left:4px;">${progressEmoji(val)}</span>
-                                        ${plantButton}
                                     </div>
                                     <div style="margin-top:4px; display:flex; align-items:center; gap:8px;">
                                         <input type="range" min="0" max="100" value="${val}" class="subgoal-progress-slider" data-key="${key}" style="flex:1; accent-color:#8b5fbf;">
@@ -405,10 +407,22 @@
                         </div>
                     `;
                 }
+                // Create plant button for main goal - changes to dark green when 100% complete
+                const mainGoalPlantBtn = subgoals.length > 0 ? 
+                    `<button class="plant-garden-btn" data-goal="${encodeURIComponent(mainGoal)}" 
+                        style="margin-left:10px; background-color: ${avgProgress === 100 ? '#1e5230' : '#2a6b40'}; color:#fff; border:none; border-radius:4px; 
+                        padding:3px 8px; font-size:0.8em; cursor:pointer; display:flex; align-items:center;
+                        opacity: ${avgProgress === 100 ? '1' : '0.5'};">
+                        <span style="margin-right:4px;">🌷</span> Plant in Garden
+                    </button>` : '';
+
                 milestoneDiv.innerHTML = `
                     <div style="display: flex; align-items: flex-start; justify-content: space-between;">
                         <div class="milestone-content" style="flex:1;">
-                            <h3 class="milestone-main-goal" style="margin: 0 0 4px 0; font-size: 1.15rem; font-weight: 700; color: #231942 !important; text-shadow: none !important;">${mainGoal}</h3>
+                            <div style="display:flex; align-items:center;">
+                                <h3 class="milestone-main-goal" style="margin: 0 0 4px 0; font-size: 1.15rem; font-weight: 700; color: #231942 !important; text-shadow: none !important;">${mainGoal}</h3>
+                                ${mainGoalPlantBtn}
+                            </div>
                             ${totalProgressHtml}
                             ${subgoalsHtml}
                         </div>
@@ -567,6 +581,58 @@
                                 </ul>
                             ` : ''}
                         `;
+                    });
+                });
+
+                // Add click handler for the Plant in Garden buttons
+                milestoneDiv.querySelectorAll('.plant-garden-btn').forEach(btn => {
+                    // Force proper styling update when button is rendered
+                    if (avgProgress === 100) {
+                        btn.style.backgroundColor = '#1e5230';
+                        btn.style.opacity = '1';
+                    } else {
+                        btn.style.backgroundColor = '#2a6b40';
+                        btn.style.opacity = '0.5';
+                    }
+                    
+                    btn.addEventListener('click', function() {
+                        console.log("Button clicked, progress:", avgProgress);
+                        
+                        // Only allow planting and navigation if 100% complete
+                        if (avgProgress === 100) {
+                            const goalText = decodeURIComponent(this.getAttribute('data-goal'));
+                            
+                            // Store completed goal in garden
+                            const uid = getCurrentUserId();
+                            if (uid) {
+                                // Get existing garden data or initialize new one
+                                let gardenData = JSON.parse(localStorage.getItem('visionly_garden_' + uid) || '[]');
+                                
+                                // Check if this achievement is already in the garden
+                                if (!gardenData.some(item => item.goal === goalText)) {
+                                    // Add new flower to garden with random position
+                                    gardenData.push({
+                                        goal: goalText,
+                                        flowerType: Math.floor(Math.random() * 5) + 1,
+                                        positionX: Math.floor(Math.random() * 80) + 10,
+                                        positionY: Math.floor(Math.random() * 60) + 20,
+                                        plantedDate: new Date().toISOString()
+                                    });
+                                    
+                                    // Save updated garden data
+                                    localStorage.setItem('visionly_garden_' + uid, JSON.stringify(gardenData));
+                                    
+                                    // Show success message
+                                    alert('🌷 Achievement planted in your garden!');
+                                }
+                            }
+                            
+                            // Navigate to garden view page
+                            window.location.href = 'garden-view.html';
+                        } else {
+                            // Inform the user they need to complete all subgoals
+                            alert('Please complete all subgoals to 100% before planting this achievement in your garden.');
+                        }
                     });
                 });
 
