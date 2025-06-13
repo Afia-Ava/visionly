@@ -195,23 +195,19 @@
             width: 50px;
             height: 50px;
             cursor: grab;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
             border: 1px solid #ccc;
             border-radius: 50%;
             background-color: #fffbe7;
             box-shadow: 0 1px 4px rgba(0,0,0,0.07);
             margin-bottom: 5px;
-            /* fallback for missing image */
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2rem;
             color: #e0a800;
+            user-select: none; 
         }
         
-        /* overlay for achieved level card */
         .achieved-overlay {
             position: absolute;
             top: 0;
@@ -333,11 +329,11 @@
             <!-- Flowers Panel -->
             <div class="flowers-panel" style="width: 120px; background-color: #f8f8f8; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px; border-right: 1px solid #eee;">
                 <h3 style="margin: 0 0 10px 0; color: #2a6b40; font-size: 1.1rem; text-align: center;">Flowers</h3>
-                <div class="flower-item" draggable="true" data-flower="1" style="background-image: url('assets/flower1.png');">🌸</div>
-                <div class="flower-item" draggable="true" data-flower="2" style="background-image: url('assets/flower2.png');">🌼</div>
-                <div class="flower-item" draggable="true" data-flower="3" style="background-image: url('assets/flower3.png');">🌻</div>
-                <div class="flower-item" draggable="true" data-flower="4" style="background-image: url('assets/flower4.png');">🌷</div>
-                <div class="flower-item" draggable="true" data-flower="5" style="background-image: url('assets/flower5.png');">🌺</div>
+                <div class="flower-item" draggable="true" data-flower="1">🌸</div>
+                <div class="flower-item" draggable="true" data-flower="2">🌼</div>
+                <div class="flower-item" draggable="true" data-flower="3">🌻</div>
+                <div class="flower-item" draggable="true" data-flower="4">🌷</div>
+                <div class="flower-item" draggable="true" data-flower="5">🌺</div>
             </div>
             
             <!-- Garden Canvas -->
@@ -418,22 +414,36 @@
                 
                 // Create flower elements
                 flowers.forEach(flower => {
+                    // Same approach as the drop handler - use emoji with stem
+                    const flowerSize = 120;
+                    const wrapper = document.createElement('div');
+                    wrapper.style.position = 'absolute';
+                    wrapper.style.left = `calc(${flower.positionX}% - ${flowerSize/2}px)`;
+                    wrapper.style.top = `calc(${flower.positionY}% - ${flowerSize/2}px)`;
+                    wrapper.style.width = flowerSize + 'px';
+                    wrapper.style.height = '100%';
+                    wrapper.style.pointerEvents = 'none';
+
+                    // Create stem
+                    // ...code for stem (similar to drop handler)...
+
+                    // Create the flower element with emoji
                     const flowerEl = document.createElement('div');
                     flowerEl.className = 'planted-flower';
                     flowerEl.style.position = 'absolute';
-                    flowerEl.style.left = flower.positionX + '%';
-                    flowerEl.style.top = flower.positionY + '%';
-                    flowerEl.style.width = '50px';
-                    flowerEl.style.height = '50px';
-                    flowerEl.style.backgroundImage = `url('assets/flower${flower.flowerType}.png')`;
-                    flowerEl.style.backgroundSize = 'contain';
-                    flowerEl.style.backgroundRepeat = 'no-repeat';
-                    flowerEl.style.backgroundPosition = 'center';
+                    flowerEl.style.left = '0';
+                    flowerEl.style.top = '0';
+                    flowerEl.style.width = flowerSize + 'px';
+                    flowerEl.style.height = flowerSize + 'px';
                     flowerEl.style.cursor = 'move';
+                    flowerEl.style.display = 'flex';
+                    flowerEl.style.alignItems = 'center';
+                    flowerEl.style.justifyContent = 'center';
+                    flowerEl.style.fontSize = '4rem';
+                    flowerEl.style.color = '#e0a800';
                     flowerEl.setAttribute('data-goal', flower.goal);
-                    
-                    // Add tooltip with goal text
                     flowerEl.title = flower.goal;
+                    flowerEl.textContent = getFlowerEmoji(flower.flowerType);
                     
                     // Make the flower draggable
                     flowerEl.draggable = true;
@@ -653,20 +663,17 @@
                 flower.style.top = '0';
                 flower.style.width = flowerSize + 'px';
                 flower.style.height = flowerSize + 'px';
-                flower.style.backgroundImage = `url('assets/flower${flowerType}.png')`;
-                flower.style.backgroundSize = 'contain';
-                flower.style.backgroundRepeat = 'no-repeat';
-                flower.style.backgroundPosition = 'center';
                 flower.style.cursor = 'pointer';
                 flower.style.pointerEvents = 'auto';
                 flower.style.display = 'flex';
                 flower.style.alignItems = 'center';
                 flower.style.justifyContent = 'center';
                 flower.style.fontSize = '4rem';
+                flower.style.color = '#e0a800';
 
-                // Fallback emoji if image is missing
+                // Use emoji
                 flower.innerHTML = getFlowerEmoji(flowerType);
-
+                
                 // Add SVG and flower to wrapper
                 wrapper.appendChild(svg);
                 wrapper.appendChild(flower);
