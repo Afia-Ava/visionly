@@ -65,13 +65,16 @@ function updateNavigation(user) {
     authLi.style.marginLeft = '20px';  // Add some space between nav items and profile
     
     if (user) {
+        // Prioritize stored avatar in localStorage
+        const storedAvatar = localStorage.getItem('profileAvatar');
+        const avatarURL = storedAvatar || user.photoURL || 'assets/default-avatar.jpg';
         // User is signed in - show profile picture
         const profileContainer = document.createElement('div');
         profileContainer.className = 'profile-container';
         profileContainer.innerHTML = `
-            <img src="${user.photoURL || 'assets/default-avatar.jpg'}" alt="Profile" class="profile-pic" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; cursor: pointer;">
+            <img src="${avatarURL}" alt="Profile" class="profile-pic" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; cursor: pointer;">
             <div class="profile-dropdown" style="display: none; position: absolute; right: 0; top: 100%; background: #2c2046; border-radius: 8px; padding: 8px; min-width: 150px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); z-index: 1000;">
-                <a href="profile-settings.html" class="dropdown-item" style="display: block; padding: 8px; color: white; text-decoration: none;">Profile Settings</a>
+                <a href="profile.html" class="dropdown-item" style="display: block; padding: 8px; color: white; text-decoration: none;">Profile</a>
                 <button onclick="handleLogout()" class="dropdown-item" style="display: block; width: 100%; padding: 8px; color: white; background: none; border: none; text-align: left; cursor: pointer;">Logout</button>
             </div>
         `;
@@ -121,7 +124,7 @@ auth.onAuthStateChanged((user) => {
     
     // Check if we're on a protected page
     const currentPath = window.location.pathname;
-    const protectedPages = ['create-board.html', 'boards.html', 'journal.html'];
+    const protectedPages = ['create-board.html', 'boards.html', 'journal.html', 'career-board.html'];
     const publicPages = ['index.html', 'auth.html', ''];
     
     if (!user && protectedPages.some(page => currentPath.endsWith(page))) {
@@ -141,7 +144,7 @@ document.addEventListener('click', (e) => {
     const link = e.target.closest('a');
     if (!link) return;
 
-    const protectedPages = ['create-board.html', 'boards.html', 'journal.html'];
+    const protectedPages = ['create-board.html', 'boards.html', 'journal.html', 'career-board.html'];
     const isProtectedPage = protectedPages.some(page => link.href.includes(page));
     
     if (isProtectedPage && !auth.currentUser) {

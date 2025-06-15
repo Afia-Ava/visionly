@@ -16,6 +16,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="nav-auth.js"></script>
   <style>
     body {
         font-family: 'Inter', sans-serif;
@@ -311,6 +313,9 @@
     .feature-section:nth-child(4) { transition-delay: 0.7s; }
     .feature-section:nth-child(5) { transition-delay: 0.9s; }
   </style>
+  <!-- Firebase config and navbar auth script -->
+  <script src="firebase-config.js"></script>
+  <script src="nav-auth.js"></script>
 </head>
 <body style="font-family: 'Inter', sans-serif; background-color: #fff; color: #333; margin: 0; padding: 0; overflow-x: hidden;">
     <!-- Add animated background particles with depth -->
@@ -327,6 +332,25 @@
             <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
         </div>
     </nav>
+    <!-- Update navbar profile-photo from saved avatar -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const storedAvatar = localStorage.getItem('profileAvatar');
+        if (storedAvatar) {
+          const navImg = document.getElementById('profile-photo');
+          if (navImg) navImg.src = storedAvatar;
+        }
+      });
+    </script>
+
+    <!-- Persist saved profile avatar in navbar immediately -->
+    <script>
+      const storedAvatar = localStorage.getItem('profileAvatar');
+      if (storedAvatar) {
+        const navImg = document.getElementById('profile-photo');
+        if (navImg) navImg.src = storedAvatar;
+      }
+    </script>
 
     <div id="navbar-container"></div>
 
@@ -1567,29 +1591,6 @@
       
       // Start the animation immediately
       animateScroll();
-    }
-  });
-</script>
-</body>
-</html>
-        }
-        
-        // Continue the animation loop
-        requestAnimationFrame(smoothScroll);
-      }
-      
-      // Start the animation immediately
-      requestAnimationFrame(smoothScroll);
-    }
-  });
-</script>
-</body>
-</html>
-      
-      scrollContainer.addEventListener('mouseleave', () => {
-        lastTimestamp = null; // Resume scrolling
-        requestAnimationFrame(smoothScroll);
-      });
     }
   });
 </script>

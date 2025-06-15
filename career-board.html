@@ -254,6 +254,15 @@
       background: #f8f9fa;
     }
   </style>
+
+  <!-- Firebase Web SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- Firebase configuration and helper -->
+  <script src="firebase-config.js"></script>
+  <script src="firebase-vision-boards.js"></script>
+  <script src="nav-auth.js"></script>
 </head>
 <body>
     <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
@@ -268,6 +277,17 @@
         </div>
     </nav>
 
+    <!-- Update navbar profile-photo from saved avatar -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const storedAvatar = localStorage.getItem('profileAvatar');
+        if (storedAvatar) {
+          const navImg = document.getElementById('profile-photo');
+          if (navImg) navImg.src = storedAvatar;
+        }
+      });
+    </script>
+
     <div class="vision-board-container">
         <div class="board-header">
             <div class="board-header-left">
@@ -276,7 +296,7 @@
             </div>
             <div class="header-buttons">
                 <button class="btn btn-secondary" onclick="window.location.href='index.html#gallery'">← Back</button>
-                <button class="btn btn-secondary">Edit</button>
+                <button id="save-board-btn" class="btn btn-secondary">Save</button>
             </div>
         </div>
 
@@ -400,7 +420,6 @@
       });
     </script>
 
-    <script src="firebase-config.js"></script>
     <script src="shared-scripts.js"></script>
     <script src="profile-dropdown.js"></script>
     
@@ -477,60 +496,32 @@
         });
     </script>
     <script src="dark-mode-toggle.js"></script>
-</body>
-</html>
-                }).catch(() => {
-                    // Autoplay blocked - set icon to off state
-                    soundIcon.src = 'assets/speaker-off-icon.png';
-                    soundIcon.alt = 'Sound Off';
-                    isPlaying = false;
-                });
-            }
 
-            // Try to start audio immediately
-            startAudio();
-
-            // Also try to start on first user interaction
-            const enableAudio = () => {
-                if (!isPlaying && audio.paused) {
-                    startAudio();
-                }
-            };
-
-            // Listen for various user interactions
-            document.addEventListener('click', enableAudio, { once: true });
-            document.addEventListener('touchstart', enableAudio, { once: true });
-            document.addEventListener('keydown', enableAudio, { once: true });
-
-            // Toggle sound on button click
-            toggleBtn.addEventListener('click', function() {
-                if (audio.paused) {
-                    audio.play().then(() => {
-                        soundIcon.src = 'assets/speaker-on-icon.png';
-                        soundIcon.alt = 'Sound On';
-                        isPlaying = true;
-                    });
-                } else {
-                    audio.pause();
-                    soundIcon.src = 'assets/speaker-off-icon.png';
-                    soundIcon.alt = 'Sound Off';
-                    isPlaying = false;
-                }
-            });
-
-            // Update icon based on audio state
-            audio.addEventListener('play', function() {
-                soundIcon.src = 'assets/speaker-on-icon.png';
-                soundIcon.alt = 'Sound On';
-                isPlaying = true;
-            });
-            audio.addEventListener('pause', function() {
-                soundIcon.src = 'assets/speaker-off-icon.png';
-                soundIcon.alt = 'Sound Off';
-                isPlaying = false;
-            });
-        });
+    <!-- Add Firebase vision boards functions -->
+    <script>
+     document.addEventListener('DOMContentLoaded', () => {
+       const saveBtn = document.getElementById('save-board-btn');
+       if (saveBtn) {
+         saveBtn.addEventListener('click', async () => {
+           // Collect board data
+           const titleEl = document.querySelector('.board-header-left h1');
+           const name = titleEl ? titleEl.innerText.trim() : 'Untitled';
+           const images = Array.from(document.querySelectorAll('.vision-grid img')).map(img => img.src);
+           const textCards = Array.from(document.querySelectorAll('.vision-item.text-card')).map(div => div.innerText.trim());
+           const elements = [];
+           images.forEach(url => elements.push({ type: 'image', url }));
+           textCards.forEach(text => elements.push({ type: 'text', text }));
+           try {
+             const boardId = await saveVisionBoard({ name, elements });
+             // Redirect to boards list to see new board
+             window.location.href = 'boards.html';
+           } catch (e) {
+             console.error('Save failed:', e);
+             alert('Error saving board.');
+           }
+         });
+       }
+     });
     </script>
-    <script src="dark-mode-toggle.js"></script>
 </body>
 </html>

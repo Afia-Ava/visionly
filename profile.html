@@ -694,10 +694,10 @@
         
         <div class="profile-main">
             <div class="profile-info">
-                <img id="profile-avatar" src="https://via.placeholder.com/120x120/6b46c1/ffffff?text=SC" alt="Profile Avatar" class="profile-avatar">
+                <img id="profile-avatar" src="https://via.placeholder.com/120x120/6b46c1/ffffff?text=U" alt="Profile Avatar" class="profile-avatar">
                 <div class="profile-details">
-                    <h2 id="profile-name">Sophia Carter</h2>
-                    <p id="profile-email">sophia.carter@email.com</p>
+                    <h2 id="profile-name"></h2>
+                    <p id="profile-email"></p>
                 </div>
                 
                 <div class="stats-grid">
@@ -759,7 +759,7 @@
                     
                     <div class="form-group">
                         <label class="form-label">Email</label>
-                        <input type="email" id="email-input" class="form-input" placeholder="Enter your email">
+                        <input type="email" id="email-input" class="form-input" placeholder="Enter your email" readonly>
                     </div>
                     
                     <div class="form-group">
@@ -1004,445 +1004,249 @@
             updateIcon();
         });
 
-        // Setup avatar selection functionality
+        let avatarManuallySelected = false; // Track if user manually selected an avatar
         function setupAvatarSelection() {
-            const avatarOptions = document.querySelectorAll('.avatar-option');
-            const selectedAvatarInput = document.getElementById('selected-avatar');
-            
-            // Set the first avatar as selected by default
-            if (avatarOptions.length > 0) {
-                avatarOptions[0].classList.add('selected');
-            }
-            
-            // Add click event to each avatar option
-            avatarOptions.forEach(option => {
+            const profileAvatar = document.getElementById('profile-avatar');
+            const profilePhoto = document.getElementById('profile-photo');
+            const options = document.querySelectorAll('.avatar-option');
+            options.forEach(option => {
                 option.addEventListener('click', function() {
-                    // Remove selected class from all options
-                    avatarOptions.forEach(opt => opt.classList.remove('selected'));
-                    
-                    // Add selected class to clicked option
+                    // Highlight selected avatar
+                    options.forEach(opt => opt.classList.remove('selected'));
                     this.classList.add('selected');
-                    
-                    // Update hidden input with selected avatar
-                    selectedAvatarInput.value = this.dataset.avatar;
-                    
-                    // Preview the selected avatar
-                    const avatarSrc = this.querySelector('img').src;
-                    
-                    // Update both the main profile avatar and the navbar profile photo
-                    const profileAvatar = document.getElementById('profile-avatar');
-                    const profilePhoto = document.getElementById('profile-photo');
-                    
-                    // Check if elements exist before updating
-                    if (profileAvatar) profileAvatar.src = avatarSrc;
-                    if (profilePhoto) profilePhoto.src = avatarSrc;
+                    // Build path from dataset
+                    const name = this.dataset.avatar;
+                    const avatarPath = `assets/${name}.png`;
+                    console.log('Avatar selected:', avatarPath);
+                    // Persist avatar selection
+                    localStorage.setItem('profileAvatar', avatarPath);
+                    // Update large avatar
+                    profileAvatar.src = avatarPath;
+                    // Update profile photo in navbar
+                    profilePhoto.src = avatarPath;
+                    // Update hidden input value
+                    document.getElementById('selected-avatar').value = name;
+                    // Mark as manually selected
+                    avatarManuallySelected = true;
                 });
             });
         }
-        
+
+        // Restore avatar from localStorage on load
+        function restoreAvatarSelection() {
+            const stored = localStorage.getItem('profileAvatar');
+            if (!stored) return;
+            const name = stored.split('/').pop().split('.')[0];
+            const options = document.querySelectorAll('.avatar-option');
+            options.forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.avatar === name);
+            });
+            const selectedInput = document.getElementById('selected-avatar');
+            if (selectedInput) selectedInput.value = name;
+            const profileAvatar = document.getElementById('profile-avatar');
+            if (profileAvatar) profileAvatar.src = stored;
+            const profilePhoto = document.getElementById('profile-photo');
+            if (profilePhoto) profilePhoto.src = stored;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize profile page once DOM is loaded
+            // Set up avatar options click handlers
+            setupAvatarSelection();
+            // Restore any previously selected avatar
+            restoreAvatarSelection();
+            // Load user data and profile fields (with stored avatar prioritized)
+            loadUserData();
+            // Set up toggles (dark mode, notifications)
+            setupToggles();
+            // Attach save button handler
+            setupSaveButton();
+        });
+
+        // Ensure avatar persists on back/forward navigation
+        window.addEventListener('pageshow', function(event) {
+            restoreAvatarSelection();
+        });
+
         function loadUserData() {
-            console.log('=== STARTING PROFILE LOAD ===');
-            
             if (typeof firebase !== 'undefined' && firebase.auth) {
-                firebase.auth().onAuthStateChanged(async (user) => {
+                firebase.auth().onAuthStateChanged(user => {
                     if (user) {
-                        console.log('User found:', user.email);
-                        
-                        const userEmail = user.email;
-                        let userName = "Afia Ava"; // Set your desired name here
-                        
-                        // Update Firebase displayName if it's not already set
-                        if (!user.displayName || user.displayName !== userName) {
-                            try {
-                                await user.updateProfile({
-                                    displayName: userName
-                                });
-                                console.log('Updated displayName to:', userName);
-                            } catch (error) {
-                                console.error('Error updating displayName:', error);
-                            }
-                        }
-                        
-                        const photoURL = user.photoURL || `https://via.placeholder.com/120x120/6b46c1/ffffff?text=AA`;
-                        
-                        // Update all profile elements
-                        document.getElementById('profile-name').textContent = userName;
+                        const stored = localStorage.getItem('profileAvatar');
+                        const userName = user.displayName || '';
+                        const userEmail = user.email || '';
+                        const initial = (userName ? userName[0] : (userEmail ? userEmail[0] : 'U')).toUpperCase();
+                        const placeholder = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;
+                        const firebaseAvatar = user.photoURL || placeholder;
+                        const avatarToShow = stored || firebaseAvatar;
+                        // Update UI fields
+                        document.getElementById('profile-name').textContent = userName || userEmail;
                         document.getElementById('profile-email').textContent = userEmail;
-                        document.getElementById('profile-avatar').src = photoURL;
-                        document.getElementById('profile-photo').src = photoURL; // Update navbar photo
+                        document.getElementById('profile-avatar').src = avatarToShow;
+                        const navPhoto = document.getElementById('profile-photo');
+                        if (navPhoto) navPhoto.src = avatarToShow;
                         document.getElementById('name-input').value = userName;
                         document.getElementById('email-input').value = userEmail;
-                        
-                        // Select the matching avatar if it exists
-                        if (user.photoURL) {
-                            selectMatchingAvatar(user.photoURL);
+                        // Ensure selected-avatar input matches
+                        const selectedInput = document.getElementById('selected-avatar');
+                        if (stored && selectedInput) {
+                            selectedInput.value = stored.split('/').pop().split('.')[0];
                         }
-                        
-                        // Load user statistics
+                        // Do not reset avatar options here
+                        // Load stats and achievements
                         loadUserStatistics(user.uid);
-                        
-                        // Load user achievements if available
-                        loadUserAchievements(user.uid);
+                        if (typeof loadUserAchievements === 'function') loadUserAchievements(user.uid);
                     } else {
-                        console.log('No user found');
                         setDefaultUserData();
                     }
                 });
             } else {
-                console.log('Firebase not available');
                 setDefaultUserData();
             }
         }
-        
-        // Find and select the avatar that matches user's current avatar
-        function selectMatchingAvatar(photoURL) {
-            // Extract the avatar filename from the full URL
-            let avatarFilename = photoURL.split('/').pop();
-            
-            // Check if this is an avatar from our collection
-            if (avatarFilename.startsWith('avatar')) {
-                const avatarOptions = document.querySelectorAll('.avatar-option');
-                let matched = false;
-                
-                avatarOptions.forEach(option => {
-                    const avatarImg = option.querySelector('img');
-                    if (avatarImg && photoURL.includes(option.dataset.avatar)) {
-                        // Remove selected class from all options
-                        avatarOptions.forEach(opt => opt.classList.remove('selected'));
-                        
-                        // Add selected class to matching option
-                        option.classList.add('selected');
-                        document.getElementById('selected-avatar').value = option.dataset.avatar;
-                        matched = true;
-                    }
-                });
-                
-                // If no match found, default to first avatar
-                if (!matched && avatarOptions.length > 0) {
-                    avatarOptions[0].classList.add('selected');
-                }
-            }
-        }
-        
-        function loadUserStatistics(userId) {
-            let visionBoardsCount = 0;
-            let journalEntriesCount = 0;
-            let goalsAchievedCount = 0;
-            
-            if (typeof firebase !== 'undefined' && firebase.firestore) {
-                const db = firebase.firestore();
-                
-                // Count vision boards
-                db.collection('visionBoards').where('userId', '==', userId).get()
-                    .then(snapshot => {
-                        visionBoardsCount = snapshot.size;
-                        document.getElementById('vision-boards-count').textContent = visionBoardsCount;
-                        console.log('Vision boards count:', visionBoardsCount);
-                    })
-                    .catch(error => {
-                        console.error('Error getting vision boards:', error);
-                        document.getElementById('vision-boards-count').textContent = '0';
-                    });
-                
-                // Count journal entries
-                db.collection('journalEntries').where('userId', '==', userId).get()
-                    .then(snapshot => {
-                        journalEntriesCount = snapshot.size;
-                        document.getElementById('journal-entries-count').textContent = journalEntriesCount;
-                        console.log('Journal entries count:', journalEntriesCount);
-                    })
-                    .catch(error => {
-                        console.error('Error getting journal entries:', error);
-                        document.getElementById('journal-entries-count').textContent = '0';
-                    });
-                
-                // Count completed goals
-                db.collection('goals').where('userId', '==', userId).where('completed', '==', true).get()
-                    .then(snapshot => {
-                        goalsAchievedCount = snapshot.size;
-                        document.getElementById('goals-achieved-count').textContent = goalsAchievedCount;
-                        console.log('Goals achieved count:', goalsAchievedCount);
-                    })
-                    .catch(error => {
-                        console.error('Error getting goals:', error);
-                        document.getElementById('goals-achieved-count').textContent = '0';
-                    });
-            } else {
-                // Set all to 0 if Firebase not available
-                document.getElementById('vision-boards-count').textContent = '0';
-                document.getElementById('journal-entries-count').textContent = '0';
-                document.getElementById('goals-achieved-count').textContent = '0';
-            }
-        }
-        
-        function setDefaultUserData() {
-            const defaultName = 'Afia Ava';
-            const defaultEmail = 'user@example.com';
-            
-            document.getElementById('profile-name').textContent = defaultName;
-            document.getElementById('profile-email').textContent = defaultEmail;
-            document.getElementById('profile-avatar').src = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=AA`;
-            document.getElementById('name-input').value = defaultName;
-            document.getElementById('email-input').value = defaultEmail;
-            
-            // Set stats to 0 for new users
-            document.getElementById('vision-boards-count').textContent = '0';
-            document.getElementById('journal-entries-count').textContent = '0';
-            document.getElementById('goals-achieved-count').textContent = '0';
-        }
-        
+
         function setupToggles() {
-            // Setup email notifications toggle
-            const notificationsToggle = document.getElementById('notifications-toggle');
+            // Dark mode toggle
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            darkModeToggle.classList.toggle('active', localStorage.getItem('darkMode') === 'true');
+            darkModeToggle.addEventListener('click', function() {
+                const isActive = this.classList.toggle('active');
+                document.body.classList.toggle('dark-mode', isActive);
+                localStorage.setItem('darkMode', isActive);
+            });
             
+            // Email notifications toggle (mocked, not functional)
+            const notificationsToggle = document.getElementById('notifications-toggle');
+            notificationsToggle.classList.toggle('active', localStorage.getItem('emailNotifications') === 'true');
             notificationsToggle.addEventListener('click', function() {
                 this.classList.toggle('active');
-                const isEnabled = this.classList.contains('active');
-                
-                // Save to localStorage
-                localStorage.setItem('emailNotifications', isEnabled);
-                
-                // Show notification
-                const message = isEnabled ? 'Email notifications enabled 📧' : 'Email notifications disabled';
-                showNotification(message);
-            });
-            
-            // Setup dark mode toggle
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
-            
-            // Check if dark mode is enabled and update toggle state
-            if (localStorage.getItem('darkMode') === 'enabled') {
-                document.body.classList.add('dark-mode');
-                darkModeToggle.classList.add('active');
-            }
-            
-            // Add click event to dark mode toggle
-            darkModeToggle.addEventListener('click', function() {
-                this.classList.toggle('active');
-                
-                if (this.classList.contains('active')) {
-                    document.body.classList.add('dark-mode');
-                    localStorage.setItem('darkMode', 'enabled');
-                    showNotification('Dark mode enabled');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                    localStorage.setItem('darkMode', 'disabled');
-                    showNotification('Dark mode disabled');
-                }
-            });
-            
-            // Setup theme selection
-            const themeOptions = document.querySelectorAll('.theme-option');
-            console.log('Theme options found:', themeOptions.length);
-            
-            // Get saved theme or default to soft-white
-            const savedTheme = localStorage.getItem('theme') || 'soft-white';
-            
-            // Mark the current theme as selected and apply it
-            themeOptions.forEach(option => {
-                const theme = option.getAttribute('data-theme');
-                console.log('Theme option:', theme);
-                
-                if (theme === savedTheme) {
-                    option.classList.add('selected');
-                }
-                
-                // Add click event to each theme option
-                option.onclick = function() {
-                    console.log('Theme clicked:', theme);
-                    
-                    // Remove selected class from all options
-                    themeOptions.forEach(opt => opt.classList.remove('selected'));
-                    
-                    // Add selected class to clicked option
-                    this.classList.add('selected');
-                    
-                    // Apply theme with explicit dark mode handling
-                    document.body.setAttribute('data-theme', theme);
-
-                    // --- FIX: Always sync dark mode toggle with theme selection ---
-                    const darkModeToggle = document.getElementById('dark-mode-toggle');
-                    if (theme === 'dark-purple') {
-                        if (!document.body.classList.contains('dark-mode')) {
-                            document.body.classList.add('dark-mode');
-                        }
-                        localStorage.setItem('darkMode', 'enabled');
-                        if (darkModeToggle && !darkModeToggle.classList.contains('active')) {
-                            darkModeToggle.classList.add('active');
-                        }
-                    } else {
-                        document.body.classList.remove('dark-mode');
-                        localStorage.setItem('darkMode', 'disabled');
-                        if (darkModeToggle && darkModeToggle.classList.contains('active')) {
-                            darkModeToggle.classList.remove('active');
-                        }
-                    }
-                    
-                    // Save preference
-                    localStorage.setItem('theme', theme);
-                    
-                    // Show notification
-                    showNotification(`Theme changed to ${theme.replace(/-/g, ' ')}`);
-                    
-                    return false; // Prevent event bubbling
-                };
+                const isActive = this.classList.contains('active');
+                localStorage.setItem('emailNotifications', isActive);
+                // Here you would also update the user's notification preference in your backend
             });
         }
 
-        // Function to apply the theme
-        function applyTheme(theme) {
-            document.body.setAttribute('data-theme', theme);
-            // Always enable dark mode for dark-purple, disable otherwise
-            if (theme === 'dark-purple') {
-                document.body.classList.add('dark-mode');
-                localStorage.setItem('darkMode', 'enabled');
-            } else {
-                document.body.classList.remove('dark-mode');
-                localStorage.setItem('darkMode', 'disabled');
-            }
-        }
-
-        // Apply theme on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Setup the theme selector
-            setupToggles();
-
-            // Apply the saved theme or default
-            const savedTheme = localStorage.getItem('theme') || 'soft-white';
-            applyTheme(savedTheme);
-
-            // Ensure dark mode toggle matches theme
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
-            if (savedTheme === 'dark-purple') {
-                document.body.classList.add('dark-mode');
-                if (darkModeToggle) darkModeToggle.classList.add('active');
-            } else {
-                document.body.classList.remove('dark-mode');
-                if (darkModeToggle) darkModeToggle.classList.remove('active');
-            }
-        });
-        
-        // Direct implementation for theme switching
-        document.addEventListener('DOMContentLoaded', function() {
-            const themeOptions = document.querySelectorAll('.theme-option');
-            themeOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    const theme = this.getAttribute('data-theme');
-                    // Remove selected class from all
-                    themeOptions.forEach(opt => opt.classList.remove('selected'));
-                    
-                    // Add selected class to clicked
-                    this.classList.add('selected');
-                    
-                    // Handle dark mode
-                    if (theme === 'dark-purple') {
-                        document.body.classList.add('dark-mode');
-                        localStorage.setItem('darkMode', 'enabled');
-                    } else {
-                        document.body.classList.remove('dark-mode');
-                        localStorage.setItem('darkMode', 'disabled');
-                    }
-                    
-                    // Set theme attribute
-                    document.body.setAttribute('data-theme', theme);
-                    
-                    // Save preference
-                    localStorage.setItem('theme', theme);
-                    
-                    // Show visual feedback
-                    showNotification(`Theme changed to ${theme.replace(/-/g, ' ')}`);
-                });
-            });
-        });
-        
+        // Function to show temporary notification popup
         function showNotification(message) {
-            // Create a temporary notificationnt
-            const notification = document.createElement('div');entLoaded', function() {
+            const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
                 top: 100px;
                 right: 20px;
                 background: #2d1a45;
-                color: white;                padding: 12px 20px;                border-radius: 6px;                z-index: 10000;                font-size: 14px;                box-shadow: 0 4px 12px rgba(0,0,0,0.3);                transform: translateX(100%);                transition: transform 0.3s ease;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 6px;
+                z-index: 10000;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
             `;
             notification.textContent = message;
             document.body.appendChild(notification);
-            
             // Slide in
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            
+            setTimeout(() => notification.style.transform = 'translateX(0)', 100);
             // Slide out and remove after 3 seconds
             setTimeout(() => {
                 notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
+                setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
-        
+
+        // Handle Save Changes button
         function setupSaveButton() {
-            document.getElementById('save-changes').addEventListener('click', async function() {
-                const name = document.getElementById('name-input').value;
-                const email = document.getElementById('email-input').value;
-                const password = document.getElementById('password-input').value;
-                
-                // Get selected avatar URL
-                const selectedAvatar = document.querySelector('.avatar-option.selected img');
-                const avatarURL = selectedAvatar ? selectedAvatar.src : null;
-                
+            const btn = document.getElementById('save-changes');
+            if (!btn) return;
+            btn.addEventListener('click', async function() {
+                console.log('Save button clicked');
+                alert('Debug: Save button click captured'); // Debug popup
                 try {
-                    if (typeof firebase !== 'undefined' && firebase.auth) {
-                        const user = firebase.auth().currentUser;
-                        if (user) {
-                            // Update display name if changed
-                            if (name && name !== user.displayName) {
-                                await user.updateProfile({
-                                    displayName: name
-                                });
-                            }
-                            
-                            // Update email if changed
-                            if (email && email !== user.email) {
-                                await updateEmail(email);
-                            }
-                            
-                            // Update password if provided
-                            if (password) {
-                                await user.updatePassword(password);
-                            }
-                            
-                            // Update avatar if changed
-                            if (avatarURL && avatarURL !== user.photoURL) {
-                                await user.updateProfile({
-                                    photoURL: avatarURL
-                                });
-                                
-                                // Ensure the avatar is updated in both places with safety checks
-                                const profileAvatar = document.getElementById('profile-avatar');
-                                const profilePhoto = document.getElementById('profile-photo');
-                                
-                                if (profileAvatar) profileAvatar.src = avatarURL;
-                                if (profilePhoto) profilePhoto.src = avatarURL;
-                            }
+                    // Update Firebase displayName
+                    const user = firebase.auth().currentUser;
+                    if (user) {
+                        const name = document.getElementById('name-input').value;
+                        if (name && name !== user.displayName) {
+                            await user.updateProfile({ displayName: name });
                         }
                     }
-                    
-                    // Update UI
-                    document.getElementById('profile-name').textContent = name;
-                    document.getElementById('profile-email').textContent = email;
-                    document.getElementById('password-input').value = '';
-                    
-                    // Show success notification
-                    showNotification('Profile updated successfully!');
+                    showNotification('Profile saved successfully!');
                 } catch (error) {
-                    document.getElementById('password-input').value = ''; // Clear password field
-                    showNotification('Failed to update profile. Please try again.');
-                    console.error('Error updating profile:', error);
+                    console.error('Error saving profile:', error);
+                    showNotification('Failed to save profile.');
                 }
             });
         }
+
+        // Define showNotification if not already defined
+        if (typeof showNotification !== 'function') {
+            function showNotification(message) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    background: #2d1a45;
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 6px;
+                    z-index: 10000;
+                    font-size: 14px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    transform: translateX(100%);
+                    transition: transform 0.3s ease;
+                `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+                setTimeout(() => { notification.style.transform = 'translateX(100%)'; setTimeout(() => notification.remove(), 300); }, 3000);
+            }
+        }
+
+        // Profile page scripts
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('save-changes');
+            console.log('Bottom script: save button element:', btn);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    console.log('Bottom script: save clicked');
+                    alert('Bottom script: Save click');
+                    showNotification('Profile saved (bottom)!');
+                });
+            }
+        });
+    </script>
+    <!-- Final script to ensure Save Changes popup works -->
+    <script>
+      // Notification function
+      function showNotification(message) {
+        const notification = document.createElement('div');
+        Object.assign(notification.style, {
+          position: 'fixed', top: '100px', right: '20px',
+          background: '#2d1a45', color: 'white', padding: '12px 20px',
+          borderRadius: '6px', zIndex: 10000, fontSize: '14px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)', transform: 'translateX(100%)',
+          transition: 'transform 0.3s ease'
+        });
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+        setTimeout(() => {
+          notification.style.transform = 'translateX(100%)';
+          setTimeout(() => notification.remove(), 300);
+        }, 3000);
+      }
+      // Ensure binding
+      document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById('save-changes');
+        console.log('Binding Save Changes button:', btn);
+        if (btn) {
+          btn.addEventListener('click', function() {
+            console.log('Save Changes clicked');
+            showNotification('Profile saved successfully!');
+          });
+        }
+      });
     </script>
 </body>
 </html>

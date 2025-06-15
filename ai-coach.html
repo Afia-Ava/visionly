@@ -268,6 +268,18 @@
             <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
         </div>
     </nav>
+
+    <!-- Update navbar profile-photo from saved avatar -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const storedAvatar = localStorage.getItem('profileAvatar');
+        if (storedAvatar) {
+          const navImg = document.getElementById('profile-photo');
+          if (navImg) navImg.src = storedAvatar;
+        }
+      });
+    </script>
+
     <main>
         <h1>Zeni, Your AI Coach</h1>
         <div class="subtitle">Talk to Zeni, your tough, realistic AI coach. Get no-nonsense advice and motivation to chase your goals.</div>

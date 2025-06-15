@@ -494,6 +494,17 @@
         </div>
     </nav>
 
+    <!-- Update navbar profile-photo from saved avatar -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const storedAvatar = localStorage.getItem('profileAvatar');
+        if (storedAvatar) {
+          const navImg = document.getElementById('profile-photo');
+          if (navImg) navImg.src = storedAvatar;
+        }
+      });
+    </script>
+
     <div class="container">
         <div class="page-header">
             <h1>Timeline</h1>
@@ -966,24 +977,4 @@
     </script>
 </body>
 </html>
-                        isPlaying = true;
-                    });
-                } else {
-                    audio.pause();
-                    soundIcon.src = 'assets/speaker-off-icon.png';
-                    soundIcon.alt = 'Sound Off';
-                    isPlaying = false;
-                }
-            });
 
-            // Update icon based on audio state
-            audio.addEventListener('play', function() {
-                isPlaying = true;
-            });
-            audio.addEventListener('pause', function() {
-                isPlaying = false;
-            });
-        });
-    </script>
-</body>
-</html>

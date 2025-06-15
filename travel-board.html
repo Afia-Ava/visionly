@@ -267,6 +267,15 @@
             <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
         </div>
     </nav>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const storedAvatar = localStorage.getItem('profileAvatar');
+        if (storedAvatar) {
+          const navImg = document.getElementById('profile-photo');
+          if (navImg) navImg.src = storedAvatar;
+        }
+      });
+    </script>
 
     <div class="vision-board-container">
         <div class="board-header">

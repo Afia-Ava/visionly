@@ -9,19 +9,11 @@
   <!-- Add back Dancing Script for navbar logo consistency -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
-  <!-- <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-  <script src="firebase-config.js"></script> -->
-  <!-- Add Supabase JS client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
-  <script>
-    // Supabase initialization
-    const SUPABASE_URL = 'https://lnoilkukrrsoumyvhivz.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxub2lsa3VrcnJzb3VteXZoaXZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1MDMxMDcsImV4cCI6MjA2NTA3OTEwN30.2QD9oAN2LDcf0SoV13kvEku4bT_QCyz2HvcarATKg-M';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  </script>
+  <script src="firebase-config.js"></script>
+  <script src="nav-auth.js"></script>
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -395,7 +387,19 @@
           <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
       </div>
   </nav>
-  
+  <!-- Persist avatar in navbar -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const storedAvatar = localStorage.getItem('profileAvatar');
+      if (storedAvatar) {
+        const img = document.getElementById('profile-photo');
+        if (img) {
+          img.src = storedAvatar;
+        }
+      }
+    });
+  </script>
+
   <div class="container">
     <div style="text-align: center; margin-top: 100px; margin-bottom: 40px;">
       <h1 style="font-size: 28px; font-weight: 600; margin-bottom: 5px;">Create Your Vision Board</h1>
@@ -410,6 +414,7 @@
             
             <select id="board-category" style="flex: 1; padding: 12px; padding-right: 30px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 0; background-color: white; color: #333; appearance: menulist; -webkit-appearance: menulist;">
               <option value="" disabled selected>Select Category</option>
+              <option value="career">Career</option>
               <option value="career">Career</option>
               <option value="health">Health</option>
               <option value="travel">Travel</option>
@@ -715,87 +720,67 @@
   <script src="mouse-sprinkles-script.js"></script>
   
   <script>
-  // Supabase authentication check and page initialization
-  // REMOVE the alert below, Supabase is already configured
-  // document.addEventListener('DOMContentLoaded', function() {
-  //     alert('Supabase is not set up. Please configure your Supabase account and update the SUPABASE_URL and SUPABASE_KEY in this file.');
-  // });
-  </script>
-
-  <!-- Remove Firebase auth check, replace with Supabase -->
-  <script>
-    // Supabase auth check
-    async function checkAuth() {
-      const { data: { user } } = await supabase.auth.getUser();
+  // Firebase Auth check and page initialization
+  function checkAuth() {
+    firebase.auth().onAuthStateChanged(function(user) {
       if (!user) {
         window.location.href = 'login.html';
-        return null;
+      } else {
+        initializePage(user);
       }
-      return user;
-    }
-    checkAuth().then(user => {
-      if (user) initializePage();
     });
+  }
+  checkAuth();
 
-    // Add a minimal initializePage function if missing
-    function initializePage() {
-      // Enable Save Board button
-      const saveBtn = document.getElementById('save-board-btn');
-      if (saveBtn) {
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Save Board';
-        saveBtn.onclick = async function() {
-          // Gather board data
-          const title = document.getElementById('board-title').value.trim();
-          const category = document.getElementById('board-category').value;
-          const description = document.getElementById('board-description').value.trim();
-          const goals = Array.from(document.querySelectorAll('#goals-container input[type="text"]'))
-            .map(input => input.value.trim()).filter(Boolean);
-          const images = (window.selectedImages || []).map(img => img.url);
+  function initializePage(user) {
+    const saveBtn = document.getElementById('save-board-btn');
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Board';
+      saveBtn.onclick = async function() {
+        const title = document.getElementById('board-title').value.trim();
+        const category = document.getElementById('board-category').value;
+        const description = document.getElementById('board-description').value.trim();
+        const goals = Array.from(document.querySelectorAll('#goals-container input[type="text"]'))
+          .map(input => input.value.trim()).filter(Boolean);
+        const images = (window.selectedImages || []).map(img => ({
+          name: img.name || img.alt || "",
+          url: img.url
+        }));
 
-          if (!title) {
-            alert('Please enter a board title.');
-            return;
-          }
-          if (!category) {
-            alert('Please select a category.');
-            return;
-          }
-          if (images.length === 0) {
-            alert('Please add at least one image.');
-            return;
-          }
+        if (!title) {
+          alert('Please enter a board title.');
+          return;
+        }
+        if (!category) {
+          alert('Please select a category.');
+          return;
+        }
+        if (images.length === 0) {
+          alert('Please add at least one image.');
+          return;
+        }
 
-          // Get the current user (handle possible null)
-          const { data: userData, error: userError } = await supabase.auth.getUser();
-          if (userError || !userData || !userData.user) {
-            alert('User not authenticated. Please log in again.');
-            window.location.href = 'login.html';
-            return;
-          }
-
-          // Save to Supabase (table: vision_boards)
-          const { error } = await supabase
-            .from('vision_boards')
-            .insert([{
-              title,
-              category,
-              description,
-              goals,
-              images,
-              user_id: userData.user.id,
-              created_at: new Date().toISOString()
-            }]);
-
-          if (error) {
-            alert('Failed to save board: ' + error.message + '\n\nMake sure you have created the "vision_boards" table in your Supabase project with the correct columns and enabled Row Level Security (RLS) with appropriate policies.');
-          } else {
-            alert('Board saved!');
-            // Optionally redirect or clear form
-          }
-        };
-      }
+        try {
+          const db = firebase.firestore();
+          const boardData = {
+            name: title,
+            category: category,
+            description: description,
+            goals: goals,
+            images: images,
+            userId: user.uid,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          await db.collection('boards').add(boardData);
+          alert('Board saved to Firestore!');
+          // Optionally clear form or redirect
+        } catch (err) {
+          alert('Failed to save board to Firestore: ' + (err.message || err));
+        }
+      };
     }
+  }
   </script>
 
   <script src="dark-mode-toggle.js"></script>
@@ -804,12 +789,12 @@
   const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dsf1mbhkh/upload';
   const CLOUDINARY_UPLOAD_PRESET = 'Visionly';
 
+  // Patch: Always ensure window.selectedImages is an array of {name, url}
   function addImageToPreview(imageUrl, altText, file = null) {
     if (!window.selectedImages) window.selectedImages = [];
     window.selectedImages.push({
       url: imageUrl,
-      alt: altText,
-      file: file
+      name: altText || ""
     });
     setTimeout(updatePreviewGrid, 0);
   }
@@ -1336,6 +1321,7 @@
         selectedBgOption = customColorBgOption;
         
         // Directly update the preview with the new color
+
         textCardPreview.style.background = color;
         textCardPreview.style.backgroundImage = 'none';
         textCardPreview.style.backgroundSize = '';
@@ -1447,8 +1433,6 @@
       const dataBg = option.getAttribute('data-bg');
       if (dataBg === 'custom-color') {
         const color = customBgColorPicker.value || '#eee';
-       
-
         textCardPreview.style.background = color;
         textCardPreview.style.backgroundImage = 'none';
         textCardPreview.style.backgroundSize = '';
@@ -1618,7 +1602,6 @@
     </div>
   </div>
 
-  <!-- Also add the contact modal functionality script -->
   <script>
     // Contact modal functionality
     document.addEventListener('DOMContentLoaded', function() {

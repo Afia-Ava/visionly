@@ -8,12 +8,10 @@ const firebaseConfig = {
   appId: "1:708324469283:web:project-708324469283"
 };
 
-// Initialize Firebase
-try {
+// Initialize Firebase only if not already initialized
+if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
   console.log('Firebase initialized successfully with project:', firebaseConfig.projectId);
-} catch (error) {
-  console.error('Firebase initialization failed:', error);
 }
 
 // Initialize Firebase services

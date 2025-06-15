@@ -310,6 +310,17 @@
           <img id="profile-photo" src="assets/digital-avatar.jpg" alt="Profile">
       </div>
   </nav>
+
+  <!-- Update navbar profile-photo from saved avatar -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const storedAvatar = localStorage.getItem('profileAvatar');
+      if (storedAvatar) {
+        const navImg = document.getElementById('profile-photo');
+        if (navImg) navImg.src = storedAvatar;
+      }
+    });
+  </script>
   
   <div class="container">
     <!-- Adjust margin to match progress page spacing -->

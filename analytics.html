@@ -98,6 +98,17 @@
         </div>
     </nav>
 
+    <!-- Update navbar profile-photo from saved avatar -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const storedAvatar = localStorage.getItem('profileAvatar');
+        if (storedAvatar) {
+          const navImg = document.getElementById('profile-photo');
+          if (navImg) navImg.src = storedAvatar;
+        }
+      });
+    </script>
+
     <main style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px;">
         <header style="margin: 100px 0 40px; text-align: left;">
             <h1 style="font-size: 2rem; font-weight: bold; color: #333; margin-bottom: 5px;">Analytics Dashboard</h1>
