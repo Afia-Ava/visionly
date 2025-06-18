@@ -292,17 +292,17 @@
     .board-date {
       color: #666;
       font-size: 12px;
-      margin: 0 0 15px 0; /* Increased from 8px to 15px to add more space before the button */
+      margin: 0 0 15px 0; 
     }
     
     .empty-state {
       text-align: center;
-      padding: 20px 0 60px; /* Reduced top padding to move content up */
+      padding: 20px 0 60px; 
       color: #666;
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-family: 'Inter', sans-serif; /* Ensure consistent font */
+      font-family: 'Inter', sans-serif; 
     }
     
     .empty-state svg {
@@ -395,13 +395,16 @@
     </div>
     
     <div class="filter-tabs">
-      <div class="tab active">All</div>
-      <div class="tab">Career</div>
-      <div class="tab">Health</div>
-      <div class="tab">Travel</div>
-      <div class="tab">Finance</div>
-      <div class="tab">Personal</div>
-      <!-- Removed "+ Create New Board" tab from here -->
+      <div class="tab active" data-category="all">All</div>
+      <div class="tab" data-category="career">Career</div>
+      <div class="tab" data-category="health">Health</div>
+      <div class="tab" data-category="travel">Travel</div>
+      <div class="tab" data-category="finance">Finance</div>
+      <div class="tab" data-category="personal">Personal</div>
+      <div class="tab" data-category="education">Education</div>
+      <div class="tab" data-category="relationships">Relationships</div>
+      <div class="tab" data-category="spiritual">Spiritual</div>
+      <div class="tab" data-category="other">Other</div>
     </div>
     
     <main>
@@ -464,7 +467,13 @@
                             }
                           }, 300);
                         }
+                        
+                        // Store all boards for filtering
+                        window.allBoards = filteredBoards;
                         displayVisionBoards(filteredBoards);
+                        
+                        // Set up category filter tabs
+                        setupFilterTabs();
                     } else {
                         console.error('getUserVisionBoards function not found. Check script loading order.');
                         document.getElementById('boards-container').innerHTML =
@@ -480,23 +489,82 @@
             }
         });
         
+        function setupFilterTabs() {
+            const tabs = document.querySelectorAll('.filter-tabs .tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter boards by category
+                    const category = this.getAttribute('data-category');
+                    if (category === 'all') {
+                      displayVisionBoards(window.allBoards);
+                    } else {
+                      const filteredBoards = window.allBoards.filter(board => 
+                        board.category && board.category.toLowerCase() === category.toLowerCase()
+                      );
+                      displayVisionBoards(filteredBoards);
+                    }
+                });
+            });
+            
+            // Also make search input functional
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+              searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.trim().toLowerCase();
+                if (!searchTerm) {
+                  // If search is empty, respect the active category filter
+                  const activeTab = document.querySelector('.filter-tabs .tab.active');
+                  const activeCategory = activeTab ? activeTab.getAttribute('data-category') : 'all';
+                  
+                  if (activeCategory === 'all') {
+                    displayVisionBoards(window.allBoards);
+                  } else {
+                    const categoryBoards = window.allBoards.filter(board => 
+                      board.category && board.category.toLowerCase() === activeCategory.toLowerCase()
+                    );
+                    displayVisionBoards(categoryBoards);
+                  }
+                } else {
+                  // Search across all boards regardless of category
+                  const searchResults = window.allBoards.filter(board => 
+                    (board.name && board.name.toLowerCase().includes(searchTerm)) || 
+                    (board.description && board.description.toLowerCase().includes(searchTerm))
+                  );
+                  displayVisionBoards(searchResults);
+                }
+              });
+            }
+          }
+        
         function displayVisionBoards(boards) {
             const container = document.getElementById('boards-container');
             container.innerHTML = ''; // Clear loading message or previous content
 
             if (!boards || boards.length === 0) {
-                container.innerHTML = `
-                    <div class=\"empty-state\" style=\"text-align: center; padding: 40px; color: #666;\">
-                        <svg width=\"64\" height=\"64\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" style=\"margin-bottom: 15px;\">
-                            <path d=\"M19 2H5C3.89543 2 3 2.89543 3 4V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V4C21 2.89543 20.1046 2 19 2Z\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
-                            <path d=\"M9 10H15\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
-                            <path d=\"M9 14H15\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
-                            <path d=\"M9 6H10\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
-                        </svg>
-                        <p style=\"margin-top: 5px; margin-bottom: 20px; font-family: 'Inter', sans-serif; font-weight: 400;\">You haven't created any vision boards yet.</p>
-                        <a href=\"create-board.html\" class=\"new-board-btn\" style=\"background-color: #6b4897; color: white; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: 500;\">Create Your First Board</a>
-                    </div>`;
-                return;
+              container.innerHTML = `
+                <div class=\"empty-state\" style=\"text-align: center; padding: 40px; color: #666;\">
+                    <svg width=\"64\" height=\"64\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" style=\"margin-bottom: 15px;\">
+                        <path d=\"M19 2H5C3.89543 2 3 2.89543 3 4V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V4C21 2.89543 20.1046 2 19 2Z\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
+                        <path d=\"M9 10H15\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
+                        <path d=\"M9 14H15\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
+                        <path d=\"M9 6H10\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
+                    </svg>
+                    <p style=\"margin-top: 5px; margin-bottom: 20px; font-family: 'Inter', sans-serif; font-weight: 400;\">
+                        ${window.allBoards && window.allBoards.length > 0 ? 
+                          'No boards match your filter criteria.' : 
+                          'You haven\'t created any vision boards yet.'}
+                    </p>
+                    <a href=\"create-board.html\" class=\"new-board-btn\" style=\"background-color: #6b4897; color: white; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: 500;\">
+                        ${window.allBoards && window.allBoards.length > 0 ? 
+                          'Create New Board' : 
+                          'Create Your First Board'}
+                    </a>
+                </div>`;
+              return;
             }
 
             const grid = document.createElement('div');
