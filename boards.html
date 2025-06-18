@@ -243,15 +243,18 @@
     .board-card .board-description-text { /* New class for description */
         font-size: 0.9rem;
         color: #555; /* Default light mode color */
-        margin-bottom: 12px;
+        margin-bottom: 2px; /* Reduced from 5px to 2px for even closer spacing */
         flex-grow: 1; /* Allows description to take space and push button down */
         line-height: 1.4;
+        white-space: nowrap; /* Prevent text wrapping */
+        overflow: hidden; /* Hide overflowing text */
+        text-overflow: ellipsis; /* Add ellipsis for truncated text */
     }
 
     .card-button {
       display: block;
       width: 100%;
-      background: #6b4897; /* Adjusted to a purple that fits the theme */
+      background: #2d1a45; /* Changed from #6b4897 to match sound button color */
       color: white;
       border: none;
       border-radius: 6px;
@@ -265,7 +268,7 @@
     }
 
     .card-button:hover {
-      background-color: #503275; /* Darker purple for hover */
+      background-color: #3a2259; /* Updated hover color for the darker base */
       transform: translateY(-2px);
       box-shadow: 0 4px 10px rgba(45, 26, 69, 0.2);
     }
@@ -289,7 +292,7 @@
     .board-date {
       color: #666;
       font-size: 12px;
-      margin: 0;
+      margin: 0 0 15px 0; /* Increased from 8px to 15px to add more space before the button */
     }
     
     .empty-state {
