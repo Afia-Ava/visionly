@@ -215,8 +215,61 @@
       overflow: hidden;
       background: white;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column; /* To stack image and meta */
+      height: 100%; 
     }
     
+    .board-card img { /* Style for the new img tag */
+        width: 100%;
+        height: 150px; /* Consistent image height */
+        object-fit: cover;
+    }
+
+    .board-card .board-meta-content { /* New class for the meta content div */
+        padding: 15px; /* Uniform padding */
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1; /* Allows button to be pushed to bottom */
+    }
+
+    .board-card .board-title-text { /* New class for title */
+        font-weight: 600;
+        font-size: 1.05rem;
+        margin-bottom: 8px;
+        color: #333; /* Default light mode color */
+    }
+
+    .board-card .board-description-text { /* New class for description */
+        font-size: 0.9rem;
+        color: #555; /* Default light mode color */
+        margin-bottom: 12px;
+        flex-grow: 1; /* Allows description to take space and push button down */
+        line-height: 1.4;
+    }
+
+    .card-button {
+      display: block;
+      width: 100%;
+      background: #6b4897; /* Adjusted to a purple that fits the theme */
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 0; /* Slightly more padding */
+      text-align: center;
+      text-decoration: none;
+      font-size: 0.95rem; /* Slightly larger */
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-top: auto; /* Pushes button to bottom if metaDiv is flex */
+    }
+
+    .card-button:hover {
+      background-color: #503275; /* Darker purple for hover */
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(45, 26, 69, 0.2);
+    }
+
     .board-image {
       height: 150px;
       background-size: cover;
@@ -300,15 +353,15 @@
 </head>
 <body>
   <nav class="navbar">
-      <a href="index.html" class="logo">Visionly</a>
-      <div style="display: flex; align-items: center;">
-          <a href="index.html">Home</a>
-          <a href="create-board.html">Create</a>
-          <a href="boards.html">Boards</a>
-          <a href="progress.html">Progress</a>
-          <a href="elevate.html" style="margin-right: 15px;">Elevate</a>
-          <img id="profile-photo" src="assets/digital-avatar.jpg" alt="Profile">
-      </div>
+    <a href="index.html" class="logo">Visionly</a>
+    <div style="display: flex; align-items: center;">
+        <a href="index.html">Home</a>
+        <a href="create-board.html">Create</a>
+        <a href="boards.html">Boards</a>
+        <a href="progress.html">Progress</a>
+        <a href="elevate.html" style="margin-right: 15px;">Elevate</a>
+        <img id="profile-photo" src="assets/default-avatar.jpg" alt="Profile">
+    </div>
   </nav>
 
   <!-- Update navbar profile-photo from saved avatar -->
@@ -371,6 +424,15 @@
 
   <script src="firebase-config.js"></script>
   <script src="nav-auth.js"></script>
+  <script>
+    // Ensure Firebase is initialized before calling auth dependent functions
+    // Redundant if firebase.initializeApp is already in firebase-config.js and executed first
+    // However, ensuring nav-auth.js runs after config is key.
+    if (typeof firebaseConfig !== 'undefined' && !firebase.apps.length) {
+       firebase.initializeApp(firebaseConfig);
+    }
+    // nav-auth.js should now correctly populate nav-links and handle profile photo
+  </script>
   <script src="cloudinary-config.js"></script>
   <script src="firebase-vision-boards.js"></script>
   <script src="profile-dropdown.js"></script>
@@ -380,12 +442,35 @@
         firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
                 try {
-                    const boards = await getUserVisionBoards(user.uid);
-                    displayVisionBoards(boards);
+                    if (typeof getUserVisionBoards === 'function') {
+                        const boards = await getUserVisionBoards(user.uid);
+                        // Only filter if redirected after deletion
+                        const params = new URLSearchParams(window.location.search);
+                        const deletedId = params.get('deleted');
+                        let filteredBoards = boards;
+                        if (deletedId) {
+                          filteredBoards = boards.filter(b => b.id !== deletedId);
+                          setTimeout(() => {
+                            const container = document.getElementById('boards-container');
+                            if (container) {
+                              const msg = document.createElement('div');
+                              msg.textContent = 'Board deleted.';
+                              msg.style.cssText = 'background:#e0e0e0;color:#2d1a45;padding:10px 18px;border-radius:8px;max-width:220px;margin:10px auto 0 auto;text-align:center;font-weight:600;';
+                              container.prepend(msg);
+                              setTimeout(() => msg.remove(), 2500);
+                            }
+                          }, 300);
+                        }
+                        displayVisionBoards(filteredBoards);
+                    } else {
+                        console.error('getUserVisionBoards function not found. Check script loading order.');
+                        document.getElementById('boards-container').innerHTML =
+                            '<div style="text-align: center; padding: 40px; color: #999;">Error loading boards: Function not found.</div>';
+                    }
                 } catch (error) {
                     console.error('Error loading boards:', error);
                     document.getElementById('boards-container').innerHTML = 
-                        '<div style="text-align: center; padding: 40px; color: #999;">Error loading vision boards</div>';
+                        '<div style="text-align: center; padding: 40px; color: #999;">Error loading vision boards. Check console for details.</div>';
                 }
             } else {
                 window.location.href = 'login.html';
@@ -394,25 +479,81 @@
         
         function displayVisionBoards(boards) {
             const container = document.getElementById('boards-container');
-            
-            if (boards.length === 0) {
+            container.innerHTML = ''; // Clear loading message or previous content
+
+            if (!boards || boards.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 40px;">
-                        <h3>No vision boards yet</h3>
-                        <p style="color: #666;">Create your first vision board to get started!</p>
-                        <a href="create-board.html" style="background: #2d1a45; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; display: inline-block; margin-top: 20px;">Create Vision Board</a>
-                    </div>
-                `;
+                    <div class=\"empty-state\" style=\"text-align: center; padding: 40px; color: #666;\">
+                        <svg width=\"64\" height=\"64\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" style=\"margin-bottom: 15px;\">
+                            <path d=\"M19 2H5C3.89543 2 3 2.89543 3 4V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V4C21 2.89543 20.1046 2 19 2Z\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
+                            <path d=\"M9 10H15\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
+                            <path d=\"M9 14H15\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
+                            <path d=\"M9 6H10\" stroke=\"#bbb\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
+                        </svg>
+                        <p style=\"margin-top: 5px; margin-bottom: 20px; font-family: 'Inter', sans-serif; font-weight: 400;\">You haven't created any vision boards yet.</p>
+                        <a href=\"create-board.html\" class=\"new-board-btn\" style=\"background-color: #6b4897; color: white; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: 500;\">Create Your First Board</a>
+                    </div>`;
                 return;
             }
-            
-            container.innerHTML = boards.map(board => `
-                <div class="board-card" style="border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;" onclick="window.location.href='edit-board.html?id=${board.id}'">
-                    <h3 class="board-title" style="margin: 0 0 10px 0;">${board.name}</h3>
-                    <p class="board-date" style="margin: 0 0 10px 0;">Created: ${board.createdAt ? new Date(board.createdAt.toDate()).toLocaleDateString() : 'Recently'}</p>
-                    <p class="board-date" style="margin: 0; font-size: 14px;">${board.elements?.length || 0} elements</p>
-                </div>
-            `).join('');
+
+            const grid = document.createElement('div');
+            grid.className = 'boards-grid'; 
+
+            boards.forEach(board => {
+                if (!board || !board.id) { 
+                    console.warn('Skipping board due to missing data or ID:', board);
+                    return; 
+                }
+
+                const card = document.createElement('div');
+                card.className = 'board-card';
+
+                let imageUrl = 'assets/default-board-placeholder.png'; 
+                if (board.images && board.images.length > 0 && board.images[0] && board.images[0].url) {
+                    imageUrl = board.images[0].url;
+                } else if (board.elements) { 
+                    const imageElement = board.elements.find(el => el.type === 'image' && el.url);
+                    if (imageElement) imageUrl = imageElement.url;
+                }
+
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.alt = board.name || 'Vision Board';
+
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'board-meta-content'; 
+
+                const title = document.createElement('h3'); 
+                title.className = 'board-title-text'; 
+                title.textContent = board.name || 'Untitled Board';
+
+                const description = document.createElement('p');
+                description.className = 'board-description-text'; 
+                description.textContent = board.description || 'No description available.';
+                
+                const dateP = document.createElement('p');
+                dateP.className = 'board-date'; 
+                if (board.createdAt && board.createdAt.toDate) {
+                    dateP.textContent = `Created: ${board.createdAt.toDate().toLocaleDateString()}`;
+                } else {
+                    dateP.textContent = 'Date not available';
+                }
+
+                const viewButton = document.createElement('a');
+                viewButton.href = `view-board.html?id=${board.id}`; 
+                viewButton.textContent = 'View Board';
+                viewButton.className = 'card-button'; 
+
+                metaDiv.appendChild(title);
+                metaDiv.appendChild(description);
+                metaDiv.appendChild(dateP);
+                metaDiv.appendChild(viewButton);
+
+                card.appendChild(img);
+                card.appendChild(metaDiv);
+                grid.appendChild(card);
+            });
+            container.appendChild(grid);
         }
     </script>
     <script>

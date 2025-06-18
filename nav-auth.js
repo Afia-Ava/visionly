@@ -1,5 +1,7 @@
-// Get auth instance (assuming firebase.initializeApp has been called in firebase-config.js)
-const auth = firebase.auth();
+// Wrap the auth declaration in a condition to prevent redeclaration
+if (typeof auth === 'undefined') {
+  var auth = firebase.auth(); // Declare auth only if it hasn't been declared elsewhere
+}
 
 // Navigation items configuration
 const navItems = [

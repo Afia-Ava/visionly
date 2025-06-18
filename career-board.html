@@ -497,31 +497,47 @@
     </script>
     <script src="dark-mode-toggle.js"></script>
 
+    <!-- Ensure Firebase SDK & helpers loaded before save handler -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="firebase-vision-boards.js"></script>
+
+    <!-- Debug: verify correct Firebase project config -->
+    <script>
+      console.log('Firebase app options:', firebase.app().options);
+      firebase.auth().onAuthStateChanged(user => {
+        console.log('Auth user state:', user);
+      });
+    </script>
+
     <!-- Add Firebase vision boards functions -->
     <script>
-     document.addEventListener('DOMContentLoaded', () => {
-       const saveBtn = document.getElementById('save-board-btn');
-       if (saveBtn) {
-         saveBtn.addEventListener('click', async () => {
-           // Collect board data
-           const titleEl = document.querySelector('.board-header-left h1');
-           const name = titleEl ? titleEl.innerText.trim() : 'Untitled';
-           const images = Array.from(document.querySelectorAll('.vision-grid img')).map(img => img.src);
-           const textCards = Array.from(document.querySelectorAll('.vision-item.text-card')).map(div => div.innerText.trim());
-           const elements = [];
-           images.forEach(url => elements.push({ type: 'image', url }));
-           textCards.forEach(text => elements.push({ type: 'text', text }));
-           try {
-             const boardId = await saveVisionBoard({ name, elements });
-             // Redirect to boards list to see new board
-             window.location.href = 'boards.html';
-           } catch (e) {
-             console.error('Save failed:', e);
-             alert('Error saving board.');
-           }
-         });
-       }
-     });
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('Attempting save as UID:', firebase.auth().currentUser?.uid);
+        const saveBtn = document.getElementById('save-board-btn');
+        if (saveBtn) {
+          saveBtn.addEventListener('click', async () => {
+            // Collect board data
+            const titleEl = document.querySelector('.board-header-left h1');
+            const name = titleEl ? titleEl.innerText.trim() : 'Untitled';
+            const images = Array.from(document.querySelectorAll('.vision-grid img')).map(img => img.src);
+            const textCards = Array.from(document.querySelectorAll('.vision-item.text-card')).map(div => div.innerText.trim());
+            const elements = [];
+            images.forEach(url => elements.push({ type: 'image', url }));
+            textCards.forEach(text => elements.push({ type: 'text', text }));
+            try {
+              const boardId = await saveVisionBoard({ name, elements });
+              // Redirect to boards list to see new board
+              window.location.href = 'boards.html';
+            } catch (e) {
+              console.error('Save failed:', e);
+              alert('Error saving board.');
+            }
+          });
+        }
+      });
     </script>
 </body>
 </html>

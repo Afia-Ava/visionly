@@ -82,20 +82,6 @@ signupForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Google Sign In
-const signInWithGoogle = async () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    try {
-        await auth.signInWithPopup(provider);
-        window.location.href = 'boards.html';
-    } catch (error) {
-        alert(error.message);
-    }
-};
-
-googleSigninBtn.addEventListener('click', signInWithGoogle);
-googleSignupBtn.addEventListener('click', signInWithGoogle);
-
 // Password Reset
 forgotPasswordLink.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -130,4 +116,4 @@ auth.onAuthStateChanged((user) => {
             window.location.href = 'auth.html';
         }
     }
-}); 
+});

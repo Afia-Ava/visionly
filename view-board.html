@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vision Board - Visionly</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="dark-mode-global.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #fff;
+        background-image: 
+          linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+          linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+          linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+          linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%);
+        background-size: 20px 20px;
+        background-position: 10px 0, 10px 0, 0 0, 0 0;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+    
+    /* Dark Mode Styles */
+    body.dark-mode {
+      /* Apply light mode background properties even in dark mode for this page */
+      background-color: #fff; 
+      background-image: 
+        linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+        linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+        linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%), 
+        linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%);
+      /* Keep dark mode text color and other element-specific dark styles */
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode nav.navbar {
+      background-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Use styles similar to travel-board.html for layout and grid */
+    .vision-board-container { max-width: 1200px; margin: 90px auto 40px auto; padding: 0 24px; }
+    .board-content { display: flex; gap: 32px; align-items: flex-start; }
+    .board-main { flex: 1; }
+    .vision-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .vision-item { aspect-ratio: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 12px rgba(0,0,0,0.12); transition: transform 0.2s ease; cursor: pointer; }
+    .vision-item img { width: 100%; height: 100%; object-fit: cover; }
+    .board-details { background: white; border-radius: 12px; padding: 24px 24px 24px 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 24px; }
+    .board-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; padding: 24px 0; border-radius: 12px; width: 100%; }
+    .board-header-left { flex: 1; }
+    .board-header-left h1 { font-size: 2.2rem; font-weight: 700; color: #2d1a45; margin-bottom: 8px; }
+    .board-subtitle { color: #666; font-size: 0.95rem; margin: 0; line-height: 1.4; }
+    /* Delete button style */
+    .btn.btn-delete-fixed-style {
+      padding: 10px 24px;
+      border-radius: 10px;
+      background: #fff;
+      color: #c0392b;
+      border: 2px solid #c0392b;
+      font-weight: 600;
+      margin-left: 0;
+      margin-right: 0;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn.btn-delete-fixed-style:hover {
+      background: #c0392b;
+      color: #fff;
+    }
+    body.dark-mode .btn.btn-delete-fixed-style {
+      background: #fff;
+      color: #c0392b;
+      border: 2px solid #c0392b;
+    }
+    body.dark-mode .btn.btn-delete-fixed-style:hover {
+      background: #c0392b;
+      color: #fff;
+    }
+    .btn {
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      font-size: 0.95rem;
+      text-align: center;
+      white-space: nowrap;
+      min-width: 80px;
+    }
+    .btn-secondary {
+      background: white;
+      color: #2d1a45;
+      border: 2px solid #2d1a45;
+    }
+    .btn-secondary:hover {
+      background: #f8f9fa;
+    }
+    body.dark-mode .btn-secondary {
+      background: #1f0f35;
+      color: #e0e0e0;
+      border: 2px solid #2d1549;
+    }
+    body.dark-mode .btn-secondary:hover {
+      background: #2d1549;
+    }
+    .header-buttons {
+      display: flex;
+      gap: 12px;
+      margin-right: 0; /* Remove right margin */
+      padding-right: 0; /* Remove right padding */
+    }
+    .header-buttons .btn {
+      flex: 1;
+      min-width: 90px;
+    }
+
+    /* Make sure these styles are included for the sidebar */
+    .board-sidebar {
+      width: 300px;
+      flex-shrink: 0;
+    }
+
+    .board-details {
+      background: white;
+      border-radius: 12px;
+      padding: 24px 24px 24px 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 12px;
+    }
+
+    .detail-label {
+      color: #666;
+      font-weight: 500;
+      min-width: 80px;
+    }
+
+    .detail-value {
+      color: #333;
+      font-weight: 600;
+    }
+
+    body.dark-mode .board-details {
+      background: #140a22;
+      box-shadow: 0 2px 8px rgba(139, 95, 179, 0.15);
+    }
+
+    body.dark-mode .board-details h3 {
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .detail-label {
+      color: #b0b0b0;
+    }
+
+    body.dark-mode .detail-value {
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .detail-row {
+      border-bottom: 1px solid #2d1549;
+    }
+
+    /* Goal items dark mode */
+    body.dark-mode div[style*="background: #f8f9fa"] {
+      background: #1f0f35 !important;
+      border-left: 3px solid #6b4897 !important;
+    }
+
+    body.dark-mode div[style*="color: #333"] {
+      color: #e0e0e0 !important;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="firebase-vision-boards.js"></script>
+  <script>
+    // Set profile avatar from localStorage if available
+    document.addEventListener('DOMContentLoaded', () => {
+      const storedAvatar = localStorage.getItem('profileAvatar');
+      if (storedAvatar) {
+        const navImg = document.getElementById('profile-photo');
+        if (navImg) navImg.src = storedAvatar;
+      }
+    });
+  </script>
+</head>
+<body>
+  <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+    <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+    <div style="display: flex; align-items: center;">
+      <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+      <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+      <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+      <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+      <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+      <img id="profile-photo" src="assets/default-avatar.jpg" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
+    </div>
+  </nav>
+  <div class="vision-board-container">
+    <div id="board-header"></div>
+    <div class="board-content">
+      <div class="board-main">
+        <div class="vision-grid" id="vision-grid"></div>
+      </div>
+      <div class="board-sidebar">
+        <div class="board-details" id="goals-details"></div>
+        <div class="board-details" id="board-details"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    async function loadBoard() {
+      const boardId = getQueryParam('id');
+      console.log('Loading board with ID:', boardId);
+      if (!boardId) {
+        document.getElementById('board-header').innerHTML = '<h2>Board not found</h2>';
+        return;
+      }
+      const db = firebase.firestore();
+      try {
+        const doc = await db.collection('boards').doc(boardId).get();
+        if (!doc.exists) {
+          console.log('No board found for this ID.');
+          document.getElementById('board-header').innerHTML = '<h2>Board not found</h2>';
+          return;
+        }
+        const board = doc.data();
+        console.log('Board data loaded:', board);
+        // Header
+        document.getElementById('board-header').innerHTML = `
+          <div class="board-header">
+            <div class="board-header-left">
+              <h1>${board.name || 'Untitled Board'}</h1>
+              <p class="board-subtitle">${board.description || ''}</p>
+            </div>
+            <div class="header-buttons">
+              <button class="btn btn-secondary" onclick="window.location.href='boards.html'">← Back</button>
+              <button class="btn btn-primary btn-edit-fixed-style" onclick="window.location.href='edit-board.html?id=${boardId}'">Edit Board</button>
+              <button class="btn btn-secondary" id="delete-board-btn">Delete</button>
+            </div>
+          </div>
+        `;
+        // Images grid
+        const grid = document.getElementById('vision-grid');
+        grid.innerHTML = '';
+        if (board.images && board.images.length > 0) {
+          board.images.forEach((img, idx) => {
+            const div = document.createElement('div');
+            div.className = 'vision-item';
+            div.innerHTML = `<img src="${img.url}" alt="${img.name || ''}">`;
+            grid.appendChild(div);
+          });
+        } else {
+          grid.innerHTML = '<p>No images found for this board.</p>';
+        }
+        // Goals sidebar
+        const goalsDiv = document.getElementById('goals-details');
+        let goalsHtml = '<h3 style="margin: 0 0 16px 0; color: #2d1a45;">Goals</h3>';
+        let hasGoals = false;
+        if (Array.isArray(board.goals) && board.goals.length > 0) {
+          hasGoals = true;
+          goalsHtml += '<div style="margin-bottom: 24px;">';
+          board.goals.forEach(goal => {
+            goalsHtml += `<div style="margin-bottom: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #2d1a45;"><div style="font-size: 0.9rem; color: #333;">${goal}</div></div>`;
+          });
+          goalsHtml += '</div>';
+        } else if (board.goals && typeof board.goals === 'object' && Object.keys(board.goals).length > 0) {
+          hasGoals = true;
+          goalsHtml += '<div style="margin-bottom: 24px;">';
+          Object.values(board.goals).forEach(goal => {
+            goalsHtml += `<div style="margin-bottom: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #2d1a45;"><div style="font-size: 0.9rem; color: #333;">${goal}</div></div>`;
+          });
+          goalsHtml += '</div>';
+        }
+        if (!hasGoals) {
+          goalsHtml += '<div style="color: #888; font-size: 0.95rem;">No goals added.</div>';
+        }
+        goalsDiv.innerHTML = goalsHtml;
+        // Board details sidebar
+        const details = document.getElementById('board-details');
+        details.innerHTML = `
+          <h3 style="margin: 0 0 16px 0; color: #2d1a45;">Board Details</h3>
+          <div class="detail-row"><span class="detail-label">Category</span><span class="detail-value">${board.category || 'N/A'}</span></div>
+          <div class="detail-row"><span class="detail-label">Created</span><span class="detail-value">${board.createdAt && board.createdAt.toDate ? board.createdAt.toDate().toLocaleDateString() : 'N/A'}</span></div>
+          <div class="detail-row"><span class="detail-label">Images</span><span class="detail-value">${board.images ? board.images.length : 0}</span></div>
+          <div class="detail-row"><span class="detail-label">Privacy</span><span class="detail-value">${board.isPublic === false ? 'Private' : 'Public'}</span></div>
+        `;
+      } catch (err) {
+        console.error('Error loading board:', err);
+        document.getElementById('board-header').innerHTML = '<h2>Error loading board</h2>';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', loadBoard);
+    function displayBoardData(board, container) {
+      container.innerHTML = ''; // Clear loading message
+
+      // Board Header
+      const boardHeader = document.createElement('div');
+      boardHeader.className = 'board-header';
+      const createdDate = board.createdAt && board.createdAt.toDate ? board.createdAt.toDate().toLocaleDateString() : 'N/A';
+      const lastEditedDate = board.updatedAt && board.updatedAt.toDate ? board.updatedAt.toDate().toLocaleDateString() : createdDate;
+      
+      boardHeader.innerHTML = `
+        <div class="board-header-left">
+          <h1>${board.name || 'Untitled Board'}</h1>
+          <p class="board-subtitle">
+            Created: ${createdDate} | Last Edited: ${lastEditedDate}<br>
+            Privacy: Private
+          </p>
+        </div>
+        <div class="header-buttons">
+          <button class="btn btn-secondary" id="back-btn">← Back</button>
+          <button class="btn btn-secondary" id="edit-btn">Edit</button>
+          <button class="btn btn-secondary" id="delete-board-btn">Delete</button>
+        </div>
+      `;
+      container.appendChild(boardHeader);
+
+      // Attach event listeners after DOM insert
+      document.getElementById('back-btn').onclick = () => window.location.href = 'boards.html';
+      document.getElementById('edit-btn').onclick = () => window.location.href = `edit-board.html?id=${board.id}`;
+
+      // Delete button logic with custom modal
+      const deleteBtn = document.getElementById('delete-board-btn');
+      const deleteModal = document.getElementById('delete-modal');
+      const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+      const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+
+      if (deleteBtn && deleteModal && cancelDeleteBtn && confirmDeleteBtn) {
+        deleteBtn.onclick = function() {
+          deleteModal.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        };
+        cancelDeleteBtn.onclick = function() {
+          deleteModal.style.display = 'none';
+          document.body.style.overflow = '';
+        };
+        deleteModal.onclick = function(e) {
+          if (e.target === deleteModal) {
+            deleteModal.style.display = 'none';
+            document.body.style.overflow = '';
+          }
+        };
+        confirmDeleteBtn.onclick = async function() {
+          try {
+            const user = firebase.auth().currentUser;
+            if (user && typeof window.deleteBoardById === 'function') {
+              await window.deleteBoardById(user.uid, board.id);
+              deleteModal.style.display = 'none';
+              document.body.style.overflow = '';
+              window.location.href = 'boards.html?deleted=' + encodeURIComponent(board.id);
+            } else {
+              alert('Delete function not available or user not authenticated.');
+            }
+          } catch (err) {
+            alert('Failed to delete board. Please try again.');
+            deleteModal.style.display = 'none';
+            document.body.style.overflow = '';
+          }
+        };
+      }
+
+      // Create board content container with main and sidebar
+      const boardContent = document.createElement('div');
+      boardContent.className = 'board-content';
+      container.appendChild(boardContent);
+      
+      // Board Main area (left side with images)
+      const boardMain = document.createElement('div');
+      boardMain.className = 'board-main';
+      boardContent.appendChild(boardMain);
+
+      // Vision Grid for images
+      const visionGrid = document.createElement('div');
+      visionGrid.className = 'vision-grid';
+      boardMain.appendChild(visionGrid);
+      
+      // Your existing vision grid/images code here
+      if (board.images && board.images.length > 0) {
+        board.images.forEach((img, idx) => {
+          const div = document.createElement('div');
+          div.className = 'vision-item';
+          div.innerHTML = `<img src="${img.url}" alt="${img.name || ''}">`;
+          visionGrid.appendChild(div);
+        });
+      } else {
+        visionGrid.innerHTML = '<p>No images found for this board.</p>';
+      }
+      
+      // SIDEBAR - Update this part to match travel-board.html
+      const boardSidebar = document.createElement('div');
+      boardSidebar.className = 'board-sidebar';
+      boardContent.appendChild(boardSidebar);
+      
+      // Goals section - styled to exactly match travel-board.html
+      if (board.goals && board.goals.length > 0) {
+        const goalsSection = document.createElement('div');
+        goalsSection.className = 'board-details';
+        
+        const goalsTitle = document.createElement('h3');
+        goalsTitle.style.margin = '0 0 16px 0';
+        goalsTitle.style.color = '#2d1a45';
+        goalsTitle.textContent = 'Goals';
+        goalsSection.appendChild(goalsTitle);
+        
+        const goalsContainer = document.createElement('div');
+        goalsContainer.style.marginBottom = '24px';
+        
+        board.goals.forEach(goal => {
+          const goalItem = document.createElement('div');
+          goalItem.style.marginBottom = '8px';
+          goalItem.style.padding = '8px 12px';
+          goalItem.style.background = '#f8f9fa';
+          goalItem.style.borderRadius = '6px';
+          goalItem.style.borderLeft = '3px solid #2d1a45';
+          
+          const goalText = document.createElement('div');
+          goalText.style.fontSize = '0.9rem';
+          goalText.style.color = '#333';
+          goalText.textContent = goal.text || goal;
+          
+          goalItem.appendChild(goalText);
+          goalsContainer.appendChild(goalItem);
+        });
+        
+        goalsSection.appendChild(goalsContainer);
+        boardSidebar.appendChild(goalsSection);
+      }
+      
+      // Board Details section - styled to match travel-board.html
+      const detailsSection = document.createElement('div');
+      detailsSection.className = 'board-details';
+      
+      const detailsTitle = document.createElement('h3');
+      detailsTitle.style.margin = '0 0 16px 0';
+      detailsTitle.style.color = '#2d1a45';
+      detailsTitle.textContent = 'Board Details';
+      detailsSection.appendChild(detailsTitle);
+      
+      // Theme row
+      const themeRow = document.createElement('div');
+      themeRow.className = 'detail-row';
+      
+      const themeLabel = document.createElement('span');
+      themeLabel.className = 'detail-label';
+      themeLabel.textContent = 'Theme';
+      
+      const themeValue = document.createElement('span');
+      themeValue.className = 'detail-value';
+      themeValue.textContent = board.theme || 'Personal';
+      
+      themeRow.appendChild(themeLabel);
+      themeRow.appendChild(themeValue);
+      detailsSection.appendChild(themeRow);
+      
+      // Privacy row - always "Private"
+      const privacyRow = document.createElement('div');
+      privacyRow.className = 'detail-row';
+      
+      const privacyLabel = document.createElement('span');
+      privacyLabel.className = 'detail-label';
+      privacyLabel.textContent = 'Privacy';
+      
+      const privacyValue = document.createElement('span');
+      privacyValue.className = 'detail-value';
+      privacyValue.textContent = 'Private';
+      
+      privacyRow.appendChild(privacyLabel);
+      privacyRow.appendChild(privacyValue);
+      detailsSection.appendChild(privacyRow);
+      
+      // Items count row
+      const itemsRow = document.createElement('div');
+      itemsRow.className = 'detail-row';
+      
+      const itemsLabel = document.createElement('span');
+      itemsLabel.className = 'detail-label';
+      itemsLabel.textContent = 'Items';
+      
+      const itemsValue = document.createElement('span');
+      itemsValue.className = 'detail-value';
+      
+      // Count images and text elements
+      let imageCount = 0;
+      let textCount = 0;
+      
+      if (board.elements && board.elements.length) {
+        imageCount = board.elements.filter(el => el && el.type === 'image').length;
+        textCount = board.elements.filter(el => el && el.type === 'text').length;
+      } else if (board.images && board.images.length) {
+        imageCount = board.images.length;
+      }
+      
+      itemsValue.textContent = `${imageCount} images${textCount > 0 ? `, ${textCount} text cards` : ''}`;
+      
+      itemsRow.appendChild(itemsLabel);
+      itemsRow.appendChild(itemsValue);
+      detailsSection.appendChild(itemsRow);
+      
+      boardSidebar.appendChild(detailsSection);
+    }
+    </script>
+  </body>
+</html>

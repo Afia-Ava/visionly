@@ -3,7 +3,7 @@
 // Save a new vision board
 async function saveVisionBoard(boardData) {
     try {
-        console.log('Saving vision board:', boardData);
+        console.log('Saving vision board with boardData:', boardData); // Log input
         
         if (!firebase.auth().currentUser) {
             throw new Error('User not authenticated');
@@ -11,22 +11,24 @@ async function saveVisionBoard(boardData) {
 
         const db = firebase.firestore();
         
-        // Prepare the board document
+        // Prepare the board document - now using boardData.images
         const boardDoc = {
             name: boardData.name || 'Untitled Board',
             description: boardData.description || '',
+            category: boardData.category || 'General', // Added category from screenshot
             userId: firebase.auth().currentUser.uid,
-            elements: boardData.elements || [],
+            images: boardData.images || [], // Expecting an images array now
+            goals: boardData.goals || {}, // Added goals from screenshot
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            isPublic: false,
-            tags: boardData.tags || []
+            isPublic: boardData.isPublic !== undefined ? boardData.isPublic : false,
+            // Removed tags and elements, assuming images array is the primary way to store visual content
         };
 
-        // Add the document to Firestore
-        const docRef = await db.collection('visionBoards').add(boardDoc);
+        // Add the document to the user's 'boards' subcollection
+        const docRef = await db.collection('users').doc(firebase.auth().currentUser.uid).collection('boards').add(boardDoc);
         
-        console.log('Vision board saved with ID:', docRef.id);
+        console.log('Vision board saved to users/{userId}/boards with ID:', docRef.id);
         return docRef.id;
         
     } catch (error) {
@@ -38,25 +40,33 @@ async function saveVisionBoard(boardData) {
 // Get user's vision boards
 async function getUserVisionBoards(userId) {
     try {
+        console.log(`Fetching boards for userId: ${userId} from top-level 'boards' collection`);
         const db = firebase.firestore();
-        const snapshot = await db.collection('visionBoards')
+        const snapshot = await db.collection('boards')
             .where('userId', '==', userId)
             .orderBy('createdAt', 'desc')
             .get();
         
+        if (snapshot.empty) {
+            console.log('No boards found for this user in top-level boards collection.');
+            return [];
+        }
+
+        console.log(`Found ${snapshot.size} board document(s).`);
         const boards = [];
         snapshot.forEach(doc => {
+            console.log(`Processing board doc ID: ${doc.id}, Data:`, JSON.stringify(doc.data()));
             boards.push({
                 id: doc.id,
                 ...doc.data()
             });
         });
         
-        console.log('Loaded boards:', boards);
+        console.log('Loaded and processed boards from top-level boards collection:', JSON.stringify(boards));
         return boards;
         
     } catch (error) {
-        console.error('Error loading vision boards:', error);
+        console.error('Error in getUserVisionBoards:', error);
         throw error;
     }
 }
@@ -113,3 +123,13 @@ async function getVisionBoard(boardId) {
         throw error;
     }
 }
+
+// Delete board by ID
+window.deleteBoardById = async function(userId, boardId) {
+  return firebase.firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('vision_boards')
+    .doc(boardId)
+    .delete();
+};

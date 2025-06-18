@@ -45,12 +45,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (typeof firebase !== 'undefined' && firebase.auth) {
                     firebase.auth().signOut().then(() => {
-                        window.location.href = 'index.html';
+                        window.location.href = 'login.html';
                     }).catch((error) => {
                         console.error('Error signing out:', error);
                     });
                 } else {
-                    window.location.href = 'index.html';
+                    window.location.href = 'login.html';
                 }
             });
         }

@@ -393,181 +393,181 @@
       <span>or</span>
     </div>
     
-    <button class="google-button" id="google-signin">
-      <svg width="18" height="18" viewBox="0 0 18 18">
-        <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/>
-        <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2.04a4.8 4.8 0 0 1-7.18-2.53H1.83v2.07A8 8 0 0 0 8.98 17z"/>
-        <path fill="#FBBC05" d="M4.5 10.49a4.8 4.8 0 0 1 0-3.07V5.35H1.83a8 8 0 0 0 0 7.28l2.67-2.14z"/>
-        <path fill="#EA4335" d="M8.98 4.72c1.16 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.35L4.5 7.42a4.77 4.77 0 0 1 4.48-2.7z"/>
-      </svg>
-      Continue with Google
-    </button>
+    <p class="signup-text">Don't have an account? <a href="signup.html">Sign up</a></p>
   </div>
 
   <script src="shared-scripts.js"></script>
   <script src="dark-mode-toggle.js"></script>
   <script>
-    // Wait for Firebase to initialize before setting up auth
     document.addEventListener('DOMContentLoaded', function() {
-      // Wait a bit for Firebase to load completely
-      setTimeout(() => {
-        // Check if Firebase is initialized
-        if (typeof firebase === 'undefined') {
-          console.error('Firebase is not loaded');
-          document.querySelector('.form-section').innerHTML = '<p style="color: red; text-align: center;">Firebase failed to load. Please check your configuration.</p>';
-          return;
-        }
+      // Check if Firebase is initialized
+      if (typeof firebase === 'undefined') {
+        console.error('Firebase is not loaded');
+        document.querySelector('.form-section').innerHTML = '<p style="color: red; text-align: center;">Firebase failed to load. Please check your configuration.</p>';
+        return;
+      }
 
+      try {
+        // Test Firebase initialization
+        const auth = firebase.auth();
+        console.log('Firebase Auth initialized successfully');
+      } catch (error) {
+        console.error('Firebase initialization error:', error);
+        document.querySelector('.form-section').innerHTML = '<p style="color: red; text-align: center;">Firebase configuration error. Please check your API key.</p>';
+        return;
+      }
+
+      // Tab switching
+      const loginTab = document.getElementById('login-tab');
+      const signupTab = document.getElementById('signup-tab');
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const welcomeTitle = document.querySelector('.welcome-title');
+
+      loginTab.addEventListener('click', () => {
+        loginTab.classList.add('active');
+        signupTab.classList.remove('active');
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+        welcomeTitle.textContent = 'Welcome Back';
+      });
+
+      signupTab.addEventListener('click', () => {
+        signupTab.classList.add('active');
+        loginTab.classList.remove('active');
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+        welcomeTitle.textContent = 'Create Account';
+      });
+
+      // Authentication functions
+      function showError(elementId, message) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.textContent = message;
+          element.style.display = 'block';
+        }
+      }
+
+      function hideError(elementId) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.style.display = 'none';
+        }
+      }
+
+      function showSuccess(elementId, message) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.textContent = message;
+          element.style.display = 'block';
+        }
+      }
+
+      // Login form handler
+      document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const loginBtn = document.getElementById('login-btn');
+        
+        // Clear previous errors
+        hideError('login-error');
+        hideError('login-email-error');
+        hideError('login-password-error');
+        
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Signing In...';
+        
         try {
-          // Test Firebase initialization
-          const auth = firebase.auth();
-          console.log('Firebase Auth initialized successfully');
+          await firebase.auth().signInWithEmailAndPassword(email, password);
+          showSuccess('login-success', 'Login successful! Redirecting...');
+          setTimeout(() => {
+            // Existing users go directly to index
+            window.location.href = 'index.html';
+          }, 1500);
         } catch (error) {
-          console.error('Firebase initialization error:', error);
-          document.querySelector('.form-section').innerHTML = '<p style="color: red; text-align: center;">Firebase configuration error. Please check your API key.</p>';
+          console.error('Login error:', error);
+          showError('login-error', error.message);
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Sign In';
+        }
+      });
+
+      // Signup form handler
+      document.getElementById('signup-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('signup-name').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const confirmPassword = document.getElementById('signup-confirm-password').value;
+        const signupBtn = document.getElementById('signup-btn');
+        
+        // Clear previous errors
+        hideError('signup-error');
+        hideError('signup-name-error');
+        hideError('signup-email-error');
+        hideError('signup-password-error');
+        hideError('signup-confirm-error');
+        
+        // Validate passwords match
+        if (password !== confirmPassword) {
+          showError('signup-confirm-error', 'Passwords do not match');
           return;
         }
+        
+        // Validate password length
+        if (password.length < 6) {
+          showError('signup-password-error', 'Password must be at least 6 characters');
+          return;
+        }
+        
+        signupBtn.disabled = true;
+        signupBtn.textContent = 'Creating Account...';
+        
+        try {
+          const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+          await userCredential.user.updateProfile({ displayName: name });
+          
+          // Mark user as new for onboarding
+          localStorage.setItem('isNewUser', 'true');
+          
+          showSuccess('signup-success', 'Account created successfully! Redirecting...');
+          setTimeout(() => {
+            // New users go to onboarding
+            window.location.href = 'onboarding.html';
+          }, 1500);
+        } catch (error) {
+          console.error('Signup error:', error);
+          showError('signup-error', error.message);
+          signupBtn.disabled = false;
+          signupBtn.textContent = 'Create Account';
+        }
+      });
 
-        // Tab switching
-        const loginTab = document.getElementById('login-tab');
-        const signupTab = document.getElementById('signup-tab');
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        const welcomeTitle = document.querySelector('.welcome-title');
-
-        loginTab.addEventListener('click', () => {
-          loginTab.classList.add('active');
-          signupTab.classList.remove('active');
-          loginForm.style.display = 'block';
-          signupForm.style.display = 'none';
-          welcomeTitle.textContent = 'Welcome Back';
-        });
-
-        signupTab.addEventListener('click', () => {
-          signupTab.classList.add('active');
-          loginTab.classList.remove('active');
-          loginForm.style.display = 'none';
-          signupForm.style.display = 'block';
-          welcomeTitle.textContent = 'Create Account';
-        });
-
-        // Authentication functions
-        function showError(elementId, message) {
-          const element = document.getElementById(elementId);
-          if (element) {
-            element.textContent = message;
-            element.style.display = 'block';
+      // Check if user is already logged in
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          console.log('User already logged in, redirecting...');
+          // Check if they need onboarding
+          if (localStorage.getItem('isNewUser') === 'true') {
+            window.location.href = 'onboarding.html';
+          } else {
+            window.location.href = 'index.html';
           }
         }
+      });
 
-        function hideError(elementId) {
-          const element = document.getElementById(elementId);
-          if (element) {
-            element.style.display = 'none';
-          }
-        }
-
-        function showSuccess(elementId, message) {
-          const element = document.getElementById(elementId);
-          if (element) {
-            element.textContent = message;
-            element.style.display = 'block';
-          }
-        }
-
-        // Login form handler
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          
-          const email = document.getElementById('login-email').value;
-          const password = document.getElementById('login-password').value;
-          const loginBtn = document.getElementById('login-btn');
-          
-          // Clear previous errors
-          hideError('login-error');
-          hideError('login-email-error');
-          hideError('login-password-error');
-          
-          loginBtn.disabled = true;
-          loginBtn.textContent = 'Signing In...';
-          
-          try {
-            await firebase.auth().signInWithEmailAndPassword(email, password);
-            showSuccess('login-success', 'Login successful! Redirecting...');
-            setTimeout(() => {
-              // Existing users go directly to index
-              window.location.href = 'index.html';
-            }, 1500);
-          } catch (error) {
-            console.error('Login error:', error);
-            showError('login-error', error.message);
-            loginBtn.disabled = false;
-            loginBtn.textContent = 'Sign In';
-          }
-        });
-
-        // Signup form handler
-        document.getElementById('signup-form').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          
-          const name = document.getElementById('signup-name').value;
-          const email = document.getElementById('signup-email').value;
-          const password = document.getElementById('signup-password').value;
-          const confirmPassword = document.getElementById('signup-confirm-password').value;
-          const signupBtn = document.getElementById('signup-btn');
-          
-          // Clear previous errors
-          hideError('signup-error');
-          hideError('signup-name-error');
-          hideError('signup-email-error');
-          hideError('signup-password-error');
-          hideError('signup-confirm-error');
-          
-          // Validate passwords match
-          if (password !== confirmPassword) {
-            showError('signup-confirm-error', 'Passwords do not match');
-            return;
-          }
-          
-          // Validate password length
-          if (password.length < 6) {
-            showError('signup-password-error', 'Password must be at least 6 characters');
-            return;
-          }
-          
-          signupBtn.disabled = true;
-          signupBtn.textContent = 'Creating Account...';
-          
-          try {
-            const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-            await userCredential.user.updateProfile({ displayName: name });
-            
-            // Mark user as new for onboarding
-            localStorage.setItem('isNewUser', 'true');
-            
-            showSuccess('signup-success', 'Account created successfully! Redirecting...');
-            setTimeout(() => {
-              // New users go to onboarding
-              window.location.href = 'onboarding.html';
-            }, 1500);
-          } catch (error) {
-            console.error('Signup error:', error);
-            showError('signup-error', error.message);
-            signupBtn.disabled = false;
-            signupBtn.textContent = 'Create Account';
-          }
-        });
-
-        // Google Sign In
-        document.getElementById('google-signin').addEventListener('click', async () => {
-          const provider = new firebase.auth.GoogleAuthProvider();
-          
-          try {
-            const result = await firebase.auth().signInWithPopup(provider);
-            
-            // Check if this is a new user (first time signing in with Google)
-            if (result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
-              localStorage.setItem('isNewUser', 'true');
+    });
+  </script>
+</body>
+</html>
+    });
+  </script>
+</body>
+</html>
               window.location.href = 'onboarding.html';
             } else {
               window.location.href = 'index.html';
