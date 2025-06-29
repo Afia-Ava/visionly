@@ -12,10 +12,11 @@
   <style>
     body {
       background-color: #fff;
-      background-image: linear-gradient(135deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%),
-                        linear-gradient(225deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%),
-                        linear-gradient(45deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%),
-                        linear-gradient(315deg, rgba(139, 95, 179, 0.03) 25%, transparent 25%);
+      background-image: 
+        linear-gradient(135deg, rgba(58,34,89,0.10) 25%, transparent 25%),
+        linear-gradient(225deg, rgba(58,34,89,0.10) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(58,34,89,0.10) 25%, transparent 25%),
+        linear-gradient(315deg, rgba(58,34,89,0.10) 25%, transparent 25%);
       background-size: 20px 20px;
       background-position: 10px 0, 10px 0, 0 0, 0 0;
       color: #333;
@@ -73,13 +74,13 @@
     
     /* Change the streak display to purple */
     .streak-display {
-      background: linear-gradient(135deg, #6B46C1 0%, #9537FF 100%); /* Purple gradient */
+      background: linear-gradient(135deg, #2d1a45 0%, #3a2259 100%); /* Purple gradient */
       border-radius: 18px;
       padding: 35px;
       color: white;
       text-align: center;
       margin-bottom: 30px;
-      box-shadow: 0 10px 30px rgba(107, 70, 193, 0.25); /* Purple shadow */
+      box-shadow: 0 10px 30px rgba(58,34,89,0.18); /* Purple shadow */
       position: relative;
       overflow: hidden;
       border: 2px solid rgba(255, 255, 255, 0.2);
@@ -144,11 +145,20 @@
       justify-content: space-between;
       align-items: center;
       text-align: left;
+      background: linear-gradient(145deg, #ede7f6, #e8deff);
+      padding: 25px;
+      border-radius: 16px;
+      width: 180px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(45, 26, 69, 0.15);
+      margin: 10px;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    .stat-card-content {
-      display: flex;
-      flex-direction: column;
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 28px rgba(45, 26, 69, 0.2);
     }
     
     .stat-number {
@@ -156,6 +166,11 @@
       line-height: 1;
       margin-bottom: 0;
       text-align: right;
+      color: #2d1a45;
+      background: linear-gradient(135deg, #2d1a45, #3a2259);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
     
     /* VIBRANT Badge Design - Enhanced Colors */
@@ -169,8 +184,8 @@
       margin: 15px;
       cursor: pointer;
       border-radius: 50%;
-      background: linear-gradient(135deg, #9537FF 0%, #5B02C1 100%); /* More vibrant purple */
-      box-shadow: 0 6px 20px rgba(149, 55, 255, 0.4);
+      background: linear-gradient(135deg, #2d1a45 0%, #3a2259 100%); /* More vibrant purple */
+      box-shadow: 0 6px 20px rgba(58,34,89,0.18);
       transition: all 0.3s ease;
       overflow: visible;
     }
@@ -201,9 +216,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(145deg, #4A01C1 0%, #7602FF 100%); /* More vibrant inner gradient */
-      border-radius: 50%;
-      border: 3px solid rgba(221, 175, 255, 0.5); /* Brighter border */
+      background: linear-gradient(145deg, #2d1a45 0%, #3a2259 100%); /* More vibrant inner gradient */
+      border: 3px solid rgba(58,34,89,0.15); /* Brighter border */
       box-shadow: inset 0 2px 12px rgba(0,0,0,0.5), 0 0 15px rgba(149, 55, 255, 0.3);
       position: relative;
       z-index: 1;
@@ -226,11 +240,11 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      border: 4px solid #DD9FFF; /* Brighter border color */
+      border: 4px solid #3a2259; /* Brighter border color */
       border-radius: 50%;
       box-sizing: border-box;
       opacity: 0.7;
-      background: linear-gradient(145deg, rgba(255,255,255,0.5) 0%, transparent 50%, rgba(0,0,0,0.2) 100%);
+      background: linear-gradient(145deg, rgba(255,255,255,0.4) 0%, transparent 50%, rgba(0,0,0,0.1) 100%);
     }
     
     .badge-outer:hover {
@@ -273,7 +287,7 @@
     }
     
     .badge-wrapper:hover .badge-description {
-      color: #7602FF; /* More vibrant on hover */
+      color: #3a2259; /* More vibrant on hover */
     }
     
     /* Locked badge description style */
@@ -287,7 +301,7 @@
       text-align: center;
       margin: 40px 0 20px;
       color: transparent;
-      background: linear-gradient(90deg, #7602FF 10%, #5B02C1 90%);
+      background: linear-gradient(90deg, #2d1a45 10%, #3a2259 90%);
       -webkit-background-clip: text;
       background-clip: text;
       font-size: 1.5rem;
@@ -303,7 +317,7 @@
       bottom: -8px;
       width: 80px;
       height: 3px;
-      background: linear-gradient(90deg, #7602FF, #9537FF);
+      background: linear-gradient(90deg, #2d1a45, #3a2259);
       transform: translateX(-50%);
       border-radius: 3px;
     }
@@ -368,7 +382,7 @@
     
     /* Improved stats cards */
     .stat-card {
-      background: linear-gradient(145deg, #f5f0ff, #eee6fa);
+      background: linear-gradient(145deg, #ede7f6, #e8deff);
       padding: 25px;
       border-radius: 16px;
       width: 180px;
@@ -412,7 +426,7 @@
     /* Darker color for section titles to improve visibility */
     .section-title, 
     .left-heading {
-      color: #1f0f35; /* Darker purple, almost black */
+      color: #2d1a45 !important;
     }
     
     /* Add subtle underline to the headings for better visibility */
@@ -429,96 +443,101 @@
       left: 0;
       width: 40px;
       height: 3px;
-      background: linear-gradient(90deg, #7602FF, #9537FF);
+      background: linear-gradient(90deg, #2d1a45, #3a2259);
       border-radius: 2px;
     }
   </style>
 </head>
-<body>
-  <!-- Navbar copied from index.html -->
+<body style="font-family: 'Inter', sans-serif; background-color: #fff; color: #333; margin: 0; padding: 0;">
   <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
-    <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
+    <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #2d1a45; text-decoration: none;">Visionly</a>
     <div style="display: flex; align-items: center;">
-      <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
-      <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
-      <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
-      <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
-      <a href="journal.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Journal</a>
+      <a href="index.html" style="text-decoration: none; color: #2d1a45; margin: 0 12px;">Home</a>
+      <a href="create-board.html" style="text-decoration: none; color: #2d1a45; margin: 0 12px;">Create</a>
+      <a href="boards.html" style="text-decoration: none; color: #2d1a45; margin: 0 12px;">Boards</a>
+      <a href="progress.html" style="text-decoration: none; color: #2d1a45; margin: 0 12px;">Progress</a>
+      <a href="elevate.html" style="text-decoration: none; color: #2d1a45; margin: 0 12px; margin-right: 15px;">Elevate</a>
       <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
     </div>
   </nav>
 
-  <!-- Keep the profile dropdown functionality but make it simpler -->
-  <div class="dropdown-menu" id="profile-dropdown-menu">
-    <a href="profile.html" class="dropdown-item">
-      <i class="fas fa-user"></i> Profile
-    </a>
-    <a href="achievements.html" class="dropdown-item active">
-      <i class="fas fa-trophy"></i> Achievements
-    </a>
-    <a href="#" class="dropdown-item" id="logout-btn">
-      <i class="fas fa-sign-out-alt"></i> Logout
-    </a>
-  </div>
-
-  <div class="profile-dropdown-overlay" id="profile-dropdown-overlay"></div>
-
-  <main class="achievement-section">
-    <h1 class="section-title">Your Achievements</h1>
-    
-    <!-- New side-by-side layout -->
-    <div class="achievement-content">
-      <!-- Left column - Stats -->
-      <div class="stats-column">
-        <div class="streak-display">
-          <h2 class="streak-title">Current Streak</h2>
-          <div class="streak-days" id="streak-count">0</div>
-          <div class="streak-subtitle">days in a row</div>
+  <div style="max-width: 1100px; margin: 100px auto 40px; padding: 40px 24px 24px 24px; background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);">
+    <header style="margin-bottom: 36px;">
+      <h1 style="font-size: 2.2rem; font-weight: 700; color: #2d1a45; margin-bottom: 8px;">Achievements</h1>
+      <p style="color: #666; font-size: 1.08rem; margin-bottom: 0;">Celebrate your progress and unlock new milestones</p>
+    </header>
+    <div style="display: flex; flex-wrap: wrap; gap: 40px;">
+      <!-- Stats Column -->
+      <div style="flex: 1 1 260px; min-width: 260px; max-width: 320px;">
+        <div style="background: linear-gradient(135deg, #2d1a45 0%, #3a2259 100%); border-radius: 18px; padding: 32px 24px; color: white; text-align: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(58,34,89,0.18);">
+          <h2 style="font-size: 1.1rem; margin-bottom: 10px; font-weight: 600;">Current Streak</h2>
+          <div id="streak-days" style="font-size: 2.5rem; font-weight: 700; margin-bottom: 5px;">0 🔥</div>
+          <div style="font-size: 1rem; opacity: 0.9;">days in a row</div>
         </div>
-        
-        <h3 class="left-heading">Your Stats</h3>
-        <div class="achievement-stats">
-          <div class="stat-card">
-            <div class="stat-card-content">
-              <div class="stat-label">Focus Hours</div>
-            </div>
-            <div class="stat-number" id="focus-hours">0</div>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="background: linear-gradient(145deg, #ede7f6, #e8deff); padding: 18px 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.07);">
+            <div id="focus-hours" style="font-size: 2rem; font-weight: 700; color: #2d1a45; font-family: 'Inter', sans-serif;">0</div>
+            <div style="font-size: 1rem; color: #444; font-family: 'Inter', sans-serif;">Focus Hours</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-card-content">
-              <div class="stat-label">Goals Completed</div>
-            </div>
-            <div class="stat-number" id="goals-completed">0</div>
+          <div style="background: linear-gradient(145deg, #ede7f6, #e8deff); padding: 18px 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.07);">
+            <div id="goals-completed" style="font-size: 2rem; font-weight: 700; color: #2d1a45; font-family: 'Inter', sans-serif;">0</div>
+            <div style="font-size: 1rem; color: #444; font-family: 'Inter', sans-serif;">Goals Completed</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-card-content">
-              <div class="stat-label">Badges Earned</div>
-            </div>
-            <div class="stat-number" id="badges-earned">0</div>
+          <div style="background: linear-gradient(145deg, #ede7f6, #e8deff); padding: 18px 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.07);">
+            <div id="badges-earned" style="font-size: 2rem; font-weight: 700; color: #2d1a45; font-family: 'Inter', sans-serif;">0</div>
+            <div style="font-size: 1rem; color: #444; font-family: 'Inter', sans-serif;">Badges Earned</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-card-content">
-              <div class="stat-label">Longest Streak</div>
-            </div>
-            <div class="stat-number" id="longest-streak">0</div>
+          <div style="background: linear-gradient(145deg, #ede7f6, #e8deff); padding: 18px 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.07);">
+            <div id="longest-streak" style="font-size: 2rem; font-weight: 700; color: #2d1a45; font-family: 'Inter', sans-serif;">0</div>
+            <div style="font-size: 1rem; color: #444; font-family: 'Inter', sans-serif;">Longest Streak</div>
           </div>
         </div>
       </div>
-      
-      <!-- Right column - Badges -->
-      <div class="badges-column">
-        <h2 class="left-heading">Achievement Badges</h2>
-        <div id="achievement-badges-container" class="achievement-container">
-          <!-- Badges will be dynamically inserted here -->
+      <!-- Badges Column -->
+      <div style="flex: 2 1 400px; min-width: 320px;">
+        <h2 style="font-size: 1.3rem; color: #2d1a45; font-weight: 700; margin-bottom: 18px;">Achievement Badges</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 28px;">
+          <!-- Example Badge -->
+          <div style="display: flex; flex-direction: column; align-items: center; width: 120px;">
+            <div style="width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #2d1a45 0%, #3a2259 100%); box-shadow: 0 6px 20px rgba(45,26,69,0.22); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; position: relative;">
+              <span style="font-size: 2rem; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.18);">⭐</span>
+            </div>
+            <div style="text-align: center; font-size: 0.95rem; color: #2d1a45; font-weight: 600;">First Vision Board</div>
+            <div style="font-size: 0.85rem; color: #888; margin-top: 2px;">Unlocked</div>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; width: 120px;">
+            <div style="width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #2d1a45 0%, #3a2259 100%); box-shadow: 0 6px 20px rgba(45,26,69,0.22); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; position: relative;">
+              <span style="font-size: 2rem; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.18);">📖</span>
+            </div>
+            <div style="text-align: center; font-size: 0.95rem; color: #2d1a45; font-weight: 600;">Journal Master</div>
+            <div style="font-size: 0.85rem; color: #888; margin-top: 2px;">Locked</div>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; width: 120px;">
+            <div style="width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #2d1a45 0%, #3a2259 100%); box-shadow: 0 6px 20px rgba(45,26,69,0.22); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; position: relative;">
+              <span style="font-size: 2rem; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.18);">🏆</span>
+            </div>
+            <div style="text-align: center; font-size: 0.95rem; color: #2d1a45; font-weight: 600;">Goal Crusher</div>
+            <div style="font-size: 0.85rem; color: #888; margin-top: 2px;">Locked</div>
+          </div>
+          <!-- Add more badges as needed -->
         </div>
       </div>
     </div>
-  </main>
+  </div>
 
+  <!-- Background Sound -->
+  <audio id="background-sound" loop>
+      <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+  </audio>
+
+  <!-- Toggle Sound Button -->
+  <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
+      <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+  </button>
   <script src="firebase-config.js"></script>
   <script src="profile-dropdown.js"></script>
   <script src="shared-scripts.js"></script>
-  <script src="achievement-badges.js"></script>
   <script src="dark-mode-toggle.js"></script>
   <script>
     // Immediately apply dark mode class before DOMContentLoaded for no-flash
@@ -562,12 +581,22 @@
         window.syncDarkModeUI();
       }
 
-      // Initialize stats to 0
+      // Set all stats to 0 initially
       document.getElementById('focus-hours').textContent = '0';
       document.getElementById('goals-completed').textContent = '0';
       document.getElementById('badges-earned').textContent = '0';
       document.getElementById('longest-streak').textContent = '0';
-      document.getElementById('streak-count').textContent = '0';
+      document.getElementById('streak-days').textContent = '0 🔥';
+
+      // TODO: Fetch and update these stats as user completes more stuff
+      // Example:
+      // fetchUserStats().then(stats => {
+      //   document.getElementById('focus-hours').textContent = stats.focusHours;
+      //   document.getElementById('goals-completed').textContent = stats.goalsCompleted;
+      //   document.getElementById('badges-earned').textContent = stats.badgesEarned;
+      //   document.getElementById('longest-streak').textContent = stats.longestStreak;
+      //   document.getElementById('streak-days').textContent = stats.currentStreak + ' 🔥';
+      // });
       
       // Fetch actual user data from server/localStorage when available
       function fetchUserStats() {
@@ -581,7 +610,7 @@
             document.getElementById('goals-completed').textContent = '3';
             document.getElementById('badges-earned').textContent = '4';
             document.getElementById('longest-streak').textContent = '7';
-            document.getElementById('streak-count').textContent = '3';
+            document.getElementById('streak-days').textContent = '3 🔥';
           }
         }, 1000);
       }
@@ -606,6 +635,129 @@
         }
       }, 3000);
     });
+  </script>
+
+  <!-- Add this before the closing </body> tag -->
+  <script src="mouse-sprinkles-script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Remove any previous sprinkle intervals if present
+      if (window._sprinkleInterval) clearInterval(window._sprinkleInterval);
+      // Remove any existing sprinkles
+      document.querySelectorAll('.sprinkle-particle').forEach(el => el.remove());
+      // Sprinkle function
+      window.createSprinkle = function(x, y) {
+        if (!x || !y) return;
+        const colors = ['#8b5fbf', '#6b46c1', '#9d78c9', '#2d1a45', '#3a2259'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = 4 + Math.random() * 4;
+        const sprinkle = document.createElement('div');
+        sprinkle.className = 'sprinkle-particle';
+        sprinkle.style.cssText = `
+          position: fixed;
+          width: ${size}px;
+          height: ${size}px;
+          background-color: ${color};
+          border-radius: 50%;
+          left: ${x}px;
+          top: ${y}px;
+          pointer-events: none;
+          z-index: 9999;
+          opacity: 0.8;
+          transform: scale(0);
+          animation: sprinkleFadeOut 1s ease forwards;
+        `;
+        document.body.appendChild(sprinkle);
+        setTimeout(() => {
+          if (sprinkle.parentNode) sprinkle.parentNode.removeChild(sprinkle);
+        }, 1000);
+      };
+      // Sprinkle animation keyframes (if not already present)
+      if (!document.getElementById('sprinkle-styles')) {
+        const style = document.createElement('style');
+        style.id = 'sprinkle-styles';
+        style.textContent = `
+          @keyframes sprinkleFadeOut {
+            0% { transform: scale(0); opacity: 0.8; }
+            50% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(0); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      // Sprinkle on mousemove
+      document.addEventListener('mousemove', function(e) {
+        if (Math.random() > 0.6) {
+          createSprinkle(e.clientX, e.clientY);
+        }
+      });
+    });
+  </script>
+  <!-- Place this after the audio/button markup and before any other per-page sound logic -->
+  <script src="shared-scripts.js"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var audio = document.getElementById('background-sound');
+    var toggleBtn = document.getElementById('toggle-sound');
+    var soundIcon = document.getElementById('sound-icon');
+    if (!audio || !toggleBtn || !soundIcon) return;
+
+    audio.volume = 0.5;
+
+    function updateIcon() {
+        if (audio.paused) {
+            soundIcon.src = 'assets/speaker-off-icon.png';
+            soundIcon.alt = 'Sound Off';
+        } else {
+            soundIcon.src = 'assets/speaker-on-icon.png';
+            soundIcon.alt = 'Sound On';
+        }
+    }
+
+    function tryPlay() {
+        audio.play().then(updateIcon).catch(updateIcon);
+    }
+    tryPlay();
+
+    // Try again on first user interaction (required by most browsers)
+    const enableAudio = () => {
+        if (audio.paused) tryPlay();
+    };
+    document.addEventListener('click', enableAudio, { once: true });
+    document.addEventListener('touchstart', enableAudio, { once: true });
+    document.addEventListener('keydown', enableAudio, { once: true });
+
+    // Toggle sound on button click
+    toggleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (audio.paused) {
+            audio.play().then(updateIcon);
+        } else {
+            audio.pause();
+            updateIcon();
+        }
+        // Sync state to localStorage for cross-tab sync
+        localStorage.setItem('visionly-bg-music', JSON.stringify({
+            time: audio.currentTime,
+            paused: audio.paused,
+            ts: Date.now()
+        }));
+    });
+
+    audio.addEventListener('play', updateIcon);
+    audio.addEventListener('pause', updateIcon);
+
+    updateIcon();
+});
+  </script>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navPhoto = document.getElementById('profile-photo');
+    const uploaded = localStorage.getItem('profileAvatarUpload');
+    if (navPhoto && uploaded) {
+        navPhoto.src = uploaded;
+    }
+});
   </script>
 </body>
 </html>

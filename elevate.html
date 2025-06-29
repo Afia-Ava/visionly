@@ -350,7 +350,7 @@
     </main>
 
     <!-- Background Sound -->
-    <audio id="background-sound" loop autoplay>
+    <audio id="background-sound" loop>
         <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -360,8 +360,65 @@
         <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
     </button>
 
-    <!-- Make sure this is included after the audio/button markup and only once per page -->
+    <!-- Place this after the audio/button markup and before any other per-page sound logic -->
     <script src="shared-scripts.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Defensive: check if elements exist
+    var audio = document.getElementById('background-sound');
+    var toggleBtn = document.getElementById('toggle-sound');
+    var soundIcon = document.getElementById('sound-icon');
+    if (!audio || !toggleBtn || !soundIcon) return;
+
+    audio.volume = 0.5;
+
+    function updateIcon() {
+        if (audio.paused) {
+            soundIcon.src = 'assets/speaker-off-icon.png';
+            soundIcon.alt = 'Sound Off';
+        } else {
+            soundIcon.src = 'assets/speaker-on-icon.png';
+            soundIcon.alt = 'Sound On';
+        }
+    }
+
+    // Try to play on load (may be blocked)
+    function tryPlay() {
+        audio.play().then(updateIcon).catch(updateIcon);
+    }
+    tryPlay();
+
+    // Try again on first user interaction (required by most browsers)
+    const enableAudio = () => {
+        if (audio.paused) tryPlay();
+    };
+    document.addEventListener('click', enableAudio, { once: true });
+    document.addEventListener('touchstart', enableAudio, { once: true });
+    document.addEventListener('keydown', enableAudio, { once: true });
+
+    // Toggle sound on button click
+    toggleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (audio.paused) {
+            audio.play().then(updateIcon);
+        } else {
+            audio.pause();
+            updateIcon();
+        }
+        // Sync state to localStorage for cross-tab sync
+        localStorage.setItem('visionly-bg-music', JSON.stringify({
+            time: audio.currentTime,
+            paused: audio.paused,
+            ts: Date.now()
+        }));
+    });
+
+    audio.addEventListener('play', updateIcon);
+    audio.addEventListener('pause', updateIcon);
+
+    updateIcon();
+});
+</script>
     <script src="firebase-config.js"></script>
     <script src="profile-dropdown.js"></script>
     <script src="dark-mode-toggle.js"></script>

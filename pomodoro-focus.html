@@ -149,13 +149,18 @@
         </div>
     </nav>
 
-    <!-- Update navbar profile-photo from saved avatar -->
+    <!-- Update navbar profile-photo from saved avatar or upload -->
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const storedAvatar = localStorage.getItem('profileAvatar');
-        if (storedAvatar) {
-          const navImg = document.getElementById('profile-photo');
-          if (navImg) navImg.src = storedAvatar;
+      document.addEventListener('DOMContentLoaded', function() {
+        const navImg = document.getElementById('profile-photo');
+        const uploadedAvatar = localStorage.getItem('profileAvatarUpload');
+        const selectedAvatar = localStorage.getItem('profileAvatar');
+        if (navImg) {
+          if (uploadedAvatar) {
+            navImg.src = uploadedAvatar;
+          } else if (selectedAvatar) {
+            navImg.src = selectedAvatar;
+          }
         }
       });
     </script>
@@ -229,9 +234,12 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Built Section: replaces Tips for Focus, 4 emojis on top, 4 on bottom -->
             </div>
 
             <div class="focus-right" style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                <!-- Focus Sounds -->
                 <div class="background-music" style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <h3 style="font-weight: 600; color: #333;">Focus Sounds</h3>
                     <div class="music-options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
@@ -268,43 +276,45 @@
                         ">
                             ▶
                         </button>
-                        <span id="track-name" style="color: #333; font-weight: 500;">Select a track</span>
+                        <span id="track-name" style="color: #333; font-weight: 500; margin-left: 10px;">Select a track</span>
                         <audio id="audio-player" loop style="display:none;"></audio>
                     </div>
                 </div>
 
-                <div class="tips-for-focus" style="background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                    <h3 style="font-weight: 600; color: #333;">Tips for Focus</h3>
-                    <p style="color: #666;">Minimize distractions by turning off notifications and finding a quiet workspace. Break down large tasks into smaller, manageable steps to avoid feeling overwhelmed.</p>
+                <!-- Built Section: now only in right column, below Focus Sounds -->
+                <div id="built-section" style="background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(139,95,179,0.08); padding:18px 20px; margin:0 auto; width:340px; max-width:100%; display:block;">
+                    <h3 style="margin:0 0 18px 0; font-weight:600; color:#333; font-size:1.1rem; letter-spacing:0.2px; display: flex; align-items: center; gap: 8px;">Build
+                      <button id="build-info-btn" aria-label="Build Info" style="width:22px; height:22px; border-radius:50%; border:none; background:#ece7f6; color:#2d1a45; font-size:15px; font-weight:bold; display:flex; align-items:center; justify-content:center; cursor:pointer; margin-left:4px; padding:0; transition:background 0.2s;">
+                        i
+                      </button>
+                    </h3>
+                    <div id="build-info-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.25); z-index:2000; align-items:center; justify-content:center;">
+                      <div style="background:#fff; border-radius:12px; max-width:350px; width:90vw; padding:28px 22px 22px 22px; box-shadow:0 4px 24px rgba(45,26,69,0.13); position:relative;">
+                        <button id="close-build-info" style="position:absolute; top:10px; right:10px; background:#eee; border:none; border-radius:50%; width:28px; height:28px; font-size:1.1rem; color:#2d1a45; cursor:pointer;">×</button>
+                        <h4 style="margin:0 0 10px 0; color:#2d1a45; font-size:1.08rem; font-weight:600;">How to Build Things</h4>
+                        <div style="color:#333; font-size:0.98rem; line-height:1.6; margin-bottom:12px;">
+                          Building things is about consistent focus and progress. Each emoji represents a milestone or achievement you can unlock by completing focus sessions and reaching your goals. Stay motivated, track your progress, and watch your city grow as you build new things with every session!
+                        </div>
+                        <div style="margin-top:10px;">
+                          <strong style="color:#2d1a45; font-size:1rem;">Emoji Unlock Guide:</strong>
+                          <ul style="padding-left:18px; margin:10px 0 0 0; color:#333; font-size:0.97rem;">
+                            <li>🎁 Gift: 1 day</li>
+                            <li>🏠 House: 3 days</li>
+                            <li>🏯 Tower: 5 days</li>
+                            <li>🏰 Castle: 7 days</li>
+                            <li>🔺 Pyramid: 10 days</li>
+                            <li>🚀 Spaceship: 14 days</li>
+                            <li>🌆 Empire: 21 days</li>
+                            <li>⭐ Star: 30 days</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="built-items" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:18px 10px; align-items:center; justify-items:center;"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Built Section (below tracker, full width, single line, only emojis) -->
-        <div id="built-section" style="background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(139,95,179,0.08); padding:18px 20px 12px 20px; margin:40px auto 0 auto; max-width:600px;">
-            <h3 style="margin:0 0 12px 0; font-weight:600; color:#2d1a45; font-size:1.1rem; letter-spacing:0.2px;">Built</h3>
-            <div id="built-items" style="display:flex; flex-direction:row; flex-wrap:wrap; gap:32px; align-items:center; justify-content:center;"></div>
-        </div>
-
-        <!-- Lego Empire Visual Progress Area (below built section) -->
-        <div id="lego-empire-container" style="background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(139,95,179,0.08); padding:28px 24px 18px 24px; width:100%; max-width:540px; margin:40px auto 0 auto; display:flex; flex-direction:column; align-items:center;">
-            <h3 style="margin:0 0 10px 0; font-weight:700; color:#8b5fbf; font-size:1.25rem; letter-spacing:0.5px;">
-                <span style="font-size:1.5em; vertical-align:middle;">🧱</span> Build Your Epic Lego Empire
-            </h3>
-            <div id="lego-empire-choice" style="margin-bottom:18px; width:100%; text-align:center;">
-                <label for="lego-structure-select" style="font-weight:600; color:#333; font-size:1.05em;">What do you want to build?</label>
-                <select id="lego-structure-select" style="margin-left:10px; padding:6px 12px; border-radius:6px; border:1px solid #e0e0e0; font-size:1em;">
-                    <option value="house">🏠 Cozy House (7 days)</option>
-                    <option value="tower">🏯 Tower (14 days)</option>
-                    <option value="castle">🏰 Castle (21 days)</option>
-                    <option value="pyramid">🔺 Pyramid (28 days)</option>
-                    <option value="spaceship">🚀 Spaceship (30 days)</option>
-                    <option value="empire">🌆 Empire (50 days)</option>
-                </select>
-            </div>
-            <div id="lego-blocks" style="display:flex; align-items:flex-end; gap:6px; min-height:60px; margin-bottom:8px;"></div>
-            <div id="lego-empire-message" style="margin-top:4px; color:#666; font-size:0.98rem; text-align:center;"></div>
-        </div>
         <!-- Extra empty space at the end -->
         <div style="height: 80px;"></div>
     </main>
@@ -406,34 +416,263 @@
       document.addEventListener('DOMContentLoaded', function() {
     // --- Built Section Logic ---
     const builtItemsDiv = document.getElementById('built-items');
-    const GIFT_KEY = 'legoEmpireGiftClaimed';
+    // 8 emojis for a 4x2 grid
     const structures = [
-        { key: "gift", label: "Gift", emoji: "🎁", days: 1 },
-        { key: "house", label: "House", emoji: "🏠", days: 7 },
-        { key: "tower", label: "Tower", emoji: "🏯", days: 14 },
-        { key: "castle", label: "Castle", emoji: "🏰", days: 21 },
-        { key: "pyramid", label: "Pyramid", emoji: "🔺", days: 28 },
-        { key: "spaceship", label: "Spaceship", emoji: "🚀", days: 30 },
-        { key: "empire", label: "Empire", emoji: "🌆", days: 50 }
+        { key: "gift", label: "Gift", emoji: "🎁" },
+        { key: "house", label: "House", emoji: "🏠" },
+        { key: "tower", label: "Tower", emoji: "🏯" },
+        { key: "castle", label: "Castle", emoji: "🏰" },
+        { key: "pyramid", label: "Pyramid", emoji: "🔺" },
+        { key: "spaceship", label: "Spaceship", emoji: "🚀" },
+        { key: "empire", label: "Empire", emoji: "🌆" },
+        { key: "star", label: "Star", emoji: "⭐" } // extra for even grid
     ];
     function renderBuiltItems() {
         let html = '';
-        // Gift - Always visible
-        let claimed = true; // Set to true to make it visible
-        html += `<span title="Gift" style="font-size:2em; opacity:${claimed ? 1 : 0.2}; cursor:default;">🎁</span>`;
-        
-        // Structures (just emojis, one line) - All transparent except gift
-        const LEGO_KEY = 'legoEmpireBlocks_';
-        for (const s of structures.slice(1)) {
-            // All structures should be transparent
-            const blocks = JSON.parse(localStorage.getItem(LEGO_KEY + s.key) || '[]');
-            // Set opacity to 0.2 for all structures
-            html += `<span title="${s.label}" style="font-size:2em; opacity:0.2; cursor:default;">${s.emoji}</span>`;
+        for (const s of structures) {
+            html += `<span title="${s.label}" style="font-size:28px; opacity:0.2; cursor:default;">${s.emoji}</span>`;
         }
         builtItemsDiv.innerHTML = html;
     }
     renderBuiltItems();
 });
     </script>
+    <!-- --- Pomodoro Focus Page: Ensure background music works reliably --- -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const audio = document.getElementById('background-sound');
+        const toggleBtn = document.getElementById('toggle-sound');
+        const soundIcon = document.getElementById('sound-icon');
+        if (!audio || !toggleBtn || !soundIcon) return;
+
+        // Helper to update icon
+        function updateIcon() {
+            soundIcon.src = audio.paused ? 'assets/speaker-off-icon.png' : 'assets/speaker-on-icon.png';
+            soundIcon.alt = audio.paused ? 'Sound Off' : 'Sound On';
+        }
+
+        // Always start background music ON by default
+        function startAudio() {
+            audio.volume = 0.5;
+            audio.play().catch(() => {});
+            updateIcon();
+        }
+
+        // Toggle sound on button click
+        toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (audio.paused) {
+                audio.play().catch(() => {});
+            } else {
+                audio.pause();
+            }
+            updateIcon();
+        });
+
+        // Try to play on first user interaction (for autoplay restrictions)
+        const enableAudio = () => {
+            if (audio.paused) audio.play().catch(() => {});
+            updateIcon();
+        };
+        document.addEventListener('click', enableAudio, { once: true });
+        document.addEventListener('touchstart', enableAudio, { once: true });
+
+        // Keep icon in sync if audio is paused/played elsewhere
+        audio.addEventListener('play', updateIcon);
+        audio.addEventListener('pause', updateIcon);
+
+        // Start background music ON by default
+        startAudio();
+    });
+    </script>
+    <!-- --- Focus Sounds Functionality --- -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const musicOptions = document.querySelectorAll('.music-option');
+        const audioPlayer = document.getElementById('audio-player');
+        const playButton = document.getElementById('play-button');
+        const trackName = document.getElementById('track-name');
+        const bgAudio = document.getElementById('background-sound');
+        let currentTrack = null;
+        let isFocusSoundPlaying = false;
+
+        // Helper: update play button icon
+        function updatePlayBtn() {
+            playButton.textContent = audioPlayer.paused ? '▶' : '⏸';
+        }
+
+        // Play selected focus sound
+        function playFocusSound(src, name) {
+            if (bgAudio && !bgAudio.paused) {
+                bgAudio.pause();
+            }
+            audioPlayer.src = src;
+            audioPlayer.currentTime = 0;
+            audioPlayer.play().catch(() => {});
+            trackName.textContent = name;
+            isFocusSoundPlaying = true;
+            currentTrack = src;
+            updatePlayBtn();
+        }
+
+        // Stop focus sound and resume bg music
+        function stopFocusSound() {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            isFocusSoundPlaying = false;
+            currentTrack = null;
+            trackName.textContent = 'Select a track';
+            updatePlayBtn();
+            if (bgAudio && bgAudio.paused) {
+                bgAudio.play().catch(() => {});
+            }
+        }
+
+        // Click on a focus sound
+        musicOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const src = option.getAttribute('data-src');
+                const name = option.querySelector('p')?.textContent || 'Focus Sound';
+                // If the same track is playing, stop it
+                if (isFocusSoundPlaying && currentTrack === src && !audioPlayer.paused) {
+                    stopFocusSound();
+                } else {
+                    playFocusSound(src, name);
+                }
+            });
+        });
+
+        // Play/pause button for focus sound
+        playButton.addEventListener('click', function() {
+            if (!audioPlayer.src) return;
+            if (audioPlayer.paused) {
+                if (bgAudio && !bgAudio.paused) bgAudio.pause();
+                audioPlayer.play().catch(() => {});
+            } else {
+                audioPlayer.pause();
+            }
+            updatePlayBtn();
+        });
+
+        // When focus sound ends, resume bg music
+        audioPlayer.addEventListener('ended', function() {
+            stopFocusSound();
+        });
+
+        // Keep play button in sync
+        audioPlayer.addEventListener('play', updatePlayBtn);
+        audioPlayer.addEventListener('pause', updatePlayBtn);
+
+        // If user toggles background music while focus sound is playing, stop focus sound
+        const toggleBtn = document.getElementById('toggle-sound');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                if (isFocusSoundPlaying) {
+                    stopFocusSound();
+                }
+            });
+        }
+    });
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addGoalBtn = document.getElementById('add-goal-btn');
+        const newGoalInput = document.getElementById('new-goal');
+        const goalsList = document.querySelector('.goals-list');
+
+        function addGoal() {
+            const text = newGoalInput.value.trim();
+            if (!text) return;
+            const goalDiv = document.createElement('div');
+            goalDiv.className = 'goal-item';
+            goalDiv.style.display = 'flex';
+            goalDiv.style.alignItems = 'center';
+            goalDiv.style.background = '#f8f9fa';
+            goalDiv.style.borderRadius = '8px';
+            goalDiv.style.padding = '8px 12px';
+            goalDiv.style.marginBottom = '4px';
+            goalDiv.style.gap = '10px';
+            goalDiv.innerHTML = `
+                <span style="flex:1; font-size:15px; color:#2d1a45;">${text}</span>
+                <button type="button" class="remove-goal" style="background:none; border:none; color:#c00; font-size:1.3em; cursor:pointer;">×</button>
+            `;
+            goalDiv.querySelector('.remove-goal').onclick = function() {
+                goalsList.removeChild(goalDiv);
+            };
+            goalsList.appendChild(goalDiv);
+            newGoalInput.value = '';
+            newGoalInput.focus();
+        }
+
+        addGoalBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            addGoal();
+        });
+        newGoalInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addGoal();
+            }
+        });
+    });
+    </script>
+    <!-- Make Start Session button go to focus-session.html and pass selected sound -->
+    <script>
+      const startSessionBtn = document.getElementById('start-session-btn');
+      if (startSessionBtn) {
+        startSessionBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          // Get selected focus sound
+          const selectedOption = document.querySelector('.music-option.selected');
+          let selectedMusic = 'Select a sound';
+          let selectedMusicSrc = '';
+          if (selectedOption) {
+            selectedMusic = selectedOption.querySelector('p')?.textContent || 'Focus Sound';
+            selectedMusicSrc = selectedOption.getAttribute('data-src') || '';
+          }
+          // Save to sessionStorage
+          sessionStorage.setItem('selectedMusic', selectedMusic);
+          sessionStorage.setItem('selectedMusicSrc', selectedMusicSrc);
+          // Also save timer values
+          const focusDuration = document.getElementById('focus-duration')?.value || '25';
+          const breakDuration = document.getElementById('break-duration')?.value || '5';
+          sessionStorage.setItem('focusDuration', focusDuration);
+          sessionStorage.setItem('breakDuration', breakDuration);
+          window.location.href = 'focus-session.html';
+        });
+      }
+      // Highlight selected music option
+      const musicOptions = document.querySelectorAll('.music-option');
+      musicOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          musicOptions.forEach(opt => opt.classList.remove('selected'));
+          option.classList.add('selected');
+        });
+      });
+    </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const infoBtn = document.getElementById('build-info-btn');
+  const infoModal = document.getElementById('build-info-modal');
+  const closeBtn = document.getElementById('close-build-info');
+  if (infoBtn && infoModal && closeBtn) {
+    infoBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      infoModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+    closeBtn.addEventListener('click', function() {
+      infoModal.style.display = 'none';
+      document.body.style.overflow = '';
+    });
+    infoModal.addEventListener('click', function(e) {
+      if (e.target === infoModal) {
+        infoModal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+  }
+});
+</script>
 </body>
 </html>

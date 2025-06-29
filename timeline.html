@@ -473,15 +473,6 @@
     </style>
 </head>
 <body>
-    <!-- Add background sound and toggle button -->
-    <audio id="background-sound" loop>
-        <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-    <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
-        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
-    </button>
-    
     <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
         <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
         <div style="display: flex; align-items: center;">
@@ -493,14 +484,17 @@
             <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
         </div>
     </nav>
-
-    <!-- Update navbar profile-photo from saved avatar -->
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const storedAvatar = localStorage.getItem('profileAvatar');
-        if (storedAvatar) {
-          const navImg = document.getElementById('profile-photo');
-          if (navImg) navImg.src = storedAvatar;
+      document.addEventListener('DOMContentLoaded', function() {
+        const navImg = document.getElementById('profile-photo');
+        const uploadedAvatar = localStorage.getItem('profileAvatarUpload');
+        const selectedAvatar = localStorage.getItem('profileAvatar');
+        if (navImg) {
+          if (uploadedAvatar) {
+            navImg.src = uploadedAvatar;
+          } else if (selectedAvatar) {
+            navImg.src = selectedAvatar;
+          }
         }
       });
     </script>
@@ -557,16 +551,13 @@
         </div>
         
         <div class="timeline-section">
-            <h2>Milestones</h2>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; gap:16px; flex-wrap:wrap;">
+                <h2 style="margin:0;">Milestones</h2>
+                <input id="milestone-search" type="text" placeholder="Search milestones or subgoals..." style="padding:8px 14px; border-radius:8px; border:1px solid #dde0e4; font-size:15px; min-width:220px; max-width:320px;">
+            </div>
             <div class="timeline" id="milestone-timeline">
                 <!-- Empty state message -->
                 <div id="empty-milestone-message" class="empty-state-message">
-                    <div class="empty-state-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256">
-                            <path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"></path>
-                        </svg>
-                    </div>
-                    <p>No milestones added yet. Use the form above to create your first milestone!</p>
                 </div>
             </div>
         </div>
@@ -658,322 +649,413 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Form submissions
             const milestoneForm = document.getElementById('milestone-form');
-            const subgoalsList = document.getElementById('subgoals-list');
-            const addSubgoalBtn = document.getElementById('add-subgoal');
-            const milestoneTimeline = document.getElementById('milestone-timeline');
-            const emptyMilestoneMessage = document.getElementById('empty-milestone-message');
-            let milestoneCounter = 0; // To track milestone IDs
-            
-            // Add subgoal button functionality
-            addSubgoalBtn.addEventListener('click', function() {
-                const newSubgoal = document.createElement('div');
-                newSubgoal.className = 'subgoal-item';
-                newSubgoal.innerHTML = `
-                    <input type="text" class="subgoal-input" placeholder="Enter subgoal">
-                    <input type="date" class="subgoal-date">
-                    <button type="button" class="remove-subgoal">×</button>
-                `;
-                
-                // Add event listener to remove button
-                const removeBtn = newSubgoal.querySelector('.remove-subgoal');
-                removeBtn.addEventListener('click', function() {
-                    subgoalsList.removeChild(newSubgoal);
-                });
-                
-                subgoalsList.appendChild(newSubgoal);
-            });
-            
-            // Add event listeners to initial remove button
-            const initialRemoveBtn = document.querySelector('.remove-subgoal');
-            if (initialRemoveBtn) {
-                initialRemoveBtn.addEventListener('click', function() {
-                    // Keep at least one subgoal
-                    if (subgoalsList.children.length > 1) {
-                        subgoalsList.removeChild(this.parentElement);
-                    }
+            const milestoneDateInput = document.getElementById('milestone-date');
+            const addSubgoalBtn = document.getElementById('add-subgoal'); // Declare once
+            const subgoalsList = document.getElementById('subgoals-list'); // Declare once
+            // Set min date to today for milestone
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const minDate = `${yyyy}-${mm}-${dd}`;
+            if (milestoneDateInput) milestoneDateInput.setAttribute('min', minDate);
+
+            // Set min date for all subgoal date inputs (existing and future)
+            function setMinDateForSubgoals() {
+                document.querySelectorAll('.subgoal-date').forEach(input => {
+                    input.setAttribute('min', minDate);
                 });
             }
-            
-            milestoneForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const title = document.getElementById('milestone-title').value;
-                const date = document.getElementById('milestone-date').value;
-                const status = document.getElementById('milestone-status').value;
-                
-                // Collect subgoals
-                const subgoals = [];
-                const subgoalItems = document.querySelectorAll('.subgoal-item');
-                
-                subgoalItems.forEach(item => {
-                    const subgoalText = item.querySelector('.subgoal-input').value;
-                    const subgoalDate = item.querySelector('.subgoal-date').value;
-                    
-                    if (subgoalText.trim() !== '') {
-                        subgoals.push({
-                            text: subgoalText,
-                            date: subgoalDate,
-                            status: 'planned'
-                        });
-                    }
-                });
-                
-                // Increment milestone counter for unique IDs
-                milestoneCounter++;
-                const milestoneId = milestoneCounter;
-                
-                // Remove empty state message if this is the first milestone
-                if (emptyMilestoneMessage && emptyMilestoneMessage.parentNode === milestoneTimeline) {
-                    milestoneTimeline.removeChild(emptyMilestoneMessage);
-                }
-                
-                // Create new milestone in timeline
-                const newMilestone = document.createElement('div');
-                newMilestone.className = 'timeline-milestone';
-                newMilestone.setAttribute('data-id', milestoneId);
-                newMilestone.innerHTML = `
-                    <div class="timeline-marker">
-                        <div class="milestone-dot">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
-                                <path d="M232,128a104,104,0,0,1-208,0c0-41,23.81-78.36,60.66-95.27a8,8,0,0,1,6.68,14.54C60.15,61.59,40,93.27,40,128a88,88,0,0,0,176,0c0-34.73-20.15-66.41-51.34-80.73a8,8,0,0,1,6.68-14.54C208.19,49.64,232,87,232,128Z"></path>
-                            </svg>
-                        </div>
-                        <div class="milestone-line"></div>
-                    </div>
-                    <div class="milestone-content">
-                        <div class="milestone-title">${title}</div>
-                        <div class="milestone-details">Subgoals: ${subgoals.length}</div>
-                    </div>
-                `;
-                
-                milestoneTimeline.appendChild(newMilestone);
-                
-                // Create subgoals section
-                if (subgoals.length > 0) {
-                    const container = document.querySelector('.container');
-                    const subgoalsSection = document.createElement('div');
-                    subgoalsSection.className = 'subgoals-section';
-                    subgoalsSection.id = `subgoals-${milestoneId}`;
-                    
-                    let subgoalsHtml = `
-                        <h3>Subgoals for ${title}</h3>
+            setMinDateForSubgoals();
+
+            // Add Subgoal button functionality
+            if (addSubgoalBtn) {
+                addSubgoalBtn.addEventListener('click', function() {
+                    const newSubgoal = document.createElement('div');
+                    newSubgoal.className = 'subgoal-item';
+                    newSubgoal.innerHTML = `
+                        <input type="text" class="subgoal-input" placeholder="Enter subgoal">
+                        <input type="date" class="subgoal-date">
+                        <button type="button" class="remove-subgoal">×</button>
                     `;
-                    
-                    subgoals.forEach(subgoal => {
-                        subgoalsHtml += `
-                            <div class="subgoal-item">
-                                <div class="subgoal-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                                        <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z"></path>
-                                    </svg>
-                                </div>
-                                <div class="subgoal-content">
-                                    <div class="subgoal-title">${subgoal.text}</div>
-                                    <div class="subgoal-date">${subgoal.date ? 'Due: ' + subgoal.date : 'No due date'}</div>
-                                </div>
-                            </div>
-                        `;
+                    // Remove subgoal functionality
+                    newSubgoal.querySelector('.remove-subgoal').addEventListener('click', function() {
+                        subgoalsList.removeChild(newSubgoal);
                     });
-                    
-                    subgoalsHtml += `
-                        <div class="add-subgoal">
-                            <button class="add-subgoal-btn" data-milestone-id="${milestoneId}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
-                                    <path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"></path>
-                                </svg>
-                                Add Subgoal
-                            </button>
+                    subgoalsList.appendChild(newSubgoal);
+                    setMinDateForSubgoals(); // Set min date for the new subgoal date input immediately
+                });
+            }
+
+            // Also enable remove for the initial subgoal row and set min date
+            subgoalsList.querySelectorAll('.subgoal-date').forEach(input => {
+                input.setAttribute('min', minDate);
+            });
+            subgoalsList.querySelectorAll('.remove-subgoal').forEach(btn => {
+                btn.onclick = function() {
+                    const item = btn.closest('.subgoal-item');
+                    if (item && subgoalsList.contains(item)) subgoalsList.removeChild(item);
+                };
+            });
+
+            const milestoneTimeline = document.getElementById('milestone-timeline');
+            const emptyMilestoneMessage = document.getElementById('empty-milestone-message');
+            const milestoneSearch = document.getElementById('milestone-search');
+
+            // Load milestones from localStorage
+            function loadMilestones() {
+                const data = localStorage.getItem('visionlyMilestones');
+                if (data) {
+                    milestones = JSON.parse(data);
+                    if (milestones.length > 0) {
+                        milestoneCounter = Math.max(...milestones.map(m => m.id));
+                    }
+                }
+            }
+            // Save milestones to localStorage
+            function saveMilestones() {
+                localStorage.setItem('visionlyMilestones', JSON.stringify(milestones));
+            }
+
+            // Helper: Render all milestones
+            function renderMilestones(filter = '') {
+                milestoneTimeline.innerHTML = '';
+                let filtered = milestones;
+                if (filter) {
+                    const f = filter.toLowerCase();
+                    filtered = milestones.filter(m =>
+                        m.title.toLowerCase().includes(f) ||
+                        m.subgoals.some(sg => sg.text && sg.text.toLowerCase().includes(f))
+                    );
+                }
+                if (filtered.length === 0) {
+                    milestoneTimeline.appendChild(emptyMilestoneMessage);
+                    emptyMilestoneMessage.innerHTML = `<div class='empty-state-icon'>🗓️</div><p>No milestones found.</p>`;
+                    return;
+                }
+                filtered.forEach((m) => {
+                    const milestoneDiv = document.createElement('div');
+                    milestoneDiv.className = 'timeline-milestone';
+                    milestoneDiv.style.background = '#fff';
+                    milestoneDiv.style.borderRadius = '14px';
+                    milestoneDiv.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
+                    milestoneDiv.style.marginBottom = '28px';
+                    milestoneDiv.style.padding = '0';
+                    milestoneDiv.style.overflow = 'hidden';
+                    milestoneDiv.style.border = '1px solid #ece6f6';
+                    milestoneDiv.style.position = 'relative'; // For absolute positioning of buttons
+
+                    milestoneDiv.innerHTML = `
+                        <div style="position:absolute; top:10px; right:14px; display:flex; gap:4px; z-index:2;">
+                            <button class="btn btn-secondary edit-milestone" data-idx="${m.id}" style="min-width:32px; padding:4px 8px; font-size:12px; border-radius:8px; box-shadow:none;">Edit</button>
+                            <button class="btn btn-secondary delete-milestone" data-idx="${m.id}" style="color:#c00; min-width:32px; padding:4px 8px; font-size:12px; border-radius:8px; box-shadow:none;">Delete</button>
                         </div>
-                        
-                        <div class="subgoal-form" id="subgoal-form-${milestoneId}">
-                            <div class="form-group">
-                                <label for="subgoal-title-${milestoneId}">Subgoal Title</label>
-                                <input type="text" id="subgoal-title-${milestoneId}" placeholder="Enter subgoal title" required>
+                        <div style="display:flex; align-items:flex-start; gap:18px; padding:22px 24px 10px 24px;">
+                            <div class="timeline-marker" style="padding-top:0;">
+                                <div class="milestone-dot" style="font-size:1.5em;">🏆</div>
                             </div>
-                            
-                            <div class="form-group">
-                                <label for="subgoal-date-${milestoneId}">Due Date (Optional)</label>
-                                <input type="date" id="subgoal-date-${milestoneId}">
+                            <div class="milestone-content" style="flex:1;">
+                                <div style="display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+                                    <span class="milestone-title" style="font-size:1.18em; font-weight:600; color:#2d1a45;">${m.title}</span>
+                                    <span class="status-badge status-${m.status}" style="font-size:0.98em;">${m.status.replace(/-/g,' ')}</span>
+                                </div>
+                                <div class="milestone-details" style="color:#7a6a9b; font-size:0.98em; margin-bottom:8px;">
+                                    ${m.date ? `<span style='display:inline-flex; align-items:center; gap:4px;'><span style='font-size:1.1em;'>📅</span> ${m.date}</span>` : ''}
+                                </div>
+                                ${m.subgoals && m.subgoals.length > 0 ? `
+                                    <div class="subgoals-section" style="margin:10px 0 0 0;">
+                                        <div style="font-weight:600; color:#3a2259; font-size:1.04em; margin-bottom:6px;">Subgoals</div>
+                                        <ul style="list-style:none; padding:0; margin:0;">
+                                            ${m.subgoals.map((sg) => `
+                                                <li style="display:flex; align-items:center; gap:10px; margin-bottom:6px; min-height:1.8em;">
+                                                    <span style="flex:1; color:#222; font-size:1em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${sg.text ? sg.text : ''}</span>
+                                                    ${sg.date ? `<span style='color:#888; font-size:0.97em; white-space:nowrap;'>${sg.date}</span>` : ''}
+                                                    <span class="status-badge status-${sg.status||'planned'}" style="font-size:0.93em; white-space:nowrap;">${(sg.status||'planned').replace(/-/g,' ')}</span>
+                                                </li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
                             </div>
-                            
-                            <div class="form-group">
-                                <label for="subgoal-status-${milestoneId}">Status</label>
-                                <select id="subgoal-status-${milestoneId}">
-                                    <option value="planned">Planned</option>
-                                    <option value="in-progress">In Progress</option>
-                                    <option value="completed">Completed</option>
+                        </div>
+                    `;
+                    milestoneTimeline.appendChild(milestoneDiv);
+                });
+
+                // Attach edit/delete listeners after rendering
+                document.querySelectorAll('.edit-milestone').forEach(btn => {
+                    btn.onclick = function() {
+                        const id = parseInt(btn.getAttribute('data-idx'));
+                        showEditMilestoneForm(id);
+                    };
+                });
+                document.querySelectorAll('.delete-milestone').forEach(btn => {
+                    btn.onclick = function() {
+                        const id = parseInt(btn.getAttribute('data-idx'));
+                        if (confirm('Delete this milestone and all its subgoals?')) {
+                            const idx = milestones.findIndex(m => m.id === id);
+                            if (idx !== -1) {
+                                milestones.splice(idx, 1);
+                                saveMilestones();
+                                renderMilestones(milestoneSearch.value);
+                            }
+                        }
+                    };
+                });
+            }
+
+            // Show edit form for a milestone (inline)
+            function showEditMilestoneForm(id) {
+                const mIdx = milestones.findIndex(m => m.id === id);
+                if (mIdx === -1) return;
+                const m = milestones[mIdx];
+                milestoneTimeline.innerHTML = '';
+                // Inline edit form
+                const formDiv = document.createElement('div');
+                formDiv.className = 'timeline-milestone';
+                formDiv.style.background = '#fff';
+                formDiv.style.borderRadius = '12px';
+                formDiv.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+                formDiv.style.marginBottom = '18px';
+                formDiv.style.padding = '32px 28px 20px 28px';
+                formDiv.style.maxWidth = '860px';
+                formDiv.style.marginLeft = 'auto';
+                formDiv.style.marginRight = 'auto';
+                formDiv.innerHTML = `
+                    <form id="edit-milestone-form">
+                        <div style="display:flex; flex-direction:column; align-items:flex-start; margin-bottom:22px; width:100%;">
+                            <div class="form-group" style="width:100%; display:flex; flex-direction:column; align-items:stretch; gap:0; margin-bottom:0;">
+                                <label style="font-size:1.08em; font-weight:600; min-width:140px; margin-bottom:8px; display:block;">Milestone Title</label>
+                                <input type="text" id="edit-milestone-title" value="${m.title}" required style="width:100%; font-size:1.18em; padding:16px 20px; border-radius:12px; border:1.5px solid #d6cbe7; background:#faf8fd; min-width:320px;">
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:64px; margin-bottom:22px; width:100%;">
+                            <div class="form-group" style="flex:1; margin-bottom:0;">
+                                <label style="font-size:1.08em; font-weight:600; margin-bottom:7px; display:block;">Target Date</label>
+                                <input type="date" id="edit-milestone-date" value="${m.date||''}" style="width:100%; font-size:1.18em; padding:16px 20px; border-radius:12px; border:1.5px solid #d6cbe7; background:#faf8fd;">
+                            </div>
+                            <div class="form-group" style="flex:1; margin-bottom:0;">
+                                <label style="font-size:1.08em; font-weight:600; margin-bottom:7px; display:block;">Status</label>
+                                <select id="edit-milestone-status" style="width:100%; min-width:180px; font-size:1.18em; padding:16px 20px; border-radius:12px; border:1.5px solid #d6cbe7; background:#faf8fd;">
+                                    <option value="planned" ${m.status==='planned'?'selected':''}>Planned</option>
+                                    <option value="in-progress" ${m.status==='in-progress'?'selected':''}>In Progress</option>
+                                    <option value="completed" ${m.status==='completed'?'selected':''}>Completed</option>
                                 </select>
                             </div>
-                            
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-secondary cancel-subgoal" data-milestone-id="${milestoneId}">Cancel</button>
-                                <button type="button" class="btn btn-primary save-subgoal" data-milestone-id="${milestoneId}">Save Subgoal</button>
-                            </div>
                         </div>
+                        <div class="subgoals-section" style="margin-bottom:28px;">
+                            <h3 style="font-size:1.08em; font-weight:700; margin-bottom:10px;">Edit Subgoals</h3>
+                            <div id="edit-subgoals-list">
+                                ${(m.subgoals||[]).map((sg, sidx) => `
+                                    <div class="subgoal-item" data-sidx="${sidx}" style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                                        <input type="text" class="edit-subgoal-input" value="${sg.text||''}" placeholder="Enter subgoal" style="flex:2; font-size:1em; padding:10px 12px; border-radius:8px; border:1.2px solid #d6cbe7; background:#faf8fd;">
+                                        <input type="date" class="edit-subgoal-date" value="${sg.date||''}" style="flex:1.2; font-size:1em; padding:10px 12px; border-radius:8px; border:1.2px solid #d6cbe7; background:#faf8fd; min-width:120px;">
+                                        <select class="edit-subgoal-status" style="flex:1; font-size:1em; padding:10px 12px; border-radius:8px; border:1.2px solid #d6cbe7; background:#faf8fd; min-width:110px;">
+                                            <option value="planned" ${(sg.status||'planned')==='planned'?'selected':''}>Planned</option>
+                                            <option value="in-progress" ${(sg.status||'planned')==='in-progress'?'selected':''}>In Progress</option>
+                                            <option value="completed" ${(sg.status||'planned')==='completed'?'selected':''}>Completed</option>
+                                        </select>
+                                        <button type="button" class="remove-edit-subgoal" style="background:none; border:none; color:#c00; font-size:1.3em; padding:0 7px; cursor:pointer;">×</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <button type="button" id="add-edit-subgoal" class="add-subgoal-btn" style="margin-top:4px; padding:10px 32px; font-size:1em; border-radius:8px; min-width:160px; white-space:nowrap;">Add Subgoal</button>
+                        </div>
+                        <div class="form-actions" style="display:flex; gap:14px; justify-content:flex-start; margin-top:18px;">
+                            <button type="submit" class="btn btn-primary" style="padding:11px 44px; font-size:1.08em; border-radius:20px; min-width:180px;">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" id="cancel-edit" style="padding:11px 28px; font-size:1.08em; border-radius:20px;">Cancel</button>
+                        </div>
+                    </form>
+                `;
+                milestoneTimeline.appendChild(formDiv);
+
+                // Set min date for milestone and subgoals
+                const editMilestoneDate = document.getElementById('edit-milestone-date');
+                if (editMilestoneDate) editMilestoneDate.setAttribute('min', minDate);
+                function setEditMinDateForSubgoals() {
+                    document.querySelectorAll('.edit-subgoal-date').forEach(input => {
+                        input.setAttribute('min', minDate);
+                    });
+                }
+                setEditMinDateForSubgoals();
+
+                // Add subgoal in edit mode
+                document.getElementById('add-edit-subgoal').onclick = function() {
+                    const editList = document.getElementById('edit-subgoals-list');
+                    const div = document.createElement('div');
+                    div.className = 'subgoal-item';
+                    div.innerHTML = `
+                        <input type="text" class="edit-subgoal-input" placeholder="Enter subgoal">
+                        <input type="date" class="edit-subgoal-date">
+                        <select class="edit-subgoal-status">
+                            <option value="planned">Planned</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                        <button type="button" class="remove-edit-subgoal">×</button>
                     `;
-                    
-                    subgoalsSection.innerHTML = subgoalsHtml;
-                    container.appendChild(subgoalsSection);
-                    
-                    // Add event listeners to the new buttons
-                    const newAddSubgoalBtn = subgoalsSection.querySelector('.add-subgoal-btn');
-                    const newCancelSubgoalBtn = subgoalsSection.querySelector('.cancel-subgoal');
-                    const newSaveSubgoalBtn = subgoalsSection.querySelector('.save-subgoal');
-                    
-                    newAddSubgoalBtn.addEventListener('click', function() {
-                        document.getElementById(`subgoal-form-${milestoneId}`).style.display = 'block';
-                        this.style.display = 'none';
+                    div.querySelector('.remove-edit-subgoal').onclick = function() {
+                        editList.removeChild(div);
+                    };
+                    editList.appendChild(div);
+                    setEditMinDateForSubgoals();
+                };
+                // Remove subgoal in edit mode
+                document.querySelectorAll('.remove-edit-subgoal').forEach(btn => {
+                    btn.onclick = function() {
+                        const item = btn.closest('.subgoal-item');
+                        if (item && item.parentNode) item.parentNode.removeChild(item);
+                    };
+                });
+
+                // Cancel edit
+                document.getElementById('cancel-edit').onclick = function() {
+                    renderMilestones(milestoneSearch.value);
+                };
+
+                // Save changes
+                document.getElementById('edit-milestone-form').onsubmit = function(e) {
+                    e.preventDefault();
+                    const title = document.getElementById('edit-milestone-title').value;
+                    const date = document.getElementById('edit-milestone-date').value;
+                    const status = document.getElementById('edit-milestone-status').value;
+                    // Validate milestone date
+                    if (date) {
+                        const selected = new Date(date + 'T00:00:00');
+                        const todayObj = new Date();
+                        todayObj.setHours(0,0,0,0);
+                        if (selected < todayObj) {
+                            alert('Please select today or a future date for your milestone.');
+                            document.getElementById('edit-milestone-date').focus();
+                            return;
+                        }
+                    }
+                    // Collect subgoals
+                    const subgoals = [];
+                    let subgoalDateError = false;
+                    document.querySelectorAll('#edit-subgoals-list .subgoal-item').forEach(item => {
+                        const text = item.querySelector('.edit-subgoal-input')?.value || '';
+                        const sgDate = item.querySelector('.edit-subgoal-date')?.value || '';
+                        const sgStatus = item.querySelector('.edit-subgoal-status')?.value || 'planned';
+                        if (sgDate) {
+                            const selectedSG = new Date(sgDate + 'T00:00:00');
+                            const todayObj = new Date();
+                            todayObj.setHours(0,0,0,0);
+                            if (selectedSG < todayObj) {
+                                subgoalDateError = true;
+                                item.querySelector('.edit-subgoal-date').focus();
+                            }
+                        }
+                        if (text) subgoals.push({ text, date: sgDate, status: sgStatus });
                     });
-                    
-                    newCancelSubgoalBtn.addEventListener('click', function() {
-                        document.getElementById(`subgoal-form-${milestoneId}`).style.display = 'none';
-                        document.querySelector(`.add-subgoal-btn[data-milestone-id="${milestoneId}"]`).style.display = 'flex';
-                        
-                        // Reset form
-                        document.getElementById(`subgoal-title-${milestoneId}`).value = '';
-                        document.getElementById(`subgoal-date-${milestoneId}`).value = '';
-                        document.getElementById(`subgoal-status-${milestoneId}`).value = 'planned';
-                    });
-                    
-                    newSaveSubgoalBtn.addEventListener('click', handleSaveSubgoal);
+                    if (subgoalDateError) {
+                        alert('Subgoal dates must be today or a future date.');
+                        return;
+                    }
+                    // Save changes
+                    milestones[mIdx] = { ...milestones[mIdx], title, date, status, subgoals };
+                    saveMilestones();
+                    renderMilestones(milestoneSearch.value);
+                };
+            }
+
+            // Save milestone
+            milestoneForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const title = document.getElementById('milestone-title').value;
+                const date = milestoneDateInput.value;
+                const status = document.getElementById('milestone-status').value;
+                // Prevent past dates for milestone (use Date objects for accurate comparison)
+                if (date) {
+                    const selected = new Date(date + 'T00:00:00');
+                    const todayObj = new Date();
+                    todayObj.setHours(0,0,0,0);
+                    if (selected < todayObj) {
+                        alert('Please select today or a future date for your milestone.');
+                        milestoneDateInput.focus();
+                        return;
+                    }
                 }
-                
-                // In a real app, save to database
-                console.log('New milestone:', { title, date, status, subgoals });
-                
-                // Reset form
+                // Collect subgoals
+                const subgoals = [];
+                let subgoalDateError = false;
+                document.querySelectorAll('.subgoal-item').forEach(item => {
+                    const text = item.querySelector('.subgoal-input')?.value || '';
+                    const sgDate = item.querySelector('.subgoal-date')?.value || '';
+                    if (sgDate) {
+                        const selectedSG = new Date(sgDate + 'T00:00:00');
+                        const todayObj = new Date();
+                        todayObj.setHours(0,0,0,0);
+                        if (selectedSG < todayObj) {
+                            subgoalDateError = true;
+                            item.querySelector('.subgoal-date').focus();
+                        }
+                    }
+                    if (text) subgoals.push({ text, date: sgDate });
+                });
+                if (subgoalDateError) {
+                    alert('Subgoal dates must be today or a future date.');
+                    return;
+                }
+                milestoneCounter++;
+                milestones.push({ id: milestoneCounter, title, date, status, subgoals });
+                saveMilestones();
+                renderMilestones(milestoneSearch.value);
                 milestoneForm.reset();
-                
-                // Reset subgoals (keep one empty subgoal)
-                while (subgoalsList.children.length > 1) {
-                    subgoalsList.removeChild(subgoalsList.lastChild);
-                }
-                
-                subgoalsList.children[0].querySelector('.subgoal-input').value = '';
-                subgoalsList.children[0].querySelector('.subgoal-date').value = '';
-                
-                // For demo purposes, show success message
+                document.querySelectorAll('.subgoal-item').forEach(item => item.remove());
                 alert('Milestone added successfully!');
             });
             
-            // Function to handle saving a new subgoal
-            function handleSaveSubgoal() {
-                const milestoneId = this.getAttribute('data-milestone-id');
-                const title = document.getElementById(`subgoal-title-${milestoneId}`).value;
-                const date = document.getElementById(`subgoal-date-${milestoneId}`).value;
-                const status = document.getElementById(`subgoal-status-${milestoneId}`).value;
-                
-                if (!title) {
-                    alert('Please enter a title for the subgoal');
-                    return;
-                }
-                
-                // In a real app, save to database
-                console.log('New subgoal:', { milestoneId, title, date, status });
-                
-                // Create new subgoal item
-                const subgoalSection = document.getElementById(`subgoals-${milestoneId}`);
-                const addSubgoalDiv = subgoalSection.querySelector('.add-subgoal');
-                
-                const newSubgoal = document.createElement('div');
-                newSubgoal.className = 'subgoal-item';
-                newSubgoal.innerHTML = `
-                    <div class="subgoal-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                            <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z"></path>
-                        </svg>
-                    </div>
-                    <div class="subgoal-content">
-                        <div class="subgoal-title">${title}</div>
-                        <div class="subgoal-date">${date ? 'Due: ' + date : 'No due date'}</div>
-                    </div>
-                `;
-                
-                // Insert before add subgoal button
-                subgoalSection.insertBefore(newSubgoal, addSubgoalDiv);
-                
-                // Hide form and show add button again
-                document.getElementById(`subgoal-form-${milestoneId}`).style.display = 'none';
-                document.querySelector(`.add-subgoal-btn[data-milestone-id="${milestoneId}"]`).style.display = 'flex';
-                
-                // Reset form
-                document.getElementById(`subgoal-title-${milestoneId}`).value = '';
-                document.getElementById(`subgoal-date-${milestoneId}`).value = '';
-                document.getElementById(`subgoal-status-${milestoneId}`).value = 'planned';
-                
-                // Update subgoal count
-                const milestoneElement = document.querySelector(`.timeline-milestone[data-id="${milestoneId}"]`);
-                const detailsElement = milestoneElement.querySelector('.milestone-details');
-                const subgoalCount = subgoalSection.querySelectorAll('.subgoal-item').length;
-                detailsElement.textContent = `Subgoals: ${subgoalCount}`;
-            }
-            
-            // Add event listener for save subgoal buttons
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('save-subgoal')) {
-                    handleSaveSubgoal.call(e.target);
-                }
-            });
-            
-            // Background sound toggle logic
-            const audio = document.getElementById('background-sound');
-            const toggleBtn = document.getElementById('toggle-sound');
-            const soundIcon = document.getElementById('sound-icon');
-            let isPlaying = false;
-
-            audio.volume = 0.5;
-
-            function startAudio() {
-                audio.play().then(() => {
-                    soundIcon.src = 'assets/speaker-on-icon.png';
-                    soundIcon.alt = 'Sound On';
-                    isPlaying = true;
-                }).catch(() => {
-                    soundIcon.src = 'assets/speaker-off-icon.png';
-                    soundIcon.alt = 'Sound Off';
-                    isPlaying = false;
-                });
-            }
-
-            // Try to start audio immediately
-            startAudio();
-
-            // Also try to start on first user interaction
-            const enableAudio = () => {
-                if (!isPlaying && audio.paused) {
-                    startAudio();
-                }
-            };
-
-            // Listen for various user interactions
-            document.addEventListener('click', enableAudio, { once: true });
-            document.addEventListener('touchstart', enableAudio, { once: true });
-            document.addEventListener('keydown', enableAudio, { once: true });
-
-            // Toggle sound on button click
-            toggleBtn.addEventListener('click', function() {
-                if (audio.paused) {
-                    audio.play().then(() => {
-                        soundIcon.src = 'assets/speaker-on-icon.png';
-                        soundIcon.alt = 'Sound On';
-                        isPlaying = true;
-                    });
-                } else {
-                    audio.pause();
-                    soundIcon.src = 'assets/speaker-off-icon.png';
-                    soundIcon.alt = 'Sound Off';
-                    isPlaying = false;
-                }
-            });
-
-            // Update icon based on audio state
-            audio.addEventListener('play', function() {
-                isPlaying = true;
-            });
-            audio.addEventListener('pause', function() {
-                isPlaying = false;
-            });
+            // On page load, load and render milestones
+            loadMilestones();
+            renderMilestones();
         });
+    </script>
+
+    <!-- Background Sound -->
+    <audio id="background-sound" loop>
+        <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Toggle Sound Button -->
+    <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
+        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+    </button>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const audio = document.getElementById('background-sound');
+        const toggleBtn = document.getElementById('toggle-sound');
+        const soundIcon = document.getElementById('sound-icon');
+        if (!audio || !toggleBtn || !soundIcon) return;
+        function updateIcon() {
+            soundIcon.src = audio.paused ? 'assets/speaker-off-icon.png' : 'assets/speaker-on-icon.png';
+            soundIcon.alt = audio.paused ? 'Sound Off' : 'Sound On';
+        }
+        function startAudio() {
+            audio.volume = 0.5;
+            audio.play().catch(() => {});
+            updateIcon();
+        }
+        toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (audio.paused) {
+                audio.play().catch(() => {});
+            } else {
+                audio.pause();
+            }
+            updateIcon();
+        });
+        const enableAudio = () => {
+            if (audio.paused) audio.play().catch(() => {});
+            updateIcon();
+        };
+        document.addEventListener('click', enableAudio, { once: true });
+        document.addEventListener('touchstart', enableAudio, { once: true });
+        audio.addEventListener('play', updateIcon);
+        audio.addEventListener('pause', updateIcon);
+        startAudio();
+      });
     </script>
 </body>
 </html>

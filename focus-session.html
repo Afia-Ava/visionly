@@ -212,6 +212,7 @@
     </audio>
     
     <script src="shared-scripts.js"></script>
+    <script src="mouse-sprinkles-script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get the selected music from sessionStorage
@@ -261,6 +262,23 @@
                 document.querySelector('.player-controls').style.opacity = '0.5';
             }
             document.body.appendChild(audioPlayer);
+            
+            // Stop background music if playing (from pomodoro-focus.html)
+            try {
+                const opener = window.opener || window.parent;
+                if (opener) {
+                    const bgAudio = opener.document.getElementById('background-sound');
+                    if (bgAudio && !bgAudio.paused) {
+                        bgAudio.pause();
+                    }
+                } else {
+                    // Try in this window (if bg music is present)
+                    const bgAudio = document.getElementById('background-sound');
+                    if (bgAudio && !bgAudio.paused) {
+                        bgAudio.pause();
+                    }
+                }
+            } catch (e) { /* ignore cross-origin errors */ }
             
             // Get the focus duration from session storage
             const storedFocusDuration = sessionStorage.getItem('focusDuration');
@@ -314,42 +332,38 @@
                     currentSession = 'break';
                     minutes = breakMinutes;
                     seconds = 0;
-                    
+
                     // Update UI for break
                     playButton.innerHTML = '<span>▶</span>';
                     audioPlayer.pause();
                     isPlaying = false;
-                    
+
                     // Change display to show break
                     trackNameEl.textContent = 'Break Time';
                     trackArtistEl.textContent = 'Rest & Recharge';
                     document.body.style.backgroundColor = '#e8f5e8'; // Light green for break
-                    
+
                     // Update timer display
                     minutesDisplay.textContent = minutes.toString().padStart(2, '0');
                     secondsDisplay.textContent = seconds.toString().padStart(2, '0');
-                    
-                    // Auto-start break timer (soundless)
-                    setTimeout(() => {
-                        alert('Focus session complete! Starting ' + breakMinutes + ' minute break.');
-                        startCountdown();
-                    }, 1000);
-                    
+
+                    // Auto-start break timer (soundless, no alert)
+                    startCountdown();
                 } else {
                     // Break complete, reset for next focus session
                     currentSession = 'focus';
                     minutes = storedFocusDuration ? parseInt(storedFocusDuration) : 25;
                     seconds = 0;
-                    
+
                     // Reset UI for focus
                     trackNameEl.textContent = selectedMusic;
                     trackArtistEl.textContent = 'Focus Sound';
                     document.body.style.backgroundColor = '#f9f9f9'; // Original background
-                    
+
                     // Update timer display
                     minutesDisplay.textContent = minutes.toString().padStart(2, '0');
                     secondsDisplay.textContent = seconds.toString().padStart(2, '0');
-                    
+
                     alert('Break complete! Ready for next focus session.');
                 }
             }

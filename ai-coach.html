@@ -281,25 +281,28 @@
     <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
         <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
     </button>
-    <nav class="navbar" style="position: fixed; top: 0; width: 100%; padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease;">
-        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; text-decoration: none; color: #333; transition: color 0.3s ease;">Visionly</a>
+    <nav class="navbar" style="position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); padding: 14px 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-sizing: border-box;">
+        <a href="index.html" class="logo" style="font-family: 'Dancing Script', cursive; font-weight: bold; font-size: 2rem; color: #333; text-decoration: none;">Visionly</a>
         <div style="display: flex; align-items: center;">
-            <a href="index.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Home</a>
-            <a href="create-board.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Create</a>
-            <a href="boards.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Boards</a>
-            <a href="progress.html" style="text-decoration: none; margin: 0 12px; color: #333; transition: color 0.3s ease;">Progress</a>
-            <a href="elevate.html" style="text-decoration: none; margin: 0 12px; margin-right: 15px; color: #333; transition: color 0.3s ease;">Elevate</a>
+            <a href="index.html" style="text-decoration: none; color: #333; margin: 0 12px;">Home</a>
+            <a href="create-board.html" style="text-decoration: none; color: #333; margin: 0 12px;">Create</a>
+            <a href="boards.html" style="text-decoration: none; color: #333; margin: 0 12px;">Boards</a>
+            <a href="progress.html" style="text-decoration: none; color: #333; margin: 0 12px;">Progress</a>
+            <a href="elevate.html" style="text-decoration: none; color: #333; margin: 0 12px; margin-right: 15px;">Elevate</a>
             <img id="profile-photo" src="https://via.placeholder.com/40x40/ff6b6b/ffffff?text=U" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; cursor: pointer;">
         </div>
     </nav>
-
-    <!-- Update navbar profile-photo from saved avatar -->
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const storedAvatar = localStorage.getItem('profileAvatar');
-        if (storedAvatar) {
-          const navImg = document.getElementById('profile-photo');
-          if (navImg) navImg.src = storedAvatar;
+      document.addEventListener('DOMContentLoaded', function() {
+        const navImg = document.getElementById('profile-photo');
+        const uploadedAvatar = localStorage.getItem('profileAvatarUpload');
+        const selectedAvatar = localStorage.getItem('profileAvatar');
+        if (navImg) {
+          if (uploadedAvatar) {
+            navImg.src = uploadedAvatar;
+          } else if (selectedAvatar) {
+            navImg.src = selectedAvatar;
+          }
         }
       });
     </script>

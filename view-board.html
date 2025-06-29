@@ -542,9 +542,50 @@
     <script src="mouse-sprinkles-script.js"></script>
     <script src="dark-mode-toggle.js"></script>
     
-    <!-- Background Sound Script -->
+    <!-- Background Sound -->
+    <audio id="background-sound" loop>
+        <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Toggle Sound Button -->
+    <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
+        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+    </button>
     <script>
-        // ...existing code...
+      document.addEventListener('DOMContentLoaded', function() {
+        const audio = document.getElementById('background-sound');
+        const toggleBtn = document.getElementById('toggle-sound');
+        const soundIcon = document.getElementById('sound-icon');
+        if (!audio || !toggleBtn || !soundIcon) return;
+        function updateIcon() {
+            soundIcon.src = audio.paused ? 'assets/speaker-off-icon.png' : 'assets/speaker-on-icon.png';
+            soundIcon.alt = audio.paused ? 'Sound Off' : 'Sound On';
+        }
+        function startAudio() {
+            audio.volume = 0.5;
+            audio.play().catch(() => {});
+            updateIcon();
+        }
+        toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (audio.paused) {
+                audio.play().catch(() => {});
+            } else {
+                audio.pause();
+            }
+            updateIcon();
+        });
+        const enableAudio = () => {
+            if (audio.paused) audio.play().catch(() => {});
+            updateIcon();
+        };
+        document.addEventListener('click', enableAudio, { once: true });
+        document.addEventListener('touchstart', enableAudio, { once: true });
+        audio.addEventListener('play', updateIcon);
+        audio.addEventListener('pause', updateIcon);
+        startAudio();
+      });
     </script>
     
     <!-- Delete Modal Functionality -->
