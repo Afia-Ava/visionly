@@ -94,11 +94,11 @@
 
     <!-- Update navbar profile-photo from saved avatar -->
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const storedAvatar = localStorage.getItem('profileAvatar');
-        if (storedAvatar) {
-          const navImg = document.getElementById('profile-photo');
-          if (navImg) navImg.src = storedAvatar;
+      document.addEventListener('DOMContentLoaded', function() {
+        const navPhoto = document.getElementById('profile-photo');
+        const uploaded = localStorage.getItem('profileAvatarUpload');
+        if (navPhoto && uploaded) {
+          navPhoto.src = uploaded;
         }
       });
     </script>

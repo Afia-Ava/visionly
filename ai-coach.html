@@ -246,6 +246,30 @@
         .navbar {
             transition: all 0.3s ease;
         }
+
+        .quick-prompt {
+            background: #faf8ff;
+            border: 1.5px solid #e8deff;
+            color: #3a2259;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 0.98rem;
+            cursor: pointer;
+            transition: background 0.2s, border 0.2s;
+            outline: none;
+        }
+        .quick-prompt:focus, .quick-prompt:hover {
+            background: #e8deff;
+            border-color: #8b5fbf;
+        }
+        @media (max-width: 600px) {
+            .chat-container { font-size: 0.95rem; }
+            .bubble { max-width: 95%; }
+            #quick-prompts { flex-direction: column; gap: 6px; }
+        }
+        .message {
+            transition: opacity 0.4s, transform 0.4s;
+        }
     </style>
 </head>
 <body>
@@ -283,7 +307,17 @@
     <main>
         <h1>Zeni, Your AI Coach</h1>
         <div class="subtitle">Talk to Zeni, your tough, realistic AI coach. Get no-nonsense advice and motivation to chase your goals.</div>
-        <div class="chat-container" id="chat-container">
+        
+        <!-- Quick Prompts Section -->
+        <div id="quick-prompts" style="margin-bottom: 18px; display: flex; flex-wrap: wrap; gap: 10px;">
+          <button type="button" class="quick-prompt" aria-label="Prompt: I want to get fit">I want to get fit</button>
+          <button type="button" class="quick-prompt" aria-label="Prompt: My goal is to start a business">My goal is to start a business</button>
+          <button type="button" class="quick-prompt" aria-label="Prompt: I keep procrastinating">I keep procrastinating</button>
+          <button type="button" class="quick-prompt" aria-label="Prompt: How do I stay motivated?">How do I stay motivated?</button>
+          <button type="button" class="quick-prompt" aria-label="Prompt: I want to improve my relationships">I want to improve my relationships</button>
+        </div>
+
+        <div class="chat-container" id="chat-container" tabindex="0" aria-label="AI Coach Chat">
             <div class="message ai">
                 <div class="bubble">
                     <span class="sender">Zeni:</span><br>
@@ -291,9 +325,10 @@
                 </div>
             </div>
         </div>
-        <form id="chat-form" class="chat-input-row" autocomplete="off">
-            <input type="text" id="user-input" placeholder="Type your message..." required maxlength="300" />
-            <button type="submit">Send</button>
+        <form id="chat-form" class="chat-input-row" autocomplete="off" aria-label="Send a message to Zeni">
+            <input type="text" id="user-input" placeholder="Type your message..." required maxlength="300" aria-label="Type your message to Zeni" />
+            <button type="submit" aria-label="Send message">Send</button>
+            <button type="button" id="clear-chat" aria-label="Clear chat" style="background: #e8deff; color: #3a2259; margin-left: 6px;">Clear</button>
         </form>
     </main>
     
@@ -366,10 +401,9 @@
           });
           contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            // Optionally, send data to backend/email service here
             contactForm.style.display = 'none';
             contactSuccess.style.display = 'block';
-          });
+          });   
         }
       });
     </script>
@@ -379,6 +413,8 @@
         const chatContainer = document.getElementById('chat-container');
         const chatForm = document.getElementById('chat-form');
         const userInput = document.getElementById('user-input');
+        const quickPrompts = document.querySelectorAll('.quick-prompt');
+        const clearChatBtn = document.getElementById('clear-chat');
         
         // Track conversation context
         let conversationContext = {
@@ -409,12 +445,25 @@
             }
         }
 
-        // Function to append message to chat
+        // Animate new messages
+        function animateMessage(msgDiv) {
+            msgDiv.style.opacity = 0;
+            msgDiv.style.transform = "translateY(20px)";
+            setTimeout(() => {
+                msgDiv.style.transition = "opacity 0.4s, transform 0.4s";
+                msgDiv.style.opacity = 1;
+                msgDiv.style.transform = "translateY(0)";
+            }, 10);
+        }
+
+        // Function to append message to chat (with animation)
         function appendMessage(sender, text) {
             const msgDiv = document.createElement('div');
             msgDiv.className = 'message ' + (sender === 'user' ? 'user' : 'ai');
             msgDiv.innerHTML = `<div class="bubble"><span class="sender">${sender === 'user' ? 'You' : 'Zeni'}:</span><br>${text}</div>`;
             chatContainer.appendChild(msgDiv);
+            animateMessage(msgDiv);
+            // Auto-scroll to bottom
             chatContainer.scrollTop = chatContainer.scrollHeight;
             
             // Store message in history
@@ -424,170 +473,43 @@
             });
         }
         
-        // Advanced response system
-        function getZeniResponse(userMessage) {
-            const message = userMessage.toLowerCase();
-            conversationContext.messageCount++;
-            
-            // Check for goal mention
-            if (!conversationContext.userGoal) {
-                const goalKeywords = ["want to", "goal is", "trying to", "aim to", "achieve", "accomplish", "become", "learn", "lose weight", "get fit", "study", "business", "career", "relationship"];
-                for (const keyword of goalKeywords) {
-                    if (message.includes(keyword)) {
-                        conversationContext.userGoal = userMessage;
-                        return `So your goal is related to "${extractGoal(userMessage)}". That's step one - naming it. Now, what specific actions have you already taken? Not what you plan to do, what you've ACTUALLY done.`;
-                    }
+        // Quick Prompts: insert prompt into input and submit
+        quickPrompts.forEach(btn => {
+            btn.addEventListener('click', function() {
+                userInput.value = this.textContent;
+                userInput.focus();
+                setTimeout(() => {
+                    chatForm.dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
+                }, 100);
+            });
+            // Keyboard accessibility
+            btn.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    btn.click();
                 }
-            }
-            
-            // Greeting responses
-            if (firstMessage(message)) {
-                return "Skip the small talk. I'm here to help you achieve results, not chat. What specific goal are you working toward?";
-            }
-            
-            // Excuse detection
-            if (containsExcuse(message)) {
-                conversationContext.challengeLevel++;
-                return getExcuseResponse();
-            }
-            
-            // Question handling
-            if (message.includes("?")) {
-                return handleQuestion(message);
-            }
-            
-            // Detect action statements
-            if (containsActionStatement(message)) {
-                return getActionResponse();
-            }
-            
-            // General responses based on conversation progress
-            if (conversationContext.messageCount < 3) {
-                return "I need something concrete to work with. What is your specific goal? Don't be vague.";
-            } else if (conversationContext.userGoal) {
-                return getGoalFollowupResponse();
-            } else {
-                return "Let's focus. Tell me exactly what you want to achieve, and we'll work backward from there. No more dancing around it.";
-            }
-        }
-        
-        // Helper functions for response generation
-        function extractGoal(message) {
-            // Simple extraction - in real app would be more sophisticated
-            const goalPhrases = [
-                "want to", "goal is", "trying to", "aim to", "achieve", 
-                "accomplish", "become", "learn", "lose weight", "get fit"
-            ];
-            
-            for (const phrase of goalPhrases) {
-                if (message.toLowerCase().includes(phrase)) {
-                    const parts = message.split(phrase);
-                    if (parts.length > 1) {
-                        // Get text after the phrase, limit to 40 chars
-                        return parts[1].trim().substring(0, 40);
-                    }
-                }
-            }
-            return "what you mentioned";
-        }
-        
-        function firstMessage(message) {
-            const greetings = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening"];
-            return greetings.some(greeting => message.includes(greeting)) && conversationContext.messageCount <= 2;
-        }
-        
-        function containsExcuse(message) {
-            const excusePatterns = [
-                "can't", "too hard", "impossible", "no time", "busy", 
-                "tried but", "difficult", "tomorrow", "later", "someday",
-                "not sure if", "don't know how", "would be nice", "wish I could"
-            ];
-            
-            return excusePatterns.some(pattern => message.includes(pattern));
-        }
-        
-        function containsActionStatement(message) {
-            const actionPatterns = [
-                "i will", "i've started", "i have begun", "i'm doing", 
-                "i already", "i've been", "started to", "began to",
-                "taking steps", "working on", "i did", "today i"
-            ];
-            
-            return actionPatterns.some(pattern => message.toLowerCase().includes(pattern));
-        }
-        
-        function getExcuseResponse() {
-            const responses = [
-                "That sounds like an excuse to me. What's the real reason you haven't made progress?",
-                "I hear excuses all day. Everyone has obstacles. What makes the people who succeed different is they find ways AROUND those obstacles.",
-                "If it were easy, everyone would do it. Success comes from pushing through when it's hard. So what's your next step?",
-                "Let me be clear: excuses don't build results. Actions do. What action can you commit to RIGHT NOW?",
-                "I'm not interested in why you can't. Tell me how you WILL.",
-                "If you're looking for sympathy, you've come to the wrong coach. I care about your results, which means I need your actions, not your excuses."
-            ];
-            
-            return responses[Math.floor(Math.random() * responses.length)];
-        }
-        
-        function getActionResponse() {
-            const responses = [
-                "Good. But is that enough? What's your NEXT action to build on this momentum?",
-                "That's a start. Now how will you ensure you follow through consistently?",
-                "Actions speak louder than words. How will you hold yourself accountable to keep this up?",
-                "Progress requires consistency. How will you make sure this becomes a habit rather than a one-time effort?",
-                "That's better than nothing. Now let's double it. What else can you commit to?",
-                "I like the initiative. Now set a specific deadline and measurable outcome for this action."
-            ];
-            
-            return responses[Math.floor(Math.random() * responses.length)];
-        }
-        
-        function getGoalFollowupResponse() {
-            const responses = [
-                "Let's break down your goal into measurable weekly targets. What's a realistic milestone you can hit in 7 days?",
-                "Who do you know that has achieved something similar? What can you learn from them?",
-                "What's the biggest obstacle standing between you and this goal? And don't tell me 'time' or 'money' - dig deeper.",
-                "On a scale of 1-10, how committed are you to this goal? If it's not a 9 or 10, why are we even talking about it?",
-                "What will happen if you DON'T achieve this goal? Sometimes the pain of not changing is the best motivator.",
-                "What specific skills do you need to develop to reach this goal? And what's your plan to acquire them?"
-            ];
-            
-            conversationContext.lastTopicDiscussed = "goal followup";
-            return responses[Math.floor(Math.random() * responses.length)];
-        }
-        
-        function handleQuestion(message) {
-            // Handle specific question types
-            if (message.includes("how do i") || message.includes("how can i") || message.includes("how should i")) {
-                return "I could give you a generic answer, but that's not helpful. What have you already tried? What specific obstacle are you facing right now?";
-            }
-            
-            if (message.includes("what if") || message.includes("what about")) {
-                return "Stop playing the 'what if' game. It's a form of procrastination. Focus on what you can control right now. What's your immediate next step?";
-            }
-            
-            return "That's a question Google can answer. I'm here to push you to take ACTION. So let's focus on your next concrete step.";
-        }
-
-        chatForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const input = userInput.value.trim();
-            if (!input) return;
-            
-            // Display user message
-            appendMessage('user', input);
-            userInput.value = '';
-            
-            // Show typing indicator to simulate AI thinking
-            showTypingIndicator();
-            
-            // Add a realistic delay before response
-            setTimeout(() => {
-                removeTypingIndicator();
-                const reply = getZeniResponse(input);
-                appendMessage('ai', reply);
-            }, Math.floor(Math.random() * 1000) + 1000); // Random delay between 1-2 seconds
+            });
         });
+
+        // Clear Chat functionality
+        if (clearChatBtn) {
+            clearChatBtn.addEventListener('click', function() {
+                chatContainer.innerHTML = `
+                    <div class="message ai">
+                        <div class="bubble">
+                            <span class="sender">Zeni:</span><br>
+                            Welcome. I'm Zeni, your AI coach. I'm not here to sugarcoat things. Tell me your goal, and let's see if you're actually ready to work for it.
+                        </div>
+                    </div>
+                `;
+                conversationContext.userGoal = null;
+                conversationContext.challengeLevel = 0;
+                conversationContext.lastTopicDiscussed = null;
+                conversationContext.messageCount = 0;
+                messageHistory.length = 0;
+                chatContainer.focus();
+            });
+        }
 
         // Background sound toggle logic (copied from index.html)
         document.addEventListener('DOMContentLoaded', function() {
@@ -657,3 +579,4 @@
     <script src="mouse-sprinkles-script.js"></script>
 </body>
 </html>
+

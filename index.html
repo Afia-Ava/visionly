@@ -669,7 +669,7 @@
     <section style="padding: 0 0 56px 0;">
       <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
         <div style="display: flex; flex-direction: column; align-items: flex-end;">
-          <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #181818; text-align: right;">Visualize Your Journey</h2>
+          <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #181818; text-align: right;">Track Your Progress</h2>
           <p style="color: #444; margin-bottom: 32px; max-width: 700px; line-height: 1.6; text-align: right;">
             View timeline and milestones from all your vision board goals in one place.<br>
             Track your progress visually and celebrate achievements along your path.
@@ -678,7 +678,7 @@
           <div class="feature-section" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; background: #f2f0ff; border-radius: 12px; box-shadow: 0 4px 20px rgba(45, 26, 69, 0.08); padding: 24px; width: 100%; max-width: 900px; position: relative; overflow: hidden;">
             <!-- Right Text Content -->
             <div style="width: 50%; text-align: right;">
-              <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #2d1a45;">Track Your Progress</h3>
+              <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: #2d1a45;">Visualize Your Journey</h3>
               <ul style="text-align: right; padding-right: 24px; list-style-position: inside;">
                 <li style="margin-bottom: 12px; color: #333;">View all your goals and milestones in a timeline view</li>
                 <li style="margin-bottom: 12px; color: #333;">Celebrate progress with achievement markers</li>
@@ -804,7 +804,7 @@
                 <li style="color: #333;">Generate detailed visual reports of your achievements</li>
               </ul>
               <div style="margin-top: 24px;">
-                               <a href="analytics.html" class="cta-button" style="display: inline-block;">Explore</a>
+                <a href="analytics.html" class="cta-button" style="display: inline-block;">Explore</a>
               </div>
             </div>
           </div>
@@ -1202,12 +1202,79 @@
   </div>
 </div>
 
-<script src="firebase-config.js"></script>
-<script src="shared-scripts.js"></script>
-<script src="profile-dropdown.js"></script>
-<script src="dark-mode-toggle.js"></script>
-<script src="email-service.js"></script>
-    
+<!-- 1. Add the background sound and toggle button markup just before your closing </body> tag (or after your main content) -->
+<audio id="background-sound" loop>
+        <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
+        <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+    </button>
+
+    <!-- 2. Place this script after the above markup and after all other scripts that might manipulate the DOM -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Defensive: check if elements exist
+        var audio = document.getElementById('background-sound');
+        var toggleBtn = document.getElementById('toggle-sound');
+        var soundIcon = document.getElementById('sound-icon');
+        if (!audio || !toggleBtn || !soundIcon) return;
+
+        audio.volume = 0.5;
+        let isPlaying = false;
+
+        function updateIcon() {
+            if (audio.paused) {
+                soundIcon.src = 'assets/speaker-off-icon.png';
+                soundIcon.alt = 'Sound Off';
+                isPlaying = false;
+            } else {
+                soundIcon.src = 'assets/speaker-on-icon.png';
+                soundIcon.alt = 'Sound On';
+                isPlaying = true;
+            }
+        }
+
+        function startAudio() {
+            audio.play().then(() => {
+                updateIcon();
+            }).catch(() => {
+                soundIcon.src = 'assets/speaker-off-icon.png';
+                soundIcon.alt = 'Sound Off';
+                isPlaying = false;
+            });
+        }
+
+        // Try to play on load (may be blocked)
+        startAudio();
+
+        // Try again on first user interaction (required by most browsers)
+        const enableAudio = () => {
+            if (!isPlaying && audio.paused) {
+                startAudio();
+            }
+        };
+        document.addEventListener('click', enableAudio, { once: true });
+        document.addEventListener('touchstart', enableAudio, { once: true });
+        document.addEventListener('keydown', enableAudio, { once: true });
+
+        // Toggle sound on button click
+        toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (audio.paused) {
+                audio.play().then(updateIcon);
+            } else {
+                audio.pause();
+                updateIcon();
+            }
+        });
+
+        audio.addEventListener('play', updateIcon);
+        audio.addEventListener('pause', updateIcon);
+
+        updateIcon();
+    });
+    </script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         // Parallax effect for hero section
@@ -1593,6 +1660,15 @@
       animateScroll();
     }
   });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navPhoto = document.getElementById('profile-photo');
+    const uploaded = localStorage.getItem('profileAvatarUpload');
+    if (navPhoto && uploaded) {
+        navPhoto.src = uploaded;
+    }
+});
 </script>
 </body>
 </html>

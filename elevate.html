@@ -115,11 +115,11 @@
 
     <!-- Update navbar profile-photo from saved avatar -->
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const storedAvatar = localStorage.getItem('profileAvatar');
-        if (storedAvatar) {
-          const navImg = document.getElementById('profile-photo');
-          if (navImg) navImg.src = storedAvatar;
+      document.addEventListener('DOMContentLoaded', function() {
+        const navPhoto = document.getElementById('profile-photo');
+        const uploaded = localStorage.getItem('profileAvatarUpload');
+        if (navPhoto && uploaded) {
+          navPhoto.src = uploaded;
         }
       });
     </script>
@@ -146,17 +146,17 @@
             <div>
                 <!-- Featured Section -->
                 <section style="margin-bottom: 40px; margin-top: -10px;">
-                    <h2 style="font-size: 1rem; font-weight: 600; color: #8b5fbf; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Featured</h2>
+                    <h2 style="font-size: 1rem; font-weight: 600; color: #3a2259; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Featured</h2>
                     <div class="featured-section" style="background: linear-gradient(135deg, #f3f0ff 0%, #e8deff 100%); border-radius: 12px; padding: 24px; margin-bottom: 20px; border: 1px solid #e8deff;">
                         <h3 style="margin: 0 0 8px 0; font-size: 1.4rem; font-weight: 600; color: #2d1a45;">The Power of Visualization: How to Manifest Your Dreams</h3>
                         <p style="margin: 0 0 16px 0; color: #666; font-size: 0.95rem; line-height: 1.5;">Learn the science-backed visualization techniques to achieve your goals and create the life you desire.</p>
-                        <a href="https://blog.amphy.com/how-to-manifest-your-dreams/" target="_blank" style="color: #fff; background: #8b5fbf; text-decoration: none; font-weight: 500; font-size: 0.95rem; border-radius: 6px; padding: 8px 18px; display: inline-block; border: none; transition: background 0.2s; margin-top: 8px;">Read Article</a>
+                        <a href="https://blog.amphy.com/how-to-manifest-your-dreams/" target="_blank" style="color: #fff; background: #3a2259; text-decoration: none; font-weight: 500; font-size: 0.95rem; border-radius: 6px; padding: 8px 18px; display: inline-block; border: none; transition: background 0.2s; margin-top: 8px;">Read Article</a>
                     </div>
                 </section>
 
                 <!-- Motivation Section -->
                 <section style="margin-bottom: 40px;">
-                    <h2 style="font-size: 1rem; font-weight: 600; color: #8b5fbf; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Motivation</h2>
+                    <h2 style="font-size: 1rem; font-weight: 600; color: #3a2259; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Motivation</h2>
                     
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px;">
                         <!-- Article 1 -->
@@ -166,7 +166,7 @@
                                 <img src="assets/stay-focused.jpg" alt="Stay Focused" style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; margin: 0; padding: 0;">
                             </div>
                             <div style="padding: 16px;">
-                                <span style="color: #8b5fbf; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">5 Min Read</span>
+                                <span style="color: #3a2259; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">5 Min Read</span>
                                 <h3 style="margin: 8px 0 8px 0; font-size: 1rem; font-weight: 600; color: #2d1a45;">Stay Focused: Tips for Maintaining Motivation</h3>
                                 <p style="margin: 0; color: #666; font-size: 0.85rem; line-height: 1.4;">Discover practical strategies to stay motivated and focused on your goals, even when challenges arise.</p>
                             </div>
@@ -179,7 +179,7 @@
                                 <img src="assets/overcoming-obstacles.jpg" alt="Overcoming Obstacles" style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; margin: 0; padding: 0;">
                             </div>
                             <div style="padding: 16px;">
-                                <span style="color: #8b5fbf; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">7 Min Read</span>
+                                <span style="color: #3a2259; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">7 Min Read</span>
                                 <h3 style="margin: 8px 0 8px 0; font-size: 1rem, font-weight: 600; color: #2d1a45;">Overcoming Obstacles: Strategies for Success</h3>
                                 <p style="margin: 0; color: #666; font-size: 0.85rem; line-height: 1.4;">Learn how to turn setbacks into comebacks and use obstacles as stepping stones to success.</p>
                             </div>
@@ -194,7 +194,7 @@
                                 <img src="assets/motivation.jpg" alt="Science of Motivation" style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; margin: 0; padding: 0;">
                             </div>
                             <div style="padding: 16px; flex: 1;">
-                                <span style="color: #8b5fbf; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">8 Min Read</span>
+                                <span style="color: #3a2259; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">8 Min Read</span>
                                 <h3 style="margin: 8px 0 8px 0; font-size: 1rem; font-weight: 600; color: #2d1a45;">The Science of Motivation: Understanding What Drives Us</h3>
                                 <p style="margin: 0; color: #666; font-size: 0.85rem; line-height: 1.4;">Explore the psychology behind motivation and how to harness it for long-term success.</p>
                             </div>
@@ -208,7 +208,7 @@
                                 <img src="assets/peak-performance.jpg" alt="Boost Your Energy" style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; margin: 0; padding: 0;">
                             </div>
                             <div style="padding: 16px; flex: 1;">
-                                <span style="color: #8b5fbf; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">6 Min Read</span>
+                                <span style="color: #3a2259; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">6 Min Read</span>
                                 <h3 style="margin: 8px 0 8px 0; font-size: 1rem; font-weight: 600; color: #2d1a45;">Boost Your Energy: Daily Habits for Peak Performance</h3>
                                 <p style="margin: 0; color: #666; font-size: 0.85rem; line-height: 1.4;">Simple daily practices to maintain high energy levels and maximize your productivity.</p>
                             </div>
@@ -218,7 +218,7 @@
 
                 <!-- Productivity Section -->
                 <section style="margin-bottom: 40px;">
-                    <h2 style="font-size: 1rem; font-weight: 600; color: #8b5fbf; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Productivity</h2>
+                    <h2 style="font-size: 1rem; font-weight: 600; color: #3a2259; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Productivity</h2>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                         <!-- Article 1 -->
                         <article style="background: #fff; border-radius: 8px; overflow: hidden; border: 2px solid #f3f0ff; box-shadow: 0 2px 8px rgba(139, 95, 179, 0.08); transition: transform 0.3s ease; cursor: pointer;"
@@ -227,7 +227,7 @@
                                 <img src="assets/time-management.jpg" alt="Time Management" style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; margin: 0; padding: 0;">
                             </div>
                             <div style="padding: 12px;">
-                                <span style="color: #8b5fbf; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">4 Min Read</span>
+                                <span style="color: #3a2259; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">4 Min Read</span>
                                 <h3 style="margin: 6px 0 6px 0; font-size: 0.9rem; font-weight: 600; color: #2d1a45;">Time Management Techniques</h3>
                                 <p style="margin: 0; color: #666; font-size: 0.8rem; line-height: 1.3;">Master your schedule and accomplish more in less time.</p>
                             </div>
@@ -240,7 +240,7 @@
                                 <img src="assets/prioritization.jpg" alt="Prioritization" style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; margin: 0; padding: 0;">
                             </div>
                             <div style="padding: 12px;">
-                                <span style="color: #8b5fbf; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">5 Min Read</span>
+                                <span style="color: #3a2259; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">5 Min Read</span>
                                 <h3 style="margin: 6px 0 6px 0; font-size: 0.9rem; font-weight: 600; color: #2d1a45;">The Art of Prioritization</h3>
                                 <p style="margin: 0; color: #666; font-size: 0.8rem; line-height: 1.3;">Learn to focus on what matters most and eliminate distractions.</p>
                             </div>
@@ -253,7 +253,7 @@
                                 <img src="assets/workspace.jpeg" alt="Productive Workspace" style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; margin: 0; padding: 0;">
                             </div>
                             <div style="padding: 12px;">
-                                <span style="color: #8b5fbf; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">3 Min Read</span>
+                                <span style="color: #3a2259; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">3 Min Read</span>
                                 <h3 style="margin: 6px 0 6px 0; font-size: 0.9rem; font-weight: 600; color: #2d1a45;">Creating a Productive Workspace</h3>
                                 <p style="margin: 0; color: #666; font-size: 0.8rem; line-height: 1.3;">Design your environment for maximum focus.</p>
                             </div>
@@ -263,7 +263,7 @@
 
                 <!-- Goal Setting Section -->
                 <section>
-                    <h2 style="font-size: 1rem; font-weight: 600; color: #8b5fbf; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Goal Setting</h2>
+                    <h2 style="font-size: 1rem; font-weight: 600; color: #3a2259; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Goal Setting</h2>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                         <!-- Article 1 -->
                         <article style="background: #fff; border-radius: 8px; overflow: hidden; border: 2px solid #f3f0ff; box-shadow: 0 2px 8px rgba(139, 95, 179, 0.08); transition: transform 0.3s ease; cursor: pointer;"
@@ -272,7 +272,7 @@
                                 <img src="assets/smart-goals.jpg" alt="SMART Goals" style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; margin: 0; padding: 0;">
                             </div>
                             <div style="padding: 12px;">
-                                <span style="color: #8b5fbf; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">6 Min Read</span>
+                                <span style="color: #3a2259; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">6 Min Read</span>
                                 <h3 style="margin: 6px 0 6px 0; font-size: 0.9rem; font-weight: 600; color: #2d1a45;">Setting SMART Goals</h3>
                                 <p style="margin: 0; color: #666; font-size: 0.8rem; line-height: 1.3;">Learn the framework for setting achievable, measurable goals.</p>
                             </div>
@@ -285,7 +285,7 @@
                                 <img src="assets/breaking-down.jpg" alt="Break Down Goals" style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; margin: 0; padding: 0;">
                             </div>
                             <div style="padding: 12px;">
-                                <span style="color: #8b5fbf; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">5 Min Read</span>
+                                <span style="color: #3a2259; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">5 Min Read</span>
                                 <h3 style="margin: 6px 0 6px 0; font-size: 0.9rem; font-weight: 600; color: #2d1a45;">Breaking Down Big Goals</h3>
                                 <p style="margin: 0; color: #666; font-size: 0.8rem; line-height: 1.3;">Transform overwhelming goals into actionable milestones.</p>
                             </div>
@@ -298,7 +298,7 @@
                                 <img src="assets/effective-goals.png" alt="Effective Goal Setting" style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; margin: 0; padding: 0;">
                             </div>
                             <div style="padding: 12px;">
-                                <span style="color: #8b5fbf; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">4 Min Read</span>
+                                <span style="color: #3a2259; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">4 Min Read</span>
                                 <h3 style="margin: 6px 0 6px 0; font-size: 0.9rem; font-weight: 600; color: #2d1a45;">Effective Goal-Setting Techniques</h3>
                                 <p style="margin: 0; color: #666; font-size: 0.8rem; line-height: 1.3;">Keep your goals relevant with regular reviews.</p>
                             </div>
@@ -311,7 +311,7 @@
             <aside>
                 <!-- Daily Inspiration -->
                 <section style="background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 24px; border: 2px solid #f3f0ff; box-shadow: 0 2px 8px rgba(139, 95, 179, 0.08);">
-                    <h3 style="margin: 0 0 16px 0; font-size: 1rem; font-weight: 600; color: #8b5fbf; text-transform: uppercase; letter-spacing: 0.5px;">Daily Inspiration</h3>
+                    <h3 style="margin: 0 0 16px 0; font-size: 1rem; font-weight: 600; color: #3a2259; text-transform: uppercase; letter-spacing: 0.5px;">Daily Inspiration</h3>
                     <blockquote style="margin: 0 0 16px 0; padding: 0; border: none;">
                         <p style="margin: 0 0 12px 0; color: #2d1a45; font-size: 0.95rem; line-height: 1.5; font-style: italic;">"Success is not final, failure is not fatal: it is the courage to continue that counts."</p>
                         <cite style="color: #666; font-size: 0.85rem; font-style: normal;">Winston Churchill</cite>
@@ -321,19 +321,19 @@
 
                 <!-- Recommended Resources -->
                 <section style="background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 24px; border: 2px solid #f3f0ff; box-shadow: 0 2px 8px rgba(139, 95, 179, 0.08);">
-                    <h3 style="margin: 0 0 16px 0; font-size: 1rem; font-weight: 600; color: #8b5fbf; text-transform: uppercase; letter-spacing: 0.5px;">Recommended Resources</h3>
+                    <h3 style="margin: 0 0 16px 0; font-size: 1rem; font-weight: 600; color: #3a2259; text-transform: uppercase; letter-spacing: 0.5px;">Recommended Resources</h3>
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <a href="#" style="display: block; padding: 12px; background: #faf8ff; border-radius: 6px; text-decoration: none; color: #2d1a45; border: 1px solid #f3f0ff; transition: background 0.3s ease;">
                             <div style="font-weight: 500; margin-bottom: 2px; font-size: 0.9rem;">Goal Setting Workbook</div>
-                            <div style="color: #8b5fbf; font-size: 0.8rem;">Free Download</div>
+                            <div style="color: #3a2259; font-size: 0.8rem;">Free Download</div>
                         </a>
                         <a href="#" style="display: block; padding: 12px; background: #faf8ff; border-radius: 6px; text-decoration: none; color: #2d1a45; border: 1px solid #f3f0ff; transition: background 0.3s ease;">
                             <div style="font-weight: 500; margin-bottom: 2px; font-size: 0.9rem;">Productivity Podcast</div>
-                            <div style="color: #8b5fbf; font-size: 0.8rem;">Weekly Episodes</div>
+                            <div style="color: #3a2259; font-size: 0.8rem;">Weekly Episodes</div>
                         </a>
                         <a href="#" style="display: block; padding: 12px; background: #faf8ff; border-radius: 6px; text-decoration: none; color: #2d1a45; border: 1px solid #f3f0ff; transition: background 0.3s ease;">
                             <div style="font-weight: 500; margin-bottom: 2px; font-size: 0.9rem;">Video Tutorials</div>
-                            <div style="color: #8b5fbf; font-size: 0.8rem;">Step-by-step Guides</div>
+                            <div style="color: #3a2259; font-size: 0.8rem;">Step-by-step Guides</div>
                         </a>
                     </div>
                 </section>
@@ -350,7 +350,7 @@
     </main>
 
     <!-- Background Sound -->
-    <audio id="background-sound" loop>
+    <audio id="background-sound" loop autoplay>
         <source src="assets/relaxing-nature-sound.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -360,8 +360,9 @@
         <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
     </button>
 
-    <script src="firebase-config.js"></script>
+    <!-- Make sure this is included after the audio/button markup and only once per page -->
     <script src="shared-scripts.js"></script>
+    <script src="firebase-config.js"></script>
     <script src="profile-dropdown.js"></script>
     <script src="dark-mode-toggle.js"></script>
     <!-- Import sprinkles effect from mouse-sprinkles -->

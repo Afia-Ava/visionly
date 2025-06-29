@@ -209,6 +209,12 @@
             border-radius: 50%;
             margin-bottom: 20px;
             object-fit: cover;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+
+        .profile-avatar:hover {
+            box-shadow: 0 0 0 4px #c9a9ff55; 
         }
         
         .profile-details h2 {
@@ -694,7 +700,8 @@
         
         <div class="profile-main">
             <div class="profile-info">
-                <img id="profile-avatar" src="https://via.placeholder.com/120x120/6b46c1/ffffff?text=U" alt="Profile Avatar" class="profile-avatar">
+                <img id="profile-avatar" src="https://via.placeholder.com/120x120/6b46c1/ffffff?text=U" alt="Profile Avatar" class="profile-avatar" style="cursor:pointer;">
+                <input type="file" id="avatar-upload" accept="image/*" style="display:none;">
                 <div class="profile-details">
                     <h2 id="profile-name"></h2>
                     <p id="profile-email"></p>
@@ -718,53 +725,18 @@
             
             <div class="profile-forms">
                 <div class="edit-section">
-                    <h3>Edit Profile</h3>
-                    
-                    <!-- Avatar selection section -->
-                    <div class="form-group">
-                        <label class="form-label">Choose Avatar</label>
-                        <div class="avatar-options">
-                            <div class="avatar-option" data-avatar="avatar1">
-                                <img src="assets/avatar1.png" alt="Avatar 1">
-                            </div>
-                            <div class="avatar-option" data-avatar="avatar2">
-                                <img src="assets/avatar2.png" alt="Avatar 2">
-                            </div>
-                            <div class="avatar-option" data-avatar="avatar3">
-                                <img src="assets/avatar3.png" alt="Avatar 3">
-                            </div>
-                            <div class="avatar-option" data-avatar="avatar4">
-                                <img src="assets/avatar4.png" alt="Avatar 4">
-                            </div>
-                            <div class="avatar-option" data-avatar="avatar5">
-                                <img src="assets/avatar5.png" alt="Avatar 5">
-                            </div>
-                            <div class="avatar-option" data-avatar="avatar6">
-                                <img src="assets/avatar6.png" alt="Avatar 6">
-                            </div>
-                            <div class="avatar-option" data-avatar="avatar7">
-                                <img src="assets/avatar7.png" alt="Avatar 7">
-                            </div>
-                            <div class="avatar-option" data-avatar="avatar8">
-                                <img src="assets/avatar8.png" alt="Avatar 8">
-                            </div>
-                        </div>
-                        <input type="hidden" id="selected-avatar" value="avatar1">
-                    </div>
-                    
+                    <h3>Profile Info</h3>
                     <div class="form-group">
                         <label class="form-label">Name</label>
-                        <input type="text" id="name-input" class="form-input" placeholder="Enter your name">
+                        <div id="profile-name-text" style="font-size: 1.08rem; color: #333; margin-bottom: 8px;">-</div>
                     </div>
-                    
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <div id="profile-username-text" style="font-size: 1.08rem; color: #333; margin-bottom: 8px;">-</div>
+                    </div>
                     <div class="form-group">
                         <label class="form-label">Email</label>
-                        <input type="email" id="email-input" class="form-input" placeholder="Enter your email" readonly>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" id="password-input" class="form-input" placeholder="Enter new password">
+                        <div id="profile-email-text" style="font-size: 1.08rem; color: #333; margin-bottom: 8px;">-</div>
                     </div>
                 </div>
                 
@@ -818,27 +790,24 @@
                 <h3>Achievements</h3>
                 <a href="achievements.html" class="view-all-btn">View All</a>
             </div>
-            
             <div class="achievements-grid">
                 <div class="achievement-item">
                     <div class="achievement-icon">
-                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star" style="color: #3a2259;"></i>
                     </div>
                     <h4 class="achievement-title">First Vision Board</h4>
                     <div class="achievement-date">Yet to be achieved</div>
                 </div>
-                
                 <div class="achievement-item">
                     <div class="achievement-icon">
-                        <i class="fas fa-book"></i>
+                        <i class="fas fa-book" style="color: #4a2d7d;"></i>
                     </div>
                     <h4 class="achievement-title">Journal Master</h4>
                     <div class="achievement-date">Yet to be achieved</div>
                 </div>
-                
                 <div class="achievement-item">
                     <div class="achievement-icon">
-                        <i class="fas fa-trophy"></i>
+                        <i class="fas fa-trophy" style="color: #2d1a45;"></i>
                     </div>
                     <h4 class="achievement-title">Goal Crusher</h4>
                     <div class="achievement-date">Yet to be achieved</div>
@@ -859,14 +828,80 @@
     </button>
 
     <script src="firebase-config.js"></script>
-    <script src="nav-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Firebase if not already initialized
+    if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+        firebase.initializeApp({
+            apiKey: "AIzaSyDs9_aRBzltPKNU3i8uZxoyaGiBZSoPb5s",
+            authDomain: "visionly-webapp.firebaseapp.com",
+            projectId: "visionly-webapp",
+            storageBucket: "visionly-webapp.appspot.com",
+            messagingSenderId: "708324469283",
+            appId: "1:708324469283:web:dummyappid", // Replace with your real appId if needed
+        });
+    }
+    // Wait for Firebase to be loaded and initialized
+    function waitForFirebaseAuth(callback, tries = 0) {
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
+            callback();
+        } else if (tries < 50) {
+            setTimeout(() => waitForFirebaseAuth(callback, tries + 1), 100);
+        }
+    }
+
+    waitForFirebaseAuth(function() {
+        firebase.auth().onAuthStateChanged(async function(user) {
+            if (user) {
+                // Show what Firebase returns for debugging
+                document.getElementById('profile-name-text').textContent = user.displayName || '(no displayName)';
+                document.getElementById('profile-email-text').textContent = user.email || '(no email)';
+                // Username (try Firestore, fallback to email prefix)
+                let username = '';
+                try {
+                    const db = firebase.firestore();
+                    const docRef = db.collection('users').doc(user.uid);
+                    const doc = await docRef.get();
+                    if (doc.exists && doc.data().username) {
+                        username = doc.data().username;
+                    } else if (user.email) {
+                        username = user.email.split('@')[0];
+                    } else {
+                        username = '(no username)';
+                    }
+                } catch (e) {
+                    username = 'Firestore error';
+                    console.error('Firestore access error:', e);
+                }
+                document.getElementById('profile-username-text').textContent = username;
+
+                // Update Vision Boards count
+                try {
+                    const db = firebase.firestore();
+                    const boardsSnap = await db.collection('boards').where('userId', '==', user.uid).get();
+                    document.getElementById('vision-boards-count').textContent = boardsSnap.size;
+                } catch (e) {
+                    document.getElementById('vision-boards-count').textContent = '0';
+                    console.error('Error fetching vision boards count:', e);
+                }
+            } else {
+                document.getElementById('profile-name-text').textContent = 'Not signed in';
+                document.getElementById('profile-username-text').textContent = '-';
+                document.getElementById('profile-email-text').textContent = '-';
+                document.getElementById('vision-boards-count').textContent = '0';
+            }
+        });
+    });
+});
+</script>
     <script src="profile-dropdown.js"></script>
     <script src="dark-mode-toggle.js"></script>
     
-    <!-- Import sprinkles effect from mouse-sprinkles -->
     <script src="mouse-sprinkles-script.js"></script>
     
-    <!-- Control sprinkles behavior - only show on mouse movement -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Try to stop any automatic sprinkle creation
@@ -874,12 +909,8 @@
                 clearInterval(window._sprinkleInterval);
             }
             
-            // Clear any existing sprinkles
-            document.querySelectorAll('.sprinkle-particle').forEach(el => el.remove());
-            
-            // Create a replacement function for creating sprinkles
+            document.querySelectorAll('.sprinkle-particle').forEach(el => el.remove());            
             window.createSprinkle = function(x, y) {
-                // Only create if we have coordinates (from mouse movement)
                 if (!x || !y) return;
                 
                 const colors = ['#8b5fbf', '#6b46c1', '#9d78c9', '#c9a9ff'];
@@ -905,13 +936,11 @@
                 
                 document.body.appendChild(sprinkle);
                 
-                // Remove after animation completes
                 setTimeout(() => {
                     if (sprinkle.parentNode) sprinkle.parentNode.removeChild(sprinkle);
                 }, 1000);
             };
             
-            // Add styles for animation
             if (!document.getElementById('sprinkle-styles')) {
                 const style = document.createElement('style');
                 style.id = 'sprinkle-styles';
@@ -925,9 +954,7 @@
                 document.head.appendChild(style);
             }
             
-            // Only create sprinkles on mouse movement
             document.addEventListener('mousemove', function(e) {
-                // Control rate of sprinkle creation (not on every pixel of movement)
                 if (Math.random() > 0.6) {
                     createSprinkle(e.clientX, e.clientY);
                 }
@@ -936,17 +963,14 @@
     </script>
     
     <script>
-        // --- Robust background music logic (mirrors index.html) ---
         document.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('background-sound');
             const toggleBtn = document.getElementById('toggle-sound');
             const soundIcon = document.getElementById('sound-icon');
             let isPlaying = false;
 
-            // Set volume
             audio.volume = 0.5;
 
-            // Set icon to off state if audio is paused on load
             function updateIcon() {
                 if (audio.paused) {
                     soundIcon.src = 'assets/speaker-off-icon.png';
@@ -959,7 +983,6 @@
                 }
             }
 
-            // Function to start audio
             function startAudio() {
                 audio.play().then(() => {
                     updateIcon();
@@ -970,10 +993,8 @@
                 });
             }
 
-            // Try to start audio immediately (may be blocked)
             startAudio();
 
-            // Also try to start on first user interaction
             const enableAudio = () => {
                 if (!isPlaying && audio.paused) {
                     startAudio();
@@ -983,7 +1004,6 @@
             document.addEventListener('touchstart', enableAudio, { once: true });
             document.addEventListener('keydown', enableAudio, { once: true });
 
-            // Toggle sound on button click
             toggleBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 if (audio.paused) {
@@ -996,43 +1016,33 @@
                 }
             });
 
-            // Update icon based on audio state
             audio.addEventListener('play', updateIcon);
             audio.addEventListener('pause', updateIcon);
 
-            // Set initial icon state
             updateIcon();
         });
 
-        let avatarManuallySelected = false; // Track if user manually selected an avatar
+        let avatarManuallySelected = false; 
         function setupAvatarSelection() {
             const profileAvatar = document.getElementById('profile-avatar');
             const profilePhoto = document.getElementById('profile-photo');
             const options = document.querySelectorAll('.avatar-option');
             options.forEach(option => {
                 option.addEventListener('click', function() {
-                    // Highlight selected avatar
                     options.forEach(opt => opt.classList.remove('selected'));
                     this.classList.add('selected');
-                    // Build path from dataset
                     const name = this.dataset.avatar;
                     const avatarPath = `assets/${name}.png`;
                     console.log('Avatar selected:', avatarPath);
-                    // Persist avatar selection
                     localStorage.setItem('profileAvatar', avatarPath);
-                    // Update large avatar
                     profileAvatar.src = avatarPath;
-                    // Update profile photo in navbar
                     profilePhoto.src = avatarPath;
-                    // Update hidden input value
                     document.getElementById('selected-avatar').value = name;
-                    // Mark as manually selected
                     avatarManuallySelected = true;
                 });
             });
         }
 
-        // Restore avatar from localStorage on load
         function restoreAvatarSelection() {
             const stored = localStorage.getItem('profileAvatar');
             if (!stored) return;
@@ -1050,20 +1060,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize profile page once DOM is loaded
-            // Set up avatar options click handlers
             setupAvatarSelection();
-            // Restore any previously selected avatar
             restoreAvatarSelection();
-            // Load user data and profile fields (with stored avatar prioritized)
             loadUserData();
-            // Set up toggles (dark mode, notifications)
             setupToggles();
-            // Attach save button handler
             setupSaveButton();
         });
 
-        // Ensure avatar persists on back/forward navigation
         window.addEventListener('pageshow', function(event) {
             restoreAvatarSelection();
         });
@@ -1075,11 +1078,10 @@
                         const stored = localStorage.getItem('profileAvatar');
                         const userName = user.displayName || '';
                         const userEmail = user.email || '';
-                        const initial = (userName ? userName[0] : (userEmail ? userEmail[0] : 'U')).toUpperCase();
+                        const initial = (userName ? userName[0 : (userEmail ? userEmail[0] : 'U')).toUpperCase();
                         const placeholder = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;
                         const firebaseAvatar = user.photoURL || placeholder;
                         const avatarToShow = stored || firebaseAvatar;
-                        // Update UI fields
                         document.getElementById('profile-name').textContent = userName || userEmail;
                         document.getElementById('profile-email').textContent = userEmail;
                         document.getElementById('profile-avatar').src = avatarToShow;
@@ -1087,13 +1089,10 @@
                         if (navPhoto) navPhoto.src = avatarToShow;
                         document.getElementById('name-input').value = userName;
                         document.getElementById('email-input').value = userEmail;
-                        // Ensure selected-avatar input matches
                         const selectedInput = document.getElementById('selected-avatar');
                         if (stored && selectedInput) {
                             selectedInput.value = stored.split('/').pop().split('.')[0];
                         }
-                        // Do not reset avatar options here
-                        // Load stats and achievements
                         loadUserStatistics(user.uid);
                         if (typeof loadUserAchievements === 'function') loadUserAchievements(user.uid);
                     } else {
@@ -1115,18 +1114,15 @@
                 localStorage.setItem('darkMode', isActive);
             });
             
-            // Email notifications toggle (mocked, not functional)
             const notificationsToggle = document.getElementById('notifications-toggle');
             notificationsToggle.classList.toggle('active', localStorage.getItem('emailNotifications') === 'true');
             notificationsToggle.addEventListener('click', function() {
                 this.classList.toggle('active');
                 const isActive = this.classList.contains('active');
                 localStorage.setItem('emailNotifications', isActive);
-                // Here you would also update the user's notification preference in your backend
             });
         }
 
-        // Function to show temporary notification popup
         function showNotification(message) {
             const notification = document.createElement('div');
             notification.style.cssText = `
@@ -1145,24 +1141,20 @@
             `;
             notification.textContent = message;
             document.body.appendChild(notification);
-            // Slide in
             setTimeout(() => notification.style.transform = 'translateX(0)', 100);
-            // Slide out and remove after 3 seconds
             setTimeout(() => {
                 notification.style.transform = 'translateX(100%)';
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
 
-        // Handle Save Changes button
         function setupSaveButton() {
             const btn = document.getElementById('save-changes');
             if (!btn) return;
             btn.addEventListener('click', async function() {
                 console.log('Save button clicked');
-                alert('Debug: Save button click captured'); // Debug popup
+                alert('Debug: Save button click captured'); 
                 try {
-                    // Update Firebase displayName
                     const user = firebase.auth().currentUser;
                     if (user) {
                         const name = document.getElementById('name-input').value;
@@ -1178,7 +1170,6 @@
             });
         }
 
-        // Define showNotification if not already defined
         if (typeof showNotification !== 'function') {
             function showNotification(message) {
                 const notification = document.createElement('div');
@@ -1203,7 +1194,6 @@
             }
         }
 
-        // Profile page scripts
         document.addEventListener('DOMContentLoaded', () => {
             const btn = document.getElementById('save-changes');
             console.log('Bottom script: save button element:', btn);
@@ -1248,5 +1238,167 @@
         }
       });
     </script>
+    <script>
+        // Avatar upload logic
+        document.addEventListener('DOMContentLoaded', function() {
+            const avatarImg = document.getElementById('profile-avatar');
+            const avatarInput = document.getElementById('avatar-upload');
+            const navPhoto = document.getElementById('profile-photo');
+
+            // Click avatar to trigger file input
+            avatarImg.addEventListener('click', function() {
+                avatarInput.click();
+            });
+
+            avatarInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    avatarImg.src = evt.target.result;
+                    if (navPhoto) navPhoto.src = evt.target.result;
+                    // Save to localStorage for persistence
+                    localStorage.setItem('profileAvatarUpload', evt.target.result);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // On page load, restore uploaded avatar if present
+            const uploaded = localStorage.getItem('profileAvatarUpload');
+            if (uploaded) {
+                avatarImg.src = uploaded;
+                if (navPhoto) navPhoto.src = uploaded;
+            }
+        });
+    </script>
+    <script>
+    // Show uploaded avatar in navbar on every page
+    document.addEventListener('DOMContentLoaded', function() {
+        const navPhoto = document.getElementById('profile-photo');
+        const uploaded = localStorage.getItem('profileAvatarUpload');
+        if (navPhoto && uploaded) {
+            navPhoto.src = uploaded;
+        }
+    });
+    </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Show name/username/email from Firebase Auth or Firestore
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().onAuthStateChanged(async user => {
+            if (user) {
+                // Use the actual Firebase Auth info
+                document.getElementById('profile-name-text').textContent = user.displayName || '';
+                document.getElementById('profile-email-text').textContent = user.email || '';
+                // Try to get username from Firestore, fallback to email prefix
+                let username = '';
+                try {
+                    if (firebase.firestore) {
+                        const db = firebase.firestore();
+                        const doc = await db.collection('users').doc(user.uid).get();
+                        if (doc.exists && doc.data().username) {
+                            username = doc.data().username;
+                        } else if (user.email) {
+                            username = user.email.split('@')[0];
+                        }
+                    } else if (user.email) {
+                        username = user.email.split('@')[0];
+                    }
+                } catch (e) {
+                    username = user.email.split('@')[0];
+                }
+                document.getElementById('profile-username-text').textContent = username;
+            } else {
+                document.getElementById('profile-name-text').textContent = 'Not signed in';
+                document.getElementById('profile-username-text').textContent = '-';
+                document.getElementById('profile-email-text').textContent = '-';
+            }
+        });
+    }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Defensive: check firebase and DOM
+    if (typeof firebase === 'undefined' || !firebase.auth) {
+        document.getElementById('profile-name-text').textContent = 'Firebase not loaded';
+        document.getElementById('profile-username-text').textContent = '-';
+        document.getElementById('profile-email-text').textContent = '-';
+        return;
+    }
+    firebase.auth().onAuthStateChanged(async function(user) {
+        if (!user) {
+            document.getElementById('profile-name-text').textContent = 'Not signed in';
+            document.getElementById('profile-username-text').textContent = '-';
+            document.getElementById('profile-email-text').textContent = '-';
+            return;
+        }
+        // Name
+        document.getElementById('profile-name-text').textContent = user.displayName || user.email?.split('@')[0] || 'User';
+        // Email
+        document.getElementById('profile-email-text').textContent = user.email || '-';
+        // Username (try Firestore, fallback to email prefix)
+        let username = '';
+        try {
+            if (firebase.firestore) {
+                const db = firebase.firestore();
+                const docRef = db.collection('users').doc(user.uid);
+                const doc = await docRef.get();
+                if (doc.exists && doc.data().username) {
+                    username = doc.data().username;
+                } else if (user.email) {
+                    username = user.email.split('@')[0];
+                }
+            } else if (user.email) {
+                username = user.email.split('@')[0];
+            }
+        } catch (e) {
+            // Show error in username field for debugging
+            username = 'Firestore error';
+            console.error('Firestore access error:', e);
+        }
+        document.getElementById('profile-username-text').textContent = username;
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure Firebase is loaded and initialized before using
+    function waitForFirebaseAuth(callback) {
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
+            callback();
+        } else {
+            setTimeout(() => waitForFirebaseAuth(callback), 100);
+        }
+    }
+    waitForFirebaseAuth(function() {
+        firebase.auth().onAuthStateChanged(async function(user) {
+            if (!user) {
+                document.getElementById('profile-name-text').textContent = 'Not signed in';
+                document.getElementById('profile-username-text').textContent = '-';
+                document.getElementById('profile-email-text').textContent = '-';
+                return;
+            }
+            document.getElementById('profile-name-text').textContent = user.displayName || user.email?.split('@')[0] || 'User';
+            document.getElementById('profile-email-text').textContent = user.email || '-';
+            let username = '';
+            try {
+                const db = firebase.firestore();
+                const docRef = db.collection('users').doc(user.uid);
+                const doc = await docRef.get();
+                if (doc.exists && doc.data().username) {
+                    username = doc.data().username;
+                } else if (user.email) {
+                    username = user.email.split('@')[0];
+                }
+            } catch (e) {
+                username = 'Firestore error';
+                console.error('Firestore access error:', e);
+            }
+            document.getElementById('profile-username-text').textContent = username;
+        });
+    });
+});
+</script>
 </body>
 </html>

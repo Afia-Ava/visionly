@@ -217,3 +217,127 @@ function generateAvatar(email, imgElement) {
 window.logout = logout;
 window.checkAuth = checkAuth;
 window.currentUser = () => currentUser;
+
+// --- Shared Background Music Sync Across Tabs (Resume from last position) ---
+
+(function() {
+    const STORAGE_KEY = 'visionly-bg-music';
+    const AUDIO_SRC = 'assets/relaxing-nature-sound.mp3';
+
+    let audio = document.getElementById('background-sound');
+    if (!audio) {
+        audio = document.createElement('audio');
+        audio.id = 'background-sound';
+        audio.loop = true;
+        audio.src = AUDIO_SRC;
+        document.body.appendChild(audio);
+    }
+
+    function updateSoundIcons(paused) {
+        document.querySelectorAll('#sound-icon').forEach(icon => {
+            icon.src = paused ? 'assets/speaker-off-icon.png' : 'assets/speaker-on-icon.png';
+            icon.alt = paused ? 'Sound Off' : 'Sound On';
+        });
+    }
+
+    function syncStateToStorage() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            time: audio.currentTime,
+            paused: audio.paused,
+            ts: Date.now()
+        }));
+    }
+
+    // On storage event, sync audio position and play/pause state
+    window.addEventListener('storage', function(e) {
+        if (e.key === STORAGE_KEY && e.newValue) {
+            try {
+                const data = JSON.parse(e.newValue);
+                // Only update if the event is not from this tab
+                if (Math.abs(audio.currentTime - data.time) > 1) {
+                    audio.currentTime = data.time;
+                }
+                if (data.paused !== audio.paused) {
+                    if (data.paused) {
+                        audio.pause();
+                    } else {
+                        audio.play();
+                    }
+                }
+                updateSoundIcons(data.paused);
+            } catch {}
+        }
+    });
+
+    // On play/pause/seek, sync to storage
+    audio.addEventListener('play', syncStateToStorage);
+    audio.addEventListener('pause', syncStateToStorage);
+    audio.addEventListener('seeked', syncStateToStorage);
+    audio.addEventListener('timeupdate', function() {
+        // Only sync every ~2 seconds to avoid spam
+        if (!audio._lastSync || Date.now() - audio._lastSync > 2000) {
+            syncStateToStorage();
+            audio._lastSync = Date.now();
+        }
+    });
+
+    // On page load, resume from last known state (wait for audio to be ready)
+    document.addEventListener('DOMContentLoaded', function() {
+        function resumeAudioFromStorage() {
+            try {
+                const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+                if (data && typeof data.time === 'number') {
+                    // Wait for audio to be ready before setting currentTime
+                    if (audio.readyState >= 1) {
+                        audio.currentTime = Math.min(data.time, audio.duration || data.time);
+                        if (data.paused) {
+                            audio.pause();
+                        } else {
+                            audio.play().catch(() => {});
+                        }
+                        updateSoundIcons(data.paused);
+                    } else {
+                        audio.addEventListener('loadedmetadata', function handler() {
+                            audio.removeEventListener('loadedmetadata', handler);
+                            audio.currentTime = Math.min(data.time, audio.duration || data.time);
+                            if (data.paused) {
+                                audio.pause();
+                            } else {
+                                audio.play().catch(() => {});
+                            }
+                            updateSoundIcons(data.paused);
+                        });
+                    }
+                }
+            } catch {}
+        }
+        resumeAudioFromStorage();
+    });
+
+    // Sound toggle button logic (works for all pages)
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('toggle-sound');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (audio.paused) {
+                    audio.play();
+                } else {
+                    audio.pause();
+                }
+                updateSoundIcons(audio.paused);
+                syncStateToStorage();
+            });
+        }
+    });
+
+    // Try to play on first user interaction (for autoplay restrictions)
+    document.addEventListener('DOMContentLoaded', function() {
+        const enableAudio = () => {
+            if (audio.paused) audio.play();
+        };
+        document.addEventListener('click', enableAudio, { once: true });
+        document.addEventListener('touchstart', enableAudio, { once: true });
+        document.addEventListener('keydown', enableAudio, { once: true });
+    });
+})();
