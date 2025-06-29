@@ -674,6 +674,102 @@
         .profile-dropdown-overlay.show {
             display: block;
         }
+        
+        #signin-overlay {
+            display:none;
+            position:fixed;
+            top:0;
+            left:0;
+            width:100vw;
+            height:100vh;
+            background:rgba(20,10,34,0.92);
+            z-index:99999;
+            color:#fff;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            font-size:1.25rem;
+        }
+
+        #signin-overlay div {
+            background:#fff;
+            color:#2d1a45;
+            padding:36px 32px 28px 32px;
+            border-radius:18px;
+            box-shadow:0 4px 32px rgba(45,26,69,0.18);
+            text-align:center;
+            max-width:350px;
+        }
+
+        #signin-overlay h2 {
+            margin-bottom:18px;
+            font-size:1.5rem;
+            color:#6b46c1;
+        }
+
+        #signin-overlay p {
+            margin-bottom:22px;
+            color:#3a2259;
+        }
+
+        #signin-overlay button {
+            background:#6b46c1;
+            color:#fff;
+            border:none;
+            border-radius:8px;
+            padding:12px 32px;
+            font-size:1.08rem;
+            font-weight:600;
+            cursor:pointer;
+        }
+
+        /* Sign-in overlay styles */
+        #signin-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(30, 16, 48, 0.96);
+            z-index: 20000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        #signin-overlay div {
+            background: rgba(44, 22, 70, 0.98);
+            padding: 40px 32px;
+            border-radius: 18px;
+            box-shadow: 0 4px 32px #0005;
+            text-align: center;
+            max-width: 90vw;
+        }
+
+        #signin-overlay h2 {
+            margin-bottom: 18px;
+            font-size: 2rem;
+        }
+
+        #signin-overlay p {
+            margin-bottom: 28px;
+        }
+
+        #signin-overlay a {
+            background: #6b46c1;
+            color: #fff;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 2px 8px #0002;
+        }
     </style>
 </head>
 <body>
@@ -826,6 +922,15 @@
     <button id="toggle-sound" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2d1a45; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(45, 26, 69, 0.3); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s ease;">
         <img src="assets/speaker-on-icon.png" alt="Sound On" id="sound-icon" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
     </button>
+
+    <!-- Sign-in Overlay -->
+    <div id="signin-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(20,10,34,0.92); z-index:99999; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:1.25rem;">
+      <div style="background:#fff; color:#2d1a45; padding:36px 32px 28px 32px; border-radius:18px; box-shadow:0 4px 32px rgba(45,26,69,0.18); text-align:center; max-width:350px;">
+        <h2 style="margin-bottom:18px; font-size:1.5rem; color:#6b46c1;">Sign in required</h2>
+        <p style="margin-bottom:22px; color:#3a2259;">Please sign in to view and edit your profile.</p>
+        <button onclick="window.location.href='login.html'" style="background:#6b46c1; color:#fff; border:none; border-radius:8px; padding:12px 32px; font-size:1.08rem; font-weight:600; cursor:pointer;">Sign In</button>
+      </div>
+    </div>
 
     <script src="firebase-config.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -1078,7 +1183,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const stored = localStorage.getItem('profileAvatar');
                         const userName = user.displayName || '';
                         const userEmail = user.email || '';
-                        const initial = (userName ? userName[0 : (userEmail ? userEmail[0] : 'U')).toUpperCase();
+                        const initial = (userName ? userName[0] : (userEmail ? userEmail[0] : 'U')).toUpperCase();
                         const placeholder = `https://via.placeholder.com/120x120/6b46c1/ffffff?text=${initial}`;
                         const firebaseAvatar = user.photoURL || placeholder;
                         const avatarToShow = stored || firebaseAvatar;
@@ -1400,5 +1505,35 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<script>
+    // Redirect to login if not authenticated
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (!user) {
+                    window.location.href = 'login.html';
+                }
+            });
+        }
+    });
+    </script>
+    <script>
+    // Show sign-in overlay if not authenticated, hide profile content
+    document.addEventListener('DOMContentLoaded', function() {
+        var overlay = document.getElementById('signin-overlay');
+        var profileContent = document.querySelector('.profile-content');
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (!user) {
+                    if (profileContent) profileContent.style.display = 'none';
+                    if (overlay) overlay.style.display = 'flex';
+                } else {
+                    if (profileContent) profileContent.style.display = '';
+                    if (overlay) overlay.style.display = 'none';
+                }
+            });
+        }
+    });
+    </script>
 </body>
 </html>
