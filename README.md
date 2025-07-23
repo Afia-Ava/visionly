@@ -22,3 +22,6 @@ Building the onboarding flow in a way that feels natural, not like filling out a
 **What I Learned:**
 People need both beauty and simplicity to stay engaged with their goals
 Iteration matters a lot. Early versions didn’t feel “alive” enough. I kept tweaking until the experience felt like something I would use. 
+
+
+![Athena Award Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Faward.athena.hackclub.com%2Fapi%2Fbadge)
